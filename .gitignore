@@ -1,0 +1,12 @@
+docsrc/_build
+
+# Python
+__pycache__
+*.asv
+*temp*
+examples/*.csv
+__resources/TestImages
+examples/**ipynb*
+*.bak
+.coverage
+.idea

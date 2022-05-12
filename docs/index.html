@@ -71,14 +71,16 @@
   <section id="mri-distortion-correction">
 <h1>MRI Distortion Correction<a class="headerlink" href="#mri-distortion-correction" title="Permalink to this headline"></a></h1>
 <div class="mermaid">
-            %% Example of sequence diagram
-graph LR;
-   A[Marker &lt;br&gt;Extraction]--&gt;B[Marker &lt;br&gt;Matching]--&gt;C[Field &lt;br&gt; Calculation]--&gt;D[Spherical Harmonic &lt;br&gt;Analysis]--&gt;E[Automated &lt;br&gt;reporting];
-   click A &quot;http://www.github.com&quot;
-   click B &quot;http://www.github.com&quot;
-   click C &quot;http://www.github.com&quot;
-   click D &quot;http://www.github.com&quot;
-   click E &quot;http://www.github.com&quot;
+            flowchart LR;
+    A[Marker &lt;br&gt;Extraction]---&gt;B[Marker &lt;br&gt;Matching]
+    B[Marker &lt;br&gt;Matching]---&gt;C[Field &lt;br&gt; Calculation] &amp; E[Automated &lt;br&gt;reporting]
+    C[Field &lt;br&gt; Calculation]--&gt;D[Spherical Harmonic &lt;br&gt;Analysis]
+    D[Spherical Harmonic &lt;br&gt;Analysis]--&gt;E[Automated &lt;br&gt;reporting];
+    click A &quot;https://acrf-image-x-institute.github.io/MRI_DistortionQA/marker_extraction.html&quot;
+    click B &quot;https://acrf-image-x-institute.github.io/MRI_DistortionQA/marker_matching.html&quot;
+    click C &quot;https://acrf-image-x-institute.github.io/MRI_DistortionQA/field_calculation.html&quot;
+    click D &quot;https://acrf-image-x-institute.github.io/MRI_DistortionQA/fit_spherical_harmonics.html&quot;
+    click E &quot;https://acrf-image-x-institute.github.io/MRI_DistortionQA/reporting.html&quot;
         </div><div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
