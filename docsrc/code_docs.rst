@@ -4,30 +4,30 @@ Code Documentation
 MarkerAnalysis
 --------------
 
-.. automodule:: MR_DistortionQA.MarkerAnalysis
+.. automodule:: MRI_DistortionQA.MarkerAnalysis
    :members:
 
 
 FieldCalculation
 ----------------
 
-.. automodule:: MR_DistortionQA.FieldCalculation
+.. automodule:: MRI_DistortionQA.FieldCalculation
     :members:
 
 FieldAnalysis
 -------------
 
-.. automodule:: MR_DistortionQA.FieldAnalysis
+.. automodule:: MRI_DistortionQA.FieldAnalysis
     :members:
 
 Reports
 -------
 
-.. automodule:: MR_DistortionQA.Reports
+.. automodule:: MRI_DistortionQA.Reports
     :members:
 
 utilities
 ---------
 
-.. automodule:: MR_DistortionQA.utilities
+.. automodule:: MRI_DistortionQA.utilities
     :members:

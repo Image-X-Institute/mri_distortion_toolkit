@@ -95,7 +95,7 @@ An example of the types of reports you can generate is <a class="reference exter
 <section id="case-1-passing-data-directly">
 <h2>Case 1: passing data directly<a class="headerlink" href="#case-1-passing-data-directly" title="Permalink to this headline"></a></h2>
 <p>Create a new file called ‘reporting.py’. Copy the below code into it.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MR_DistortionQA.Reports</span> <span class="kn">import</span> <span class="n">MRI_QA_Reporter</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MRI_DistortionQA.Reports</span> <span class="kn">import</span> <span class="n">MRI_QA_Reporter</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 
@@ -119,7 +119,7 @@ An example of the types of reports you can generate is <a class="reference exter
 <section id="case-2-harmonic-reconstruction">
 <h2>Case 2: harmonic reconstruction<a class="headerlink" href="#case-2-harmonic-reconstruction" title="Permalink to this headline"></a></h2>
 <p>the code for harmonic reconstruction is below:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MR_DistortionQA.Reports</span> <span class="kn">import</span> <span class="n">MRI_QA_Reporter</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MRI_DistortionQA.Reports</span> <span class="kn">import</span> <span class="n">MRI_QA_Reporter</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 
@@ -140,20 +140,21 @@ An example of the types of reports you can generate is <a class="reference exter
 <h2>Adding custom tests<a class="headerlink" href="#adding-custom-tests" title="Permalink to this headline"></a></h2>
 <p>You will notice that some tests have been run (and failed) from ‘’DefaultTestSuite”. What is that and how do you add your own tests?</p>
 <p>Code demonstration the creation of a custom test suite is below:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MR_DistortionQA.Reports</span> <span class="kn">import</span> <span class="n">MRI_QA_Reporter</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MRI_DistortionQA.Reports</span> <span class="kn">import</span> <span class="n">MRI_QA_Reporter</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 
+
 <span class="k">class</span> <span class="nc">CustomTestSuite</span><span class="p">:</span>
-    
+
     <span class="k">def</span> <span class="nf">test_case_1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># a test can return a bool:</span>
         <span class="k">return</span> <span class="kc">True</span>
-        
+
     <span class="k">def</span> <span class="nf">test_case_2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># or a test can return a string:</span>
         <span class="k">return</span> <span class="s2">&quot;I am a string!&quot;</span>
-        
+
     <span class="k">def</span> <span class="nf">test_case_3</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># tests have access to the test data:</span>
         <span class="n">test_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extract_data_from_MatchedMarkerVolume</span><span class="p">(</span><span class="n">r_max</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
@@ -162,6 +163,7 @@ An example of the types of reports you can generate is <a class="reference exter
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
 
+
 <span class="c1"># Harmonic case: pass harmonics to MRI_QA_Reporter so that data can be recontructed</span>
 <span class="c1"># ----------------------------------------------------------------------------------</span>
 <span class="n">G_x_harmonics</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;G_x_harmonics.csv&#39;</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="s2">&quot;columns&quot;</span><span class="p">)</span>
@@ -169,7 +171,8 @@ An example of the types of reports you can generate is <a class="reference exter
 <span class="n">G_z_harmonics</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;G_z_harmonics.csv&#39;</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="s2">&quot;columns&quot;</span><span class="p">)</span>
 
 <span class="n">report</span> <span class="o">=</span> <span class="n">MRI_QA_Reporter</span><span class="p">(</span><span class="n">gradient_harmonics</span><span class="o">=</span><span class="p">[</span><span class="n">G_x_harmonics</span><span class="p">,</span> <span class="n">G_y_harmonics</span><span class="p">,</span> <span class="n">G_z_harmonics</span><span class="p">],</span>
-                         <span class="n">r_outer</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">dicom_data</span><span class="o">=</span><span class="n">dicom_data_loc</span><span class="p">,</span> <span class="n">tests_to_run</span><span class="o">=</span><span class="n">CustomTestSuite</span><span class="p">)</span>  <span class="c1"># custom test class passed to tests_to_run</span>
+                         <span class="n">r_outer</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">dicom_data</span><span class="o">=</span><span class="n">dicom_data_loc</span><span class="p">,</span>
+                         <span class="n">tests_to_run</span><span class="o">=</span><span class="n">CustomTestSuite</span><span class="p">)</span>  <span class="c1"># custom test class passed to tests_to_run</span>
 <span class="n">report</span><span class="o">.</span><span class="n">write_html_report</span><span class="p">()</span>
 
 <span class="n">G_x_harmonics</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;G_x_harmonics.csv&#39;</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="s2">&quot;columns&quot;</span><span class="p">)</span>

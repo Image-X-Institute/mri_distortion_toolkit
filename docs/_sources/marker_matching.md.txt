@@ -17,9 +17,10 @@ Create a new python file called 'marker_matching.py' and copy the below contents
 ````python
 import sys
 from pathlib import Path
+
 sys.path.insert(0, 'C:/Users/Brendan/Documents/python/MRI_DistCorrectionPhantom')
-from MR_DistortionQA.MarkerAnalysis import MarkerVolume
-from MR_DistortionQA.MarkerAnalysis import MatchedMarkerVolumes
+from MRI_DistortionQA.MarkerAnalysis import MarkerVolume
+from MRI_DistortionQA.MarkerAnalysis import MatchedMarkerVolumes
 
 '''
 download example data and unzip:

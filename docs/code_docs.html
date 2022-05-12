@@ -42,11 +42,11 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Worked Examples</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Code Documentation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#module-MR_DistortionQA.MarkerAnalysis">MarkerAnalysis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-MR_DistortionQA.FieldCalculation">FieldCalculation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-MR_DistortionQA.FieldAnalysis">FieldAnalysis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-MR_DistortionQA.Reports">Reports</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-MR_DistortionQA.utilities">utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-MRI_DistortionQA.MarkerAnalysis">MarkerAnalysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-MRI_DistortionQA.FieldCalculation">FieldCalculation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-MRI_DistortionQA.FieldAnalysis">FieldAnalysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-MRI_DistortionQA.Reports">Reports</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-MRI_DistortionQA.utilities">utilities</a></li>
 </ul>
 </li>
 </ul>
@@ -77,11 +77,11 @@
              
   <section id="code-documentation">
 <h1>Code Documentation<a class="headerlink" href="#code-documentation" title="Permalink to this headline"></a></h1>
-<section id="module-MR_DistortionQA.MarkerAnalysis">
-<span id="markeranalysis"></span><h2>MarkerAnalysis<a class="headerlink" href="#module-MR_DistortionQA.MarkerAnalysis" title="Permalink to this headline"></a></h2>
+<section id="module-MRI_DistortionQA.MarkerAnalysis">
+<span id="markeranalysis"></span><h2>MarkerAnalysis<a class="headerlink" href="#module-MRI_DistortionQA.MarkerAnalysis" title="Permalink to this headline"></a></h2>
 <dl class="py class">
-<dt class="sig sig-object py" id="MR_DistortionQA.MarkerAnalysis.MarkerVolume">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MR_DistortionQA.MarkerAnalysis.</span></span><span class="sig-name descname"><span class="pre">MarkerVolume</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ImExtension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dcm'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_min</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutoff_point</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_markers_expected</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fat_shift_direction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gaussian_image_filter_sd</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">correct_fat_water_shift</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">marker_size_lower_tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">marker_size_upper_tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MR_DistortionQA.MarkerAnalysis.MarkerVolume" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="MRI_DistortionQA.MarkerAnalysis.MarkerVolume">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MRI_DistortionQA.MarkerAnalysis.</span></span><span class="sig-name descname"><span class="pre">MarkerVolume</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ImExtension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dcm'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_min</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutoff_point</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_markers_expected</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fat_shift_direction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gaussian_image_filter_sd</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">correct_fat_water_shift</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">marker_size_lower_tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">marker_size_upper_tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.MarkerAnalysis.MarkerVolume" title="Permalink to this definition"></a></dt>
 <dd><p>This class excepts either a path to a folder of dicom files or a numpy array of marker positions.
 In the former case, it will attempt to automatically extract the marker positions. In the latter, it will just
 use the input marker positions. Once the instance is created, it contains a number of handy plots and functions.</p>
@@ -114,16 +114,16 @@ take a value of -1, or 1. pull requests making this easier to use very welcome!<
 </dd>
 </dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="MR_DistortionQA.MarkerAnalysis.MarkerVolume.export_to_slicer">
-<span class="sig-name descname"><span class="pre">export_to_slicer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">save_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'slicer_centroids'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MR_DistortionQA.MarkerAnalysis.MarkerVolume.export_to_slicer" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="MRI_DistortionQA.MarkerAnalysis.MarkerVolume.export_to_slicer">
+<span class="sig-name descname"><span class="pre">export_to_slicer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">save_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'slicer_centroids'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.MarkerAnalysis.MarkerVolume.export_to_slicer" title="Permalink to this definition"></a></dt>
 <dd><p>export a csv file that can be read in by slicer, allowing a good way to visualise marker segmentation
 performance. This file will be saved at the same spot as input data if dicom was input, otherwise it will be
 saved to save_path.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="MR_DistortionQA.MarkerAnalysis.MarkerVolume.perturb_marker_positions">
-<span class="sig-name descname"><span class="pre">perturb_marker_positions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">perturbation</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MR_DistortionQA.MarkerAnalysis.MarkerVolume.perturb_marker_positions" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="MRI_DistortionQA.MarkerAnalysis.MarkerVolume.perturb_marker_positions">
+<span class="sig-name descname"><span class="pre">perturb_marker_positions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">perturbation</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.MarkerAnalysis.MarkerVolume.perturb_marker_positions" title="Permalink to this definition"></a></dt>
 <dd><p>add random noise to the marker positions. Useful to perform sensitivity analysis. operates in place.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -134,14 +134,14 @@ distribution is used</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="MR_DistortionQA.MarkerAnalysis.MarkerVolume.plot_3D_markers">
-<span class="sig-name descname"><span class="pre">plot_3D_markers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'3D</span> <span class="pre">marker</span> <span class="pre">positions'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MR_DistortionQA.MarkerAnalysis.MarkerVolume.plot_3D_markers" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="MRI_DistortionQA.MarkerAnalysis.MarkerVolume.plot_3D_markers">
+<span class="sig-name descname"><span class="pre">plot_3D_markers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'3D</span> <span class="pre">marker</span> <span class="pre">positions'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.MarkerAnalysis.MarkerVolume.plot_3D_markers" title="Permalink to this definition"></a></dt>
 <dd><p>Just a quick plot of the marker positions; very useful sanity check!</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="MR_DistortionQA.MarkerAnalysis.MarkerVolume.save_dicom_data">
-<span class="sig-name descname"><span class="pre">save_dicom_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">save_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dicom_data'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MR_DistortionQA.MarkerAnalysis.MarkerVolume.save_dicom_data" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="MRI_DistortionQA.MarkerAnalysis.MarkerVolume.save_dicom_data">
+<span class="sig-name descname"><span class="pre">save_dicom_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">save_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dicom_data'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.MarkerAnalysis.MarkerVolume.save_dicom_data" title="Permalink to this definition"></a></dt>
 <dd><p>save the dicom data as json.  This file will be saved at the same
 spot as input data if dicom was input, otherwise it will be saved
 to save_path.</p>
@@ -150,8 +150,8 @@ to save_path.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="MR_DistortionQA.MarkerAnalysis.MatchedMarkerVolumes">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MR_DistortionQA.MarkerAnalysis.</span></span><span class="sig-name descname"><span class="pre">MatchedMarkerVolumes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">GroundTruthData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">DistortedData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ReverseGradientData</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">WarpSearchData</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">AutomatchMarkers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">AllowDoubleMatching</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sorting_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'radial'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ReferenceMarkers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MR_DistortionQA.MarkerAnalysis.MatchedMarkerVolumes" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="MRI_DistortionQA.MarkerAnalysis.MatchedMarkerVolumes">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MRI_DistortionQA.MarkerAnalysis.</span></span><span class="sig-name descname"><span class="pre">MatchedMarkerVolumes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">GroundTruthData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">DistortedData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ReverseGradientData</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">WarpSearchData</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">AutomatchMarkers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">AllowDoubleMatching</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sorting_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'radial'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ReferenceMarkers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.MarkerAnalysis.MatchedMarkerVolumes" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -178,8 +178,8 @@ for this to not matter either way is to not have any set up error!</p></li>
 </dd>
 </dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="MR_DistortionQA.MarkerAnalysis.MatchedMarkerVolumes.plot_3D_markers">
-<span class="sig-name descname"><span class="pre">plot_3D_markers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">add_arrows</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'3D</span> <span class="pre">marker</span> <span class="pre">positions'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MR_DistortionQA.MarkerAnalysis.MatchedMarkerVolumes.plot_3D_markers" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="MRI_DistortionQA.MarkerAnalysis.MatchedMarkerVolumes.plot_3D_markers">
+<span class="sig-name descname"><span class="pre">plot_3D_markers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">add_arrows</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'3D</span> <span class="pre">marker</span> <span class="pre">positions'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.MarkerAnalysis.MatchedMarkerVolumes.plot_3D_markers" title="Permalink to this definition"></a></dt>
 <dd><p>Works very similarly to the MarkerVolume version, but plots both sets of markers and adds arrows</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -192,8 +192,8 @@ for this to not matter either way is to not have any set up error!</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="MR_DistortionQA.MarkerAnalysis.MatchedMarkerVolumes.plot_compressed_markers">
-<span class="sig-name descname"><span class="pre">plot_compressed_markers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_min</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_arrows</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MR_DistortionQA.MarkerAnalysis.MatchedMarkerVolumes.plot_compressed_markers" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="MRI_DistortionQA.MarkerAnalysis.MatchedMarkerVolumes.plot_compressed_markers">
+<span class="sig-name descname"><span class="pre">plot_compressed_markers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_min</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_arrows</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.MarkerAnalysis.MatchedMarkerVolumes.plot_compressed_markers" title="Permalink to this definition"></a></dt>
 <dd><p>compresses the 3D markers in the z plane, allowing a 2D visualisation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -210,11 +210,11 @@ for this to not matter either way is to not have any set up error!</p></li>
 </dd></dl>
 
 </section>
-<section id="module-MR_DistortionQA.FieldCalculation">
-<span id="fieldcalculation"></span><h2>FieldCalculation<a class="headerlink" href="#module-MR_DistortionQA.FieldCalculation" title="Permalink to this headline"></a></h2>
+<section id="module-MRI_DistortionQA.FieldCalculation">
+<span id="fieldcalculation"></span><h2>FieldCalculation<a class="headerlink" href="#module-MRI_DistortionQA.FieldCalculation" title="Permalink to this headline"></a></h2>
 <dl class="py class">
-<dt class="sig sig-object py" id="MR_DistortionQA.FieldCalculation.ConvertMatchedMarkersToBz">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MR_DistortionQA.FieldCalculation.</span></span><span class="sig-name descname"><span class="pre">ConvertMatchedMarkersToBz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">MatchedCentroids</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dicom_data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MR_DistortionQA.FieldCalculation.ConvertMatchedMarkersToBz" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="MRI_DistortionQA.FieldCalculation.ConvertMatchedMarkersToBz">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MRI_DistortionQA.FieldCalculation.</span></span><span class="sig-name descname"><span class="pre">ConvertMatchedMarkersToBz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">MatchedCentroids</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dicom_data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.FieldCalculation.ConvertMatchedMarkersToBz" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -241,11 +241,11 @@ to json using:</p>
 </dd></dl>
 
 </section>
-<section id="module-MR_DistortionQA.FieldAnalysis">
-<span id="fieldanalysis"></span><h2>FieldAnalysis<a class="headerlink" href="#module-MR_DistortionQA.FieldAnalysis" title="Permalink to this headline"></a></h2>
+<section id="module-MRI_DistortionQA.FieldAnalysis">
+<span id="fieldanalysis"></span><h2>FieldAnalysis<a class="headerlink" href="#module-MRI_DistortionQA.FieldAnalysis" title="Permalink to this headline"></a></h2>
 <dl class="py class">
-<dt class="sig sig-object py" id="MR_DistortionQA.FieldAnalysis.SphericalHarmonicFit">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MR_DistortionQA.FieldAnalysis.</span></span><span class="sig-name descname"><span class="pre">SphericalHarmonicFit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_Bz_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_outer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">150</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">AssessHarmonicPk_Pk</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">QuantifyFit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">TrimDataBy_r_outer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MR_DistortionQA.FieldAnalysis.SphericalHarmonicFit" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="MRI_DistortionQA.FieldAnalysis.SphericalHarmonicFit">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MRI_DistortionQA.FieldAnalysis.</span></span><span class="sig-name descname"><span class="pre">SphericalHarmonicFit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_Bz_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_outer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">150</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">AssessHarmonicPk_Pk</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">QuantifyFit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">TrimDataBy_r_outer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.FieldAnalysis.SphericalHarmonicFit" title="Permalink to this definition"></a></dt>
 <dd><p>Uses single value decomposition to fit spherical harmonics to InputData.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -267,8 +267,8 @@ reconstructed data point. This is useful to check how well the fit has worked.</
 </dd>
 </dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="MR_DistortionQA.FieldAnalysis.SphericalHarmonicFit.plot_cut_planes">
-<span class="sig-name descname"><span class="pre">plot_cut_planes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">resolution</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">AddColorBar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quantity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'uT'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MR_DistortionQA.FieldAnalysis.SphericalHarmonicFit.plot_cut_planes" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="MRI_DistortionQA.FieldAnalysis.SphericalHarmonicFit.plot_cut_planes">
+<span class="sig-name descname"><span class="pre">plot_cut_planes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">resolution</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">AddColorBar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quantity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'uT'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.FieldAnalysis.SphericalHarmonicFit.plot_cut_planes" title="Permalink to this definition"></a></dt>
 <dd><p>Reconstruct the Bz field at the cardinal planes.
 Note this is basically the same code copied three times in  a row, one for each plane.</p>
 <dl class="field-list simple">
@@ -285,8 +285,8 @@ Note this is basically the same code copied three times in  a row, one for each 
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="MR_DistortionQA.FieldAnalysis.SphericalHarmonicFit.plot_harmonics_pk_pk">
-<span class="sig-name descname"><span class="pre">plot_harmonics_pk_pk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cut_off</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MR_DistortionQA.FieldAnalysis.SphericalHarmonicFit.plot_harmonics_pk_pk" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="MRI_DistortionQA.FieldAnalysis.SphericalHarmonicFit.plot_harmonics_pk_pk">
+<span class="sig-name descname"><span class="pre">plot_harmonics_pk_pk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cut_off</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.FieldAnalysis.SphericalHarmonicFit.plot_harmonics_pk_pk" title="Permalink to this definition"></a></dt>
 <dd><p>produces a barplot of harmonics.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -297,8 +297,8 @@ less than 10% the pk-pk perturbation of the dominant harmonic are ignored.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="MR_DistortionQA.FieldAnalysis.SphericalHarmonicFit.print_key_harmonics">
-<span class="sig-name descname"><span class="pre">print_key_harmonics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cut_off</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MR_DistortionQA.FieldAnalysis.SphericalHarmonicFit.print_key_harmonics" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="MRI_DistortionQA.FieldAnalysis.SphericalHarmonicFit.print_key_harmonics">
+<span class="sig-name descname"><span class="pre">print_key_harmonics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cut_off</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.FieldAnalysis.SphericalHarmonicFit.print_key_harmonics" title="Permalink to this definition"></a></dt>
 <dd><p>print the harmonics with value &gt; cut_off to the terminal in pk-pk.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -311,54 +311,54 @@ less than 10% the pk-pk perturbation of the dominant harmonic are ignored.</p>
 </dd></dl>
 
 </section>
-<section id="module-MR_DistortionQA.Reports">
-<span id="reports"></span><h2>Reports<a class="headerlink" href="#module-MR_DistortionQA.Reports" title="Permalink to this headline"></a></h2>
+<section id="module-MRI_DistortionQA.Reports">
+<span id="reports"></span><h2>Reports<a class="headerlink" href="#module-MRI_DistortionQA.Reports" title="Permalink to this headline"></a></h2>
 <dl class="py class">
-<dt class="sig sig-object py" id="MR_DistortionQA.Reports.DefaultTestSuite">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MR_DistortionQA.Reports.</span></span><span class="sig-name descname"><span class="pre">DefaultTestSuite</span></span><a class="headerlink" href="#MR_DistortionQA.Reports.DefaultTestSuite" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="MRI_DistortionQA.Reports.DefaultTestSuite">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MRI_DistortionQA.Reports.</span></span><span class="sig-name descname"><span class="pre">DefaultTestSuite</span></span><a class="headerlink" href="#MRI_DistortionQA.Reports.DefaultTestSuite" title="Permalink to this definition"></a></dt>
 <dd><p>these are the tests which are run if no others are specified</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="MR_DistortionQA.Reports.DefaultTestSuite.test_distortion_less_than_2mm_within_r_100">
-<span class="sig-name descname"><span class="pre">test_distortion_less_than_2mm_within_r_100</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MR_DistortionQA.Reports.DefaultTestSuite.test_distortion_less_than_2mm_within_r_100" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="MRI_DistortionQA.Reports.DefaultTestSuite.test_distortion_less_than_2mm_within_r_100">
+<span class="sig-name descname"><span class="pre">test_distortion_less_than_2mm_within_r_100</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.Reports.DefaultTestSuite.test_distortion_less_than_2mm_within_r_100" title="Permalink to this definition"></a></dt>
 <dd><p>distortion test to be run by MRI_QA_Reporter</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="MR_DistortionQA.Reports.DefaultTestSuite.test_distortion_less_than_4mm_within_r_150">
-<span class="sig-name descname"><span class="pre">test_distortion_less_than_4mm_within_r_150</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MR_DistortionQA.Reports.DefaultTestSuite.test_distortion_less_than_4mm_within_r_150" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="MRI_DistortionQA.Reports.DefaultTestSuite.test_distortion_less_than_4mm_within_r_150">
+<span class="sig-name descname"><span class="pre">test_distortion_less_than_4mm_within_r_150</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.Reports.DefaultTestSuite.test_distortion_less_than_4mm_within_r_150" title="Permalink to this definition"></a></dt>
 <dd><p>distortion test to be run by MRI_QA_Reporter</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="MR_DistortionQA.Reports.Elekta_Distortion_tests">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MR_DistortionQA.Reports.</span></span><span class="sig-name descname"><span class="pre">Elekta_Distortion_tests</span></span><a class="headerlink" href="#MR_DistortionQA.Reports.Elekta_Distortion_tests" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="MRI_DistortionQA.Reports.Elekta_Distortion_tests">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MRI_DistortionQA.Reports.</span></span><span class="sig-name descname"><span class="pre">Elekta_Distortion_tests</span></span><a class="headerlink" href="#MRI_DistortionQA.Reports.Elekta_Distortion_tests" title="Permalink to this definition"></a></dt>
 <dd><p>Geometric tests for Elekta system as described here:
 <a class="reference external" href="https://aapm.onlinelibrary.wiley.com/doi/epdf/10.1002/mp.14764">https://aapm.onlinelibrary.wiley.com/doi/epdf/10.1002/mp.14764</a></p>
 <dl class="py method">
-<dt class="sig sig-object py" id="MR_DistortionQA.Reports.Elekta_Distortion_tests.test_distortion_less_than_1_mm_within_r_200_mm">
-<span class="sig-name descname"><span class="pre">test_distortion_less_than_1_mm_within_r_200_mm</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MR_DistortionQA.Reports.Elekta_Distortion_tests.test_distortion_less_than_1_mm_within_r_200_mm" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="MRI_DistortionQA.Reports.Elekta_Distortion_tests.test_distortion_less_than_1_mm_within_r_200_mm">
+<span class="sig-name descname"><span class="pre">test_distortion_less_than_1_mm_within_r_200_mm</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.Reports.Elekta_Distortion_tests.test_distortion_less_than_1_mm_within_r_200_mm" title="Permalink to this definition"></a></dt>
 <dd><p>distortion test to be run by MRI_QA_Reporter</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="MR_DistortionQA.Reports.Elekta_Distortion_tests.test_distortion_less_than_2_mm_within_r_300_mm">
-<span class="sig-name descname"><span class="pre">test_distortion_less_than_2_mm_within_r_300_mm</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MR_DistortionQA.Reports.Elekta_Distortion_tests.test_distortion_less_than_2_mm_within_r_300_mm" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="MRI_DistortionQA.Reports.Elekta_Distortion_tests.test_distortion_less_than_2_mm_within_r_300_mm">
+<span class="sig-name descname"><span class="pre">test_distortion_less_than_2_mm_within_r_300_mm</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.Reports.Elekta_Distortion_tests.test_distortion_less_than_2_mm_within_r_300_mm" title="Permalink to this definition"></a></dt>
 <dd><p>distortion test to be run by MRI_QA_Reporter</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="MR_DistortionQA.Reports.Elekta_Distortion_tests.test_distortion_less_than_4_mm_within_r_400_mm">
-<span class="sig-name descname"><span class="pre">test_distortion_less_than_4_mm_within_r_400_mm</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MR_DistortionQA.Reports.Elekta_Distortion_tests.test_distortion_less_than_4_mm_within_r_400_mm" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="MRI_DistortionQA.Reports.Elekta_Distortion_tests.test_distortion_less_than_4_mm_within_r_400_mm">
+<span class="sig-name descname"><span class="pre">test_distortion_less_than_4_mm_within_r_400_mm</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.Reports.Elekta_Distortion_tests.test_distortion_less_than_4_mm_within_r_400_mm" title="Permalink to this definition"></a></dt>
 <dd><p>distortion test to be run by MRI_QA_Reporter</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="MR_DistortionQA.Reports.MRI_QA_Reporter">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MR_DistortionQA.Reports.</span></span><span class="sig-name descname"><span class="pre">MRI_QA_Reporter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">MatchedMarkerVolume=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gradient_harmonics=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B0_harmonics=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recon_coords_cartesian=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tests_to_run=&lt;class</span> <span class="pre">'MR_DistortionQA.Reports.DefaultTestSuite'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dicom_data=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_outer=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_plots=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">style='dark'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MR_DistortionQA.Reports.MRI_QA_Reporter" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="MRI_DistortionQA.Reports.MRI_QA_Reporter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MRI_DistortionQA.Reports.</span></span><span class="sig-name descname"><span class="pre">MRI_QA_Reporter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">MatchedMarkerVolume=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gradient_harmonics=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B0_harmonics=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recon_coords_cartesian=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tests_to_run=&lt;class</span> <span class="pre">'MRI_DistortionQA.Reports.DefaultTestSuite'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dicom_data=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_outer=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_plots=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">style='dark'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.Reports.MRI_QA_Reporter" title="Permalink to this definition"></a></dt>
 <dd><dl class="simple">
 <dt>generate a report based on either some matched data, or harmonics. In the latter case, report data</dt><dd><p>is reconstructed.</p>
 </dd>
@@ -390,8 +390,8 @@ also used to control the limits in which data is plotted</p></li>
 </dd>
 </dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="MR_DistortionQA.Reports.MRI_QA_Reporter.write_html_report">
-<span class="sig-name descname"><span class="pre">write_html_report</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_folder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MR_DistortionQA.Reports.MRI_QA_Reporter.write_html_report" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="MRI_DistortionQA.Reports.MRI_QA_Reporter.write_html_report">
+<span class="sig-name descname"><span class="pre">write_html_report</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_folder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.Reports.MRI_QA_Reporter.write_html_report" title="Permalink to this definition"></a></dt>
 <dd><p>Generates a html report encompassing available acquisition information, test results, and intercative
 plotly figures</p>
 <dl class="field-list simple">
@@ -404,37 +404,37 @@ plotly figures</p>
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="MR_DistortionQA.Reports.TG284_Tests">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MR_DistortionQA.Reports.</span></span><span class="sig-name descname"><span class="pre">TG284_Tests</span></span><a class="headerlink" href="#MR_DistortionQA.Reports.TG284_Tests" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="MRI_DistortionQA.Reports.TG284_Tests">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MRI_DistortionQA.Reports.</span></span><span class="sig-name descname"><span class="pre">TG284_Tests</span></span><a class="headerlink" href="#MRI_DistortionQA.Reports.TG284_Tests" title="Permalink to this definition"></a></dt>
 <dd><p>tests defined here
 <a class="reference external" href="https://aapm.onlinelibrary.wiley.com/doi/full/10.1002/mp.14695">https://aapm.onlinelibrary.wiley.com/doi/full/10.1002/mp.14695</a></p>
 <dl class="py method">
-<dt class="sig sig-object py" id="MR_DistortionQA.Reports.TG284_Tests.test_distortion_less_than_1mm_within_r_100">
-<span class="sig-name descname"><span class="pre">test_distortion_less_than_1mm_within_r_100</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MR_DistortionQA.Reports.TG284_Tests.test_distortion_less_than_1mm_within_r_100" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="MRI_DistortionQA.Reports.TG284_Tests.test_distortion_less_than_1mm_within_r_100">
+<span class="sig-name descname"><span class="pre">test_distortion_less_than_1mm_within_r_100</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.Reports.TG284_Tests.test_distortion_less_than_1mm_within_r_100" title="Permalink to this definition"></a></dt>
 <dd><p>distortion test to be run by MRI_QA_Reporter</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="MR_DistortionQA.Reports.TG284_Tests.test_distortion_less_than_2mm_within_r_200">
-<span class="sig-name descname"><span class="pre">test_distortion_less_than_2mm_within_r_200</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MR_DistortionQA.Reports.TG284_Tests.test_distortion_less_than_2mm_within_r_200" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="MRI_DistortionQA.Reports.TG284_Tests.test_distortion_less_than_2mm_within_r_200">
+<span class="sig-name descname"><span class="pre">test_distortion_less_than_2mm_within_r_200</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.Reports.TG284_Tests.test_distortion_less_than_2mm_within_r_200" title="Permalink to this definition"></a></dt>
 <dd><p>distortion test to be run by MRI_QA_Reporter</p>
 </dd></dl>
 
 </dd></dl>
 
 </section>
-<section id="module-MR_DistortionQA.utilities">
-<span id="utilities"></span><h2>utilities<a class="headerlink" href="#module-MR_DistortionQA.utilities" title="Permalink to this headline"></a></h2>
+<section id="module-MRI_DistortionQA.utilities">
+<span id="utilities"></span><h2>utilities<a class="headerlink" href="#module-MRI_DistortionQA.utilities" title="Permalink to this headline"></a></h2>
 <p>General purpose reusable functions</p>
 <dl class="py class">
-<dt class="sig sig-object py" id="MR_DistortionQA.utilities.bcolors">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MR_DistortionQA.utilities.</span></span><span class="sig-name descname"><span class="pre">bcolors</span></span><a class="headerlink" href="#MR_DistortionQA.utilities.bcolors" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="MRI_DistortionQA.utilities.bcolors">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MRI_DistortionQA.utilities.</span></span><span class="sig-name descname"><span class="pre">bcolors</span></span><a class="headerlink" href="#MRI_DistortionQA.utilities.bcolors" title="Permalink to this definition"></a></dt>
 <dd><p>This is just here to enable me to print pretty colors to the linux terminal</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="MR_DistortionQA.utilities.build_dicom_affine">
-<span class="sig-prename descclassname"><span class="pre">MR_DistortionQA.utilities.</span></span><span class="sig-name descname"><span class="pre">build_dicom_affine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Dicomfiles</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MR_DistortionQA.utilities.build_dicom_affine" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="MRI_DistortionQA.utilities.build_dicom_affine">
+<span class="sig-prename descclassname"><span class="pre">MRI_DistortionQA.utilities.</span></span><span class="sig-name descname"><span class="pre">build_dicom_affine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Dicomfiles</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.utilities.build_dicom_affine" title="Permalink to this definition"></a></dt>
 <dd><p>Transform the image based coordinates (i,j,k) to world coordinates (x,y,z)
 It must be stated that dicom coordinate systems are a real mess. The reference I used to create the affine is
 <a class="reference external" href="https://nipy.org/nibabel/dicom/dicom_orientation.html">NIbabel</a>
@@ -442,8 +442,8 @@ It must be stated that dicom coordinate systems are a real mess. The reference I
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="MR_DistortionQA.utilities.compare_recon_report_with_ground_truth_report">
-<span class="sig-prename descclassname"><span class="pre">MR_DistortionQA.utilities.</span></span><span class="sig-name descname"><span class="pre">compare_recon_report_with_ground_truth_report</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ground_truth_report</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recon_report</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MR_DistortionQA.utilities.compare_recon_report_with_ground_truth_report" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="MRI_DistortionQA.utilities.compare_recon_report_with_ground_truth_report">
+<span class="sig-prename descclassname"><span class="pre">MRI_DistortionQA.utilities.</span></span><span class="sig-name descname"><span class="pre">compare_recon_report_with_ground_truth_report</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ground_truth_report</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recon_report</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.utilities.compare_recon_report_with_ground_truth_report" title="Permalink to this definition"></a></dt>
 <dd><p>This is to compare the distortion data contained within two Reports.MRI_QA_recon_reporter
 objects. The original purpose was to compare a recon_report generated from direct data, and one
 generated via harmonics, although in principle it can take any two recon_reports.</p>
@@ -459,8 +459,8 @@ generated via harmonics, although in principle it can take any two recon_reports
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="MR_DistortionQA.utilities.convert_cartesian_to_spherical">
-<span class="sig-prename descclassname"><span class="pre">MR_DistortionQA.utilities.</span></span><span class="sig-name descname"><span class="pre">convert_cartesian_to_spherical</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">InputCoords</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MR_DistortionQA.utilities.convert_cartesian_to_spherical" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="MRI_DistortionQA.utilities.convert_cartesian_to_spherical">
+<span class="sig-prename descclassname"><span class="pre">MRI_DistortionQA.utilities.</span></span><span class="sig-name descname"><span class="pre">convert_cartesian_to_spherical</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">InputCoords</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.utilities.convert_cartesian_to_spherical" title="Permalink to this definition"></a></dt>
 <dd><p>Cartesian coordinates contained as columns [x,y,z] in InputCoords are converted to spherical coordinates.
 [r, azimuth, elevation]. if r, azimuth, or elevation already exist as column names they are overwritten.
 The convention used here matches the convention matlab uses; this is because parts of this code were ported
@@ -480,8 +480,8 @@ from an earlier version in matlab.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="MR_DistortionQA.utilities.convert_spherical_to_cartesian">
-<span class="sig-prename descclassname"><span class="pre">MR_DistortionQA.utilities.</span></span><span class="sig-name descname"><span class="pre">convert_spherical_to_cartesian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">InputCoords</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MR_DistortionQA.utilities.convert_spherical_to_cartesian" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="MRI_DistortionQA.utilities.convert_spherical_to_cartesian">
+<span class="sig-prename descclassname"><span class="pre">MRI_DistortionQA.utilities.</span></span><span class="sig-name descname"><span class="pre">convert_spherical_to_cartesian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">InputCoords</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.utilities.convert_spherical_to_cartesian" title="Permalink to this definition"></a></dt>
 <dd><p>converts spherical coordinates in InputCoords to Cartesian and adds cartesian into the returned data frame.
 if the cartesian columns ‘x’, ‘y’, ‘z’ already exist, they will be overwritten</p>
 <dl class="field-list simple">
@@ -492,8 +492,8 @@ if the cartesian columns ‘x’, ‘y’, ‘z’ already exist, they will be o
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="MR_DistortionQA.utilities.dicom_to_numpy">
-<span class="sig-prename descclassname"><span class="pre">MR_DistortionQA.utilities.</span></span><span class="sig-name descname"><span class="pre">dicom_to_numpy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path_to_dicoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">FilesToReadIn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_extension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dcm'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_XYZ</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MR_DistortionQA.utilities.dicom_to_numpy" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="MRI_DistortionQA.utilities.dicom_to_numpy">
+<span class="sig-prename descclassname"><span class="pre">MRI_DistortionQA.utilities.</span></span><span class="sig-name descname"><span class="pre">dicom_to_numpy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path_to_dicoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">FilesToReadIn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_extension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dcm'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_XYZ</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.utilities.dicom_to_numpy" title="Permalink to this definition"></a></dt>
 <dd><p>This function does two things:</p>
 <ol class="arabic simple">
 <li><p>Loads all the dicom files in path_to_dicoms in a numpy array. data is ordered according to [row, column, slice]</p></li>
@@ -523,8 +523,8 @@ pixel.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="MR_DistortionQA.utilities.generate_legendre_basis">
-<span class="sig-prename descclassname"><span class="pre">MR_DistortionQA.utilities.</span></span><span class="sig-name descname"><span class="pre">generate_legendre_basis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">InputCoords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_order</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MR_DistortionQA.utilities.generate_legendre_basis" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="MRI_DistortionQA.utilities.generate_legendre_basis">
+<span class="sig-prename descclassname"><span class="pre">MRI_DistortionQA.utilities.</span></span><span class="sig-name descname"><span class="pre">generate_legendre_basis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">InputCoords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_order</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.utilities.generate_legendre_basis" title="Permalink to this definition"></a></dt>
 <dd><p>Produce spherical base at all coordinate values.
 This utilises the ‘fully normalised’ convention described here &lt;<a class="reference external" href="https://au.mathworks.com/help/matlab/ref/legendre.html">https://au.mathworks.com/help/matlab/ref/legendre.html</a>&gt;`_
 Note that we scale all r values by 1000, which is to help ensure numerical stability. This is based on the assumption
@@ -541,8 +541,8 @@ elevation, azimuth, and r</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="MR_DistortionQA.utilities.get_all_files">
-<span class="sig-prename descclassname"><span class="pre">MR_DistortionQA.utilities.</span></span><span class="sig-name descname"><span class="pre">get_all_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">PathToData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_extension</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MR_DistortionQA.utilities.get_all_files" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="MRI_DistortionQA.utilities.get_all_files">
+<span class="sig-prename descclassname"><span class="pre">MRI_DistortionQA.utilities.</span></span><span class="sig-name descname"><span class="pre">get_all_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">PathToData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_extension</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.utilities.get_all_files" title="Permalink to this definition"></a></dt>
 <dd><p>quick script to just collect all the files in the Analysis path</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -558,8 +558,8 @@ elevation, azimuth, and r</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="MR_DistortionQA.utilities.get_gradient_spherical_harmonics">
-<span class="sig-prename descclassname"><span class="pre">MR_DistortionQA.utilities.</span></span><span class="sig-name descname"><span class="pre">get_gradient_spherical_harmonics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Gx_Harmonics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Gy_Harmonics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Gz_Harmonics</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MR_DistortionQA.utilities.get_gradient_spherical_harmonics" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="MRI_DistortionQA.utilities.get_gradient_spherical_harmonics">
+<span class="sig-prename descclassname"><span class="pre">MRI_DistortionQA.utilities.</span></span><span class="sig-name descname"><span class="pre">get_gradient_spherical_harmonics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Gx_Harmonics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Gy_Harmonics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Gz_Harmonics</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.utilities.get_gradient_spherical_harmonics" title="Permalink to this definition"></a></dt>
 <dd><p>return the gradient spherica harmonics as as pandas series.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -570,22 +570,22 @@ this option for cleaner code elsewhere.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="MR_DistortionQA.utilities.plot_MarkerVolume_overlay">
-<span class="sig-prename descclassname"><span class="pre">MR_DistortionQA.utilities.</span></span><span class="sig-name descname"><span class="pre">plot_MarkerVolume_overlay</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">MarkerVolumeList</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MR_DistortionQA.utilities.plot_MarkerVolume_overlay" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="MRI_DistortionQA.utilities.plot_MarkerVolume_overlay">
+<span class="sig-prename descclassname"><span class="pre">MRI_DistortionQA.utilities.</span></span><span class="sig-name descname"><span class="pre">plot_MarkerVolume_overlay</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">MarkerVolumeList</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.utilities.plot_MarkerVolume_overlay" title="Permalink to this definition"></a></dt>
 <dd><p>Plot overlaid 3D scatter plots of the marker positions in each MarkerVolume</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="MR_DistortionQA.utilities.plot_MarkerVolume_z_hist">
-<span class="sig-prename descclassname"><span class="pre">MR_DistortionQA.utilities.</span></span><span class="sig-name descname"><span class="pre">plot_MarkerVolume_z_hist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">MarkerVolume1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">MarkerVolume2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_bins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MR_DistortionQA.utilities.plot_MarkerVolume_z_hist" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="MRI_DistortionQA.utilities.plot_MarkerVolume_z_hist">
+<span class="sig-prename descclassname"><span class="pre">MRI_DistortionQA.utilities.</span></span><span class="sig-name descname"><span class="pre">plot_MarkerVolume_z_hist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">MarkerVolume1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">MarkerVolume2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_bins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.utilities.plot_MarkerVolume_z_hist" title="Permalink to this definition"></a></dt>
 <dd><p>This will plot a histogram of how many markers are at each z_bin.
 It is useful to compare two marker volumes and get an idea of which planes there may be missing or extra
 markers on</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="MR_DistortionQA.utilities.reconstruct_Bz">
-<span class="sig-prename descclassname"><span class="pre">MR_DistortionQA.utilities.</span></span><span class="sig-name descname"><span class="pre">reconstruct_Bz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">harmonics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quantity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'uT'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_outer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MR_DistortionQA.utilities.reconstruct_Bz" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="MRI_DistortionQA.utilities.reconstruct_Bz">
+<span class="sig-prename descclassname"><span class="pre">MRI_DistortionQA.utilities.</span></span><span class="sig-name descname"><span class="pre">reconstruct_Bz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">harmonics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quantity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'uT'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_outer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.utilities.reconstruct_Bz" title="Permalink to this definition"></a></dt>
 <dd><p>Reconstruct Bz at an arbitrary set of coordinates.
 n_order of reconstruction is derived from the shape of harmonics</p>
 <dl class="field-list simple">

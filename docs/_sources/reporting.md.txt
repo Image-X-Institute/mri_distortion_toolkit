@@ -13,7 +13,7 @@ An example of the types of reports you can generate is [here](_static/MR_QA_repo
 Create a new file called 'reporting.py'. Copy the below code into it.
 
 ```python
-from MR_DistortionQA.Reports import MRI_QA_Reporter
+from MRI_DistortionQA.Reports import MRI_QA_Reporter
 import pandas as pd
 from pathlib import Path
 
@@ -40,7 +40,7 @@ This phantom was actually designed to get a good measurement of data on the surf
 the code for harmonic reconstruction is below:
 
 ```python
-from MR_DistortionQA.Reports import MRI_QA_Reporter
+from MRI_DistortionQA.Reports import MRI_QA_Reporter
 import pandas as pd
 from pathlib import Path
 
@@ -65,20 +65,21 @@ You will notice that some tests have been run (and failed) from ''DefaultTestSui
 Code demonstration the creation of a custom test suite is below:
 
 ```python
-from MR_DistortionQA.Reports import MRI_QA_Reporter
+from MRI_DistortionQA.Reports import MRI_QA_Reporter
 import pandas as pd
 from pathlib import Path
 
+
 class CustomTestSuite:
-    
+
     def test_case_1(self):
         # a test can return a bool:
         return True
-        
+
     def test_case_2(self):
         # or a test can return a string:
         return "I am a string!"
-        
+
     def test_case_3(self):
         # tests have access to the test data:
         test_data = self._extract_data_from_MatchedMarkerVolume(r_max=100)
@@ -87,6 +88,7 @@ class CustomTestSuite:
         else:
             return False
 
+
 # Harmonic case: pass harmonics to MRI_QA_Reporter so that data can be recontructed
 # ----------------------------------------------------------------------------------
 G_x_harmonics = pd.read_csv('G_x_harmonics.csv', index_col=0).squeeze("columns")
@@ -94,7 +96,8 @@ G_y_harmonics = pd.read_csv('G_y_harmonics.csv', index_col=0).squeeze("columns")
 G_z_harmonics = pd.read_csv('G_z_harmonics.csv', index_col=0).squeeze("columns")
 
 report = MRI_QA_Reporter(gradient_harmonics=[G_x_harmonics, G_y_harmonics, G_z_harmonics],
-                         r_outer=150, dicom_data=dicom_data_loc, tests_to_run=CustomTestSuite)  # custom test class passed to tests_to_run
+                         r_outer=150, dicom_data=dicom_data_loc,
+                         tests_to_run=CustomTestSuite)  # custom test class passed to tests_to_run
 report.write_html_report()
 
 G_x_harmonics = pd.read_csv('G_x_harmonics.csv', index_col=0).squeeze("columns")
