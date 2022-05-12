@@ -16,3 +16,4 @@ sphinx_rtd_theme
 coverage
 interrogate
 sphinxcontrib-mermaid
+coverage-badge

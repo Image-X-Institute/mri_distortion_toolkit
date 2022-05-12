@@ -10,3 +10,4 @@ examples/**ipynb*
 *.bak
 .coverage
 .idea
+tests/test_data/dicom_export_test.mrk.json

@@ -197,7 +197,7 @@ class SphericalHarmonicFit:
 
     # Public Methods
 
-    def plot_harmonics_pk_pk(self, cut_off=.1):
+    def plot_harmonics_pk_pk(self, cut_off=.1):  # pragma: no cover
         """
         produces a barplot of harmonics.
 
@@ -222,7 +222,7 @@ class SphericalHarmonicFit:
             item.set_rotation(45)
         plt.show()
 
-    def plot_cut_planes(self, resolution=2.5, AddColorBar=True, quantity='uT', vmin=None, vmax=None):
+    def plot_cut_planes(self, resolution=2.5, AddColorBar=True, quantity='uT', vmin=None, vmax=None):  # pragma: no cover
         """
         Reconstruct the Bz field at the cardinal planes.
         Note this is basically the same code copied three times in  a row, one for each plane.

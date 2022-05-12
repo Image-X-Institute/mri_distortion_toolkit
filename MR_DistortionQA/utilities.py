@@ -315,7 +315,7 @@ def convert_spherical_harmonics(harmonics, input_format, output_format):
     return converted_harmonics
 
 
-def plot_MarkerVolume_overlay(MarkerVolumeList, legend=None):
+def plot_MarkerVolume_overlay(MarkerVolumeList, legend=None):  # pragma: no cover
     """
     Plot overlaid 3D scatter plots of the marker positions in each MarkerVolume
     """
@@ -338,7 +338,7 @@ def plot_MarkerVolume_overlay(MarkerVolumeList, legend=None):
     plt.show()
 
 
-def plot_MarkerVolume_z_hist(MarkerVolume1, MarkerVolume2, z_bins=None):
+def plot_MarkerVolume_z_hist(MarkerVolume1, MarkerVolume2, z_bins=None):  # pragma: no cover
     """
     This will plot a histogram of how many markers are at each z_bin.
     It is useful to compare two marker volumes and get an idea of which planes there may be missing or extra
@@ -392,7 +392,7 @@ def plot_MarkerVolume_z_hist(MarkerVolume1, MarkerVolume2, z_bins=None):
     plt.show()
 
 
-def plot_compressed_MarkerVolumes(MarkerVolumeList, z_max=20, z_min=-20, title=None, legend=None):
+def plot_compressed_MarkerVolumes(MarkerVolumeList, z_max=20, z_min=-20, title=None, legend=None): # pragma: no cover
 
     fig, axs = plt.subplots(figsize=[8, 8], ncols=1, nrows=1)
     for MarkerVolume in MarkerVolumeList:
@@ -491,7 +491,7 @@ def reconstruct_Bz(harmonics, coords, quantity='uT', r_outer=None):
     return Bz_recon
 
 
-def compare_recon_report_with_ground_truth_report(ground_truth_report, recon_report, tolerance=1):
+def compare_recon_report_with_ground_truth_report(ground_truth_report, recon_report, tolerance=1):  # pragma: no cover
     """
     This is to compare the distortion data contained within two Reports.MRI_QA_recon_reporter
     objects. The original purpose was to compare a recon_report generated from direct data, and one

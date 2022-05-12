@@ -331,7 +331,7 @@ class MarkerVolume:
 
     # public methods
 
-    def plot_3D_markers(self, title='3D marker positions'):
+    def plot_3D_markers(self, title='3D marker positions'):  # pragma: no cover
         """
         Just a quick plot of the marker positions; very useful sanity check!
         """
@@ -821,7 +821,7 @@ class MatchedMarkerVolumes:
 
     # public methods
 
-    def plot_3D_markers(self, add_arrows=True, title='3D marker positions'):
+    def plot_3D_markers(self, add_arrows=True, title='3D marker positions'):  # pragma: no cover
         """
         Works very similarly to the MarkerVolume version, but plots both sets of markers and adds arrows
 
@@ -853,7 +853,7 @@ class MatchedMarkerVolumes:
                             np.ptp(self.MatchedCentroids.z_gt)))
         plt.show()
 
-    def plot_compressed_markers(self, z_max=20, z_min=-20, add_arrows=True, title=None):
+    def plot_compressed_markers(self, z_max=20, z_min=-20, add_arrows=True, title=None):  # pragma: no cover
         """
         compresses the 3D markers in the z plane, allowing a 2D visualisation.
 
