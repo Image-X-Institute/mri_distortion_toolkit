@@ -5,7 +5,7 @@ import numpy as np
 this_dir = Path(__file__).parent
 test_data_dir = (this_dir / 'test_data').resolve()
 sys.path.insert(0, str(this_dir.parent))
-from MR_DistortionQA.FieldCalculation import ConvertMatchedMarkersToBz
+from MRI_DistortionQA.FieldCalculation import ConvertMatchedMarkersToBz
 
 
 def test_field_calculation():

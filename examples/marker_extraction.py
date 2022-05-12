@@ -1,4 +1,4 @@
-from MR_DistortionQA.MarkerAnalysis import MarkerVolume
+from MRI_DistortionQA.MarkerAnalysis import MarkerVolume
 from pathlib import Path
 import numpy as np
 import pandas as pd

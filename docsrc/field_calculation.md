@@ -7,7 +7,7 @@ Once we have the marker positions created from each field, we can convert these 
 Create a new python file called field_calculation.py and copy the below code into it:
 
 ```python
-from MR_DistortionQA.FieldCalculation import ConvertMatchedMarkersToBz
+from MRI_DistortionQA.FieldCalculation import ConvertMatchedMarkersToBz
 import pandas as pd
 from pathlib import Path
 

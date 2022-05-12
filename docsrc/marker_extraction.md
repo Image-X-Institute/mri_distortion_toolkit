@@ -6,10 +6,10 @@ Say that you have [built](https://acrf-image-x-institute.github.io/MRI_Distortio
 
 - For this part you will need some data. Example data is provided [here](https://cloudstor.aarnet.edu.au/plus/s/Wm9vndV47u941JU). Download and unzip this data somewhere and take note of the path.
 
-First, create a directory called 'MRI_QA_tutorial' or something like that. Within that directory, create a new python file called 'MarkerExtractionExample'. Copy the below code into it, and update 
+First, create a directory called 'MRI_QA_tutorial' or something like that. Within that directory, create a new python file called 'MarkerExtractionExample'. Copy the below code into it, and update
 
 ```python
-from MR_DistortionQA.MarkerAnalysis import MarkerVolume
+from MRI_DistortionQA.MarkerAnalysis import MarkerVolume
 from pathlib import Path
 import numpy as np
 import pandas as pd

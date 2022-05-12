@@ -9,7 +9,6 @@ import glob
 import logging
 from pathlib import Path
 import numpy as np
-from dicompylercore import dicomparser
 from scipy.special import lpmv
 import pandas as pd
 from matplotlib import pyplot as plt

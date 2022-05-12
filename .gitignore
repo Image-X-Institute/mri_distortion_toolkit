@@ -11,3 +11,6 @@ examples/**ipynb*
 .coverage
 .idea
 tests/test_data/dicom_export_test.mrk.json
+MRI_DistortionQA.egg-info*
+dist
+.pytest_cache

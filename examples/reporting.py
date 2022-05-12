@@ -1,4 +1,4 @@
-from MR_DistortionQA.Reports import MRI_QA_Reporter
+from MRI_DistortionQA.Reports import MRI_QA_Reporter
 import pandas as pd
 from pathlib import Path
 

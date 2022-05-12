@@ -8,7 +8,7 @@ import pandas as pd
 
 this_dir = Path(__file__).parent
 sys.path.insert(0, str(this_dir.parent))
-from MR_DistortionQA.FieldAnalysis import SphericalHarmonicFit
+from MRI_DistortionQA.FieldAnalysis import SphericalHarmonicFit
 
 
 def test_spherical_harmonics_stability():

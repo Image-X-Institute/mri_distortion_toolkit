@@ -1,4 +1,4 @@
-from MR_DistortionQA.FieldCalculation import ConvertMatchedMarkersToBz
+from MRI_DistortionQA.FieldCalculation import ConvertMatchedMarkersToBz
 import pandas as pd
 from pathlib import Path
 

@@ -7,7 +7,7 @@ import pandas as pd
 
 this_dir = Path(__file__).parent
 sys.path.insert(0, str(this_dir.parent))
-from MR_DistortionQA.MarkerAnalysis import MarkerVolume, MatchedMarkerVolumes
+from MRI_DistortionQA.MarkerAnalysis import MarkerVolume, MatchedMarkerVolumes
 
 '''
 the below was conceived so we could have a more detailed test data directory and only run some tests if it is 

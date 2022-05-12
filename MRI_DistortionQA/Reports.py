@@ -208,10 +208,10 @@ class MRI_QA_Reporter:
         """
         if self._style == 'dark':
             self._plotly_theme = 'plotly_dark'
-            self._html_theme = ".themes/d42ker-github.css"
+            self._html_theme = "themes/d42ker-github.css"
         elif self._style == 'light':
             self._plotly_theme = 'plotly_white'
-            self._html_theme = ".themes/whitey.css"
+            self._html_theme = "themes/whitey.css"
         else:
             raise AttributeError(f'unknown style entered: {self._style}. allowed options are "light" or "dark"')
 
@@ -516,8 +516,8 @@ class MRI_QA_Reporter:
             os.mkdir(self.output_folder / '.plots')
 
         # copy themes
-        theme_dir = (Path(__file__).parent / 'jinja_templates' / '.themes').resolve()
-        copy_tree(str(theme_dir), str(self.output_folder / '.themes'))
+        theme_dir = (Path(__file__).parent / 'jinja_templates' / 'themes').resolve()
+        copy_tree(str(theme_dir), str(self.output_folder / 'themes'))
 
     def _get_template(self):
         """

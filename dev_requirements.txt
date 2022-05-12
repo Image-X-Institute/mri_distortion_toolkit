@@ -17,3 +17,4 @@ coverage
 interrogate
 sphinxcontrib-mermaid
 coverage-badge
+build

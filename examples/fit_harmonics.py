@@ -1,4 +1,4 @@
-from MR_DistortionQA.FieldAnalysis import SphericalHarmonicFit
+from MRI_DistortionQA.FieldAnalysis import SphericalHarmonicFit
 import pandas as pd
 
 FieldData = pd.read_csv('Bfields.csv', index_col=0).squeeze("columns")
