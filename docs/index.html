@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MRI Distortion Correction &mdash; MRI_DistortionQA  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+        <script>mermaid.initialize({startOnLoad:true});</script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Worked Examples" href="examples.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="#" class="icon icon-home"> MRI_DistortionQA
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Worked Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="code_docs.html">Code Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">MRI_DistortionQA</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home"></a> &raquo;</li>
+      <li>MRI Distortion Correction</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="mri-distortion-correction">
+<h1>MRI Distortion Correction<a class="headerlink" href="#mri-distortion-correction" title="Permalink to this headline"></a></h1>
+<div class="mermaid">
+            %% Example of sequence diagram
+graph LR;
+   A[Marker &lt;br&gt;Extraction]--&gt;B[Marker &lt;br&gt;Matching]--&gt;C[Field &lt;br&gt; Calculation]--&gt;D[Spherical Harmonic &lt;br&gt;Analysis]--&gt;E[Automated &lt;br&gt;reporting];
+   click A &quot;http://www.github.com&quot;
+   click B &quot;http://www.github.com&quot;
+   click C &quot;http://www.github.com&quot;
+   click D &quot;http://www.github.com&quot;
+   click E &quot;http://www.github.com&quot;
+        </div><div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Worked Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Preamble.html">Preamble</a></li>
+<li class="toctree-l2"><a class="reference internal" href="marker_extraction.html">Marker Extraction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="marker_matching.html">Marker Matching</a></li>
+<li class="toctree-l2"><a class="reference internal" href="field_calculation.html">Field Calculation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fit_spherical_harmonics.html">Spherical Harmonics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reporting.html">Reporting</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="code_docs.html">Code Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="code_docs.html#module-MR_DistortionQA.MarkerAnalysis">MarkerAnalysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_docs.html#module-MR_DistortionQA.FieldCalculation">FieldCalculation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_docs.html#module-MR_DistortionQA.FieldAnalysis">FieldAnalysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_docs.html#module-MR_DistortionQA.Reports">Reports</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_docs.html#module-MR_DistortionQA.utilities">utilities</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline"></a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="examples.html" class="btn btn-neutral float-right" title="Worked Examples" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Brendan Whelan(s).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

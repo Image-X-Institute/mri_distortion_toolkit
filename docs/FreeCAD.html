@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FreeCAD &mdash; MRI_DistortionQA  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+        <script>mermaid.initialize({startOnLoad:true});</script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> MRI_DistortionQA
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">MRI_DistortionQA</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>FreeCAD</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/FreeCAD.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="freecad">
+<span id="free-cad-setup"></span><h1>FreeCAD<a class="headerlink" href="#freecad" title="Permalink to this headline"></a></h1>
+<p>We use the program <a class="reference external" href="https://www.freecadweb.org/">FreeCAD</a>  to construct a CAD model of phantom.
+Whilst FreeCAD lacks some of the polish that a more formal CAD program provides, it has some very important advantages:</p>
+<ol class="arabic simple">
+<li><p>It’s Free!!</p></li>
+<li><p>It’s entirely parametric. Everything can be scripted from python. This means that, as we have done here, one can create a script capable of building any possible variant on your baseline geometry.</p></li>
+<li><p>Close integration with python means we have integrated access to a host of extra libraries, e.g. for optimisation</p></li>
+</ol>
+<section id="setting-up-freecad">
+<h2>Setting up FreeCAD<a class="headerlink" href="#setting-up-freecad" title="Permalink to this headline"></a></h2>
+<p>Once you have downloaded and installed FreeCAD, I suggest making two changes to the default configuration. These will make working with the scripting interface much easier.</p>
+<ol class="arabic simple">
+<li><p>In “View” “panels” enable both the python console and the report view.</p></li>
+</ol>
+</section>
+<section id="building-the-model-with-freecad">
+<h2>Building the model with FreeCAD<a class="headerlink" href="#building-the-model-with-freecad" title="Permalink to this headline"></a></h2>
+<p>To build the model with FreeCAD;</p>
+<ol class="arabic simple">
+<li><p>start FreeCAD</p></li>
+<li><p>open the scripting interface (see Figure 1). You can also access the scripting interface via Macro&gt;&gt;Macros</p></li>
+<li><p>Change the ‘User macro location:’ such that it points to FreeCAD within this repository (Figure 2)</p></li>
+<li><p>Run the BuildSphinx.FCMacro file (Figure 2)</p></li>
+<li><p>You may have to play around with the import statement within BuildSphinx.py to make sure it can find the PhaserGeometry module.</p></li>
+</ol>
+<figure class="align-center" id="id2">
+<img alt="FreeCAD setup :scale: 200%" src="_images/FreeCADsetup.jpg" />
+<figcaption>
+<p><span class="caption-text">Figure 1: FreeCAD setup</span><a class="headerlink" href="#id2" title="Permalink to this image"></a></p>
+</figcaption>
+</figure>
+<figure class="align-center" id="id3">
+<img alt="Set up FreeCAD macros :scale: 200%" src="_images/ExecuteMacro.jpg" />
+<figcaption>
+<p><span class="caption-text">Figure 2: Running BuildSphinx.FCMacro</span><a class="headerlink" href="#id3" title="Permalink to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Brendan Whelan(s).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
