@@ -21,7 +21,7 @@ flowchart LR
 ## Setup/Build/Install
 
 ```bash
-pip install MRI_DistortionQA  # soon!!
+pip install MRI_DistortionQA
 ```
 
 
