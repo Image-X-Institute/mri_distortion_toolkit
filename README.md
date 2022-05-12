@@ -1,5 +1,5 @@
-# MRI_DistortionQA
-
+# MRI_DistortionQA  
+![](docsrc/__resources/coverage.svg) ![](docsrc/__resources/interrogate.svg)
 
 **Authors:** Brendan Whelan, Paul Liu, Shanshan Shan
 
