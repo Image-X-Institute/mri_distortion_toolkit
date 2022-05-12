@@ -3,8 +3,10 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-MRI Distortion Correction
-==========================
+MRI Distortion QA
+=================
+
+[This code](https://github.com/ACRF-Image-X-Institute/MRI_DistortionQA) enables characterization and reporting of geometric distortion in Magnetic Resonance Imaging. The basic end-to-end workflow is below, but all steps have well defined input/output so you can use any part of this code independently from the other parts. For a tutorial on each step, click on the diagram below.
 
 .. mermaid::
 
