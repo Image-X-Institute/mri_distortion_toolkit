@@ -1,6 +1,4 @@
 docsrc/_build
-
-# Python
 __pycache__
 *.asv
 *temp*

@@ -41,13 +41,18 @@ json_file = data_loc / 'MR' / '04 gre_trans_AP_330' / 'slicer_centroids.mrk.json
 json_volume = MarkerVolume(json_file)  # create MarkerVolume
 ```
 
-For a full list of options regarding this class
-
-- [ ] add link to code docs
-
 At this point, you are free to move on to the next step: automatic matching of markers, or you can read on to find out a little bit more about how you can handle marker extraction in challenging datasets...
 
 ## Handling Fat-water shift 
+
+If you are using a phantom with oil filled markers, your images may be subject to [fat-water shift](https://acrf-image-x-institute.github.io/MRI_DistortionPhantom/phantom_imaging.html#fat-water-chemical-shift).
+
+The best way to check this is to take a forward/reverse gradient pair of images, and compare the markers in the middle of the DSV. Since B0 homogeneity is very good here, if the markers are offset from each other it is due to fat/water shift.
+
+You can read about the different options for handling this effect [here](https://acrf-image-x-institute.github.io/MRI_DistortionPhantom/phantom_imaging.html#fat-water-chemical-shift); but one option is to correct for this in software. If you want to do that, the code would look this:
+
+```
+```
 
 
 
@@ -65,12 +70,3 @@ We provide an easy interface to [slicer](https://www.slicer.org/) via the ```exp
 
 ![](__resources/Slicer_Markers_screengrab.PNG)
 
-## ToDo
-
-- [x] set up example data
-
-- [ ] export to slicer to _data directory
-
-- [ ] add ground truth to basic example
-
-  
