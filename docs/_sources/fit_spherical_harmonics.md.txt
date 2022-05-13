@@ -24,7 +24,7 @@ n_order = 8
 # G_x Harmonics
 GradXdata = FieldData[['x', 'y', 'z', 'B_Gx']]
 GradXdata = GradXdata.rename(columns={"B_Gx": "Bz"})  # spherical harmonics code expects to receieve one field called Bz
-G_x_Harmonics = SphericalHarmonicFit(GradXdata, n_order=n_order, rOuter=150)
+G_x_Harmonics = SphericalHarmonicFit(GradXdata, n_order=n_order, r_outer=150)
 G_x_Harmonics.harmonics.to_csv('G_x_harmonics.csv')
 
 # some plotting examples
@@ -41,31 +41,58 @@ G_x_Harmonics.print_key_harmonics(cut_off=.01)
 
 **This figure shows the dominant harmonics for the X gradient. If you are a harmonics nerd, you will know that the A11 harmonic corresponds to a perfect X gradient field; therefore it is gratifying to see that this is by far the most strongly expressed harmonic for the X gradient!**
 
+## Explaining the code output:
+
+The code probably printed the following to the screen:
+
+```
+[FieldAnalysis.py: line 86  WARNING] input sample points do not appear to cover a full sphere
+Initial pk-pk:        693.401 μT
+Reconstructed pk-pk:  693.795 μT
+Residual pk-pk:       2.023 μT
+```
+
+The warning here is telling us that the sample points do not appear to cover a full sphere. We can ignore this in situations where we are confident that we have sufficient sampling of points for the order of harmonics we are fitting. 
+
+- [ ] ToDo: autoamate this check!!
+
+The second part is telling us the peak-to-peak perturbation over the surface of r_outer (150 mm in this case). We would like to see that the reconstructed pk-pk closely matches the input, and that the residual pk-pk is low relative to the total. In this case, the reconstructed pk-pk is within 0.4 μT and the residual is < 1%, so the fit is pretty good!
+
+## Remaining harmonics
+
 Now we have the X-harmonics; we need to do the same thing for the other two gradient coils:
 
 ````python
 # G_y Harmonics
 GradYdata = FieldData[['x', 'y', 'z', 'B_Gy']]
 GradYdata = GradYdata.rename(columns={"B_Gy": "Bz"})
-G_y_Harmonics = SphericalHarmonicFit(GradYdata, n_order=n_order, rOuter=150)
+G_y_Harmonics = SphericalHarmonicFit(GradYdata, n_order=n_order, r_outer=150)
 G_y_Harmonics.harmonics.to_csv('G_y_harmonics.csv')
 
 # G_z Harmonics
 GradZdata = FieldData[['x', 'y', 'z', 'B_Gz']]
 GradZdata = GradZdata.rename(columns={"B_Gz": "Bz"})
-G_z_Harmonics = SphericalHarmonicFit(GradZdata, n_order=n_order, rOuter=150)
+G_z_Harmonics = SphericalHarmonicFit(GradZdata, n_order=n_order, r_outer=150)
 G_z_Harmonics.harmonics.to_csv('G_z_harmonics.csv')
 ````
 
 ## Next steps
 
-You are ready to move onto Reporting, or you can read more about spherical harmonics below!
+You are ready to move onto [Reporting](https://acrf-image-x-institute.github.io/MRI_DistortionQA/reporting.html), or you can read more about spherical harmonics below!
 
 ## Fitting to B0 Data
 
-In marker matching step, we saw that by including 'reverse' gradient data, we can estiamte both gradient non linearity and the B0 field. This section assumes you have carried out this part of the tutorial, and demonstrates the creation of harmonics for B0. 
+In [marker matching](https://acrf-image-x-institute.github.io/MRI_DistortionQA/marker_matching.html) step, we saw that by including 'reverse' gradient data, we can estimate both gradient non linearity and the B0 field. This section assumes you have carried out this part of the tutorial, and demonstrates the creation of harmonics for B0. 
 
-- [ ] add link
+```python
+# B0 Harmonics
+GradZdata = FieldData[['x', 'y', 'z', 'B0']]
+GradZdata = GradZdata.rename(columns={"B0": "Bz"})
+G_z_Harmonics = SphericalHarmonicFit(GradZdata, n_order=n_order, r_outer=150)
+G_z_Harmonics.harmonics.to_csv('B0_harmonics.csv')
+```
+
+
 
 ## Background theory
 
@@ -75,9 +102,9 @@ In a **source free** region (essentially: no currents, no ferrous material), a m
 $$
 \nabla^2 f= 0
 $$
-It [can be shown](https://en.wikipedia.org/wiki/Spherical_harmonics) that the solution to Laplaces equation is an infite expansion of spherical harmonics.
+It [can be shown](https://en.wikipedia.org/wiki/Spherical_harmonics) that the solution to Laplace's equation is an infinite expansion of spherical harmonics.
 
-As such, some combination of spherical harmonics is the **exact** solution to any real magnetic field in a source free region.
+As such, some infinite combination of spherical harmonics is the **exact** solution to any real magnetic field in a source free region.
 
 ## Why would I want to fit spherical harmonics?
 

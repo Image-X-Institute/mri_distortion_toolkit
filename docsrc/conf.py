@@ -37,9 +37,10 @@ extensions = [
     'sphinx.ext.githubpages',
     'sphinx.ext.napoleon',
     'sphinx.ext.todo',
-    'recommonmark',
+    # 'recommonmark',
     'sphinx_markdown_tables',
-    'sphinxcontrib.mermaid']
+    'sphinxcontrib.mermaid',
+    'myst_parser']
 
 source_suffix = {
     '.rst': 'restructuredtext',

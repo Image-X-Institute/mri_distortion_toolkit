@@ -15,6 +15,6 @@ sphinx_markdown_tables
 sphinx_rtd_theme
 coverage
 interrogate
-sphinxcontrib-mermaid
+sphinxcontrib.mermaid
 coverage-badge
 build

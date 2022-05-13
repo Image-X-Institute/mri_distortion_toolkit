@@ -4,7 +4,8 @@
 
 Say that you have [built](https://acrf-image-x-institute.github.io/MRI_DistortionPhantom/phantom_construction.html) and [imaged](https://acrf-image-x-institute.github.io/MRI_DistortionPhantom/phantom_imaging.html) a marker-based distortion phantom. To use this data within this library, you first have to extract the position of the markers and create a 'MarkerVolume'. This example shows you how do that.
 
-- For this part you will need some data. Example data is provided [here](https://cloudstor.aarnet.edu.au/plus/s/Wm9vndV47u941JU). Download and unzip this data somewhere and take note of the path.
+
+> :warning: For this part you will need some data. **Example data is provided [here](https://cloudstor.aarnet.edu.au/plus/s/Wm9vndV47u941JU)**. Download and unzip this data somewhere and take note of the path.
 
 First, create a directory called 'MRI_QA_tutorial' or something like that. Within that directory, create a new python file called 'MarkerExtractionExample'. Copy the below code into it, and update
 
@@ -41,15 +42,7 @@ json_file = data_loc / 'MR' / '04 gre_trans_AP_330' / 'slicer_centroids.mrk.json
 json_volume = MarkerVolume(json_file)  # create MarkerVolume
 ```
 
-For a full list of options regarding this class
-
-- [ ] add link to code docs
-
 At this point, you are free to move on to the next step: automatic matching of markers, or you can read on to find out a little bit more about how you can handle marker extraction in challenging datasets...
-
-## Handling Fat-water shift 
-
-
 
 ## Do we guarantee that we will find your markers?
 
@@ -65,12 +58,29 @@ We provide an easy interface to [slicer](https://www.slicer.org/) via the ```exp
 
 ![](__resources/Slicer_Markers_screengrab.PNG)
 
-## ToDo
+## Handling Fat-water shift 
 
-- [x] set up example data
+If you are using a phantom with oil filled markers, your images may be subject to [fat-water shift](https://acrf-image-x-institute.github.io/MRI_DistortionPhantom/phantom_imaging.html#fat-water-chemical-shift).
 
-- [ ] export to slicer to _data directory
+The best way to check this is to take a forward/reverse gradient pair of images, and compare the markers in the middle of the DSV. Since B0 homogeneity is very good here, if the markers are offset from each other it is due to fat/water shift.
 
-- [ ] add ground truth to basic example
+You can read about the different options for handling this effect [here](https://acrf-image-x-institute.github.io/MRI_DistortionPhantom/phantom_imaging.html#fat-water-chemical-shift); but one option is to correct for this in software. If you want to do that, the code would look this:
 
-  
+```python
+from MRI_DistortionQA.MarkerAnalysis import MarkerVolume
+from pathlib import Path
+from MRI_DistortionQA.utilities import plot_MarkerVolume_overlay
+
+marker_volume_forward = MarkerVolume(data_loc / 'MR' / '04 gre_trans_AP_330', verbose=False,
+                             correct_fat_water_shift=True, fat_shift_direction=-1)
+marker_volume_back = MarkerVolume(data_loc / 'MR' / '05 gre_trans_PA_330', verbose=False,
+                             correct_fat_water_shift=True, fat_shift_direction=1)
+plot_MarkerVolume_overlay([marker_volume_forward, marker_volume_back])
+```
+
+- This will apply a shift to the marker positions based on the estimate of fat/water chemical shift
+- We know which axis the shift will occur in (the frequency encode direction) but we are not yet confident we can predict the direction (forward/back). ```fat_shift_direction``` controls this. Basically you need to compare the markers in the center of the phantom for the forward/ reverse gradient images. If it worked, you should see that markers in the center of the phantom are closely aligned. If it moved them further apart, change the sign. If they still aren't, then log an issue!
+- If you use this feature, please let us know because as you can tell it is still under development a bit!
+
+
+
