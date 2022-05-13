@@ -92,23 +92,9 @@ G_z_Harmonics = SphericalHarmonicFit(GradZdata, n_order=n_order, r_outer=150)
 G_z_Harmonics.harmonics.to_csv('B0_harmonics.csv')
 ```
 
-
-
-## Background theory
-
-In a **source free** region (essentially: no currents, no ferrous material), a magnetic field can be represented according to Laplaces equation:
-
-
-$$
-\nabla^2 f= 0
-$$
-It [can be shown](https://en.wikipedia.org/wiki/Spherical_harmonics) that the solution to Laplace's equation is an infinite expansion of spherical harmonics.
-
-As such, some infinite combination of spherical harmonics is the **exact** solution to any real magnetic field in a source free region.
-
 ## Why would I want to fit spherical harmonics?
 
 Having the spherical harmonic representation of a given field allows one to reconstruct that field at any location in space^. They also enable an experienced engineer to quickly understand what nature of field they are dealing with. In addition, spherical harmonics are used as an input to many distortion correction algorithms. 
 
-> ^ **But be careful!** In practice, if you fit spherical harmonics based on a sphere of data at r_outer, you can trust the reconstruction anywhere inside this sphere. Data outside the sphere can also be reconstructed, but the further away you move from r_outer, the less you should trust your reconstruction. 
+> ^ :warning: **But be careful!** In practice, if you fit spherical harmonics based on a sphere of data at r_outer, you can trust the reconstruction anywhere inside this sphere. Data outside the sphere can also be reconstructed, but the further away you move from r_outer, the less you should trust your reconstruction. 
 > This is because a n<sup>th</sup> order harmonic scales as r<sub>n</sub>. For high order harmonics, this means that while they may be barely expressed at r_outer, they can become significant very quickly! 
