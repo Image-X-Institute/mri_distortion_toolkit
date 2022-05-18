@@ -123,5 +123,5 @@ As such, **some infinite combination of spherical harmonics is the <u>exact</u> 
 
 Having the spherical harmonic representation of a given field allows one to reconstruct that field at any location in space^. They also enable an experienced engineer to quickly understand what nature of field they are dealing with. In addition, spherical harmonics are used as an input to many distortion correction algorithms. 
 
-> ^ **But be careful!** In practice, if you fit spherical harmonics based on a sphere of data at r_outer, you can trust the reconstruction anywhere inside this sphere. Data outside the sphere can also be reconstructed, but the further away you move from r_outer, the less you should trust your reconstruction. 
+> ^ :warning: **But be careful!** In practice, if you fit spherical harmonics based on a sphere of data at r_outer, you can trust the reconstruction anywhere inside this sphere. Data outside the sphere can also be reconstructed, but the further away you move from r_outer, the less you should trust your reconstruction. 
 > This is because a n<sup>th</sup> order harmonic scales as r<sub>n</sub>. For high order harmonics, this means that while they may be barely expressed at r_outer, they can become significant very quickly! 

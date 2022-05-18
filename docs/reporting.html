@@ -113,7 +113,7 @@ An example of the types of reports you can generate is <span class="xref myst">h
 <p>To be honest, this report looks pretty bad - this is because with this phantom, there are very limited data points, so most of the plotting routines don’t really work. If you have a more conventional phantom with lots of datapoints, this should work  a lot better.</p>
 <p>This phantom was actually designed to get a good measurement of data on the surface of a sphere for the purpose of fitting spherical harmonics; therefore, let’s move on and use the data we have more appropriately!!</p>
 <blockquote>
-<div><p><strong>Note</strong>: this report requires a modern browser to work properly!</p>
+<div><p>:warning: I have occasionally seen firefox fail to display these reports. I haven’t figured out what, but if there is an error “The address wasn’t understood” try a different browser.</p>
 </div></blockquote>
 </section>
 <section id="case-2-harmonic-reconstruction">
@@ -135,11 +135,17 @@ An example of the types of reports you can generate is <span class="xref myst">h
 
 </pre></div>
 </div>
-<p>You will now have a new report sitting {your_home_directory} / ‘Documents’ / ‘MRI_QA_reports’.  This one should look a lot better!!</p>
+<p>You will now have a new report sitting {your_home_directory} / ‘Documents’ / ‘MRI_QA_reports’.  This one should <a class="reference external" href="https://acrf-image-x-institute.github.io/MRI_DistortionQA/_static/MR_QA_report_12_05_2022.html">look a lot better</a>!!</p>
+<p>If you complete the B0 estimate parts of the previous tutorials, and have a ‘B0_harmonics.csv’ file sitting in your working directory, you can also add this to the call to include a plot of B0 homogeneity:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">report</span> <span class="o">=</span> <span class="n">MRI_QA_Reporter</span><span class="p">(</span><span class="n">gradient_harmonics</span><span class="o">=</span><span class="p">[</span><span class="n">G_x_harmonics</span><span class="p">,</span> <span class="n">G_y_harmonics</span><span class="p">,</span> <span class="n">G_z_harmonics</span><span class="p">],</span>
+                         <span class="n">r_outer</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">dicom_data</span><span class="o">=</span><span class="n">dicom_data_loc</span><span class="p">,</span> <span class="n">B0_harmonics</span><span class="o">=</span><span class="s1">&#39;B0_harmonics.csv&#39;</span><span class="p">)</span>
+<span class="n">report</span><span class="o">.</span><span class="n">write_html_report</span><span class="p">()</span>
+</pre></div>
+</div>
 </section>
 <section id="adding-custom-tests">
 <h2>Adding custom tests<a class="headerlink" href="#adding-custom-tests" title="Permalink to this headline"></a></h2>
-<p>You will notice that some tests have been run (and failed) from ‘’DefaultTestSuite”. What is that and how do you add your own tests?</p>
+<p>You will notice that some tests have been run (and failed) from ‘DefaultTestSuite’. What is that and how do you add your own tests?</p>
 <p>Code demonstration the creation of a custom test suite is below:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MRI_DistortionQA.Reports</span> <span class="kn">import</span> <span class="n">MRI_QA_Reporter</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>

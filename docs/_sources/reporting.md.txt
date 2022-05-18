@@ -33,7 +33,7 @@ To be honest, this report looks pretty bad - this is because with this phantom, 
 
 This phantom was actually designed to get a good measurement of data on the surface of a sphere for the purpose of fitting spherical harmonics; therefore, let's move on and use the data we have more appropriately!! 
 
-> **Note**: this report requires a modern browser to work properly! 
+> :warning: I have occasionally seen firefox fail to display these reports. I haven't figured out what, but if there is an error "The address wasn’t understood" try a different browser.
 
 ## Case 2: harmonic reconstruction
 
@@ -56,11 +56,21 @@ report.write_html_report()
 
 ```
 
-You will now have a new report sitting {your_home_directory} / 'Documents' / 'MRI_QA_reports'.  This one should look a lot better!! 
+You will now have a new report sitting {your_home_directory} / 'Documents' / 'MRI_QA_reports'.  This one should [look a lot better](https://acrf-image-x-institute.github.io/MRI_DistortionQA/_static/MR_QA_report_12_05_2022.html)!! 
+
+If you complete the B0 estimate parts of the previous tutorials, and have a 'B0_harmonics.csv' file sitting in your working directory, you can also add this to the call to include a plot of B0 homogeneity:
+
+```python
+report = MRI_QA_Reporter(gradient_harmonics=[G_x_harmonics, G_y_harmonics, G_z_harmonics],
+                         r_outer=150, dicom_data=dicom_data_loc, B0_harmonics='B0_harmonics.csv')
+report.write_html_report()
+```
+
+
 
 ## Adding custom tests
 
-You will notice that some tests have been run (and failed) from ''DefaultTestSuite". What is that and how do you add your own tests?
+You will notice that some tests have been run (and failed) from 'DefaultTestSuite'. What is that and how do you add your own tests?
 
 Code demonstration the creation of a custom test suite is below:
 
