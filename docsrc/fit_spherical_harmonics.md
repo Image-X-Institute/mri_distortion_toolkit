@@ -92,6 +92,33 @@ G_z_Harmonics = SphericalHarmonicFit(GradZdata, n_order=n_order, r_outer=150)
 G_z_Harmonics.harmonics.to_csv('B0_harmonics.csv')
 ```
 
+
+
+## Background theory
+
+In a **source free** region (no currents, no ferrous material), Maxwell's equation for a static field are:
+
+$$
+\nabla . \overrightarrow{\! B} =0 \\
+\nabla \times \overrightarrow{\! B} =0
+$$
+
+In such a situation, the magnetic field can be represented by a scalar potential analogous to the vector field in electrostatics.
+
+$$
+\overrightarrow{\! B} = \nabla f \\
+\nabla . \overrightarrow{\! B} = \nabla(\nabla f)=0 \\
+\nabla^2 f= 0
+$$
+This last equation is [Laplace's equation](https://en.wikipedia.org/wiki/Laplace%27s_equation)! It [can be shown](https://mathworld.wolfram.com/LaplacesEquationSphericalCoordinates.html) that the general solution to Laplace's equation in spherical coordinates is an infinite expansion of spherical harmonics:
+
+$$
+f = \Sigma
+$$
+
+
+As such, **some infinite combination of spherical harmonics is the <u>exact</u> solution to any real magnetic field in a source free region**.
+
 ## Why would I want to fit spherical harmonics?
 
 Having the spherical harmonic representation of a given field allows one to reconstruct that field at any location in space^. They also enable an experienced engineer to quickly understand what nature of field they are dealing with. In addition, spherical harmonics are used as an input to many distortion correction algorithms. 

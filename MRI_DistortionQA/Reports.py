@@ -81,31 +81,31 @@ class Elekta_Distortion_tests:
     https://aapm.onlinelibrary.wiley.com/doi/epdf/10.1002/mp.14764
     """
 
-    def test_distortion_less_than_1_mm_within_r_200_mm(self):
+    def test_distortion_less_than_1_mm_within_r_100_mm(self):
         """
         distortion test to be run by MRI_QA_Reporter
         """
-        test_data = self._extract_data_from_MatchedMarkerVolume(r_max=200)
+        test_data = self._extract_data_from_MatchedMarkerVolume(r_max=100)
         if test_data.abs_dis.max() < 1:
             return True
         else:
             return False
 
-    def test_distortion_less_than_2_mm_within_r_300_mm(self):
+    def test_distortion_less_than_2_mm_within_r_150_mm(self):
         """
         distortion test to be run by MRI_QA_Reporter
         """
-        test_data = self._extract_data_from_MatchedMarkerVolume(r_max=300)
+        test_data = self._extract_data_from_MatchedMarkerVolume(r_max=150)
         if test_data.abs_dis.max() < 2:
             return True
         else:
             return False
 
-    def test_distortion_less_than_4_mm_within_r_400_mm(self):
+    def test_distortion_less_than_4_mm_within_r_200_mm(self):
         """
         distortion test to be run by MRI_QA_Reporter
         """
-        test_data = self._extract_data_from_MatchedMarkerVolume(r_max=400)
+        test_data = self._extract_data_from_MatchedMarkerVolume(r_max=200)
         if test_data.abs_dis.max() < 4:
             return True
         else:
