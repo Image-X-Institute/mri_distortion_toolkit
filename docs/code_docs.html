@@ -337,20 +337,20 @@ less than 10% the pk-pk perturbation of the dominant harmonic are ignored.</p>
 <dd><p>Geometric tests for Elekta system as described here:
 <a class="reference external" href="https://aapm.onlinelibrary.wiley.com/doi/epdf/10.1002/mp.14764">https://aapm.onlinelibrary.wiley.com/doi/epdf/10.1002/mp.14764</a></p>
 <dl class="py method">
-<dt class="sig sig-object py" id="MRI_DistortionQA.Reports.Elekta_Distortion_tests.test_distortion_less_than_1_mm_within_r_200_mm">
-<span class="sig-name descname"><span class="pre">test_distortion_less_than_1_mm_within_r_200_mm</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.Reports.Elekta_Distortion_tests.test_distortion_less_than_1_mm_within_r_200_mm" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="MRI_DistortionQA.Reports.Elekta_Distortion_tests.test_distortion_less_than_1_mm_within_r_100_mm">
+<span class="sig-name descname"><span class="pre">test_distortion_less_than_1_mm_within_r_100_mm</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.Reports.Elekta_Distortion_tests.test_distortion_less_than_1_mm_within_r_100_mm" title="Permalink to this definition"></a></dt>
 <dd><p>distortion test to be run by MRI_QA_Reporter</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="MRI_DistortionQA.Reports.Elekta_Distortion_tests.test_distortion_less_than_2_mm_within_r_300_mm">
-<span class="sig-name descname"><span class="pre">test_distortion_less_than_2_mm_within_r_300_mm</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.Reports.Elekta_Distortion_tests.test_distortion_less_than_2_mm_within_r_300_mm" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="MRI_DistortionQA.Reports.Elekta_Distortion_tests.test_distortion_less_than_2_mm_within_r_150_mm">
+<span class="sig-name descname"><span class="pre">test_distortion_less_than_2_mm_within_r_150_mm</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.Reports.Elekta_Distortion_tests.test_distortion_less_than_2_mm_within_r_150_mm" title="Permalink to this definition"></a></dt>
 <dd><p>distortion test to be run by MRI_QA_Reporter</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="MRI_DistortionQA.Reports.Elekta_Distortion_tests.test_distortion_less_than_4_mm_within_r_400_mm">
-<span class="sig-name descname"><span class="pre">test_distortion_less_than_4_mm_within_r_400_mm</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.Reports.Elekta_Distortion_tests.test_distortion_less_than_4_mm_within_r_400_mm" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="MRI_DistortionQA.Reports.Elekta_Distortion_tests.test_distortion_less_than_4_mm_within_r_200_mm">
+<span class="sig-name descname"><span class="pre">test_distortion_less_than_4_mm_within_r_200_mm</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.Reports.Elekta_Distortion_tests.test_distortion_less_than_4_mm_within_r_200_mm" title="Permalink to this definition"></a></dt>
 <dd><p>distortion test to be run by MRI_QA_Reporter</p>
 </dd></dl>
 
@@ -435,10 +435,17 @@ plotly figures</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="MRI_DistortionQA.utilities.build_dicom_affine">
 <span class="sig-prename descclassname"><span class="pre">MRI_DistortionQA.utilities.</span></span><span class="sig-name descname"><span class="pre">build_dicom_affine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Dicomfiles</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.utilities.build_dicom_affine" title="Permalink to this definition"></a></dt>
-<dd><p>Transform the image based coordinates (i,j,k) to world coordinates (x,y,z)
-It must be stated that dicom coordinate systems are a real mess. The reference I used to create the affine is
-<a class="reference external" href="https://nipy.org/nibabel/dicom/dicom_orientation.html">NIbabel</a>
+<dd><p>Build the dicom affine matrix.
+The reference I used to create the affine is <a class="reference external" href="https://nipy.org/nibabel/dicom/dicom_orientation.html">NIbabel</a>
 (we are using the r/c defined under ‘DICOM affines again’)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>Dicomfiles</strong> (<em>list</em>) – list of pydicom.dataset.FileDataset instances (created using pydicom.read_file)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>CoordinateMatrix, a 4x4 matrix which transforms the image based coordinates (i,j,k) to world coordinates (x,y,z)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -461,10 +468,11 @@ generated via harmonics, although in principle it can take any two recon_reports
 <dl class="py function">
 <dt class="sig sig-object py" id="MRI_DistortionQA.utilities.convert_cartesian_to_spherical">
 <span class="sig-prename descclassname"><span class="pre">MRI_DistortionQA.utilities.</span></span><span class="sig-name descname"><span class="pre">convert_cartesian_to_spherical</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">InputCoords</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.utilities.convert_cartesian_to_spherical" title="Permalink to this definition"></a></dt>
-<dd><p>Cartesian coordinates contained as columns [x,y,z] in InputCoords are converted to spherical coordinates.
-[r, azimuth, elevation]. if r, azimuth, or elevation already exist as column names they are overwritten.
-The convention used here matches the convention matlab uses; this is because parts of this code were ported
-from an earlier version in matlab.</p>
+<dd><p>Converts cartesian coordinates [x,y,z] to spherical coordinates [r, azimuth, elevation].
+If r, azimuth, or elevation already exist as column names they are overwritten.
+The convention used here matches the convention
+<a class="reference external" href="https://www.mathworks.com/help/matlab/ref/cart2sph.html">matlab uses</a>;
+this is because parts of this code were ported from an earlier version in matlab.</p>
 <ul class="simple">
 <li><p>0 &lt;= azimuth &lt;= 2*pi</p></li>
 <li><p>0 &lt;= elevation &lt;= pi</p></li>
@@ -480,13 +488,34 @@ from an earlier version in matlab.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="MRI_DistortionQA.utilities.convert_spherical_harmonics">
+<span class="sig-prename descclassname"><span class="pre">MRI_DistortionQA.utilities.</span></span><span class="sig-name descname"><span class="pre">convert_spherical_harmonics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">harmonics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_format</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_format</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.utilities.convert_spherical_harmonics" title="Permalink to this definition"></a></dt>
+<dd><p>NOT WRITTEN YET! function to convert between different harmonic formalisms</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>harmonics</strong> – </p></li>
+<li><p><strong>input_format</strong> – </p></li>
+<li><p><strong>output_format</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="MRI_DistortionQA.utilities.convert_spherical_to_cartesian">
 <span class="sig-prename descclassname"><span class="pre">MRI_DistortionQA.utilities.</span></span><span class="sig-name descname"><span class="pre">convert_spherical_to_cartesian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">InputCoords</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.utilities.convert_spherical_to_cartesian" title="Permalink to this definition"></a></dt>
-<dd><p>converts spherical coordinates in InputCoords to Cartesian and adds cartesian into the returned data frame.
+<dd><p>Converts spherical coordinates [r, azimuth, elevation] to cartesian coordinates [x,y,z].
 if the cartesian columns ‘x’, ‘y’, ‘z’ already exist, they will be overwritten</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>InputCoords</strong> – a data frame containing columns r, azimuth, elevation</p>
+</dd>
+<dt class="field-even">Returns InputCoords</dt>
+<dd class="field-even"><p>same data frame with additional columns [x,y,z]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -531,8 +560,11 @@ Note that we scale all r values by 1000, which is to help ensure numerical stabi
 that this input data is in mm. The code will throw a warning if this does not appear to the case.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>InputCoords</strong> – a data frame which can contain whatever you want, but MUST contain columns called
-elevation, azimuth, and r</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>InputCoords</strong> (<em>Dataframe</em>) – a data frame which can contain whatever you want, but MUST contain columns called
+elevation, azimuth, and r</p></li>
+<li><p><strong>n_order</strong> (<em>int</em>) – order of harmonic fit</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns legendre_basis</dt>
 <dd class="field-even"><p>a pandas data frame of size [Ncoords, (n_order +1)**2)]</p>
@@ -558,13 +590,27 @@ elevation, azimuth, and r</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="MRI_DistortionQA.utilities.get_dicom_data">
+<span class="sig-prename descclassname"><span class="pre">MRI_DistortionQA.utilities.</span></span><span class="sig-name descname"><span class="pre">get_dicom_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dicom_data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.utilities.get_dicom_data" title="Permalink to this definition"></a></dt>
+<dd><p>figures out whether dicom data is a dict or a path to a json file
+if the latter, reads into  a dict and returns</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="MRI_DistortionQA.utilities.get_gradient_spherical_harmonics">
 <span class="sig-prename descclassname"><span class="pre">MRI_DistortionQA.utilities.</span></span><span class="sig-name descname"><span class="pre">get_gradient_spherical_harmonics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Gx_Harmonics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Gy_Harmonics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Gz_Harmonics</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.utilities.get_gradient_spherical_harmonics" title="Permalink to this definition"></a></dt>
-<dd><p>return the gradient spherica harmonics as as pandas series.</p>
+<dd><p>return the gradient spherical harmonics as as pandas series. this function is simply a clean way to handle
+the different ways users can specify harmonics to other componets of this code</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>Harmonics</strong> – either a pandas series or a path to a csv. If it is already a series we do nothing, but handle
-this option for cleaner code elsewhere.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Harmonics</strong> – </p></li>
+<li><p><strong>Gx_Harmonics</strong> – either a pandas series or a path to a csv. If it is already a series we do nothing, but handle
+this option for cleaner code elsewhere. Gy_Harmonics and Gz_Harmonics are the same</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Gx_Harmonics, Gy_Harmonics, Gz_Harmonics as Pandase series</p>
 </dd>
 </dl>
 </dd></dl>
@@ -573,14 +619,37 @@ this option for cleaner code elsewhere.</p>
 <dt class="sig sig-object py" id="MRI_DistortionQA.utilities.plot_MarkerVolume_overlay">
 <span class="sig-prename descclassname"><span class="pre">MRI_DistortionQA.utilities.</span></span><span class="sig-name descname"><span class="pre">plot_MarkerVolume_overlay</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">MarkerVolumeList</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.utilities.plot_MarkerVolume_overlay" title="Permalink to this definition"></a></dt>
 <dd><p>Plot overlaid 3D scatter plots of the marker positions in each MarkerVolume</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>MarkerVolumeList</strong> – list of MarkerVolume instances</p></li>
+<li><p><strong>legend</strong> – legend to display on plot</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="MRI_DistortionQA.utilities.plot_MarkerVolume_z_hist">
-<span class="sig-prename descclassname"><span class="pre">MRI_DistortionQA.utilities.</span></span><span class="sig-name descname"><span class="pre">plot_MarkerVolume_z_hist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">MarkerVolume1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">MarkerVolume2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_bins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.utilities.plot_MarkerVolume_z_hist" title="Permalink to this definition"></a></dt>
-<dd><p>This will plot a histogram of how many markers are at each z_bin.
-It is useful to compare two marker volumes and get an idea of which planes there may be missing or extra
-markers on</p>
+<dt class="sig sig-object py" id="MRI_DistortionQA.utilities.plot_compressed_MarkerVolumes">
+<span class="sig-prename descclassname"><span class="pre">MRI_DistortionQA.utilities.</span></span><span class="sig-name descname"><span class="pre">plot_compressed_MarkerVolumes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">MarkerVolumeList</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_min</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.utilities.plot_compressed_MarkerVolumes" title="Permalink to this definition"></a></dt>
+<dd><p>plot overlay of compressed marker volumes (z coord is ignored)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>MarkerVolumeList</strong> (<em>list</em>) – list of MarkerVolume instances</p></li>
+<li><p><strong>z_max</strong> (<em>float</em><em>, </em><em>optional</em>) – max z data to include</p></li>
+<li><p><strong>z_min</strong> (<em>float</em><em>, </em><em>optional</em>) – min z data to include</p></li>
+<li><p><strong>title</strong> (<em>str</em><em>, </em><em>optional</em>) – title of plot</p></li>
+<li><p><strong>legend</strong> (<em>list</em><em>, </em><em>optional</em>) – legend of plot</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -598,11 +667,13 @@ elevation, azimuth, and r</p></li>
 <li><p><strong>quantity</strong> – <ul>
 <li><p>‘T’: return raw field in T</p></li>
 <li><p>’uT’: return field in uT, with A00 set to 0.</p></li>
-<li><p>’PPM’:</p></li>
 </ul>
 </p></li>
 <li><p><strong>r_outer</strong> (<em>float</em><em> or </em><em>None</em>) – optional parameter; if you try to reconstruct points with r &gt; r_outer a warning is thrown</p></li>
 </ul>
+</dd>
+<dt class="field-even">Returns Bz_recon</dt>
+<dd class="field-even"><p>Pandase series with the value of Bz at each element in coords</p>
 </dd>
 </dl>
 </dd></dl>

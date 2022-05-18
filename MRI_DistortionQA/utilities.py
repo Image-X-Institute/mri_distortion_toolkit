@@ -13,6 +13,7 @@ from scipy.special import lpmv
 import pandas as pd
 from matplotlib import pyplot as plt
 import pydicom
+import json
 
 
 ch = logging.StreamHandler()
@@ -41,11 +42,13 @@ class bcolors:
 
 def build_dicom_affine(Dicomfiles):
     """
-    Transform the image based coordinates (i,j,k) to world coordinates (x,y,z)
-    It must be stated that dicom coordinate systems are a real mess. The reference I used to create the affine is
-    `NIbabel <https://nipy.org/nibabel/dicom/dicom_orientation.html>`_
+    Build the dicom affine matrix.
+    The reference I used to create the affine is `NIbabel <https://nipy.org/nibabel/dicom/dicom_orientation.html>`_
     (we are using the r/c defined under 'DICOM affines again')
 
+    :param Dicomfiles: list of pydicom.dataset.FileDataset instances (created using pydicom.read_file)
+    :type Dicomfiles: list
+    :return: CoordinateMatrix, a 4x4 matrix which transforms the image based coordinates (i,j,k) to world coordinates (x,y,z)
     """
 
     assert isinstance(Dicomfiles, list)
@@ -149,6 +152,11 @@ def dicom_to_numpy(path_to_dicoms, FilesToReadIn=None, file_extension='dcm', ret
 
 
 def _sort_dicom_slices(dicom_datasets):
+    """
+    sort slices by instance number
+    :param dicom_datasets: list of pydicom files
+    :return: sorted list of pydicom files
+    """
     instance_number = [el.InstanceNumber for el in dicom_datasets]
     sort_ind = np.argsort(instance_number)
     return list(np.array(dicom_datasets)[sort_ind])
@@ -192,10 +200,11 @@ def get_all_files(PathToData, file_extension):
 
 def convert_cartesian_to_spherical(InputCoords):
     """
-    Cartesian coordinates contained as columns [x,y,z] in InputCoords are converted to spherical coordinates.
-    [r, azimuth, elevation]. if r, azimuth, or elevation already exist as column names they are overwritten.
-    The convention used here matches the convention matlab uses; this is because parts of this code were ported
-    from an earlier version in matlab.
+    Converts cartesian coordinates [x,y,z] to spherical coordinates [r, azimuth, elevation].
+    If r, azimuth, or elevation already exist as column names they are overwritten.
+    The convention used here matches the convention
+    `matlab uses <https://www.mathworks.com/help/matlab/ref/cart2sph.html>`_;
+    this is because parts of this code were ported from an earlier version in matlab.
 
     - 0 <= azimuth <= 2*pi
     - 0 <= elevation <= pi
@@ -220,10 +229,11 @@ def convert_cartesian_to_spherical(InputCoords):
 
 def convert_spherical_to_cartesian(InputCoords):
     """
-    converts spherical coordinates in InputCoords to Cartesian and adds cartesian into the returned data frame.
+    Converts spherical coordinates [r, azimuth, elevation] to cartesian coordinates [x,y,z].
     if the cartesian columns 'x', 'y', 'z' already exist, they will be overwritten
 
     :param InputCoords: a data frame containing columns r, azimuth, elevation
+    :returns InputCoords:   same data frame with additional columns [x,y,z]
     """
     if 'x' in InputCoords.columns:
         InputCoords = InputCoords.drop(columns='x')
@@ -252,8 +262,10 @@ def generate_legendre_basis(InputCoords, n_order):
 
     :param InputCoords: a data frame which can contain whatever you want, but MUST contain columns called
         elevation, azimuth, and r
+    :type InputCoords: Dataframe
+    :param n_order: order of harmonic fit
+    :type n_order: int
     :returns legendre_basis: a pandas data frame of size [Ncoords, (n_order +1)**2)]
-
     """
 
     if InputCoords.r.mean() < 10:
@@ -283,6 +295,14 @@ def generate_legendre_basis(InputCoords, n_order):
 
 
 def convert_spherical_harmonics(harmonics, input_format, output_format):
+    """
+    NOT WRITTEN YET! function to convert between different harmonic formalisms
+
+    :param harmonics:
+    :param input_format:
+    :param output_format:
+    :return:
+    """
 
     case_string = input_format + '_' + output_format
     converted_harmonics = harmonics.copy()
@@ -317,6 +337,10 @@ def convert_spherical_harmonics(harmonics, input_format, output_format):
 def plot_MarkerVolume_overlay(MarkerVolumeList, legend=None):  # pragma: no cover
     """
     Plot overlaid 3D scatter plots of the marker positions in each MarkerVolume
+
+    :param MarkerVolumeList: list of MarkerVolume instances
+    :param legend: legend to display on plot
+    :return: None
     """
 
     assert isinstance(MarkerVolumeList, list)
@@ -337,61 +361,22 @@ def plot_MarkerVolume_overlay(MarkerVolumeList, legend=None):  # pragma: no cove
     plt.show()
 
 
-def plot_MarkerVolume_z_hist(MarkerVolume1, MarkerVolume2, z_bins=None):  # pragma: no cover
-    """
-    This will plot a histogram of how many markers are at each z_bin.
-    It is useful to compare two marker volumes and get an idea of which planes there may be missing or extra
-    markers on
-    """
-    if z_bins is None:
-        # first generate some z bins
-        z_hist = np.histogram(MarkerVolume1.MarkerCentroids.z, 100)
-        active_bin_ind = z_hist[0] > (z_hist[0].max() * 0.5)
-        active_bins = z_hist[1][1:][active_bin_ind]
-        bin_spacing = np.diff(active_bins)
-        tiny_bin_ind = bin_spacing < bin_spacing.mean() * 0.5
-        tiny_bin_ind = np.insert(tiny_bin_ind, False, 0)
-        active_bins = active_bins[np.logical_not(tiny_bin_ind)]
-    else:
-        active_bins = z_bins
-    bin_spacing = np.diff(active_bins).mean()
-
-    # now get the number of markers in volume 1
-    n_markers1 = []
-    for bin in active_bins:
-        _n_markers = np.logical_and((MarkerVolume1.MarkerCentroids.z < bin + bin_spacing/2),
-                                    (MarkerVolume1.MarkerCentroids.z > bin - bin_spacing/2))
-        n_markers1.append(np.count_nonzero(_n_markers))
-    # now get the number of markers in volume 2
-    n_markers2 = []
-    for bin in active_bins:
-        _n_markers = np.logical_and((MarkerVolume1.MarkerCentroids.z < bin + bin_spacing/2),
-                                    (MarkerVolume1.MarkerCentroids.z > bin - bin_spacing/2))
-        n_markers2.append(np.count_nonzero(_n_markers))
-
-    print(f'Volume 1 has {np.sum(n_markers1)}. Volume 2 has {np.sum(n_markers2)}')
-
-    # now make a bar plot
-
-    x = np.arange(len(active_bins))  # the label locations
-    width = 0.35  # the width of the bars
-
-    fig, ax = plt.subplots()
-    rects1 = ax.bar(x - width / 2, n_markers1, width, label='V1')
-    rects2 = ax.bar(x + width / 2, n_markers2, width, label='V2')
-    # ax.set_ylabel('Scores')
-    # ax.set_title('Scores by group and gender')
-    x_labels = [f'{el:1.0f}' for el in active_bins]
-    ax.set_xticks(x, x_labels)
-    # ax.legend()
-
-    # ax.bar_label(rects1, padding=3)
-    # ax.bar_label(rects2, padding=3)
-    fig.tight_layout()
-    plt.show()
-
-
 def plot_compressed_MarkerVolumes(MarkerVolumeList, z_max=20, z_min=-20, title=None, legend=None): # pragma: no cover
+    """
+    plot overlay of compressed marker volumes (z coord is ignored)
+
+    :param MarkerVolumeList:  list of MarkerVolume instances
+    :type MarkerVolumeList: list
+    :param z_max: max z data to include
+    :type z_max: float, optional
+    :param z_min: min z data to include
+    :type z_min: float, optional
+    :param title: title of plot
+    :type title: str, optional
+    :param legend: legend of plot
+    :type legend: list, optional
+    :return: None
+    """
 
     fig, axs = plt.subplots(figsize=[8, 8], ncols=1, nrows=1)
     for MarkerVolume in MarkerVolumeList:
@@ -415,10 +400,14 @@ def plot_compressed_MarkerVolumes(MarkerVolumeList, z_max=20, z_min=-20, title=N
 
 def get_gradient_spherical_harmonics(Gx_Harmonics, Gy_Harmonics, Gz_Harmonics):
     """
-    return the gradient spherica harmonics as as pandas series.
-    
-    :param Harmonics: either a pandas series or a path to a csv. If it is already a series we do nothing, but handle
-        this option for cleaner code elsewhere.
+    return the gradient spherical harmonics as as pandas series. this function is simply a clean way to handle
+    the different ways users can specify harmonics to other componets of this code
+
+    :param Harmonics:
+
+    :param Gx_Harmonics: either a pandas series or a path to a csv. If it is already a series we do nothing, but handle
+        this option for cleaner code elsewhere. Gy_Harmonics and Gz_Harmonics are the same
+    :returns: Gx_Harmonics, Gy_Harmonics, Gz_Harmonics as Pandase series
     """
 
     if isinstance(Gx_Harmonics, pd.Series):
@@ -449,6 +438,21 @@ def get_gradient_spherical_harmonics(Gx_Harmonics, Gy_Harmonics, Gz_Harmonics):
 
     return Gx_Harmonics, Gy_Harmonics, Gz_Harmonics
 
+def get_dicom_data(dicom_data):
+    """
+    figures out whether dicom data is a dict or a path to a json file
+    if the latter, reads into  a dict and returns
+    """
+
+    if isinstance(dicom_data, dict):
+        return dicom_data
+    elif isinstance(dicom_data,(pathlib.Path, str)):
+        with open(dicom_data, 'r') as f:
+            dicom_data = json.load(f)
+        return dicom_data
+    else:
+        raise AttributeError(f'could not read in dicom_data of type {type(dicom_data)}')
+
 
 def reconstruct_Bz(harmonics, coords, quantity='uT', r_outer=None):
     """
@@ -462,9 +466,9 @@ def reconstruct_Bz(harmonics, coords, quantity='uT', r_outer=None):
     :param quantity:
         - 'T': return raw field in T
         - 'uT': return field in uT, with A00 set to 0.
-        - 'PPM':
     :param r_outer: optional parameter; if you try to reconstruct points with r > r_outer a warning is thrown
     :type r_outer: float or None
+    :returns Bz_recon: Pandase series with the value of Bz at each element in coords
     """
 
     if not quantity in ['uT', 'T']:
@@ -486,6 +490,8 @@ def reconstruct_Bz(harmonics, coords, quantity='uT', r_outer=None):
         Bz_recon = Bz_recon * 1e6
     elif quantity == 'T':  # raw field in T
         Bz_recon = legendre_recon @ harmonics
+    else:
+        raise NotImplementedError(f'unknown reconstruction option entered: {quantity}')
 
     return Bz_recon
 
@@ -502,32 +508,40 @@ def compare_recon_report_with_ground_truth_report(ground_truth_report, recon_rep
     """
     # direct overlay of real versus recon
     fig, axs = plt.subplots(nrows=2, ncols=2, figsize=[10, 10])
-    axs[0, 0].scatter(ground_truth_report._MatchedMarkerVolume.r_gt, ground_truth_report._MatchedMarkerVolume.abs_dis)
-    axs[0, 0].scatter(recon_report._MatchedMarkerVolume.r_gt, recon_report._MatchedMarkerVolume.abs_dis)
-    axs[0, 0].grid()
+    if ground_truth_report.r_outer == recon_report.r_outer:
+        # then use r_outer to filter the data
+        gt_data = ground_truth_report._extract_data_from_MatchedMarkerVolume(r_max=ground_truth_report.r_outer)
+        recon_data = recon_report._extract_data_from_MatchedMarkerVolume(r_max=recon_report.r_outer)
+    else:
+        gt_data = ground_truth_report._extract_data_from_MatchedMarkerVolume()
+        recon_data = recon_report._extract_data_from_MatchedMarkerVolume()
+
+    axs[0, 0].scatter(gt_data.r_gt, gt_data.abs_dis)
+    axs[0, 0].scatter(recon_data.r_gt, recon_data.abs_dis)
     axs[0, 0].legend(['original_data', 'recon_data'])
     axs[0, 0].set_xlabel('r [mm]')
     axs[0, 0].set_ylabel('absolute distortion [mm]')
 
     # scatter of real versus recon
-    axs[0, 1].scatter(ground_truth_report._MatchedMarkerVolume.abs_dis, recon_report._MatchedMarkerVolume.abs_dis)
-    axs[0, 1].grid()
+    axs[0, 1].scatter(gt_data.abs_dis, recon_data.abs_dis)
     axs[0, 1].set_xlabel('original data')
     axs[0, 1].set_ylabel('recon data')
 
     # box plot of errors
-    error = ground_truth_report._MatchedMarkerVolume.abs_dis - recon_report._MatchedMarkerVolume.abs_dis
+    error = gt_data.abs_dis - recon_data.abs_dis
     axs[1, 0].boxplot(error)
     axs[1, 0].set_ylabel('recon error [mm]')
-    axs[1, 0].grid()
+
 
     # get index of outliers
     outliers_ind = error > tolerance
     print(f'{np.count_nonzero(outliers_ind)} outliers exist, at index {np.where(outliers_ind)}')
     outliers_ind = np.where(outliers_ind)
     for ind in outliers_ind[0]:
-        print(f'index {ind} is at {ground_truth_report._MatchedMarkerVolume.x_gt.iloc[ind]: 1.1f},'
-              f' {ground_truth_report._MatchedMarkerVolume.y_gt.iloc[ind]: 1.1f},'
-              f' {ground_truth_report._MatchedMarkerVolume.z_gt.iloc[ind]: 1.1f}  the value in the ground truth is'
-              f' {ground_truth_report._MatchedMarkerVolume.abs_dis.iloc[ind]: 1.1f}'
-              f' and the value in the reconstructed is {recon_report._MatchedMarkerVolume.abs_dis.iloc[ind]: 1.1f}')
+        print(f'index {ind} is at {gt_data.x_gt.iloc[ind]: 1.1f},'
+              f' {gt_data.y_gt.iloc[ind]: 1.1f},'
+              f' {gt_data.z_gt.iloc[ind]: 1.1f}  the value in the ground truth is'
+              f' {gt_data.abs_dis.iloc[ind]: 1.1f}'
+              f' and the value in the reconstructed is {recon_data.abs_dis.iloc[ind]: 1.1f}')
+
+

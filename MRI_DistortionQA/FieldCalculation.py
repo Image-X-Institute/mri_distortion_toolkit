@@ -2,6 +2,7 @@ import pathlib
 import numpy as np
 import logging
 import json
+from .utilities import get_dicom_data
 
 ch = logging.StreamHandler()
 formatter = logging.Formatter('[%(filename)s: line %(lineno)d %(levelname)8s] %(message)s')
@@ -35,7 +36,7 @@ class ConvertMatchedMarkersToBz:
 
     def __init__(self, MatchedCentroids, dicom_data):
 
-        self.dicom_data = self._get_dicom_data(dicom_data)
+        self.dicom_data = get_dicom_data(dicom_data)
         self.MatchedCentroids = MatchedCentroids
         self.MagneticFields = self.MatchedCentroids[['x_gt', 'y_gt', 'z_gt']].copy()
         self.MagneticFields = self.MagneticFields .rename(columns={"x_gt": "x", "y_gt": "y", "z_gt": "z"})
@@ -45,20 +46,7 @@ class ConvertMatchedMarkersToBz:
         self._check_dicom_data()
         self._calculate_Bz()
 
-    def _get_dicom_data(self, dicom_data):
-        """
-        figures out whether dicom data is a dict or a path to a json file
-        if the latter, reads into  a dict and returns
-        """
 
-        if isinstance(dicom_data, dict):
-            return dicom_data
-        elif isinstance(dicom_data,(pathlib.Path, str)):
-            with open(dicom_data, 'r') as f:
-                dicom_data = json.load(f)
-            return dicom_data
-        else:
-            raise AttributeError(f'could not read in dicom_data of type {type(dicom_data)}')
 
     def _check_dicom_data(self):
         """

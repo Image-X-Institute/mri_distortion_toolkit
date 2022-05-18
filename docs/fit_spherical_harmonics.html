@@ -52,6 +52,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#remaining-harmonics">Remaining harmonics</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#next-steps">Next steps</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#fitting-to-b0-data">Fitting to B0 Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#background-theory">Background theory</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#why-would-i-want-to-fit-spherical-harmonics">Why would I want to fit spherical harmonics?</a></li>
 </ul>
 </li>
@@ -169,6 +170,25 @@
 <span class="n">G_z_Harmonics</span><span class="o">.</span><span class="n">harmonics</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;B0_harmonics.csv&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
+</section>
+<section id="background-theory">
+<h2>Background theory<a class="headerlink" href="#background-theory" title="Permalink to this headline"></a></h2>
+<p>In a <strong>source free</strong> region (no currents, no ferrous material), Maxwell’s equation for a static field are:</p>
+<p>$$
+\nabla . \overrightarrow{! B} =0 \
+\nabla \times \overrightarrow{! B} =0
+$$</p>
+<p>In such a situation, the magnetic field can be represented by a scalar potential analogous to the vector field in electrostatics.</p>
+<p>$$
+\overrightarrow{! B} = \nabla f \
+\nabla . \overrightarrow{! B} = \nabla(\nabla f)=0 \
+\nabla^2 f= 0
+$$
+This last equation is <a class="reference external" href="https://en.wikipedia.org/wiki/Laplace%27s_equation">Laplace’s equation</a>! It <a class="reference external" href="https://mathworld.wolfram.com/LaplacesEquationSphericalCoordinates.html">can be shown</a> that the general solution to Laplace’s equation in spherical coordinates is an infinite expansion of spherical harmonics:</p>
+<p>$$
+f = \Sigma
+$$</p>
+<p>As such, <strong>some infinite combination of spherical harmonics is the <u>exact</u> solution to any real magnetic field in a source free region</strong>.</p>
 </section>
 <section id="why-would-i-want-to-fit-spherical-harmonics">
 <h2>Why would I want to fit spherical harmonics?<a class="headerlink" href="#why-would-i-want-to-fit-spherical-harmonics" title="Permalink to this headline"></a></h2>

@@ -33,3 +33,4 @@ G_z_Harmonics.harmonics.to_csv('G_z_harmonics.csv')
 G_x_Harmonics.plot_cut_planes()
 G_x_Harmonics.plot_harmonics_pk_pk(cut_off=.01)
 G_x_Harmonics.print_key_harmonics(cut_off=.01)
+
