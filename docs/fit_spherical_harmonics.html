@@ -1,74 +1,36 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
   <title>Spherical Harmonics &mdash; MRI_DistortionQA  documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"processClass": "tex2jax_process|mathjax_process|math|output_area"}})</script>
         <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
-        <script >mermaid.initialize({startOnLoad:true});</script>
-    
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-    
+        <script>mermaid.initialize({startOnLoad:true});</script>
+    <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Reporting" href="reporting.html" />
     <link rel="prev" title="Field Calculation" href="field_calculation.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
             <a href="index.html" class="icon icon-home"> MRI_DistortionQA
-          
-
-          
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -76,19 +38,8 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="examples.html">Worked Examples</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="Preamble.html">Preamble</a></li>
@@ -111,77 +62,35 @@
 <li class="toctree-l1"><a class="reference internal" href="code_docs.html">Code Documentation</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">MRI_DistortionQA</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-        
           <li><a href="examples.html">Worked Examples</a> &raquo;</li>
-        
       <li>Spherical Harmonics</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-          
             <a href="_sources/fit_spherical_harmonics.md.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="tex2jax_ignore mathjax_ignore section" id="spherical-harmonics">
-<h1>Spherical Harmonics<a class="headerlink" href="#spherical-harmonics" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="simple-example">
-<h2>Simple example<a class="headerlink" href="#simple-example" title="Permalink to this headline">¶</a></h2>
+             
+  <section id="spherical-harmonics">
+<h1>Spherical Harmonics<a class="headerlink" href="#spherical-harmonics" title="Permalink to this headline"></a></h1>
+<section id="simple-example">
+<h2>Simple example<a class="headerlink" href="#simple-example" title="Permalink to this headline"></a></h2>
 <p>Create a new file ‘fit_harmonics.py’ and copy the below code into it.</p>
 <p>Note that although this code looks very long, it is only</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MRI_DistortionQA.FieldAnalysis</span> <span class="kn">import</span> <span class="n">SphericalHarmonicFit</span>
@@ -206,17 +115,17 @@
 
 <span class="c1"># some plotting examples</span>
 <span class="n">G_x_Harmonics</span><span class="o">.</span><span class="n">plot_cut_planes</span><span class="p">()</span>
-<span class="n">G_x_Harmonics</span><span class="o">.</span><span class="n">plot_harmonics_pk_pk</span><span class="p">(</span><span class="n">cut_off</span><span class="o">=.</span><span class="mi">01</span><span class="p">)</span>
-<span class="n">G_x_Harmonics</span><span class="o">.</span><span class="n">print_key_harmonics</span><span class="p">(</span><span class="n">cut_off</span><span class="o">=.</span><span class="mi">01</span><span class="p">)</span>
+<span class="n">G_x_Harmonics</span><span class="o">.</span><span class="n">plot_harmonics_pk_pk</span><span class="p">(</span><span class="n">cut_off</span><span class="o">=</span><span class="mf">.01</span><span class="p">)</span>
+<span class="n">G_x_Harmonics</span><span class="o">.</span><span class="n">print_key_harmonics</span><span class="p">(</span><span class="n">cut_off</span><span class="o">=</span><span class="mf">.01</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><img alt="" src="_images/x_gradient_cut_planes.png" /></p>
 <p><strong>Reconstructed fields in each cardinal plane for the X gradient coil. Note that there is strong variantion in X (as expected) and the field is close to 0 in the ZY plane (as expected)</strong></p>
 <p><img alt="" src="_images/x_gradient_harmonics_bar.png" /></p>
 <p><strong>This figure shows the dominant harmonics for the X gradient. If you are a harmonics nerd, you will know that the A11 harmonic corresponds to a perfect X gradient field; therefore it is gratifying to see that this is by far the most strongly expressed harmonic for the X gradient!</strong></p>
-</div>
-<div class="section" id="explaining-the-code-output">
-<h2>Explaining the code output:<a class="headerlink" href="#explaining-the-code-output" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="explaining-the-code-output">
+<h2>Explaining the code output:<a class="headerlink" href="#explaining-the-code-output" title="Permalink to this headline"></a></h2>
 <p>The code probably printed the following to the screen:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">FieldAnalysis</span><span class="o">.</span><span class="n">py</span><span class="p">:</span> <span class="n">line</span> <span class="mi">86</span>  <span class="n">WARNING</span><span class="p">]</span> <span class="nb">input</span> <span class="n">sample</span> <span class="n">points</span> <span class="n">do</span> <span class="ow">not</span> <span class="n">appear</span> <span class="n">to</span> <span class="n">cover</span> <span class="n">a</span> <span class="n">full</span> <span class="n">sphere</span>
 <span class="n">Initial</span> <span class="n">pk</span><span class="o">-</span><span class="n">pk</span><span class="p">:</span>        <span class="mf">693.401</span> <span class="n">μT</span>
@@ -229,9 +138,9 @@
 <li><p>[ ] ToDo: autoamate this check!!</p></li>
 </ul>
 <p>The second part is telling us the peak-to-peak perturbation over the surface of r_outer (150 mm in this case). We would like to see that the reconstructed pk-pk closely matches the input, and that the residual pk-pk is low relative to the total. In this case, the reconstructed pk-pk is within 0.4 μT and the residual is &lt; 1%, so the fit is pretty good!</p>
-</div>
-<div class="section" id="remaining-harmonics">
-<h2>Remaining harmonics<a class="headerlink" href="#remaining-harmonics" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="remaining-harmonics">
+<h2>Remaining harmonics<a class="headerlink" href="#remaining-harmonics" title="Permalink to this headline"></a></h2>
 <p>Now we have the X-harmonics; we need to do the same thing for the other two gradient coils:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># G_y Harmonics</span>
 <span class="n">GradYdata</span> <span class="o">=</span> <span class="n">FieldData</span><span class="p">[[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;B_Gy&#39;</span><span class="p">]]</span>
@@ -246,13 +155,13 @@
 <span class="n">G_z_Harmonics</span><span class="o">.</span><span class="n">harmonics</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;G_z_harmonics.csv&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="next-steps">
-<h2>Next steps<a class="headerlink" href="#next-steps" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="next-steps">
+<h2>Next steps<a class="headerlink" href="#next-steps" title="Permalink to this headline"></a></h2>
 <p>You are ready to move onto <a class="reference external" href="https://acrf-image-x-institute.github.io/MRI_DistortionQA/reporting.html">Reporting</a>, or you can read more about spherical harmonics below!</p>
-</div>
-<div class="section" id="fitting-to-b0-data">
-<h2>Fitting to B0 Data<a class="headerlink" href="#fitting-to-b0-data" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="fitting-to-b0-data">
+<h2>Fitting to B0 Data<a class="headerlink" href="#fitting-to-b0-data" title="Permalink to this headline"></a></h2>
 <p>In <a class="reference external" href="https://acrf-image-x-institute.github.io/MRI_DistortionQA/marker_matching.html">marker matching</a> step, we saw that by including ‘reverse’ gradient data, we can estimate both gradient non linearity and the B0 field. This section assumes you have carried out this part of the tutorial, and demonstrates the creation of harmonics for B0.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># B0 Harmonics</span>
 <span class="n">GradZdata</span> <span class="o">=</span> <span class="n">FieldData</span><span class="p">[[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;B0&#39;</span><span class="p">]]</span>
@@ -261,73 +170,65 @@
 <span class="n">G_z_Harmonics</span><span class="o">.</span><span class="n">harmonics</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;B0_harmonics.csv&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="background-theory">
-<h2>Background theory<a class="headerlink" href="#background-theory" title="Permalink to this headline">¶</a></h2>
-<p>In a <strong>source free</strong> region (essentially: no currents, no ferrous material), a magnetic field can be represented according to Laplaces equation:</p>
-<div class="math notranslate nohighlight">
-\[
+</section>
+<section id="background-theory">
+<h2>Background theory<a class="headerlink" href="#background-theory" title="Permalink to this headline"></a></h2>
+<p>In a <strong>source free</strong> region (no currents, no ferrous material), Maxwell’s equation for a static field are:</p>
+<p>$$
+\nabla . \overrightarrow{! B} =0 \
+\nabla \times \overrightarrow{! B} =0
+$$</p>
+<p>In such a situation, the magnetic field can be represented by a scalar potential analogous to the vector field in electrostatics.</p>
+<p>$$
+\overrightarrow{! B} = \nabla f \
+\nabla . \overrightarrow{! B} = \nabla(\nabla f)=0 \
 \nabla^2 f= 0
-\]</div>
-<p>It <a class="reference external" href="https://en.wikipedia.org/wiki/Spherical_harmonics">can be shown</a> that the solution to Laplace’s equation is an infinite expansion of spherical harmonics.</p>
-<p>As such, some infinite combination of spherical harmonics is the <strong>exact</strong> solution to any real magnetic field in a source free region.</p>
-</div>
-<div class="section" id="why-would-i-want-to-fit-spherical-harmonics">
-<h2>Why would I want to fit spherical harmonics?<a class="headerlink" href="#why-would-i-want-to-fit-spherical-harmonics" title="Permalink to this headline">¶</a></h2>
+$$
+This last equation is <a class="reference external" href="https://en.wikipedia.org/wiki/Laplace%27s_equation">Laplace’s equation</a>! It <a class="reference external" href="https://mathworld.wolfram.com/LaplacesEquationSphericalCoordinates.html">can be shown</a> that the general solution to Laplace’s equation in spherical coordinates is an infinite expansion of spherical harmonics:</p>
+<p>$$
+f = \Sigma
+$$</p>
+<p>As such, <strong>some infinite combination of spherical harmonics is the <u>exact</u> solution to any real magnetic field in a source free region</strong>.</p>
+</section>
+<section id="why-would-i-want-to-fit-spherical-harmonics">
+<h2>Why would I want to fit spherical harmonics?<a class="headerlink" href="#why-would-i-want-to-fit-spherical-harmonics" title="Permalink to this headline"></a></h2>
 <p>Having the spherical harmonic representation of a given field allows one to reconstruct that field at any location in space^. They also enable an experienced engineer to quickly understand what nature of field they are dealing with. In addition, spherical harmonics are used as an input to many distortion correction algorithms.</p>
 <blockquote>
 <div><p>^ <strong>But be careful!</strong> In practice, if you fit spherical harmonics based on a sphere of data at r_outer, you can trust the reconstruction anywhere inside this sphere. Data outside the sphere can also be reconstructed, but the further away you move from r_outer, the less you should trust your reconstruction.
 This is because a n<sup>th</sup> order harmonic scales as r<sub>n</sub>. For high order harmonics, this means that while they may be barely expressed at r_outer, they can become significant very quickly!</p>
 </div></blockquote>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="reporting.html" class="btn btn-neutral float-right" title="Reporting" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="field_calculation.html" class="btn btn-neutral float-left" title="Field Calculation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="reporting.html" class="btn btn-neutral float-right" title="Reporting" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2021, Brendan Whelan(s).
-
-    </p>
+    <p>&#169; Copyright 2021, Brendan Whelan(s).</p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

@@ -518,14 +518,12 @@ def compare_recon_report_with_ground_truth_report(ground_truth_report, recon_rep
 
     axs[0, 0].scatter(gt_data.r_gt, gt_data.abs_dis)
     axs[0, 0].scatter(recon_data.r_gt, recon_data.abs_dis)
-    axs[0, 0].grid()
     axs[0, 0].legend(['original_data', 'recon_data'])
     axs[0, 0].set_xlabel('r [mm]')
     axs[0, 0].set_ylabel('absolute distortion [mm]')
 
     # scatter of real versus recon
     axs[0, 1].scatter(gt_data.abs_dis, recon_data.abs_dis)
-    axs[0, 1].grid()
     axs[0, 1].set_xlabel('original data')
     axs[0, 1].set_ylabel('recon data')
 
@@ -533,7 +531,7 @@ def compare_recon_report_with_ground_truth_report(ground_truth_report, recon_rep
     error = gt_data.abs_dis - recon_data.abs_dis
     axs[1, 0].boxplot(error)
     axs[1, 0].set_ylabel('recon error [mm]')
-    axs[1, 0].grid()
+
 
     # get index of outliers
     outliers_ind = error > tolerance
