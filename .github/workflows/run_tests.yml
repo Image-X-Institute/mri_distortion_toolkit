@@ -29,4 +29,5 @@ jobs:
         pip install -r dev_requirements.txt
     - name: Test with pytest
       run: |
-        pytest
+        coverage run -m pytest
+        coverage-badge -f -o docsrc/__resources/coverage.svg
