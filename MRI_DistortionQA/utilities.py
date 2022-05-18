@@ -489,25 +489,32 @@ def compare_recon_report_with_ground_truth_report(ground_truth_report, recon_rep
     :param ground_truth_report: Reports.MRI_QA_recon_reporter instance
     :param recon_report: Reports.MRI_QA_recon_reporter instance
     :param tolerance: tolerance in mm
-    :return None:
     """
     # direct overlay of real versus recon
     fig, axs = plt.subplots(nrows=2, ncols=2, figsize=[10, 10])
-    axs[0, 0].scatter(ground_truth_report._MatchedMarkerVolume.r_gt, ground_truth_report._MatchedMarkerVolume.abs_dis)
-    axs[0, 0].scatter(recon_report._MatchedMarkerVolume.r_gt, recon_report._MatchedMarkerVolume.abs_dis)
+    if ground_truth_report.r_outer == recon_report.r_outer:
+        # then use r_outer to filter the data
+        gt_data = ground_truth_report._extract_data_from_MatchedMarkerVolume(r_max=ground_truth_report.r_outer)
+        recon_data = recon_report._extract_data_from_MatchedMarkerVolume(r_max=recon_report.r_outer)
+    else:
+        gt_data = ground_truth_report._extract_data_from_MatchedMarkerVolume()
+        recon_data = recon_report._extract_data_from_MatchedMarkerVolume()
+
+    axs[0, 0].scatter(gt_data.r_gt, gt_data.abs_dis)
+    axs[0, 0].scatter(recon_data.r_gt, recon_data.abs_dis)
     axs[0, 0].grid()
     axs[0, 0].legend(['original_data', 'recon_data'])
     axs[0, 0].set_xlabel('r [mm]')
     axs[0, 0].set_ylabel('absolute distortion [mm]')
 
     # scatter of real versus recon
-    axs[0, 1].scatter(ground_truth_report._MatchedMarkerVolume.abs_dis, recon_report._MatchedMarkerVolume.abs_dis)
+    axs[0, 1].scatter(gt_data.abs_dis, recon_data.abs_dis)
     axs[0, 1].grid()
     axs[0, 1].set_xlabel('original data')
     axs[0, 1].set_ylabel('recon data')
 
     # box plot of errors
-    error = ground_truth_report._MatchedMarkerVolume.abs_dis - recon_report._MatchedMarkerVolume.abs_dis
+    error = gt_data.abs_dis - recon_data.abs_dis
     axs[1, 0].boxplot(error)
     axs[1, 0].set_ylabel('recon error [mm]')
     axs[1, 0].grid()
@@ -517,8 +524,8 @@ def compare_recon_report_with_ground_truth_report(ground_truth_report, recon_rep
     print(f'{np.count_nonzero(outliers_ind)} outliers exist, at index {np.where(outliers_ind)}')
     outliers_ind = np.where(outliers_ind)
     for ind in outliers_ind[0]:
-        print(f'index {ind} is at {ground_truth_report._MatchedMarkerVolume.x_gt.iloc[ind]: 1.1f},'
-              f' {ground_truth_report._MatchedMarkerVolume.y_gt.iloc[ind]: 1.1f},'
-              f' {ground_truth_report._MatchedMarkerVolume.z_gt.iloc[ind]: 1.1f}  the value in the ground truth is'
-              f' {ground_truth_report._MatchedMarkerVolume.abs_dis.iloc[ind]: 1.1f}'
-              f' and the value in the reconstructed is {recon_report._MatchedMarkerVolume.abs_dis.iloc[ind]: 1.1f}')
+        print(f'index {ind} is at {gt_data.x_gt.iloc[ind]: 1.1f},'
+              f' {gt_data.y_gt.iloc[ind]: 1.1f},'
+              f' {gt_data.z_gt.iloc[ind]: 1.1f}  the value in the ground truth is'
+              f' {gt_data.abs_dis.iloc[ind]: 1.1f}'
+              f' and the value in the reconstructed is {recon_data.abs_dis.iloc[ind]: 1.1f}')
