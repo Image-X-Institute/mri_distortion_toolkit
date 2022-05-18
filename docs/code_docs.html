@@ -47,6 +47,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#module-MRI_DistortionQA.FieldAnalysis">FieldAnalysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-MRI_DistortionQA.Reports">Reports</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-MRI_DistortionQA.utilities">utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-MRI_DistortionQA.calculate_harmonics">calculate_harmonics</a></li>
 </ul>
 </li>
 </ul>
@@ -674,6 +675,33 @@ elevation, azimuth, and r</p></li>
 </dd>
 <dt class="field-even">Returns Bz_recon</dt>
 <dd class="field-even"><p>Pandase series with the value of Bz at each element in coords</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-MRI_DistortionQA.calculate_harmonics">
+<span id="calculate-harmonics"></span><h2>calculate_harmonics<a class="headerlink" href="#module-MRI_DistortionQA.calculate_harmonics" title="Permalink to this headline"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="MRI_DistortionQA.calculate_harmonics.calculate_harmonics">
+<span class="sig-prename descclassname"><span class="pre">MRI_DistortionQA.calculate_harmonics.</span></span><span class="sig-name descname"><span class="pre">calculate_harmonics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ground_truth_volume</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distorted_volume</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distorted_volume_rev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dicom_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.calculate_harmonics.calculate_harmonics" title="Permalink to this definition"></a></dt>
+<dd><p>this function is essentially a wrapper of convenience. Given a ground truth MarkerVolume
+and a forward (distorted) MarkerVolume, it will calculate and return the Gx, Gy, and Gz
+harmonics. Optionally, you can also pass a back MarkerVolume (reverse gradient) in which case
+it will also calcualte the B0 harmonics. Basically this makes your life easier, but you give up fine control over
+the marker matching, B calc, and harmonic fitting steps.  I’d put it inside utilities, but that creates circular
+imports which I suspect is bad…</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ground_truth_volume</strong> (<em>object</em>) – ground truth MarkerVolume</p></li>
+<li><p><strong>distorted_volume</strong> (<em>object</em>) – distorted MarkerVolume</p></li>
+<li><p><strong>distorted_volume_rev</strong> (<em>object</em><em>, </em><em>optional</em>) – distorted MarkerVolume taken with reverse gradient</p></li>
+<li><p><strong>n_order</strong> (<em>int</em><em>, </em><em>optional</em>) – order of harmonic fit</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>B0_Harmonics, G_x_Harmonics, G_y_Harmonics, G_z_Harmonics</p>
 </dd>
 </dl>
 </dd></dl>
