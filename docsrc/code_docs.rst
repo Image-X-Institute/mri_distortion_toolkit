@@ -31,3 +31,10 @@ utilities
 
 .. automodule:: MRI_DistortionQA.utilities
     :members:
+
+calculate_harmonics
+-------------------
+
+.. automodule:: MRI_DistortionQA.calculate_harmonics
+    :members:
+
