@@ -13,6 +13,7 @@ from scipy.special import lpmv
 import pandas as pd
 from matplotlib import pyplot as plt
 import pydicom
+import json
 
 
 ch = logging.StreamHandler()
@@ -437,6 +438,21 @@ def get_gradient_spherical_harmonics(Gx_Harmonics, Gy_Harmonics, Gz_Harmonics):
 
     return Gx_Harmonics, Gy_Harmonics, Gz_Harmonics
 
+def get_dicom_data(dicom_data):
+    """
+    figures out whether dicom data is a dict or a path to a json file
+    if the latter, reads into  a dict and returns
+    """
+
+    if isinstance(dicom_data, dict):
+        return dicom_data
+    elif isinstance(dicom_data,(pathlib.Path, str)):
+        with open(dicom_data, 'r') as f:
+            dicom_data = json.load(f)
+        return dicom_data
+    else:
+        raise AttributeError(f'could not read in dicom_data of type {type(dicom_data)}')
+
 
 def reconstruct_Bz(harmonics, coords, quantity='uT', r_outer=None):
     """
@@ -529,3 +545,5 @@ def compare_recon_report_with_ground_truth_report(ground_truth_report, recon_rep
               f' {gt_data.z_gt.iloc[ind]: 1.1f}  the value in the ground truth is'
               f' {gt_data.abs_dis.iloc[ind]: 1.1f}'
               f' and the value in the reconstructed is {recon_data.abs_dis.iloc[ind]: 1.1f}')
+
+
