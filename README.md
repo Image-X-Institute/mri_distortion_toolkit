@@ -1,6 +1,8 @@
 # MRI_DistortionQA  
 ![](docsrc/__resources/coverage.svg) ![](docsrc/__resources/interrogate.svg) ![](https://github.com/ACRF-Image-X-Institute/MRI_DistortionQA/blob/main/.github/workflows/run_tests.yml/coverage.svg)
 
+![example workflow](https://github.com/ACRF-Image-X-Institute/MRI_DistortionQA/actions/workflows/run_tests.yml/badge.svg)
+
 **Authors:** Brendan Whelan, Paul Liu, Shanshan Shan
 
 This code enables characterization and reporting of geometric distortion in Magnetic Resonance Imaging. The basic end-to-end workflow is below, but all steps have well defined input/output so you can use any part of this code independently from the other parts. For a tutorial on each step, click on the diagram below. For an example of our automated reporting template see [here](https://acrf-image-x-institute.github.io/MRI_DistortionQA/_static/MR_QA_report_12_05_2022.html)
