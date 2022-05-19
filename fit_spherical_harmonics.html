@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Spherical Harmonics &mdash; MRI_DistortionQA  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+        <script>mermaid.initialize({startOnLoad:true});</script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Reporting" href="reporting.html" />
+    <link rel="prev" title="Field Calculation" href="field_calculation.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> MRI_DistortionQA
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="examples.html">Worked Examples</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="Preamble.html">Preamble</a></li>
+<li class="toctree-l2"><a class="reference internal" href="marker_extraction.html">Marker Extraction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="marker_matching.html">Marker Matching</a></li>
+<li class="toctree-l2"><a class="reference internal" href="field_calculation.html">Field Calculation</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Spherical Harmonics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#simple-example">Simple example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#explaining-the-code-output">Explaining the code output:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#remaining-harmonics">Remaining harmonics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#the-easy-way">The easy way…</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#next-steps">Next steps</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="reporting.html">Reporting</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="code_docs.html">Code Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">MRI_DistortionQA</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="examples.html">Worked Examples</a> &raquo;</li>
+      <li>Spherical Harmonics</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/fit_spherical_harmonics.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="spherical-harmonics">
+<h1>Spherical Harmonics<a class="headerlink" href="#spherical-harmonics" title="Permalink to this headline"></a></h1>
+<section id="simple-example">
+<h2>Simple example<a class="headerlink" href="#simple-example" title="Permalink to this headline"></a></h2>
+<p>Create a new file ‘fit_harmonics.py’ and copy the below code into it.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MRI_DistortionQA.FieldAnalysis</span> <span class="kn">import</span> <span class="n">SphericalHarmonicFit</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="n">FieldData</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;Bfields.csv&#39;</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="s2">&quot;columns&quot;</span><span class="p">)</span>
+<span class="c1"># load previously saved data</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">This data contains columns [&#39;x&#39;, &#39;y&#39;, &#39;z&#39;, &#39;B_Gx&#39;, &#39;B_Gy&#39;, &#39;B_Gz&#39;]</span>
+<span class="sd">but the spherical harmonics code expects to receieve [x, y, z, Bz]</span>
+<span class="sd">therefore, we will need to create a new dataframe with appropriately named columns</span>
+<span class="sd">for each field we want to fit to:</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="n">n_order</span> <span class="o">=</span> <span class="mi">8</span>
+<span class="c1"># G_x Harmonics</span>
+<span class="n">GradXdata</span> <span class="o">=</span> <span class="n">FieldData</span><span class="p">[[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;B_Gx&#39;</span><span class="p">]]</span>
+<span class="n">GradXdata</span> <span class="o">=</span> <span class="n">GradXdata</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;B_Gx&quot;</span><span class="p">:</span> <span class="s2">&quot;Bz&quot;</span><span class="p">})</span>  <span class="c1"># spherical harmonics code expects to receieve one field called Bz</span>
+<span class="n">G_x_Harmonics</span> <span class="o">=</span> <span class="n">SphericalHarmonicFit</span><span class="p">(</span><span class="n">GradXdata</span><span class="p">,</span> <span class="n">n_order</span><span class="o">=</span><span class="n">n_order</span><span class="p">,</span> <span class="n">r_outer</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+<span class="n">G_x_Harmonics</span><span class="o">.</span><span class="n">harmonics</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;G_x_harmonics.csv&#39;</span><span class="p">)</span>
+
+<span class="c1"># some plotting examples</span>
+<span class="n">G_x_Harmonics</span><span class="o">.</span><span class="n">plot_cut_planes</span><span class="p">()</span>
+<span class="n">G_x_Harmonics</span><span class="o">.</span><span class="n">plot_harmonics_pk_pk</span><span class="p">(</span><span class="n">cut_off</span><span class="o">=</span><span class="mf">.01</span><span class="p">)</span>
+<span class="n">G_x_Harmonics</span><span class="o">.</span><span class="n">print_key_harmonics</span><span class="p">(</span><span class="n">cut_off</span><span class="o">=</span><span class="mf">.01</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><img alt="" src="_images/x_gradient_cut_planes.png" /></p>
+<p><strong>Reconstructed fields in each cardinal plane for the X gradient coil. Note that there is strong variantion in X (as expected) and the field is close to 0 in the ZY plane (as expected)</strong></p>
+<p><img alt="" src="_images/x_gradient_harmonics_bar.png" /></p>
+<p><strong>This figure shows the dominant harmonics for the X gradient. If you are a harmonics nerd, you will know that the A11 harmonic corresponds to a perfect X gradient field; therefore it is gratifying to see that this is by far the most strongly expressed harmonic for the X gradient!</strong></p>
+</section>
+<section id="explaining-the-code-output">
+<h2>Explaining the code output:<a class="headerlink" href="#explaining-the-code-output" title="Permalink to this headline"></a></h2>
+<p>The code probably printed the following to the screen:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">FieldAnalysis</span><span class="o">.</span><span class="n">py</span><span class="p">:</span> <span class="n">line</span> <span class="mi">86</span>  <span class="n">WARNING</span><span class="p">]</span> <span class="nb">input</span> <span class="n">sample</span> <span class="n">points</span> <span class="n">do</span> <span class="ow">not</span> <span class="n">appear</span> <span class="n">to</span> <span class="n">cover</span> <span class="n">a</span> <span class="n">full</span> <span class="n">sphere</span>
+<span class="n">Initial</span> <span class="n">pk</span><span class="o">-</span><span class="n">pk</span><span class="p">:</span>        <span class="mf">693.401</span> <span class="n">μT</span>
+<span class="n">Reconstructed</span> <span class="n">pk</span><span class="o">-</span><span class="n">pk</span><span class="p">:</span>  <span class="mf">693.795</span> <span class="n">μT</span>
+<span class="n">Residual</span> <span class="n">pk</span><span class="o">-</span><span class="n">pk</span><span class="p">:</span>       <span class="mf">2.023</span> <span class="n">μT</span>
+</pre></div>
+</div>
+<p>The warning here is telling us that the sample points do not appear to cover a full sphere. We can ignore this in situations where we are confident that we have sufficient sampling of points for the order of harmonics we are fitting.</p>
+<ul class="simple">
+<li><p>[ ] ToDo: automate this check!!</p></li>
+</ul>
+<p>The second part is telling us the peak-to-peak perturbation over the surface of r_outer (150 mm in this case). We would like to see that the reconstructed pk-pk closely matches the input, and that the residual pk-pk is low relative to the total. In this case, the reconstructed pk-pk is within 0.4 μT and the residual is &lt; 1%, so the fit is pretty good!</p>
+</section>
+<section id="remaining-harmonics">
+<h2>Remaining harmonics<a class="headerlink" href="#remaining-harmonics" title="Permalink to this headline"></a></h2>
+<p>Now we have the X-harmonics; we need to do the same thing for the other two gradient coils:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># G_y Harmonics</span>
+<span class="n">GradYdata</span> <span class="o">=</span> <span class="n">FieldData</span><span class="p">[[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;B_Gy&#39;</span><span class="p">]]</span>
+<span class="n">GradYdata</span> <span class="o">=</span> <span class="n">GradYdata</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;B_Gy&quot;</span><span class="p">:</span> <span class="s2">&quot;Bz&quot;</span><span class="p">})</span>
+<span class="n">G_y_Harmonics</span> <span class="o">=</span> <span class="n">SphericalHarmonicFit</span><span class="p">(</span><span class="n">GradYdata</span><span class="p">,</span> <span class="n">n_order</span><span class="o">=</span><span class="n">n_order</span><span class="p">,</span> <span class="n">r_outer</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+<span class="n">G_y_Harmonics</span><span class="o">.</span><span class="n">harmonics</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;G_y_harmonics.csv&#39;</span><span class="p">)</span>
+
+<span class="c1"># G_z Harmonics</span>
+<span class="n">GradZdata</span> <span class="o">=</span> <span class="n">FieldData</span><span class="p">[[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;B_Gz&#39;</span><span class="p">]]</span>
+<span class="n">GradZdata</span> <span class="o">=</span> <span class="n">GradZdata</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;B_Gz&quot;</span><span class="p">:</span> <span class="s2">&quot;Bz&quot;</span><span class="p">})</span>
+<span class="n">G_z_Harmonics</span> <span class="o">=</span> <span class="n">SphericalHarmonicFit</span><span class="p">(</span><span class="n">GradZdata</span><span class="p">,</span> <span class="n">n_order</span><span class="o">=</span><span class="n">n_order</span><span class="p">,</span> <span class="n">r_outer</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+<span class="n">G_z_Harmonics</span><span class="o">.</span><span class="n">harmonics</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;G_z_harmonics.csv&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="the-easy-way">
+<h2>The easy way…<a class="headerlink" href="#the-easy-way" title="Permalink to this headline"></a></h2>
+<p>Calculating harmonics from marker volumes involves three steps:</p>
+<ol class="arabic simple">
+<li><p>Matching the volumes</p></li>
+<li><p>Calculating fields from the markers</p></li>
+<li><p>Calculating harmonics from the fields</p></li>
+</ol>
+<p>The way we just showed you gives you a lot of fine control over every step. However, if you are willing to give up this control, we have written a wrapper function that allows you to do this all in one step:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MRI_DistortionQA.MarkerAnalysis</span> <span class="kn">import</span> <span class="n">MarkerVolume</span>
+<span class="kn">from</span> <span class="nn">MRI_DistortionQA</span> <span class="kn">import</span> <span class="n">calculate_harmonics</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+
+<span class="c1"># download example data and unzip:</span>
+<span class="c1"># https://cloudstor.aarnet.edu.au/plus/s/Wm9vndV47u941JU</span>
+<span class="n">data_loc</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;C:\Users\Brendan\Downloads\MRI_distortion_QA_sample_data(2)\MRI_distortion_QA_sample_data&#39;</span><span class="p">)</span>
+<span class="c1"># ^^ update to where you put the sample data!!</span>
+
+<span class="c1"># distorted centroids</span>
+<span class="n">distorted_volume</span> <span class="o">=</span> <span class="n">MarkerVolume</span><span class="p">(</span><span class="n">data_loc</span> <span class="o">/</span> <span class="s1">&#39;MR&#39;</span> <span class="o">/</span> <span class="s1">&#39;04 gre_trans_AP_330&#39;</span> <span class="o">/</span> <span class="s1">&#39;slicer_centroids.mrk.json&#39;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="c1"># ground truth centroids</span>
+<span class="n">ground_truth_volume</span> <span class="o">=</span> <span class="n">MarkerVolume</span><span class="p">(</span><span class="n">data_loc</span> <span class="o">/</span> <span class="s1">&#39;CT&#39;</span> <span class="o">/</span> <span class="s1">&#39;slicer_centroids.mrk.json&#39;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">r_max</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+<span class="n">dicom_data_loc</span> <span class="o">=</span> <span class="n">data_loc</span> <span class="o">/</span> <span class="s1">&#39;MR&#39;</span> <span class="o">/</span> <span class="s1">&#39;04 gre_trans_AP_330&#39;</span> <span class="o">/</span> <span class="s1">&#39;dicom_data.json&#39;</span>  <span class="c1"># previosly saved from a MarkerVolume</span>
+
+<span class="n">B0_Harmonics</span><span class="p">,</span> <span class="n">G_x_Harmonics</span><span class="p">,</span> <span class="n">G_y_Harmonics</span><span class="p">,</span> <span class="n">G_z_Harmonics</span> <span class="o">=</span> 	<span class="n">calculate_harmonics</span><span class="p">(</span><span class="n">ground_truth_volume</span><span class="p">,</span> <span class="n">distorted_volume</span><span class="p">,</span> <span class="n">dicom_data</span><span class="o">=</span><span class="n">dicom_data_loc</span><span class="p">)</span>
+<span class="c1"># note that B0_harmonics is None as we did not provide distorted_volume_rev to calculate_harmonics</span>
+</pre></div>
+</div>
+</section>
+<section id="next-steps">
+<h2>Next steps<a class="headerlink" href="#next-steps" title="Permalink to this headline"></a></h2>
+<p>You are ready to move onto <a class="reference external" href="https://acrf-image-x-institute.github.io/MRI_DistortionQA/reporting.html">Reporting</a>!</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="field_calculation.html" class="btn btn-neutral float-left" title="Field Calculation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="reporting.html" class="btn btn-neutral float-right" title="Reporting" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Brendan Whelan(s).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
