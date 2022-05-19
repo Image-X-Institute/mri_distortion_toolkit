@@ -8,6 +8,7 @@ import pandas as pd
 this_dir = Path(__file__).parent
 sys.path.insert(0, str(this_dir.parent))
 from MRI_DistortionQA.MarkerAnalysis import MarkerVolume, MatchedMarkerVolumes
+from MRI_DistortionQA.utilities import get_dicom_data
 
 '''
 the below was conceived so we could have a more detailed test data directory and only run some tests if it is 
@@ -25,6 +26,7 @@ def test_dicom_data_read_in():
     - tests that the dicom data exists and frequency encoding direction is correctly extracted
     - tests that we can export this data to slicer format, read it back in, and that those two datasets are correctly
         matched
+    - tests that we can export and read back in the dicom_data
     """
 
     volume = MarkerVolume((this_dir / 'test_data' / 'dicom_files').resolve())
@@ -34,7 +36,10 @@ def test_dicom_data_read_in():
     assert volume.dicom_data is not None
     assert volume.dicom_data['freq_encode_direction'] == 'x'
 
-    volume.export_to_slicer(this_dir / 'test_data',filename='dicom_export_test')
+    volume.export_to_slicer(this_dir / 'test_data', filename='dicom_export_test')
+    volume.save_dicom_data(this_dir / 'test_data', filename='dicom_data_export_test')
+    new_dicom_data = get_dicom_data(this_dir / 'test_data' / 'dicom_data_export_test.json')
+    assert new_dicom_data == volume.dicom_data
     volume2 = MarkerVolume(str(this_dir / 'test_data' / 'dicom_export_test.mrk.json'))
     assert np.allclose(volume.MarkerCentroids, volume2.MarkerCentroids, rtol=1e-01, atol=1e-01)
 
@@ -82,3 +87,4 @@ def test_marker_matching_rigid():
     assert np.allclose(matched_volume.MatchedCentroids.match_distance, expected_distance)
     matched_volume = MatchedMarkerVolumes(volume1, volume2, sorting_method='nearest')
     assert np.allclose(matched_volume.MatchedCentroids.match_distance, expected_distance)
+
