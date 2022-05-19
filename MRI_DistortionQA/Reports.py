@@ -24,7 +24,7 @@ logger.setLevel(logging.INFO)  # This toggles all the logging in your app
 logger.propagate = False
 
 
-class TG284_Tests:
+class TG284_Tests:  # pragma: no cover
     """
     tests defined here
     https://aapm.onlinelibrary.wiley.com/doi/full/10.1002/mp.14695
@@ -50,7 +50,7 @@ class TG284_Tests:
             return False
 
 
-class DefaultTestSuite:
+class DefaultTestSuite:  # pragma: no cover
     """
     these are the tests which are run if no others are specified
     """
@@ -76,7 +76,7 @@ class DefaultTestSuite:
             return False
 
 
-class Elekta_Distortion_tests:
+class Elekta_Distortion_tests:  # pragma: no cover
     """
     Geometric tests for Elekta system as described here:
     https://aapm.onlinelibrary.wiley.com/doi/epdf/10.1002/mp.14764
