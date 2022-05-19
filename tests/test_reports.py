@@ -1,3 +1,7 @@
+from pathlib import Path
+import sys
+this_dir = Path(__file__).parent
+sys.path.insert(0, str(this_dir.parent))
 import numpy as np
 from MRI_DistortionQA.Reports import MRI_QA_Reporter
 from MRI_DistortionQA.FieldAnalysis import SphericalHarmonicFit
@@ -46,5 +50,6 @@ def test_linear_recon():
     report = MRI_QA_Reporter(gradient_harmonics=[linear_Gx_harmonics, linear_Gy_harmonics, linear_Gz_harmonics],
                              dicom_data=dicom_data, r_outer=150)
     assert np.allclose(0, report._MatchedMarkerVolume.abs_dis)
+    report.write_html_report()  # not totally sure if github will let me do this..
 
 
