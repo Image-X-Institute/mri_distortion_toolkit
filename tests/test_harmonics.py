@@ -25,3 +25,9 @@ def test_spherical_harmonics_stability():
     test_harmonics = \
         pd.read_csv((this_dir / 'test_data'/ 'ground_truth_harmonics.csv').resolve(), index_col=0).squeeze("columns")
     assert np.allclose(harmonics.harmonics, test_harmonics, rtol=1e-05, atol=1e-06)
+
+def test_calculate_harmonics():
+    """
+    test our wrapper function
+    :return:
+    """
