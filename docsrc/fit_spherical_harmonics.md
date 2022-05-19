@@ -4,8 +4,6 @@
 
 Create a new file 'fit_harmonics.py' and copy the below code into it.
 
-Note that although this code looks very long, it is only
-
 ```python
 from MRI_DistortionQA.FieldAnalysis import SphericalHarmonicFit
 import pandas as pd
@@ -54,7 +52,7 @@ Residual pk-pk:       2.023 μT
 
 The warning here is telling us that the sample points do not appear to cover a full sphere. We can ignore this in situations where we are confident that we have sufficient sampling of points for the order of harmonics we are fitting. 
 
-- [ ] ToDo: autoamate this check!!
+- [ ] ToDo: automate this check!!
 
 The second part is telling us the peak-to-peak perturbation over the surface of r_outer (150 mm in this case). We would like to see that the reconstructed pk-pk closely matches the input, and that the residual pk-pk is low relative to the total. In this case, the reconstructed pk-pk is within 0.4 μT and the residual is < 1%, so the fit is pretty good!
 
@@ -76,52 +74,36 @@ G_z_Harmonics = SphericalHarmonicFit(GradZdata, n_order=n_order, r_outer=150)
 G_z_Harmonics.harmonics.to_csv('G_z_harmonics.csv')
 ````
 
-## Next steps
+## The easy way...
 
-You are ready to move onto [Reporting](https://acrf-image-x-institute.github.io/MRI_DistortionQA/reporting.html), or you can read more about spherical harmonics below!
+Calculating harmonics from marker volumes involves three steps:
 
-## Fitting to B0 Data
+1. Matching the volumes
+2. Calculating fields from the markers
+3. Calculating harmonics from the fields
 
-In [marker matching](https://acrf-image-x-institute.github.io/MRI_DistortionQA/marker_matching.html) step, we saw that by including 'reverse' gradient data, we can estimate both gradient non linearity and the B0 field. This section assumes you have carried out this part of the tutorial, and demonstrates the creation of harmonics for B0. 
+The way we just showed you gives you a lot of fine control over every step. However, if you are willing to give up this control, we have written a wrapper function that allows you to do this all in one step:
 
 ```python
-# B0 Harmonics
-GradZdata = FieldData[['x', 'y', 'z', 'B0']]
-GradZdata = GradZdata.rename(columns={"B0": "Bz"})
-G_z_Harmonics = SphericalHarmonicFit(GradZdata, n_order=n_order, r_outer=150)
-G_z_Harmonics.harmonics.to_csv('B0_harmonics.csv')
+from MRI_DistortionQA.MarkerAnalysis import MarkerVolume
+from MRI_DistortionQA import calculate_harmonics
+from pathlib import Path
+
+# download example data and unzip:
+# https://cloudstor.aarnet.edu.au/plus/s/Wm9vndV47u941JU
+data_loc = Path(r'C:\Users\Brendan\Downloads\MRI_distortion_QA_sample_data(2)\MRI_distortion_QA_sample_data')
+# ^^ update to where you put the sample data!!
+
+# distorted centroids
+distorted_volume = MarkerVolume(data_loc / 'MR' / '04 gre_trans_AP_330' / 'slicer_centroids.mrk.json', verbose=False)
+# ground truth centroids
+ground_truth_volume = MarkerVolume(data_loc / 'CT' / 'slicer_centroids.mrk.json', verbose=False, r_max=300)
+dicom_data_loc = data_loc / 'MR' / '04 gre_trans_AP_330' / 'dicom_data.json'  # previosly saved from a MarkerVolume
+
+B0_Harmonics, G_x_Harmonics, G_y_Harmonics, G_z_Harmonics = 	calculate_harmonics(ground_truth_volume, distorted_volume, dicom_data=dicom_data_loc)
+# note that B0_harmonics is None as we did not provide distorted_volume_rev to calculate_harmonics
 ```
 
+## Next steps
 
-
-## Background theory
-
-In a **source free** region (no currents, no ferrous material), Maxwell's equation for a static field are:
-
-$$
-\nabla . \overrightarrow{\! B} =0 \\
-\nabla \times \overrightarrow{\! B} =0
-$$
-
-In such a situation, the magnetic field can be represented by a scalar potential analogous to the vector field in electrostatics.
-
-$$
-\overrightarrow{\! B} = \nabla f \\
-\nabla . \overrightarrow{\! B} = \nabla(\nabla f)=0 \\
-\nabla^2 f= 0
-$$
-This last equation is [Laplace's equation](https://en.wikipedia.org/wiki/Laplace%27s_equation)! It [can be shown](https://mathworld.wolfram.com/LaplacesEquationSphericalCoordinates.html) that the general solution to Laplace's equation in spherical coordinates is an infinite expansion of spherical harmonics:
-
-$$
-f = \Sigma
-$$
-
-
-As such, **some infinite combination of spherical harmonics is the <u>exact</u> solution to any real magnetic field in a source free region**.
-
-## Why would I want to fit spherical harmonics?
-
-Having the spherical harmonic representation of a given field allows one to reconstruct that field at any location in space^. They also enable an experienced engineer to quickly understand what nature of field they are dealing with. In addition, spherical harmonics are used as an input to many distortion correction algorithms. 
-
-> ^ :warning: **But be careful!** In practice, if you fit spherical harmonics based on a sphere of data at r_outer, you can trust the reconstruction anywhere inside this sphere. Data outside the sphere can also be reconstructed, but the further away you move from r_outer, the less you should trust your reconstruction. 
-> This is because a n<sup>th</sup> order harmonic scales as r<sub>n</sub>. For high order harmonics, this means that while they may be barely expressed at r_outer, they can become significant very quickly! 
+You are ready to move onto [Reporting](https://acrf-image-x-institute.github.io/MRI_DistortionQA/reporting.html)!

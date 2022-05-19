@@ -13,6 +13,7 @@ from datetime import datetime
 from jinja2 import Template
 import pathlib
 import json
+from .utilities import get_dicom_data
 
 ch = logging.StreamHandler()
 formatter = logging.Formatter('[%(filename)s: line %(lineno)d %(levelname)8s] %(message)s')
@@ -23,7 +24,7 @@ logger.setLevel(logging.INFO)  # This toggles all the logging in your app
 logger.propagate = False
 
 
-class TG284_Tests:
+class TG284_Tests:  # pragma: no cover
     """
     tests defined here
     https://aapm.onlinelibrary.wiley.com/doi/full/10.1002/mp.14695
@@ -49,7 +50,7 @@ class TG284_Tests:
             return False
 
 
-class DefaultTestSuite:
+class DefaultTestSuite:  # pragma: no cover
     """
     these are the tests which are run if no others are specified
     """
@@ -75,7 +76,7 @@ class DefaultTestSuite:
             return False
 
 
-class Elekta_Distortion_tests:
+class Elekta_Distortion_tests:  # pragma: no cover
     """
     Geometric tests for Elekta system as described here:
     https://aapm.onlinelibrary.wiley.com/doi/epdf/10.1002/mp.14764
@@ -162,7 +163,7 @@ class MRI_QA_Reporter:
         self._test_class = tests_to_run
         self.r_outer = r_outer
         self.recon_coords_cartesian = recon_coords_cartesian
-        self.dicom_data = self._get_dicom_data(dicom_data)
+        self.dicom_data = get_dicom_data(dicom_data)
         self._build_acquisition_dict()
         self._get_analysis_data(MatchedMarkerVolume, gradient_harmonics, B0_harmonics)
         self._update_MatchedMarkerVolume()
@@ -173,20 +174,6 @@ class MRI_QA_Reporter:
         self._plot_B0_surface()
         # self._plot_gradients_surface()
         self._get_test_results()
-
-    def _get_dicom_data(self, dicom_data):
-        """
-        figures out what type of dicom data has been entered and returns a dict or None
-        """
-
-        if isinstance(dicom_data, dict) or dicom_data is None:
-            return dicom_data
-        elif isinstance(dicom_data, (pathlib.Path, str)):
-            with open(dicom_data, 'r') as f:
-                dicom_data = json.load(f)
-            return dicom_data
-        else:
-            raise AttributeError(f'could not read in dicom_data of type {type(dicom_data)}')
 
     def _build_acquisition_dict(self):
         """
@@ -469,8 +456,7 @@ class MRI_QA_Reporter:
         uses the values of _x_res etc. to define a tolerance
         """
         if (x_select is None) and (y_select is None) and (z_select is None) and (r_max is None):
-            logger.warning('you need to set a value for at least one of x_ind, y_ind, and z_ind or r_max')
-            return
+            logger.warning('you should set a value for at least one of x_ind, y_ind, and z_ind or r_max')
         # start with everything selected, overwrite below
         x_ind = np.ones(self._MatchedMarkerVolume.shape[0])
         y_ind = np.ones(self._MatchedMarkerVolume.shape[0])
@@ -528,6 +514,8 @@ class MRI_QA_Reporter:
             template_text = f.read()
         j2_template = Template(template_text)
         return j2_template
+
+    # public methods
 
     def write_html_report(self, output_folder=None):
         """

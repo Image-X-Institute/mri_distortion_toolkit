@@ -54,7 +54,6 @@ class MarkerVolume:
     :param correct_fat_water_shift: if True, will attempt to automatically correct marker positions for calculated
         fat water shift
     :type correct_fat_water_shift: bool, optional
-    :param phase_encode: Entering the phase encode direction if you want to correct for the fat/water chemical shift.
     :param marker_size_lower_tol: lower acceptance window for a marker compared to the median size of markers.
         e.g. markermarker_size_tol=0.5 will result in markers being accepted within when
         (1-marker_size_lower_tol)*median_marker_size <= marker_size <= (1+markermarker_size_tol)*marker_size_upper_tol

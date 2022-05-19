@@ -12,10 +12,10 @@ data_loc = Path(r'C:\Users\Brendan\Downloads\MRI_distortion_QA_sample_data\MRI_d
 # ^^ update to where you put the sample data!!
 
 # distorted centroids
-distorted_volume = MarkerVolume(data_loc / 'MR' / '04 gre_trans_AP_330' / 'slicer_centroids.mrk.json', verbose=False)
+distorted_volume = MarkerVolume(data_loc / 'MR' / '04 gre_trans_AP_330' / 'MR.mrk.json', verbose=False)
 
 # ground truth centroids
-ground_truth_volume = MarkerVolume(data_loc / 'CT' / 'slicer_centroids.mrk.json', verbose=False, r_max=300)
+ground_truth_volume = MarkerVolume(data_loc / 'CT' / 'MR.mrk.json', verbose=False, r_max=300)
 
 # matched volumes
 matched_volume = MatchedMarkerVolumes(ground_truth_volume, distorted_volume, ReferenceMarkers=11)
@@ -31,7 +31,7 @@ matched_volume_no_ref = MatchedMarkerVolumes(ground_truth_volume, distorted_volu
 matched_volume_no_ref.plot_3D_markers(title='matched markers, no ref (failure!)')
 
 # distorted centroids, reversed gradient
-distorted_volume_rev = MarkerVolume(data_loc / 'MR' / '05 gre_trans_PA_330' / 'slicer_centroids.mrk.json', verbose=False)
+distorted_volume_rev = MarkerVolume(data_loc / 'MR' / '05 gre_trans_PA_330' / 'MR.mrk.json', verbose=False)
 
 # matched volumes including reversed gradient data
 matched_volume_with_rev_data = MatchedMarkerVolumes(ground_truth_volume, distorted_volume,

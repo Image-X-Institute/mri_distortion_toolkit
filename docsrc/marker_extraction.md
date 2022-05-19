@@ -24,6 +24,7 @@ data_loc = Path(r'C:\Users\Brendan\Downloads\MRI_distortion_QA_sample_data\MRI_d
 # ^^ update to where you put the sample data!!
 marker_volume = MarkerVolume(data_loc / 'MR' / '04 gre_trans_AP_330', verbose=False)
 marker_volume.export_to_slicer()  # save this data as json for easy use later
+marker_volume.save_dicom_data()  # save this data as json for easy use later
 marker_volume.plot_3D_markers()  # produce a quick plot of marker positions
 ```
 
@@ -37,7 +38,7 @@ test_data = pd.DataFrame(test_data, columns=['x', 'y', 'z'])  # convert to data 
 pandas_volume = MarkerVolume(test_data)  # create MarkerVolume
 
 # json read in
-json_file = data_loc / 'MR' / '04 gre_trans_AP_330' / 'slicer_centroids.mrk.json'
+json_file = data_loc / 'MR' / '04 gre_trans_AP_330' / 'MR.mrk.json'
 # this file was created with the export_to_slicer step above; this is also the format used by slicer
 json_volume = MarkerVolume(json_file)  # create MarkerVolume
 ```
