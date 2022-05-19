@@ -27,7 +27,7 @@ jobs:
 
 
       - name: Install dependencies
-        run: python3 -m pip install -r ./dev-requirements.txt
+        run: python3 -m pip install -r ./dev_requirements.txt
 
       - name: build sphinx docs
         run: |
