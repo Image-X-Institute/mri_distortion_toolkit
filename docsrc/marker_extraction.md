@@ -24,6 +24,7 @@ data_loc = Path(r'C:\Users\Brendan\Downloads\MRI_distortion_QA_sample_data\MRI_d
 # ^^ update to where you put the sample data!!
 marker_volume = MarkerVolume(data_loc / 'MR' / '04 gre_trans_AP_330', verbose=False)
 marker_volume.export_to_slicer()  # save this data as json for easy use later
+marker_volume.save_dicom_data()  # save this data as json for easy use later
 marker_volume.plot_3D_markers()  # produce a quick plot of marker positions
 ```
 
