@@ -1,7 +1,5 @@
 # MRI_DistortionQA  
-![](docsrc/__resources/coverage.svg) ![](docsrc/__resources/interrogate.svg) ![](https://github.com/ACRF-Image-X-Institute/MRI_DistortionQA/blob/main/.github/workflows/run_tests.yml/coverage.svg)
-
-![example workflow](https://github.com/ACRF-Image-X-Institute/MRI_DistortionQA/actions/workflows/run_tests.yml/badge.svg)
+![](docsrc/__resources/coverage.svg) ![](docsrc/__resources/interrogate.svg) ![](https://github.com/ACRF-Image-X-Institute/MRI_DistortionQA/blob/main/.github/workflows/run_tests.yml/coverage.svg) ![example workflow](https://github.com/ACRF-Image-X-Institute/MRI_DistortionQA/actions/workflows/run_tests.yml/badge.svg)
 
 **Authors:** Brendan Whelan, Paul Liu, Shanshan Shan
 
