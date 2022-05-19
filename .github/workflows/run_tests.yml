@@ -31,3 +31,7 @@ jobs:
       run: |
         coverage run -m pytest
         coverage-badge -f -o docsrc/__resources/coverage.svg
+    - name: Build docs
+        cd docsrc
+        make github
+      
