@@ -75,6 +75,8 @@ this_dir = Path(__file__).parent
 print(f'{this_dir} exists? {os.path.isdir(this_dir)}')
 print(f'MR_QA_report_20_05_2022.html exists? {os.path.isfile(this_dir / "_static" / "MR_QA_report_20_05_2022.html")}')
 print(f'this_dir / _build? {os.path.isdir(this_dir / "_build")}')
+print(f'this_dir / docs? {os.path.isdir(this_dir / "docs")}')
+print(f'this_dir / .docs? {os.path.isdir(this_dir / ".docs")}')
 print(f'this_dir / _build / html? {os.path.isdir(this_dir / "_build" / "html")}')
 print(f'this_dir / _build / html /static? {os.path.isdir(this_dir / "_build" / "html" / "_static")}')
 # shutil.copy(this_dir / '_static' / 'MR_QA_report_20_05_2022.html',
