@@ -33,7 +33,7 @@ To be honest, this report looks pretty bad - this is because with this phantom, 
 
 This phantom was actually designed to get a good measurement of data on the surface of a sphere for the purpose of fitting spherical harmonics; therefore, let's move on and use the data we have more appropriately!! 
 
-> :warning: I have occasionally seen firefox fail to display these reports. I haven't figured out what, but if there is an error "The address wasn’t understood" try a different browser.
+> **warning** I have occasionally seen firefox fail to display these reports. I haven't figured out what, but if there is an error "The address wasn’t understood" try a different browser.
 
 ## Case 2: harmonic reconstruction
 
@@ -66,8 +66,6 @@ report = MRI_QA_Reporter(gradient_harmonics=[G_x_harmonics, G_y_harmonics, G_z_h
                          r_outer=150, dicom_data=dicom_data_loc, B0_harmonics='B0_harmonics.csv')
 report.write_html_report()
 ```
-
-
 
 ## Adding custom tests
 
