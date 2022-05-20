@@ -21,9 +21,6 @@ MRI Distortion QA
       click E "https://acrf-image-x-institute.github.io/MRI_DistortionQA/reporting.html"
 
 
-To get to my standalone, non-generated HTML file,
-just `click here <_static/MR_QA_report_20_05_2022.html>`_ now!
-
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
