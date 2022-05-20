@@ -12,7 +12,7 @@ AP_volume.MarkerCentroids = AP_volume.MarkerCentroids[AP_volume.MarkerCentroids.
 
 We can clearly see that there are indeed some errors in the central markers.:
 
-![](C:\Users\Brendan\Documents\python\MRI_DistortionQA\docsrc\__resources\VolumeOverlaysDifferentSlices.png)
+![](__resources/VolumeOverlaysDifferentSlices.png)
 
 To quantify these errors, we already have a useful tool; the MatchedMarkerVolume class! The below table shows the **absolute** marker errors between each dataset
 

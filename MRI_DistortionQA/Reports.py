@@ -204,7 +204,7 @@ class MRI_QA_Reporter:
         else:
             raise AttributeError(f'unknown style entered: {self._style}. allowed options are "light" or "dark"')
 
-    def _unique_name_generator(self, save_loc, input_name):
+    def _unique_name_generator(self, save_loc, input_name, rel_path=True):
         """
         take input name, append the current date to it
         then check if this new name already exists in save_loc; if it does add integers to it (_1, _2, etc.) until it doesn't
@@ -221,7 +221,11 @@ class MRI_QA_Reporter:
             appended_int = appended_int + 1
             new_name = new_name + '_' + str(appended_int)
         new_name = new_name + extension
-        return save_loc  / new_name
+        if rel_path:
+            new_name = (save_loc  / new_name).relative_to(save_loc.parent)
+        else:
+            new_name = save_loc / new_name
+        return new_name
 
     def _get_test_results(self):
         """
@@ -344,6 +348,7 @@ class MRI_QA_Reporter:
             cells=dict(values=[_B0_stats.r, _B0_stats['pk_pk [\u03BCT]']],
                        align='left'))
         ])
+        self._B0_table.update_layout(template=self._plotly_theme)
 
     def _check_dicom_data(self):
         """
@@ -513,17 +518,11 @@ class MRI_QA_Reporter:
 
         return plot_data
 
-    def _set_up_directory_structure(self, output_folder):
+    def _set_up_directory_structure(self):
         """
         ensure we have a place to save the reports.
         will set up a directory in
         """
-        if output_folder is None:
-            self.output_folder = Path(os.path.expanduser('~')) / 'Documents' / 'MR_QA_Reports'
-        else:
-            self.output_folder = Path(output_folder)
-
-
         if not os.path.isdir(self.output_folder):
             os.makedirs(self.output_folder)
         if not os.path.isdir(self.output_folder / '.plots'):
@@ -553,31 +552,37 @@ class MRI_QA_Reporter:
         :param output_folder: folder to write report. Defaults to ~/Documents/MR_QA_Reports
         :type output_folder: Path or string, optional
         """
+        if output_folder is None:
+            self.output_folder = Path(os.path.expanduser('~')) / 'Documents' / 'MR_QA_Reports'
+        else:
+            self.output_folder = Path(output_folder)
+        self._set_up_directory_structure()
 
-        self._set_up_directory_structure(output_folder)
         # save plots and update jinja_dict
 
         distortion_v_r_save_name = self._unique_name_generator(self.output_folder / '.plots', 'distortion_v_r.html')
-        self._fig_distortion_v_r.write_html(distortion_v_r_save_name, full_html=False, include_plotlyjs='cdn')
+        self._fig_distortion_v_r.write_html(self.output_folder / distortion_v_r_save_name, full_html=False, include_plotlyjs='cdn')
         self._jinja_dict['dist_v_r_source'] = distortion_v_r_save_name
 
-        threeD_plane_save_name = self._unique_name_generator(self.output_folder / '.plots', '3D_planes.html',)
-        self._fig_3D_planes.write_html(threeD_plane_save_name, full_html=False, include_plotlyjs='cdn')
+        threeD_plane_save_name = self._unique_name_generator(self.output_folder / '.plots', '3D_planes.html')
+        self._fig_3D_planes.write_html(self.output_folder / threeD_plane_save_name, full_html=False, include_plotlyjs='cdn')
         self._jinja_dict['cutplanes_source'] = threeD_plane_save_name
 
         if self.B0_harmonics is not None:
             DSV_surface_save_name = self._unique_name_generator(self.output_folder / '.plots', 'DSV_surface.html',)
-            self._fig_DSV_surface.write_html(DSV_surface_save_name, full_html=False, include_plotlyjs='cdn')
+            self._fig_DSV_surface.write_html(self.output_folder / DSV_surface_save_name, full_html=False, include_plotlyjs='cdn')
             self._jinja_dict['dsv_surf_source'] = DSV_surface_save_name
 
-            B0_table_save_name = self._unique_name_generator(self.output_folder / '.plots', 'B0_table.html', )
+            B0_table_save_name = self._unique_name_generator(self.output_folder / '.plots', 'B0_table.html')
+            self._B0_table.write_html(self.output_folder / B0_table_save_name, full_html=False, include_plotlyjs='cdn')
+            self._jinja_dict['B0_table_source'] = B0_table_save_name
         else:
             self._jinja_dict['dsv_surf_source'] = None
 
         # set up template
         self._jinja_dict['html_theme_loc'] = self._html_theme
         j2_template = self._get_template()
-        report_name = self._unique_name_generator(self.output_folder, 'MR_QA_report.html')
+        report_name = self._unique_name_generator(self.output_folder, 'MR_QA_report.html', rel_path=False)
         report_code = os.path.split(report_name)[1]  # for printing
         report_code = os.path.splitext(report_code)[0]
         report_code = report_code.replace('MR_QA_report_','')
