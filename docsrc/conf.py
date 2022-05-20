@@ -30,11 +30,11 @@ def copy_and_overwrite(from_path, to_path):
 
 this_dir = Path(__file__).parent
 shutil.copy(this_dir / '_static' / 'MR_QA_report_20_05_2022.html',
-            this_dir.parent / 'docs' / '_static' / 'MR_QA_report_20_05_2022.html')
+            this_dir / '_build' / 'html' / '_static' / 'MR_QA_report_20_05_2022.html')
 copy_and_overwrite(this_dir / '_static' / 'plots',
-            this_dir.parent / 'docs' / '_static' / 'plots')
+            this_dir / '_build' / 'html' / '_static' / 'plots')
 copy_and_overwrite(this_dir / '_static' / 'themes',
-            this_dir.parent / 'docs' / '_static' / 'themes')
+            this_dir / '_build' / 'hyml' / '_static' / 'themes')
 
 
 # -- General configuration ---------------------------------------------------
