@@ -525,8 +525,8 @@ class MRI_QA_Reporter:
         """
         if not os.path.isdir(self.output_folder):
             os.makedirs(self.output_folder)
-        if not os.path.isdir(self.output_folder / '.plots'):
-            os.mkdir(self.output_folder / '.plots')
+        if not os.path.isdir(self.output_folder / 'plots'):
+            os.mkdir(self.output_folder / 'plots')
 
         # copy themes
         theme_dir = (Path(__file__).parent / 'jinja_templates' / 'themes').resolve()
@@ -560,20 +560,20 @@ class MRI_QA_Reporter:
 
         # save plots and update jinja_dict
 
-        distortion_v_r_save_name = self._unique_name_generator(self.output_folder / '.plots', 'distortion_v_r.html')
+        distortion_v_r_save_name = self._unique_name_generator(self.output_folder / 'plots', 'distortion_v_r.html')
         self._fig_distortion_v_r.write_html(self.output_folder / distortion_v_r_save_name, full_html=False, include_plotlyjs='cdn')
         self._jinja_dict['dist_v_r_source'] = distortion_v_r_save_name
 
-        threeD_plane_save_name = self._unique_name_generator(self.output_folder / '.plots', '3D_planes.html')
+        threeD_plane_save_name = self._unique_name_generator(self.output_folder / 'plots', '3D_planes.html')
         self._fig_3D_planes.write_html(self.output_folder / threeD_plane_save_name, full_html=False, include_plotlyjs='cdn')
         self._jinja_dict['cutplanes_source'] = threeD_plane_save_name
 
         if self.B0_harmonics is not None:
-            DSV_surface_save_name = self._unique_name_generator(self.output_folder / '.plots', 'DSV_surface.html',)
+            DSV_surface_save_name = self._unique_name_generator(self.output_folder / 'plots', 'DSV_surface.html',)
             self._fig_DSV_surface.write_html(self.output_folder / DSV_surface_save_name, full_html=False, include_plotlyjs='cdn')
             self._jinja_dict['dsv_surf_source'] = DSV_surface_save_name
 
-            B0_table_save_name = self._unique_name_generator(self.output_folder / '.plots', 'B0_table.html')
+            B0_table_save_name = self._unique_name_generator(self.output_folder / 'plots', 'B0_table.html')
             self._B0_table.write_html(self.output_folder / B0_table_save_name, full_html=False, include_plotlyjs='cdn')
             self._jinja_dict['B0_table_source'] = B0_table_save_name
         else:

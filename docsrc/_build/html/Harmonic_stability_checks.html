@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Harmonics perturbation analysis &mdash; MRI_DistortionQA  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+        <script>mermaid.initialize({startOnLoad:true});</script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> MRI_DistortionQA
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Worked Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="code_docs.html">Code Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">MRI_DistortionQA</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Harmonics perturbation analysis</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/Harmonic_stability_checks.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="harmonics-perturbation-analysis">
+<h1>Harmonics perturbation analysis<a class="headerlink" href="#harmonics-perturbation-analysis" title="Permalink to this headline"></a></h1>
+<p>Our workflow relies on extracting the coordinates of markers from MRI images and using them to characterize distortion and/or spherical harmonics. However, finding the marker centroids is not a trivial task and is hindered by:</p>
+<ol class="arabic simple">
+<li><p>Low SNR</p></li>
+<li><p>Large voxel sizes</p></li>
+<li><p>Other things I can’t think of</p></li>
+</ol>
+<p>The purpose of this analysis is therefore to assess the stability of spherical harmonics as larger and larger errors are introduced into the extracted marker positions. We will be using the <a class="reference external" href="https://acrf-image-x-institute.github.io/MRI_DistortionQA/code_docs.html#MRI_DistortionQA.MarkerAnalysis.MarkerVolume.perturb_marker_positions">perturb_marker_positions</a> method.</p>
+<p><strong>ToDo: get an estimate of marker volume</strong></p>
+<section id="comparison-of-harmonics-and-residuals">
+<h2>Comparison of harmonics and residuals<a class="headerlink" href="#comparison-of-harmonics-and-residuals" title="Permalink to this headline"></a></h2>
+<p>The below plot shows the percentage in residual (perurbation we are unable to fit with spherical harmonics) and the first, second, and third most dominant harmonic for each of the gradient fields.</p>
+<p>What we see:</p>
+<ul class="simple">
+<li><p>by far the biggest error is in the residual. This is good, since we have introduced non-physical errors into the data, the residual should go up. It’s also comforting that it’s quite low to start with: this suggests the inherent error in marker segmentation is reasonably low.</p></li>
+<li><p>The dominant harmonic (which is the harmonic representing the gradient itself) is quite stable, staying at a less than 1% error. However, the other harmonics show more variation, up to ~20%.</p></li>
+<li><p>Even then, for random perturbations less than 1 mm, the percentage error is less than 10%</p></li>
+</ul>
+<p><img alt="" src="_images/PerturbationAnalysis.png" /></p>
+</section>
+<section id="comparison-of-predicted-distortion-with-different-sets-of-harmonics">
+<h2>comparison of predicted distortion with different sets of harmonics<a class="headerlink" href="#comparison-of-predicted-distortion-with-different-sets-of-harmonics" title="Permalink to this headline"></a></h2>
+<p>We can <a class="reference external" href="https://acrf-image-x-institute.github.io/MRI_DistortionQA/reporting.html">use a set of gradient harmonics to create a report</a> and then we can use <a class="reference external" href="https://acrf-image-x-institute.github.io/MRI_DistortionQA/code_docs.html#MRI_DistortionQA.utilities.compare_recon_report_with_ground_truth_report">this function</a> to compare the reconstructed data. The below two plots show the reports with random 1mm perturbations and random 3 mm perturbations.</p>
+<p>From this data, we can see the following:</p>
+<ul class="simple">
+<li><p>In general, the reconstructions errors are around the same ammount as the random noise. e.g. for 1 mm perturbation, the majority of the reconstructed data is also within 1mm - and for 3 mm perturbation, the majority of the data is within 3 mm</p></li>
+<li><p>However, there are also outlier errors well above the introduced error.</p></li>
+<li><p>Since these results are from relatively few markers arrange on the surface of a sphere, I would hypothesize that this phantom would be especially sensitive to these errors; it would be interesting to repeat this with  a more densely sampled phantom</p></li>
+</ul>
+<p><img alt="" src="_images/PerturbationComparison_0p5mm.png" /></p>
+<p><img alt="" src="_images/PerturbationComparison_1mm.png" /></p>
+<p><img alt="" src="_images/PerturbationComparison_3mm.png" /></p>
+</section>
+<section id="code">
+<h2>code<a class="headerlink" href="#code" title="Permalink to this headline"></a></h2>
+<p>probably won’t keep this here long term but for now:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">MRI_DistortionQA.MarkerAnalysis</span> <span class="kn">import</span> <span class="n">MarkerVolume</span><span class="p">,</span> <span class="n">MatchedMarkerVolumes</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">MRI_DistortionQA.FieldCalculation</span> <span class="kn">import</span> <span class="n">ConvertMatchedMarkersToBz</span>
+<span class="kn">from</span> <span class="nn">MRI_DistortionQA.FieldAnalysis</span> <span class="kn">import</span> <span class="n">SphericalHarmonicFit</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+
+
+<span class="k">def</span> <span class="nf">calculate_harmonics</span><span class="p">(</span><span class="n">ground_truth_volume</span><span class="p">,</span> <span class="n">forward_volume</span><span class="p">,</span> <span class="n">back_volume</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_order</span><span class="o">=</span><span class="mi">8</span><span class="p">):</span>
+    <span class="c1"># match the markers</span>
+    <span class="n">matched_markers</span> <span class="o">=</span> <span class="n">MatchedMarkerVolumes</span><span class="p">(</span><span class="n">ground_truth_volume</span><span class="p">,</span> <span class="n">forward_volume</span><span class="p">,</span> <span class="n">sorting_method</span><span class="o">=</span><span class="s1">&#39;radial&#39;</span><span class="p">,</span> <span class="n">ReferenceMarkers</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span>
+                                              <span class="n">WarpSearchData</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ReverseGradientData</span><span class="o">=</span><span class="n">back_volume</span><span class="p">)</span>
+    <span class="n">matched_markers</span><span class="o">.</span><span class="n">MatchedCentroids</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;MatchedMarkerVolume.csv&#39;</span><span class="p">)</span>
+
+    <span class="c1"># calculate B fields</span>
+    <span class="n">B_fields</span> <span class="o">=</span> <span class="n">ConvertMatchedMarkersToBz</span><span class="p">(</span><span class="n">matched_markers</span><span class="o">.</span><span class="n">MatchedCentroids</span><span class="p">,</span> <span class="n">forward_volume</span><span class="o">.</span><span class="n">dicom_data</span><span class="p">)</span>
+
+    <span class="c1"># calculate harmonics</span>
+    <span class="c1"># B0</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">B0_data</span> <span class="o">=</span> <span class="n">B_fields</span><span class="o">.</span><span class="n">MagneticFields</span><span class="p">[[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;B0&#39;</span><span class="p">]]</span>
+        <span class="n">B0_data</span> <span class="o">=</span> <span class="n">B0_data</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span>
+            <span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;B0&quot;</span><span class="p">:</span> <span class="s2">&quot;Bz&quot;</span><span class="p">})</span>  <span class="c1"># spherical harmonics code expects to receieve one field called Bz</span>
+        <span class="n">B0_Harmonics</span> <span class="o">=</span> <span class="n">SphericalHarmonicFit</span><span class="p">(</span><span class="n">B0_data</span><span class="p">,</span> <span class="n">n_order</span><span class="o">=</span><span class="n">n_order</span><span class="p">,</span> <span class="n">r_outer</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="n">B0_Harmonics</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="c1"># Gx</span>
+    <span class="n">GradXdata</span> <span class="o">=</span> <span class="n">B_fields</span><span class="o">.</span><span class="n">MagneticFields</span><span class="p">[[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;B_Gx&#39;</span><span class="p">]]</span>
+    <span class="n">GradXdata</span> <span class="o">=</span> <span class="n">GradXdata</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span>
+        <span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;B_Gx&quot;</span><span class="p">:</span> <span class="s2">&quot;Bz&quot;</span><span class="p">})</span>  <span class="c1"># spherical harmonics code expects to receieve one field called Bz</span>
+    <span class="n">G_x_Harmonics</span> <span class="o">=</span> <span class="n">SphericalHarmonicFit</span><span class="p">(</span><span class="n">GradXdata</span><span class="p">,</span> <span class="n">n_order</span><span class="o">=</span><span class="n">n_order</span><span class="p">,</span> <span class="n">r_outer</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+    <span class="n">G_x_Harmonics</span><span class="o">.</span><span class="n">harmonics</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;G_x_harmonics.csv&#39;</span><span class="p">)</span>
+    <span class="c1"># Gy</span>
+    <span class="n">GradYdata</span> <span class="o">=</span> <span class="n">B_fields</span><span class="o">.</span><span class="n">MagneticFields</span><span class="p">[[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;B_Gy&#39;</span><span class="p">]]</span>
+    <span class="n">GradYdata</span> <span class="o">=</span> <span class="n">GradYdata</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span>
+        <span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;B_Gy&quot;</span><span class="p">:</span> <span class="s2">&quot;Bz&quot;</span><span class="p">})</span>  <span class="c1"># spherical harmonics code expects to receieve one field called Bz</span>
+    <span class="n">G_y_Harmonics</span> <span class="o">=</span> <span class="n">SphericalHarmonicFit</span><span class="p">(</span><span class="n">GradYdata</span><span class="p">,</span> <span class="n">n_order</span><span class="o">=</span><span class="n">n_order</span><span class="p">,</span> <span class="n">r_outer</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+    <span class="n">G_y_Harmonics</span><span class="o">.</span><span class="n">harmonics</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;G_y_harmonics.csv&#39;</span><span class="p">)</span>
+    <span class="c1"># G_z</span>
+    <span class="n">GradZdata</span> <span class="o">=</span> <span class="n">B_fields</span><span class="o">.</span><span class="n">MagneticFields</span><span class="p">[[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;B_Gz&#39;</span><span class="p">]]</span>
+    <span class="n">GradZdata</span> <span class="o">=</span> <span class="n">GradZdata</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span>
+        <span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;B_Gz&quot;</span><span class="p">:</span> <span class="s2">&quot;Bz&quot;</span><span class="p">})</span>  <span class="c1"># spherical harmonics code expects to receieve one field called Bz</span>
+    <span class="n">G_z_Harmonics</span> <span class="o">=</span> <span class="n">SphericalHarmonicFit</span><span class="p">(</span><span class="n">GradZdata</span><span class="p">,</span> <span class="n">n_order</span><span class="o">=</span><span class="n">n_order</span><span class="p">,</span> <span class="n">r_outer</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+    <span class="n">G_z_Harmonics</span><span class="o">.</span><span class="n">harmonics</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;G_z_harmonics.csv&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">B0_Harmonics</span><span class="p">,</span> <span class="n">G_x_Harmonics</span><span class="p">,</span> <span class="n">G_y_Harmonics</span><span class="p">,</span> <span class="n">G_z_Harmonics</span>
+
+<span class="k">def</span> <span class="nf">normalise_array_columnwise</span><span class="p">(</span><span class="n">array_to_normalise</span><span class="p">):</span>
+
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">column</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">array_to_normalise</span><span class="o">.</span><span class="n">T</span><span class="p">):</span>
+        <span class="n">column</span> <span class="o">=</span> <span class="p">(</span><span class="n">column</span> <span class="o">-</span> <span class="n">column</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="mi">100</span> <span class="o">/</span> <span class="n">column</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">array_to_normalise</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">column</span>
+    <span class="k">return</span> <span class="n">array_to_normalise</span>
+
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">data is here</span>
+<span class="sd">https://cloudstor.aarnet.edu.au/plus/apps/files/?dir=/Shared/MRI-Linac%20Experimental%20Data/Goam2%5EMr/20220428%20MR%20Linac%5ETest&amp;fileid=6603039901</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="n">data_loc</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;X:\PRJ-RPL\2RESEARCH\2_ProjectData\MRI-Linac\20220428 MR Linac^Test&#39;</span><span class="p">)</span>
+<span class="n">all_scans</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;1&#39;</span><span class="p">:</span> <span class="s1">&#39;01 localiser_gre&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;2&#39;</span><span class="p">:</span> <span class="s1">&#39;02 gre_trans_AP_330&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;3&#39;</span><span class="p">:</span> <span class="s1">&#39;03 gre_trans_PA_330&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;4&#39;</span><span class="p">:</span> <span class="s1">&#39;04 gre_sag_HF_330&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;5&#39;</span><span class="p">:</span> <span class="s1">&#39;05 gre_sag_FH_330&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;6&#39;</span><span class="p">:</span> <span class="s1">&#39;06 gre_cor_RL_330&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;7&#39;</span><span class="p">:</span> <span class="s1">&#39;07 gre_cor_RL_330&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;8&#39;</span><span class="p">:</span> <span class="s1">&#39;08 gre_trans_AP_330_F_reset&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;9&#39;</span><span class="p">:</span>  <span class="s1">&#39;09 gre_trans_AP_330&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;10&#39;</span><span class="p">:</span> <span class="s1">&#39;10 gre_trans_AP_330&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;11&#39;</span><span class="p">:</span> <span class="s1">&#39;11 gre_trans_PA&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;12&#39;</span><span class="p">:</span> <span class="s1">&#39;12 gre_sag_HF&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;13&#39;</span><span class="p">:</span> <span class="s1">&#39;13 gre_sag_FH&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;14&#39;</span><span class="p">:</span> <span class="s1">&#39;14 gre_cor_RL&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;15&#39;</span><span class="p">:</span> <span class="s1">&#39;15 gre_cor_LR&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;16&#39;</span><span class="p">:</span> <span class="s1">&#39;16 gre_tran_AP_large_BW&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;17&#39;</span><span class="p">:</span> <span class="s1">&#39;17 gre_tran_PA_large_BW&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;18&#39;</span><span class="p">:</span> <span class="s1">&#39;18 gre_trans_PA_reshim_refreq&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;19&#39;</span><span class="p">:</span> <span class="s1">&#39;19 gre_trans_AP_reshim_refreq&#39;</span><span class="p">}</span>
+
+<span class="n">correct_FW</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">ct_volume</span> <span class="o">=</span> <span class="n">MarkerVolume</span><span class="p">(</span><span class="s1">&#39;CT.mrk.json&#39;</span><span class="p">)</span>
+<span class="n">forward_volume</span> <span class="o">=</span> <span class="n">MarkerVolume</span><span class="p">(</span><span class="n">data_loc</span> <span class="o">/</span> <span class="n">all_scans</span><span class="p">[</span><span class="s1">&#39;14&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="s1">&#39;Original&#39;</span><span class="p">,</span> <span class="n">gaussian_image_filter_sd</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                              <span class="n">n_markers_expected</span><span class="o">=</span><span class="mi">336</span><span class="p">,</span> <span class="n">cutoff_point</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">r_max</span><span class="o">=</span><span class="mi">165</span><span class="p">,</span>
+                              <span class="n">correct_fat_water_shift</span><span class="o">=</span><span class="n">correct_FW</span><span class="p">,</span> <span class="n">fat_shift_direction</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+
+
+<span class="n">Dominant</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">Second</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">Third</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">Residual</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">perturbations</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="n">B0_Harmonics_gt</span><span class="p">,</span> <span class="n">G_x_Harmonics_gt</span><span class="p">,</span> <span class="n">G_y_Harmonics_gt</span><span class="p">,</span> <span class="n">G_z_Harmonics_gt</span> <span class="o">=</span> <span class="n">calculate_harmonics</span><span class="p">(</span><span class="n">ct_volume</span><span class="p">,</span> <span class="n">forward_volume</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">perturbation</span> <span class="ow">in</span> <span class="n">perturbations</span><span class="p">:</span>
+    <span class="n">forward_volume_perturb</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">forward_volume</span><span class="p">)</span>
+    <span class="n">forward_volume_perturb</span><span class="o">.</span><span class="n">perturb_marker_positions</span><span class="p">(</span><span class="n">perturbation</span><span class="p">)</span>
+    <span class="n">B0_Harmonics</span><span class="p">,</span> <span class="n">G_x_Harmonics</span><span class="p">,</span> <span class="n">G_y_Harmonics</span><span class="p">,</span> <span class="n">G_z_Harmonics</span> <span class="o">=</span> <span class="n">calculate_harmonics</span><span class="p">(</span><span class="n">ct_volume</span><span class="p">,</span> <span class="n">forward_volume_perturb</span><span class="p">)</span>
+    <span class="c1"># record the data for plotting</span>
+    <span class="n">Residual</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">G_x_Harmonics</span><span class="o">.</span><span class="n">_residual_pk_pk</span><span class="p">,</span> <span class="n">G_y_Harmonics</span><span class="o">.</span><span class="n">_residual_pk_pk</span><span class="p">,</span> <span class="n">G_z_Harmonics</span><span class="o">.</span><span class="n">_residual_pk_pk</span><span class="p">])</span>
+    <span class="n">Dominant</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">G_x_Harmonics</span><span class="o">.</span><span class="n">harmonics</span><span class="o">.</span><span class="n">A_1_1</span><span class="p">,</span> <span class="n">G_y_Harmonics</span><span class="o">.</span><span class="n">harmonics</span><span class="o">.</span><span class="n">B_1_1</span><span class="p">,</span> <span class="n">G_z_Harmonics</span><span class="o">.</span><span class="n">harmonics</span><span class="o">.</span><span class="n">A_1_0</span><span class="p">])</span>
+    <span class="n">Second</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">G_x_Harmonics</span><span class="o">.</span><span class="n">harmonics</span><span class="o">.</span><span class="n">A_3_1</span><span class="p">,</span> <span class="n">G_y_Harmonics</span><span class="o">.</span><span class="n">harmonics</span><span class="o">.</span><span class="n">B_3_1</span><span class="p">,</span> <span class="n">G_z_Harmonics</span><span class="o">.</span><span class="n">harmonics</span><span class="o">.</span><span class="n">A_3_0</span><span class="p">])</span>
+    <span class="n">Third</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">G_x_Harmonics</span><span class="o">.</span><span class="n">harmonics</span><span class="o">.</span><span class="n">A_5_1</span><span class="p">,</span> <span class="n">G_y_Harmonics</span><span class="o">.</span><span class="n">harmonics</span><span class="o">.</span><span class="n">B_5_1</span><span class="p">,</span> <span class="n">G_z_Harmonics</span><span class="o">.</span><span class="n">harmonics</span><span class="o">.</span><span class="n">A_5_0</span><span class="p">])</span>
+
+<span class="c1"># transform lists to relative values</span>
+<span class="n">Residual</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">Residual</span><span class="p">)</span>
+<span class="n">Residual</span> <span class="o">=</span> <span class="n">normalise_array_columnwise</span><span class="p">(</span><span class="n">Residual</span><span class="p">)</span>
+<span class="n">Dominant</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">Dominant</span><span class="p">)</span>
+<span class="n">Dominant</span> <span class="o">=</span> <span class="n">normalise_array_columnwise</span><span class="p">(</span><span class="n">Dominant</span><span class="p">)</span>
+<span class="n">Second</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">Second</span><span class="p">)</span>
+<span class="n">Second</span> <span class="o">=</span> <span class="n">normalise_array_columnwise</span><span class="p">(</span><span class="n">Second</span><span class="p">)</span>
+<span class="n">Third</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">Third</span><span class="p">)</span>
+<span class="n">Third</span> <span class="o">=</span> <span class="n">normalise_array_columnwise</span><span class="p">(</span><span class="n">Third</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">nrows</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">perturbations</span><span class="p">,</span> <span class="n">Residual</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Residual perturbation&#39;</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;perturbation [mm]&#39;</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Residual perturbation [pk-pk uT]&#39;</span><span class="p">)</span>
+
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">perturbations</span><span class="p">,</span> <span class="n">Dominant</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Dominant harmonic&#39;</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">([</span><span class="s1">&#39;Gx: A_1_1&#39;</span><span class="p">,</span> <span class="s1">&#39;Gy: B_1_1&#39;</span><span class="p">,</span> <span class="s1">&#39;G_z: A_1_0&#39;</span><span class="p">])</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;perturbation [mm]&#39;</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Harmonic value [AU]&#39;</span><span class="p">)</span>
+
+<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">perturbations</span><span class="p">,</span> <span class="n">Second</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Second most dominant harmonic&#39;</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">([</span><span class="s1">&#39;Gx: A_3_1&#39;</span><span class="p">,</span> <span class="s1">&#39;Gy: B_3_1&#39;</span><span class="p">,</span> <span class="s1">&#39;G_z: A_3_0&#39;</span><span class="p">])</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;perturbation [mm]&#39;</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Harmonic value [AU]&#39;</span><span class="p">)</span>
+
+
+<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">perturbations</span><span class="p">,</span> <span class="n">Third</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Third most dominant harmonic&#39;</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">([</span><span class="s1">&#39;Gx: A_5_1&#39;</span><span class="p">,</span> <span class="s1">&#39;Gy: B_5_1&#39;</span><span class="p">,</span> <span class="s1">&#39;G_z: A_5_0&#39;</span><span class="p">])</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;perturbation [mm]&#39;</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Harmonic value [AU]&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+
+<span class="c1"># OK, now let&#39;s make two report, one with the unperturbed harmonics and one with the perturbed harmonics and compare</span>
+<span class="kn">from</span> <span class="nn">MRI_DistortionQA.Reports</span> <span class="kn">import</span> <span class="n">MRI_QA_Reporter</span>
+<span class="kn">from</span> <span class="nn">MRI_DistortionQA.utilities</span> <span class="kn">import</span> <span class="n">compare_recon_report_with_ground_truth_report</span>
+<span class="n">unperturbed_report</span> <span class="o">=</span> <span class="n">MRI_QA_Reporter</span><span class="p">(</span><span class="n">gradient_harmonics</span><span class="o">=</span><span class="p">[</span><span class="n">G_x_Harmonics_gt</span><span class="o">.</span><span class="n">harmonics</span><span class="p">,</span>
+                                                         <span class="n">G_y_Harmonics_gt</span><span class="o">.</span><span class="n">harmonics</span><span class="p">,</span>
+                                                         <span class="n">G_z_Harmonics_gt</span><span class="o">.</span><span class="n">harmonics</span><span class="p">],</span>
+                                     <span class="n">dicom_data</span><span class="o">=</span><span class="n">forward_volume</span><span class="o">.</span><span class="n">dicom_data</span><span class="p">,</span> <span class="n">r_outer</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+<span class="n">perturbed_report</span> <span class="o">=</span> <span class="n">MRI_QA_Reporter</span><span class="p">(</span><span class="n">gradient_harmonics</span><span class="o">=</span><span class="p">[</span><span class="n">G_x_Harmonics</span><span class="o">.</span><span class="n">harmonics</span><span class="p">,</span>
+                                                       <span class="n">G_y_Harmonics</span><span class="o">.</span><span class="n">harmonics</span><span class="p">,</span>
+                                                       <span class="n">G_z_Harmonics</span><span class="o">.</span><span class="n">harmonics</span><span class="p">],</span>
+                                   <span class="n">dicom_data</span><span class="o">=</span><span class="n">forward_volume</span><span class="o">.</span><span class="n">dicom_data</span><span class="p">,</span> <span class="n">r_outer</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+<span class="n">compare_recon_report_with_ground_truth_report</span><span class="p">(</span><span class="n">unperturbed_report</span><span class="p">,</span> <span class="n">perturbed_report</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Brendan Whelan(s).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
