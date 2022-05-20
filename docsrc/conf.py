@@ -22,19 +22,6 @@ project = 'MRI_DistortionQA'
 copyright = '2021, Brendan Whelan(s)'
 author = 'Brendan Whelan(s)'
 
-# copy report demo -----------------------------------------------------------
-def copy_and_overwrite(from_path, to_path):
-    if os.path.exists(to_path):
-        shutil.rmtree(to_path)
-    shutil.copytree(from_path, to_path)
-
-this_dir = Path(__file__).parent
-shutil.copy(this_dir / '_static' / 'MR_QA_report_20_05_2022.html',
-            this_dir / '_build' / 'html' / '_static' / 'MR_QA_report_20_05_2022.html')
-copy_and_overwrite(this_dir / '_static' / 'plots',
-            this_dir / '_build' / 'html' / '_static' / 'plots')
-copy_and_overwrite(this_dir / '_static' / 'themes',
-            this_dir / '_build' / 'hyml' / '_static' / 'themes')
 
 
 # -- General configuration ---------------------------------------------------
@@ -75,3 +62,18 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 # a list of builtin themes.
 #
 html_theme = 'sphinx_rtd_theme'
+
+# copy report demo -----------------------------------------------------------
+def copy_and_overwrite(from_path, to_path):
+    if os.path.exists(to_path):
+        shutil.rmtree(to_path)
+    shutil.copytree(from_path, to_path)
+
+this_dir = Path(__file__).parent
+shutil.copy(this_dir / '_static' / 'MR_QA_report_20_05_2022.html',
+            this_dir / '_build' / 'html' / '_static' / 'MR_QA_report_20_05_2022.html')
+copy_and_overwrite(this_dir / '_static' / 'plots',
+            this_dir / '_build' / 'html' / '_static' / 'plots')
+copy_and_overwrite(this_dir / '_static' / 'themes',
+            this_dir / '_build' / 'hyml' / '_static' / 'themes')
+
