@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Preamble &mdash; MRI_DistortionQA  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+        <script>mermaid.initialize({startOnLoad:true});</script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Marker Extraction" href="marker_extraction.html" />
+    <link rel="prev" title="Worked Examples" href="examples.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> MRI_DistortionQA
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="examples.html">Worked Examples</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Preamble</a></li>
+<li class="toctree-l2"><a class="reference internal" href="marker_extraction.html">Marker Extraction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="marker_matching.html">Marker Matching</a></li>
+<li class="toctree-l2"><a class="reference internal" href="field_calculation.html">Field Calculation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fit_spherical_harmonics.html">Spherical Harmonics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reporting.html">Reporting</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="code_docs.html">Code Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">MRI_DistortionQA</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="examples.html">Worked Examples</a> &raquo;</li>
+      <li>Preamble</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/Preamble.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="preamble">
+<h1>Preamble<a class="headerlink" href="#preamble" title="Permalink to this headline"></a></h1>
+<ul class="simple">
+<li><p>These examples constitutes a complete distortion QA example, starting from dicom images and ending with a distortion report.</p></li>
+<li><p>Each step is split into two sections. In the first, a simple example of using the code is demonstrated. Only the first section need be completed to move on to the next step. The second section provides more detailed examples and notes on each step, including how to handle some of the trick situation which may arise.</p></li>
+<li><p>In general, this workflow is designed to be modular and you can jump in/out at whatever point you please. But for the examples, we recommend completing them in order, because some of the future steps rely on data created in the former steps!</p>
+<ul>
+<li><p>The source code for all example steps is <a class="reference external" href="https://github.com/ACRF-Image-X-Institute/MRI_DistortionQA/tree/main/examples">here</a></p></li>
+</ul>
+</li>
+</ul>
+<p>These examples are not intended to demonstrate every possible thing you can do with this code and explain how to handle every edge case; for that you should look at the <a class="reference external" href="https://acrf-image-x-institute.github.io/MRI_DistortionQA/code_docs.html">code documentation</a>.</p>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="examples.html" class="btn btn-neutral float-left" title="Worked Examples" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="marker_extraction.html" class="btn btn-neutral float-right" title="Marker Extraction" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Brendan Whelan(s).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
