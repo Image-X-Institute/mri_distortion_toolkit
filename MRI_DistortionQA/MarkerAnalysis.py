@@ -346,21 +346,23 @@ class MarkerVolume:
             (np.ptp(self.MarkerCentroids.x), np.ptp(self.MarkerCentroids.y), np.ptp(self.MarkerCentroids.z)))
         plt.show()
 
-    def perturb_marker_positions(self, perturbation):
+    def perturb_marker_positions(self, random_perturbation, systemic_perturbation=0):
         """
         add random noise to the marker positions. Useful to perform sensitivity analysis. operates in place.
 
-        :param perturbation: upper and lower limits of perturbation to each marker coordinates. uniform
+        :param random_perturbation: upper and lower limits of random_perturbation to each marker coordinates. uniform
             distribution is used
-        :type perturbation: float
+        :type random_perturbation: float
+        :param systemic_perturbation: constant offset added to all markers
+        :type systemic_perturbation: float, optional
         """
 
-        x_peturb = np.random.uniform(low=-perturbation, high=perturbation, size=self.MarkerCentroids.x.shape)
-        y_peturb = np.random.uniform(low=-perturbation, high=perturbation, size=self.MarkerCentroids.x.shape)
-        z_peturb = np.random.uniform(low=-perturbation, high=perturbation, size=self.MarkerCentroids.x.shape)
-        self.MarkerCentroids.x = self.MarkerCentroids.x + x_peturb
-        self.MarkerCentroids.y = self.MarkerCentroids.y + y_peturb
-        self.MarkerCentroids.z = self.MarkerCentroids.z + z_peturb
+        x_peturb = np.random.uniform(low=-random_perturbation, high=random_perturbation, size=self.MarkerCentroids.x.shape)
+        y_peturb = np.random.uniform(low=-random_perturbation, high=random_perturbation, size=self.MarkerCentroids.x.shape)
+        z_peturb = np.random.uniform(low=-random_perturbation, high=random_perturbation, size=self.MarkerCentroids.x.shape)
+        self.MarkerCentroids.x = self.MarkerCentroids.x + x_peturb + systemic_perturbation
+        self.MarkerCentroids.y = self.MarkerCentroids.y + y_peturb + systemic_perturbation
+        self.MarkerCentroids.z = self.MarkerCentroids.z + z_peturb + systemic_perturbation
 
     def export_to_slicer(self, save_path=None, filename='slicer_centroids'):
         """

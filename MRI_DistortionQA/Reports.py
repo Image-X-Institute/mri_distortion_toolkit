@@ -172,6 +172,7 @@ class MRI_QA_Reporter:
         self._plot_distortion_v_r()
         self._plot_3D_cutplanes()
         self._plot_B0_surface()
+        self._build_homogeneity_report_table()
         # self._plot_gradients_surface()
         self._get_test_results()
 
@@ -183,7 +184,8 @@ class MRI_QA_Reporter:
         if self.dicom_data is None:
             return
         self._jinja_dict['acquisition_data'] = {}
-        _fields_of_interest = ['acquisition_date', 'magnetic_field_strength', 'bandwidth', 'freq_encode_direction']
+        _fields_of_interest = ['acquisition_date', 'magnetic_field_strength', 'bandwidth', 'pixel_spacing',
+                               'freq_encode_direction', 'manufacturer', 'imaging_frequency']
         for key in self.dicom_data:
             if key in _fields_of_interest:
                 new_key = key.replace('_', ' ')
@@ -316,6 +318,32 @@ class MRI_QA_Reporter:
         self.Gx_Bfield = reconstruct_Bz(self.Gx_Harmonics, self.recon_coords, quantity='T')
         self.Gy_Bfield = reconstruct_Bz(self.Gy_Harmonics, self.recon_coords, quantity='T')
         self.Gz_Bfield = reconstruct_Bz(self.Gz_Harmonics, self.recon_coords, quantity='T')
+
+    def _build_homogeneity_report_table(self):
+        """
+        Generate a table of predicted pk-pk homogeneity at different r
+        :return:
+        """
+        if self.B0_harmonics is None:
+            return
+        radii_of_interest = [50, 100, 150, 200]
+        pk_pk = []
+        for DSV_radius in radii_of_interest:
+            azimuth = np.linspace(0, 2 * np.pi, 100)
+            elevation = np.linspace(0, np.pi, 100)
+            [AZ, EL, R] = np.meshgrid(azimuth, elevation, DSV_radius, indexing='ij')
+            surface_coords = pd.DataFrame({'r': R.flatten(), 'azimuth': AZ.flatten(), 'elevation': EL.flatten()})
+            surface_coords = convert_spherical_to_cartesian(surface_coords)
+            B0 = reconstruct_Bz(self.B0_harmonics, surface_coords, quantity='T', r_outer=DSV_radius)
+            pk_pk.append(int((B0.max() - B0.min()) * 1e6))
+        _B0_stats = pd.DataFrame({'r': radii_of_interest, 'pk_pk [\u03BCT]': pk_pk} )
+
+        self._B0_table = go.Figure(data=[go.Table(
+            header=dict(values=list(_B0_stats.columns),
+                        align='left'),
+            cells=dict(values=[_B0_stats.r, _B0_stats['pk_pk [\u03BCT]']],
+                       align='left'))
+        ])
 
     def _check_dicom_data(self):
         """
@@ -541,6 +569,8 @@ class MRI_QA_Reporter:
             DSV_surface_save_name = self._unique_name_generator(self.output_folder / '.plots', 'DSV_surface.html',)
             self._fig_DSV_surface.write_html(DSV_surface_save_name, full_html=False, include_plotlyjs='cdn')
             self._jinja_dict['dsv_surf_source'] = DSV_surface_save_name
+
+            B0_table_save_name = self._unique_name_generator(self.output_folder / '.plots', 'B0_table.html', )
         else:
             self._jinja_dict['dsv_surf_source'] = None
 
