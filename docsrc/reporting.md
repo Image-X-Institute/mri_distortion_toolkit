@@ -3,7 +3,7 @@
 OK, the final step of our journey!
 
 This section demonstrates how you can automatically generate interactive html reports from the data we have generated. There are two ways for you to do this, both of which will be demonstrated:
-An example of the types of reports you can generate is [here](_static/MR_QA_report_12_05_2022.html).
+An example of the types of reports you can generate is [here](https://github.com/ACRF-Image-X-Institute/MRI_DistortionQA/blob/gh-pages/_static/MR_QA_report_20_05_2022.html).
 
 1. Pass the reporting code a data frame containg ground truth and distorted marker positions
 2. Pass the reporting code spherical harmonics
