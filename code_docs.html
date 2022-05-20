@@ -123,12 +123,15 @@ saved to save_path.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MRI_DistortionQA.MarkerAnalysis.MarkerVolume.perturb_marker_positions">
-<span class="sig-name descname"><span class="pre">perturb_marker_positions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">perturbation</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.MarkerAnalysis.MarkerVolume.perturb_marker_positions" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">perturb_marker_positions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">random_perturbation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">systemic_perturbation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.MarkerAnalysis.MarkerVolume.perturb_marker_positions" title="Permalink to this definition"></a></dt>
 <dd><p>add random noise to the marker positions. Useful to perform sensitivity analysis. operates in place.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>perturbation</strong> (<em>float</em>) – upper and lower limits of perturbation to each marker coordinates. uniform
-distribution is used</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>random_perturbation</strong> (<em>float</em>) – upper and lower limits of random_perturbation to each marker coordinates. uniform
+distribution is used</p></li>
+<li><p><strong>systemic_perturbation</strong> (<em>float</em><em>, </em><em>optional</em>) – constant offset added to all markers</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
