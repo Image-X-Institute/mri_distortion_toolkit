@@ -77,10 +77,10 @@ print(f'MR_QA_report_20_05_2022.html exists? {os.path.isfile(this_dir / "_static
 print(f'this_dir / _build? {os.path.isdir(this_dir / "_build")}')
 print(f'this_dir / _build / html? {os.path.isdir(this_dir / "_build" / "html")}')
 print(f'this_dir / _build / html /static? {os.path.isdir(this_dir / "_build" / "html" / "_static")}')
-shutil.copy(this_dir / '_static' / 'MR_QA_report_20_05_2022.html',
-            this_dir / '_build' / 'html' / '_static' / 'MR_QA_report_20_05_2022.html')
-copy_and_overwrite(this_dir / '_static' / 'plots',
-            this_dir / '_build' / 'html' / '_static' / 'plots')
-copy_and_overwrite(this_dir / '_static' / 'themes',
-            this_dir / '_build' / 'html' / '_static' / 'themes')
+# shutil.copy(this_dir / '_static' / 'MR_QA_report_20_05_2022.html',
+#             this_dir / '_build' / 'html' / '_static' / 'MR_QA_report_20_05_2022.html')
+# copy_and_overwrite(this_dir / '_static' / 'plots',
+#             this_dir / '_build' / 'html' / '_static' / 'plots')
+# copy_and_overwrite(this_dir / '_static' / 'themes',
+#             this_dir / '_build' / 'html' / '_static' / 'themes')
 
