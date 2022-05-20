@@ -32,6 +32,7 @@ jobs:
       - name: build sphinx docs
         run: |
           cd docsrc
+          ls
           make github
 
       - name: Deploy
