@@ -20,14 +20,14 @@ from pathlib import Path
 # Direct data case: pass matched marker volume to MRI_QA_Reporter
 # ---------------------------------------------------------------
 data_loc = Path(r'C:\Users\Brendan\Downloads\MRI_distortion_QA_sample_data\MRI_distortion_QA_sample_data')
-dicom_data_loc = data_loc / 'MR' / '04 gre_trans_AP_330' / 'dicom_data.json'  # previosly saved from a MarkerVolume using
+dicom_data_loc = data_loc / 'MR' / '04 gre_trans_AP_330' / 'dicom_data.json'  # previosly saved from a MarkerVolume
 Matched_Markers = pd.read_csv('Matched_Markers.csv', index_col=0).squeeze("columns")
 
 report = MRI_QA_Reporter(MatchedMarkerVolume=Matched_Markers, r_outer=150, dicom_data=dicom_data_loc)
 report.write_html_report()
 ```
 
-This code will generate a report at {your_home_directory} / 'Documents' / 'MRI_QA_reports'.
+This code will generate a report at ```{your_home_directory} / 'Documents' / 'MRI_QA_reports'```.
 
 To be honest, this report looks pretty bad - this is because with this phantom, there are very limited data points, so most of the plotting routines don't really work. If you have a more conventional phantom with lots of datapoints, this should work  a lot better.
 
@@ -49,14 +49,15 @@ from pathlib import Path
 G_x_harmonics = pd.read_csv('G_x_harmonics.csv', index_col=0).squeeze("columns")
 G_y_harmonics = pd.read_csv('G_y_harmonics.csv', index_col=0).squeeze("columns")
 G_z_harmonics = pd.read_csv('G_z_harmonics.csv', index_col=0).squeeze("columns")
+data_loc = Path(r'C:\Users\Brendan\Downloads\MRI_distortion_QA_sample_data\MRI_distortion_QA_sample_data')
+dicom_data_loc = data_loc / 'MR' / '04 gre_trans_AP_330' / 'dicom_data.json'  # previosly saved from a MarkerVolume
 
 report = MRI_QA_Reporter(gradient_harmonics=[G_x_harmonics, G_y_harmonics, G_z_harmonics],
                          r_outer=150, dicom_data=dicom_data_loc)
 report.write_html_report()
-
 ```
 
-You will now have a new report sitting {your_home_directory} / 'Documents' / 'MRI_QA_reports'.  This one should [look a lot better](https://acrf-image-x-institute.github.io/MRI_DistortionQA/_static/MR_QA_report_12_05_2022.html)!! 
+You will now have a new report sitting {your_home_directory} / 'Documents' / 'MRI_QA_reports'.  This one should [look a lot better](_static/MR_QA_report_20_05_2022.html)!! 
 
 If you complete the B0 estimate parts of the previous tutorials, and have a 'B0_harmonics.csv' file sitting in your working directory, you can also add this to the call to include a plot of B0 homogeneity:
 
