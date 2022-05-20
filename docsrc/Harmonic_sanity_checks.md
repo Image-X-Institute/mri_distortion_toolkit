@@ -118,11 +118,17 @@ OK!! not perfect, but reasonably stable. All estimates suggest pk-pk perturbatio
 | A30  | -27 (6.1%)  | -43 (6.2%)  | **-40 (5.8%)**  |
 | A50  | 10 (2.3%)   | 16 (-2.3%)  | **17 (2.5%)**   |
 
+
+
 ## Conclusion
 
 overall, this worked much better than I was expecting - I would go so far as to say the harmonics are exhibiting remarkable stability!
 
 The main concern is the reversal in sign of the harmonics for B0, so we have to get to the bottom of that. 
+
+
+
+
 
 ## python script
 

@@ -438,6 +438,7 @@ def get_gradient_spherical_harmonics(Gx_Harmonics, Gy_Harmonics, Gz_Harmonics):
 
     return Gx_Harmonics, Gy_Harmonics, Gz_Harmonics
 
+
 def get_dicom_data(dicom_data):
     """
     figures out whether dicom data is a dict or a path to a json file

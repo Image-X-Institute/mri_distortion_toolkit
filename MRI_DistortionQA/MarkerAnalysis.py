@@ -223,6 +223,9 @@ class MarkerVolume:
                                      example_dicom_file.ImageOrientationPatient[3:])
             self.dicom_data['slice_direction'] = np.array(directions)[slice_dir_ind][0]
 
+            # I keep coming back and adding more things so I'm actually just going to dump all the data:
+            self.dicom_data.update(example_dicom_file._dict)
+
         else:
             self.dicom_data = None
 
