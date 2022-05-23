@@ -54,3 +54,6 @@ def test_harmonic_conversion():
     g_x_harmonics_no_norm = convert_spherical_harmonics(g_x_harmonics, input_format='full', output_format='none')
     g_x_harmonics_norm = convert_spherical_harmonics(g_x_harmonics_no_norm, input_format='none', output_format='full')
     assert np.allclose(g_x_harmonics, g_x_harmonics_norm)
+    g_x_harmonics_numpy = g_x_harmonics.to_numpy()
+    g_x_harmonics_no_norm_numpy = convert_spherical_harmonics(g_x_harmonics_numpy, input_format='full', output_format='none')
+    assert np.allclose(g_x_harmonics_no_norm, g_x_harmonics_no_norm_numpy)

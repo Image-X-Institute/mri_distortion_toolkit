@@ -338,7 +338,6 @@ def convert_spherical_harmonics(harmonics, input_format='full', output_format='n
             Norm.append(((-1) ** m) * np.sqrt((n + 0.5) * (np.math.factorial(n - m)) / np.math.factorial(n + m)))
             coeff_names.append(f'A_{n}_{m}')
             coeff_names.append(f'B_{n}_{m}')
-            coeff_names.append(f'B_{n}_{m}')
             Norm.append(((-1) ** m) * np.sqrt((n + 0.5) * (np.math.factorial(n - m)) / np.math.factorial(n + m)))
 
     if case_string == 'full_none':
@@ -346,7 +345,7 @@ def convert_spherical_harmonics(harmonics, input_format='full', output_format='n
     if case_string == 'none_full':
         converted_harmonics = np.multiply(harmonics, Norm)
     if isinstance(converted_harmonics, np.ndarray):
-        converted_harmonics = pd.DataFrame(converted_harmonics, index=coeff_names)
+        converted_harmonics = pd.DataFrame(converted_harmonics, index=coeff_names).squeeze()
 
     return converted_harmonics
 
