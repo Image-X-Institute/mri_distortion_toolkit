@@ -19,3 +19,4 @@ sphinxcontrib.mermaid
 coverage-badge
 build
 myst_parser
+twine
