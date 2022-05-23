@@ -489,18 +489,25 @@ this is because parts of this code were ported from an earlier version in matlab
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MRI_DistortionQA.utilities.convert_spherical_harmonics">
-<span class="sig-prename descclassname"><span class="pre">MRI_DistortionQA.utilities.</span></span><span class="sig-name descname"><span class="pre">convert_spherical_harmonics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">harmonics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_format</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_format</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.utilities.convert_spherical_harmonics" title="Permalink to this definition"></a></dt>
-<dd><p>NOT WRITTEN YET! function to convert between different harmonic formalisms</p>
+<span class="sig-prename descclassname"><span class="pre">MRI_DistortionQA.utilities.</span></span><span class="sig-name descname"><span class="pre">convert_spherical_harmonics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">harmonics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'full'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'none'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.utilities.convert_spherical_harmonics" title="Permalink to this definition"></a></dt>
+<dd><p>function to convert between different harmonic formalisms.
+At the moment only works between ‘fully normalised’ and ‘unnormalised’ but we could add more later if
+we need to.
+example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">g_x_harmonics_no_norm</span> <span class="o">=</span> <span class="n">convert_spherical_harmonics</span><span class="p">(</span><span class="n">g_x_harmonics</span><span class="p">,</span> <span class="n">input_format</span><span class="o">=</span><span class="s1">&#39;full&#39;</span><span class="p">,</span> <span class="n">output_format</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>harmonics</strong> – </p></li>
-<li><p><strong>input_format</strong> – </p></li>
-<li><p><strong>output_format</strong> – </p></li>
+<li><p><strong>harmonics</strong> – a pandas series or numpy array of size (n_order+1)^2, where the harmonics are ordered as
+A00, A10, A11, B11, A20, A21, B21, A22, B22…etc.</p></li>
+<li><p><strong>input_format</strong> – format of input harmonic normalisation; ‘none’ or ‘full’</p></li>
+<li><p><strong>output_format</strong> – format of output harmonic normalisation; ‘none’ or ‘full’</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
+<dd class="field-even"><p>converted harmonics as a pandas series</p>
 </dd>
 </dl>
 </dd></dl>
