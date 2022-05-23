@@ -1,21 +1,21 @@
 Code Documentation
 ==================
 
-MarkerAnalysis
---------------
+Marker Analysis
+---------------
 
 .. automodule:: MRI_DistortionQA.MarkerAnalysis
    :members:
 
 
-FieldCalculation
-----------------
+Field Calculation
+-----------------
 
 .. automodule:: MRI_DistortionQA.FieldCalculation
     :members:
 
-FieldAnalysis
--------------
+Harmonic Analysis
+-----------------
 
 .. automodule:: MRI_DistortionQA.FieldAnalysis
     :members:

@@ -35,6 +35,9 @@ class ConvertMatchedMarkersToBz:
     """
 
     def __init__(self, MatchedCentroids, dicom_data):
+        """
+        init
+        """
 
         self.dicom_data = get_dicom_data(dicom_data)
         self.MatchedCentroids = MatchedCentroids
