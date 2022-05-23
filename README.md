@@ -11,11 +11,11 @@ flowchart LR
     B[Marker <br>Matching]--->C[Field <br> Calculation] & E[Automated <br>reporting]
     C[Field <br> Calculation]-->D[Spherical Harmonic <br>Analysis]
     D[Spherical Harmonic <br>Analysis]-->E[Automated <br>reporting];
-    click A "https://acrf-image-x-institute.github.io/MRI_DistortionQA/marker_extraction.html"
-    click B "https://acrf-image-x-institute.github.io/MRI_DistortionQA/marker_matching.html"
-    click C "https://acrf-image-x-institute.github.io/MRI_DistortionQA/field_calculation.html"
-    click D "https://acrf-image-x-institute.github.io/MRI_DistortionQA/fit_spherical_harmonics.html"
-    click E "https://acrf-image-x-institute.github.io/MRI_DistortionQA/reporting.html"
+    click A "https://acrf-image-x-institute.github.io/MRI_DistortionQA/code_docs.html#MRI_DistortionQA.MarkerAnalysis.MarkerVolume"
+    click B "https://acrf-image-x-institute.github.io/MRI_DistortionQA/code_docs.html#MRI_DistortionQA.MarkerAnalysis.MatchedMarkerVolumes"
+    click C "https://acrf-image-x-institute.github.io/MRI_DistortionQA/code_docs.html#MRI_DistortionQA.FieldCalculation.ConvertMatchedMarkersToBz"
+    click D "https://acrf-image-x-institute.github.io/MRI_DistortionQA/code_docs.html#MRI_DistortionQA.calculate_harmonics.calculate_harmonics"
+    click E "https://acrf-image-x-institute.github.io/MRI_DistortionQA/code_docs.html#MRI_DistortionQA.calculate_harmonics.calculate_harmonics"
 ```
 
 ## Setup/Build/Install

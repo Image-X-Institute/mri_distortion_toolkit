@@ -115,8 +115,7 @@ class Elekta_Distortion_tests:  # pragma: no cover
 
 class MRI_QA_Reporter:
     """
-    generate a report based on either some matched data, or harmonics. In the latter case, report data
-     is reconstructed.
+    generate a report based on either some matched data, or harmonics. In the latter case, report data is reconstructed.
 
     :param MatchedMarkerVolume: pandas dataframe containing  ['x_gt', 'y_gt', 'z_gt', 'x_gnl', 'y_gnl', 'z_gnl']
         You must enter one of MatchedMarkerVolume or gradient_harmonics
