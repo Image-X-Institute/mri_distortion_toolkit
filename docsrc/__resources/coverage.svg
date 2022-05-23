@@ -1,115 +1,21 @@
-============================================================================ Coverage for /home/brendan/python/MRI_DistortionQA/MRI_DistortionQA/ =============================================================================
------------------------------------------------------------------------------------------------------- Detailed Coverage ------------------------------------------------------------------------------------------------------
-| Name                                                                                                                                                 |                                                               Status |
-|------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------|
-| FieldAnalysis.py                                                                                                                                     |                                                                      |
-|   SphericalHarmonicFit (L21)                                                                                                                         |                                                              COVERED |
-|     SphericalHarmonicFit._check_data_input (L73)                                                                                                     |                                                              COVERED |
-|     SphericalHarmonicFit._filter_data (L88)                                                                                                          |                                                              COVERED |
-|     SphericalHarmonicFit._generate_harmonic_names (L105)                                                                                             |                                                              COVERED |
-|     SphericalHarmonicFit._svd_fit (L120)                                                                                                             |                                                              COVERED |
-|     SphericalHarmonicFit._quantify_fit (L156)                                                                                                        |                                                              COVERED |
-|     SphericalHarmonicFit._assess_harmonic_pk_pk (L180)                                                                                               |                                                              COVERED |
-|     SphericalHarmonicFit.plot_harmonics_pk_pk (L200)                                                                                                 |                                                              COVERED |
-|     SphericalHarmonicFit.plot_cut_planes (L225)                                                                                                      |                                                              COVERED |
-|     SphericalHarmonicFit.print_key_harmonics (L315)                                                                                                  |                                                              COVERED |
-|------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------|
-| FieldCalculation.py                                                                                                                                  |                                                                      |
-|   ConvertMatchedMarkersToBz (L16)                                                                                                                    |                                                              COVERED |
-|     ConvertMatchedMarkersToBz._check_dicom_data (L54)                                                                                                |                                                              COVERED |
-|     ConvertMatchedMarkersToBz._get_B0_calc_direction (L63)                                                                                           |                                                              COVERED |
-|     ConvertMatchedMarkersToBz._calculate_Bz (L93)                                                                                                    |                                                              COVERED |
-|------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------|
-| MarkerAnalysis.py                                                                                                                                    |                                                                      |
-|   MarkerVolume (L29)                                                                                                                                 |                                                              COVERED |
-|     MarkerVolume._filter_markers_by_r (L140)                                                                                                         |                                                              COVERED |
-|     MarkerVolume._calculate_MR_acquisition_data (L151)                                                                                               |                                                              COVERED |
-|     MarkerVolume._calculate_chemical_shift_vector (L227)                                                                                             |                                                              COVERED |
-|     MarkerVolume._threshold_volume (L254)                                                                                                            |                                                              COVERED |
-|     MarkerVolume._find_contour_centroids (L268)                                                                                                      |                                                              COVERED |
-|     MarkerVolume.plot_3D_markers (L334)                                                                                                              |                                                              COVERED |
-|     MarkerVolume.perturb_marker_positions (L350)                                                                                                     |                                                              COVERED |
-|     MarkerVolume.export_to_slicer (L368)                                                                                                             |                                                              COVERED |
-|     MarkerVolume.save_dicom_data (L405)                                                                                                              |                                                              COVERED |
-|   MatchedMarkerVolumes (L428)                                                                                                                        |                                                              COVERED |
-|     MatchedMarkerVolumes._check_input_data (L504)                                                                                                    |                                                              COVERED |
-|     MatchedMarkerVolumes._get_grid_spacing (L542)                                                                                                    |                                                              COVERED |
-|     MatchedMarkerVolumes._generate_extrapolant_models (L551)                                                                                         |                                                              COVERED |
-|     MatchedMarkerVolumes._align_reference (L576)                                                                                                     |                                                              COVERED |
-|       MatchedMarkerVolumes._align_reference._calculate_radial_distance (L584)                                                                        |                                                              COVERED |
-|       MatchedMarkerVolumes._align_reference._match_crosshair (L594)                                                                                  |                                                              COVERED |
-|     MatchedMarkerVolumes._match_distorted_markers_to_ground_truth (L643)                                                                             |                                                              COVERED |
-|     MatchedMarkerVolumes._handle_double_matched_markers (L699)                                                                                       |                                                              COVERED |
-|     MatchedMarkerVolumes._create_marker_data_prematched_markers (L721)                                                                               |                                                              COVERED |
-|     MatchedMarkerVolumes._generate_marker_position_data (L736)                                                                                       |                                                              COVERED |
-|     MatchedMarkerVolumes._sort_distorted_centroids (L799)                                                                                            |                                                              COVERED |
-|     MatchedMarkerVolumes.plot_3D_markers (L831)                                                                                                      |                                                              COVERED |
-|     MatchedMarkerVolumes.plot_compressed_markers (L863)                                                                                              |                                                              COVERED |
-|       MatchedMarkerVolumes.plot_compressed_markers.get_markers_as_function_of_z (L878)                                                               |                                                              COVERED |
-|       MatchedMarkerVolumes.plot_compressed_markers.plot_markers_inner (L886)                                                                         |                                                              COVERED |
-|------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------|
-| Reports.py                                                                                                                                           |                                                                      |
-|   TG284_Tests (L27)                                                                                                                                  |                                                              COVERED |
-|     TG284_Tests.test_distortion_less_than_1mm_within_r_100 (L32)                                                                                     |                                                              COVERED |
-|     TG284_Tests.test_distortion_less_than_2mm_within_r_200 (L42)                                                                                     |                                                              COVERED |
-|   DefaultTestSuite (L53)                                                                                                                             |                                                              COVERED |
-|     DefaultTestSuite.test_distortion_less_than_2mm_within_r_100 (L58)                                                                                |                                                              COVERED |
-|     DefaultTestSuite.test_distortion_less_than_4mm_within_r_150 (L68)                                                                                |                                                              COVERED |
-|   Elekta_Distortion_tests (L79)                                                                                                                      |                                                              COVERED |
-|     Elekta_Distortion_tests.test_distortion_less_than_1_mm_within_r_100_mm (L85)                                                                     |                                                              COVERED |
-|     Elekta_Distortion_tests.test_distortion_less_than_2_mm_within_r_150_mm (L95)                                                                     |                                                              COVERED |
-|     Elekta_Distortion_tests.test_distortion_less_than_4_mm_within_r_200_mm (L105)                                                                    |                                                              COVERED |
-|   MRI_QA_Reporter (L116)                                                                                                                             |                                                              COVERED |
-|     MRI_QA_Reporter._build_acquisition_dict (L178)                                                                                                   |                                                              COVERED |
-|     MRI_QA_Reporter._set_styles (L193)                                                                                                               |                                                              COVERED |
-|     MRI_QA_Reporter._unique_name_generator (L206)                                                                                                    |                                                              COVERED |
-|     MRI_QA_Reporter._get_test_results (L229)                                                                                                         |                                                              COVERED |
-|     MRI_QA_Reporter._get_analysis_data (L253)                                                                                                        |                                                              COVERED |
-|     MRI_QA_Reporter._convert_magnetic_field_to_distortion (L294)                                                                                     |                                                              COVERED |
-|     MRI_QA_Reporter._reconstruct_gradient_fields (L317)                                                                                              |                                                              COVERED |
-|     MRI_QA_Reporter._build_homogeneity_report_table (L325)                                                                                           |                                                              COVERED |
-|     MRI_QA_Reporter._check_dicom_data (L352)                                                                                                         |                                                              COVERED |
-|     MRI_QA_Reporter._check_marker_volume (L362)                                                                                                      |                                                              COVERED |
-|     MRI_QA_Reporter._generate_recon_coords (L372)                                                                                                    |                                                              COVERED |
-|     MRI_QA_Reporter._plot_distortion_v_r (L383)                                                                                                      |                                                              COVERED |
-|     MRI_QA_Reporter._plot_3D_cutplanes (L407)                                                                                                        |                                                              COVERED |
-|     MRI_QA_Reporter._plot_B0_surface (L432)                                                                                                          |                                                              COVERED |
-|     MRI_QA_Reporter._update_MatchedMarkerVolume (L462)                                                                                               |                                                              COVERED |
-|     MRI_QA_Reporter._extract_data_from_MatchedMarkerVolume (L483)                                                                                    |                                                              COVERED |
-|     MRI_QA_Reporter._set_up_directory_structure (L520)                                                                                               |                                                              COVERED |
-|     MRI_QA_Reporter._get_template (L534)                                                                                                             |                                                              COVERED |
-|     MRI_QA_Reporter.write_html_report (L546)                                                                                                         |                                                              COVERED |
-|------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------|
-| calculate_harmonics.py                                                                                                                               |                                                                      |
-|   calculate_harmonics (L7)                                                                                                                           |                                                              COVERED |
-|------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------|
-| utilities.py                                                                                                                                         |                                                                      |
-|   bcolors (L28)                                                                                                                                      |                                                              COVERED |
-|   build_dicom_affine (L43)                                                                                                                           |                                                              COVERED |
-|   dicom_to_numpy (L91)                                                                                                                               |                                                              COVERED |
-|   _sort_dicom_slices (L154)                                                                                                                          |                                                              COVERED |
-|   get_all_files (L165)                                                                                                                               |                                                              COVERED |
-|   convert_cartesian_to_spherical (L201)                                                                                                              |                                                              COVERED |
-|   convert_spherical_to_cartesian (L230)                                                                                                              |                                                              COVERED |
-|   generate_legendre_basis (L256)                                                                                                                     |                                                              COVERED |
-|   convert_spherical_harmonics (L297)                                                                                                                 |                                                              COVERED |
-|   plot_MarkerVolume_overlay (L337)                                                                                                                   |                                                              COVERED |
-|   plot_compressed_MarkerVolumes (L364)                                                                                                               |                                                              COVERED |
-|   get_gradient_spherical_harmonics (L401)                                                                                                            |                                                              COVERED |
-|   get_dicom_data (L442)                                                                                                                              |                                                              COVERED |
-|   reconstruct_Bz (L458)                                                                                                                              |                                                              COVERED |
-|   compare_recon_report_with_ground_truth_report (L500)                                                                                               |                                                              COVERED |
-|------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------|
-
------------------------------------------------------------------------------------------------------------ Summary -----------------------------------------------------------------------------------------------------------
-| Name                                                    |                                  Total |                                  Miss |                                  Cover |                                  Cover% |
-|---------------------------------------------------------|----------------------------------------|---------------------------------------|----------------------------------------|-----------------------------------------|
-| FieldAnalysis.py                                        |                                     10 |                                     0 |                                     10 |                                    100% |
-| FieldCalculation.py                                     |                                      4 |                                     0 |                                      4 |                                    100% |
-| MarkerAnalysis.py                                       |                                     26 |                                     0 |                                     26 |                                    100% |
-| Reports.py                                              |                                     30 |                                     0 |                                     30 |                                    100% |
-| calculate_harmonics.py                                  |                                      1 |                                     0 |                                      1 |                                    100% |
-| utilities.py                                            |                                     15 |                                     0 |                                     15 |                                    100% |
-|---------------------------------------------------------|----------------------------------------|---------------------------------------|----------------------------------------|-----------------------------------------|
-| TOTAL                                                   |                                     86 |                                     0 |                                     86 |                                  100.0% |
---------------------------------------------------------------------------------------- RESULT: PASSED (minimum: 95.0%, actual: 100.0%) ---------------------------------------------------------------------------------------
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="99" height="20">
+    <linearGradient id="b" x2="0" y2="100%">
+        <stop offset="0" stop-color="#bbb" stop-opacity=".1"/>
+        <stop offset="1" stop-opacity=".1"/>
+    </linearGradient>
+    <mask id="a">
+        <rect width="99" height="20" rx="3" fill="#fff"/>
+    </mask>
+    <g mask="url(#a)">
+        <path fill="#555" d="M0 0h63v20H0z"/>
+        <path fill="#a4a61d" d="M63 0h36v20H63z"/>
+        <path fill="url(#b)" d="M0 0h99v20H0z"/>
+    </g>
+    <g fill="#fff" text-anchor="middle" font-family="DejaVu Sans,Verdana,Geneva,sans-serif" font-size="11">
+        <text x="31.5" y="15" fill="#010101" fill-opacity=".3">coverage</text>
+        <text x="31.5" y="14">coverage</text>
+        <text x="80" y="15" fill="#010101" fill-opacity=".3">80%</text>
+        <text x="80" y="14">80%</text>
+    </g>
+</svg>
