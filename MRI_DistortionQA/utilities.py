@@ -294,42 +294,59 @@ def generate_legendre_basis(InputCoords, n_order):
     return pd.DataFrame(legendre_basis, columns=coeff_names)
 
 
-def convert_spherical_harmonics(harmonics, input_format, output_format):
+def convert_spherical_harmonics(harmonics, input_format='full', output_format='none'):
     """
-    NOT WRITTEN YET! function to convert between different harmonic formalisms
+    function to convert between different harmonic formalisms.
+    At the moment only works between 'fully normalised' and 'unnormalised' but we could add more later if
+    we need to.
+    example::
 
-    :param harmonics:
-    :param input_format:
-    :param output_format:
-    :return:
+        g_x_harmonics_no_norm = convert_spherical_harmonics(g_x_harmonics, input_format='full', output_format='none')
+
+    :param harmonics: a pandas series or numpy array of size (n_order+1)^2, where the harmonics are ordered as
+        A00, A10, A11, B11, A20, A21, B21, A22, B22...etc.
+    :param input_format: format of input harmonic normalisation; 'none' or 'full'
+    :param output_format: format of output harmonic normalisation; 'none' or 'full'
+    :return: converted harmonics as a pandas series
     """
 
-    case_string = input_format + '_' + output_format
+    formats = ['none', 'full']
+    if input_format not in formats:
+        raise NotImplementedError(f'no method exists to convert {input_format} format')
+    if output_format not in formats:
+        raise NotImplementedError(f'no method exists to convert {output_format} format')
+
+
+    case_string = input_format.lower() + '_' + output_format.lower()
+    if input_format.lower == output_format.lower():
+        case_string = 'same'  # will do nothing, except return the data as a series
+
     converted_harmonics = harmonics.copy()
+    n_order = np.sqrt(converted_harmonics.shape[0]) - 1
+    assert n_order.is_integer()  # if this is false then an invalid number of harmonics is entered
+    n_order = int(n_order)
+    # generate normalisation factors:
+    k = 0
+    coeff_names = []
+    Norm = []
+    for n in range(0, n_order + 1):  # the plus 1 is because range stops at -1 for some reason
+        Norm.append(np.sqrt(n + 0.5))
+        coeff_names.append(f'A_{n}_0')
+        k = k + 1
+        for j in range(0, n):
+            m = j + 1  # this looks weird but it works to give values m=1:n
+            Norm.append(((-1) ** m) * np.sqrt((n + 0.5) * (np.math.factorial(n - m)) / np.math.factorial(n + m)))
+            coeff_names.append(f'A_{n}_{m}')
+            coeff_names.append(f'B_{n}_{m}')
+            coeff_names.append(f'B_{n}_{m}')
+            Norm.append(((-1) ** m) * np.sqrt((n + 0.5) * (np.math.factorial(n - m)) / np.math.factorial(n + m)))
 
-    if case_string == 'none_normalised':
-        k = 0
-        coeff_names = []
-        n_order = 8
-
-        for n in range(0, n_order + 1):  # the plus 1 is because range stops at -1 for some reason
-            Norm = np.sqrt(n + 0.5)
-            coeff_names.append(f'A_{n}_0')
-            converted_harmonics[k] = converted_harmonics[k]/Norm
-            k = k + 1
-
-            for j in range(0, n):
-                m = j + 1  # this looks weird but it works to give values m=1:n
-                Norm = ((-1) ** m) * np.sqrt((n + 0.5) * (np.math.factorial(n - m)) / np.math.factorial(n + m))
-                converted_harmonics[k] = converted_harmonics[k] / Norm
-                coeff_names.append(f'A_{n}_{m}')
-                k = k + 1
-                converted_harmonics[k] = converted_harmonics[k] / Norm
-                coeff_names.append(f'B_{n}_{m}')
-                k = k + 1
-
-    elif case_string == 'normalised_none':
-        pass
+    if case_string == 'full_none':
+        converted_harmonics = np.divide(harmonics, Norm)
+    if case_string == 'none_full':
+        converted_harmonics = np.multiply(harmonics, Norm)
+    if isinstance(converted_harmonics, np.ndarray):
+        converted_harmonics = pd.DataFrame(converted_harmonics, index=coeff_names)
 
     return converted_harmonics
 

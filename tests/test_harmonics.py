@@ -8,6 +8,7 @@ sys.path.insert(0, str(this_dir.parent))
 from MRI_DistortionQA.FieldAnalysis import SphericalHarmonicFit
 from MRI_DistortionQA import calculate_harmonics
 from MRI_DistortionQA.MarkerAnalysis import MarkerVolume
+from MRI_DistortionQA.utilities import convert_spherical_harmonics
 
 
 def test_spherical_harmonics_stability():
@@ -43,3 +44,13 @@ def test_calculate_harmonics():
     assert np.allclose(G_x_Harmonics.harmonics.max(), 10.312607980186499)
     assert np.allclose(G_y_Harmonics.harmonics.max(), 0.3535400057558178)
     assert np.allclose(G_z_Harmonics.harmonics.max(), 0.5673060754134269)
+
+
+def test_harmonic_conversion():
+    """
+    test that we can read in harmonics, convert them forward and back and the remain the same
+    """
+    g_x_harmonics = pd.read_csv(test_data_dir / 'G_x_harmonics.csv', index_col=0).squeeze("columns")
+    g_x_harmonics_no_norm = convert_spherical_harmonics(g_x_harmonics, input_format='full', output_format='none')
+    g_x_harmonics_norm = convert_spherical_harmonics(g_x_harmonics_no_norm, input_format='none', output_format='full')
+    assert np.allclose(g_x_harmonics, g_x_harmonics_norm)
