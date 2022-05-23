@@ -71,8 +71,8 @@
 <h1>Developer notes<a class="headerlink" href="#developer-notes" title="Permalink to this headline"></a></h1>
 <section id="check-docstring-coverage-with-interrogate">
 <h2>check docstring coverage with interrogate<a class="headerlink" href="#check-docstring-coverage-with-interrogate" title="Permalink to this headline"></a></h2>
-<p>from MR_DistortionQA run</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span> interrogate -vv --ignore-init-method --generate-badge  ../docsrc/__resources/interrogate.svg
+<p>from root directory:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span> interrogate -c setup.cfg -v MRI_DistortionQA/ --generate-badge  docsrc/__resources/interrogate.svg
 </pre></div>
 </div>
 <p>to run tests, from root directory:</p>

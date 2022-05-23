@@ -2,10 +2,10 @@
 
 ## check docstring coverage with interrogate
 
-from MR_DistortionQA run
+from root directory:
 
 ```bash
- interrogate -vv --ignore-init-method --generate-badge  ../docsrc/__resources/interrogate.svg
+ interrogate -c setup.cfg -v MRI_DistortionQA/ --generate-badge  docsrc/__resources/interrogate.svg
 ```
 
 to run tests, from root directory:
