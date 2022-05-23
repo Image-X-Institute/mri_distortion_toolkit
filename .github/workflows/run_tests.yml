@@ -30,7 +30,9 @@ jobs:
     - name: Test with pytest
       run: |
         coverage run -m pytest
+        echo "Test coverage:" 
         coverage report
-        interrogate -c setup.cfg MRI_DistortionQA/ -vv --generate-badge ../MRI_DistortionQA/ -o docsrc/__resources/coverage.svg
+        echo "Doc string coverage:" 
+        interrogate -c setup.cfg MRI_DistortionQA/ -v
 
       
