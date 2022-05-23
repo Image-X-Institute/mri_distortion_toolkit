@@ -1,14 +1,12 @@
 import pathlib
-
 from .utilities import get_all_files, dicom_to_numpy
 import pydicom
 from pathlib import Path
 import numpy as np
-from skimage.filters import gaussian, threshold_otsu, threshold_local
+from skimage.filters import gaussian, threshold_otsu
 from skimage.measure import label
 from scipy.interpolate import NearestNDInterpolator
 from matplotlib import pyplot as plt
-from matplotlib.widgets import Slider
 import logging
 import os
 import json
@@ -269,7 +267,10 @@ class MarkerVolume:
 
     def _find_contour_centroids(self):
         """
-
+        This code loops through all the found regions, extracts the cartesian coordiantes, and takes the
+        intensity-weighted average as the centroid.
+        It will also exlcude volumes that are bigger/ smaller than the median using the params
+        marker_size_upper_tol and marker_size_lower_tol
         """
         self._labels = label(self.ThresholdVolume, background=0)
         self.unique_labels = np.unique(self._labels)[1:]  # first label is background so skip
@@ -581,7 +582,9 @@ class MatchedMarkerVolumes:
             return
 
         def _calculate_radial_distance(centroids):
-            # insert the radial value of each marker:
+            """
+            insert the radial value of each marker:
+            """
             centroids['r'] = centroids.apply(
                 lambda row: np.sqrt(row[0] ** 2 + row[1] ** 2 + row[2] ** 2), axis=1)
             if centroids.r.mean() < 10:
@@ -589,6 +592,9 @@ class MatchedMarkerVolumes:
             return centroids
 
         def _match_crosshair(search_centroids, reference_centroids):
+            """
+            match the distorted/ ground truth
+            """
 
             _matched_reference = pd.DataFrame(columns=['x', 'y', 'z'])
             search_centroids.reset_index(inplace=True, drop=True)

@@ -31,4 +31,6 @@ jobs:
       run: |
         coverage run -m pytest
         coverage report
+        interrogate -c setup.cfg MRI_DistortionQA/ -vv --generate-badge ../MRI_DistortionQA/ -o docsrc/__resources/coverage.svg
+
       
