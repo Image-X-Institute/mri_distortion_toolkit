@@ -33,7 +33,6 @@ def calculate_harmonics(ground_truth_volume, distorted_volume, distorted_volume_
     # match the markers
     matched_markers = MatchedMarkerVolumes(ground_truth_volume, distorted_volume, sorting_method='radial', ReferenceMarkers=11,
                                               WarpSearchData=True, ReverseGradientData=distorted_volume_rev)
-    matched_markers.MatchedCentroids.to_csv('MatchedMarkerVolume.csv')
 
     # calculate B fields
     B_fields = ConvertMatchedMarkersToBz(matched_markers.MatchedCentroids, dicom_data)

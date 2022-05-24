@@ -93,6 +93,7 @@ class MarkerVolume:
                     dicom_to_numpy(self.input_data_path, file_extension='dcm', return_XYZ=True)
 
                 self._calculate_MR_acquisition_data()
+                self._calculate_gradient_strength()
                 self.ThresholdVolume, self.BlurredVolume = self._threshold_volume(self.InputVolume)
                 centroids = self._find_contour_centroids()
                 self.MarkerCentroids = pd.DataFrame(centroids, columns=['x', 'y', 'z'])
@@ -102,7 +103,8 @@ class MarkerVolume:
                 if self._correct_fat_water_shift:
                     self._calculate_chemical_shift_vector(fat_shift_direction=fat_shift_direction)
                     self.MarkerCentroids = self.MarkerCentroids + self._chemical_shift_vector
-
+                self.export_to_slicer()
+                self.save_dicom_data()
             elif (os.path.isfile(self.input_data_path) and os.path.splitext(self.input_data_path)[1] == '.json'):
                 # slicer input
                 with open(self.input_data_path) as f:
@@ -121,7 +123,6 @@ class MarkerVolume:
             if not all([col in input_data for col in _expected_columns]):
                 raise AttributeError("input pandas data must have columns called ['x', 'y', 'z']")
             self.MarkerCentroids = input_data.copy()
-
         else:
             raise TypeError(f'Uknown data input: {type(input_data)}')
 
@@ -176,9 +177,11 @@ class MarkerVolume:
             z_fov = z.max() - z.min() + z_pixel_spacing
             self._dicom_header = example_dicom_file
 
+
             self.dicom_data = {}  # fill up below
             self.dicom_data['FOV'] = [x_fov, y_fov, z_fov]
             self.dicom_data['bandwidth'] = float(example_dicom_file.PixelBandwidth)
+
             self.dicom_data['gama'] = float(example_dicom_file.MagneticFieldStrength * 42.57747851)
             self.dicom_data['pixel_spacing'] = [x_pixel_spacing, y_pixel_spacing, z_pixel_spacing]
             self.dicom_data['image_size'] = [x.size, y.size, z.size]
@@ -223,6 +226,19 @@ class MarkerVolume:
 
         else:
             self.dicom_data = None
+
+    def _calculate_gradient_strength(self):
+        """
+        calculate the gradient strengths in T/m
+        """
+
+        bandwidth = np.array(self.dicom_data['bandwidth'])
+        image_size = np.array(self.dicom_data['image_size'])
+        gama = np.array(self.dicom_data['gama'])
+        FOV = np.array(self.dicom_data['FOV'])
+
+        gradient_strength = bandwidth * image_size / (gama * 1e6 * FOV * 1e-3)  # unit(T / m)
+        self.dicom_data['gradient_strength'] = list(gradient_strength)
 
     def _calculate_chemical_shift_vector(self, fat_shift_direction=1):
         """
