@@ -9,12 +9,15 @@ data_loc = Path(r'_example_data').resolve()
 
 # distorted centroids
 distorted_volume = MarkerVolume(data_loc / 'MR' / '04 gre_trans_AP_330' / 'slicer_centroids.mrk.json', verbose=False)
+distorted_volume_rev = MarkerVolume(data_loc / 'MR' / '05 gre_trans_PA_330' / 'slicer_centroids.mrk.json', verbose=False)
+# ^ data taken with reverse phase and frequency encoding
 
 # ground truth centroids
 ground_truth_volume = MarkerVolume(data_loc / 'CT' / 'slicer_centroids.mrk.json', verbose=False, r_max=300)
 
 # matched volumes
-matched_volume = MatchedMarkerVolumes(ground_truth_volume, distorted_volume, ReferenceMarkers=11)
+matched_volume = MatchedMarkerVolumes(ground_truth_volume, distorted_volume, ReverseGradientData=distorted_volume_rev,
+                                      ReferenceMarkers=11)
 matched_volume.MatchedCentroids.to_csv('_example_data/Matched_Markers.csv')  # for use in later examples
 
 # plot the match

@@ -27,7 +27,7 @@ def test_linear_recon():
      'image_size': [128, 90, 128], 'magnetic_field_strength': '1.0', 'imaging_frequency': '41.980956',
      'acquisition_date': '28_April_2022', 'manufacturer': 'SIEMENS', 'chem_shift_magnitude': 0.8723592481911194,
      'InPlanePhaseEncodingDirection': 'ROW', 'phase_encode_direction': 'x', 'freq_encode_direction': 'z',
-     'slice_direction': 'y'}
+     'slice_direction': 'y', 'gradient_strength': [1e-3, 1e-3, 1e-3]}
 
     bandwidth = np.array(dicom_data['bandwidth'])
     image_size = np.array(dicom_data['image_size'])
