@@ -268,6 +268,9 @@ class MRI_QA_Reporter:
             self._check_dicom_data()
             self.Gx_Harmonics, self.Gy_Harmonics, self.Gz_Harmonics = \
                 get_gradient_spherical_harmonics(gradient_harmonics[0], gradient_harmonics[1], gradient_harmonics[2])
+            self.Gx_Harmonics = self.Gx_Harmonics * self.dicom_data['gradient_strength'][0] * 1e3
+            self.Gy_Harmonics = self.Gy_Harmonics * self.dicom_data['gradient_strength'][1] * 1e3
+            self.Gz_Harmonics = self.Gz_Harmonics * self.dicom_data['gradient_strength'][2] * 1e3
             if self.r_outer is None:
                 logger.warning(
                     'When you use gradient_harmonics to reconstruct the data, it is advisable to enter a value for'
@@ -353,7 +356,7 @@ class MRI_QA_Reporter:
         """
         check that if input dicom data is required, it confirms to minimum standard
         """
-        _required_fields = ['FOV', 'bandwidth', 'gama', 'image_size']
+        _required_fields = ['FOV', 'bandwidth', 'gama', 'image_size', 'gradient_strength']
 
         if not isinstance(self.dicom_data, dict) or not all(
                 name in self.dicom_data.keys() for name in _required_fields):
