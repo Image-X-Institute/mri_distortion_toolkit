@@ -248,7 +248,7 @@ to json using:</p>
 <span id="harmonic-analysis"></span><h2>Harmonic Analysis<a class="headerlink" href="#module-MRI_DistortionQA.FieldAnalysis" title="Permalink to this headline"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MRI_DistortionQA.FieldAnalysis.SphericalHarmonicFit">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MRI_DistortionQA.FieldAnalysis.</span></span><span class="sig-name descname"><span class="pre">SphericalHarmonicFit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_Bz_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_outer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">150</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">AssessHarmonicPk_Pk</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">QuantifyFit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">TrimDataBy_r_outer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.FieldAnalysis.SphericalHarmonicFit" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MRI_DistortionQA.FieldAnalysis.</span></span><span class="sig-name descname"><span class="pre">SphericalHarmonicFit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_Bz_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_outer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">150</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">AssessHarmonicPk_Pk</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">QuantifyFit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">TrimDataBy_r_outer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.FieldAnalysis.SphericalHarmonicFit" title="Permalink to this definition"></a></dt>
 <dd><p>Uses single value decomposition to fit spherical harmonics to InputData.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -266,6 +266,9 @@ abstract.</p></li>
 <li><p><strong>QuantifyFit</strong> (<em>bool</em><em>, </em><em>optional</em>) – if True, reconstruct data at all input data points, and compare input data point to
 reconstructed data point. This is useful to check how well the fit has worked.</p></li>
 <li><p><strong>TrimDataBy_r_outer</strong> (<em>bool</em><em>, </em><em>optional</em>) – if True, any input data outside r_outer is deleted</p></li>
+<li><p><strong>scale</strong> (<em>float</em><em>, </em><em>optional</em>) – Value to scale the harmonics by. The main intention of this parameter is to normalise gradient
+field harmonics to gradient strength. To work with our distortion correction code, you should scale each
+gradient by 1/gradient_strength in mT/m; e.g. if the gradient strength is 10 mT/m then scale should be 1/10</p></li>
 </ul>
 </dd>
 </dl>
@@ -695,8 +698,8 @@ elevation, azimuth, and r</p></li>
 and a forward (distorted) MarkerVolume, it will calculate and return the Gx, Gy, and Gz
 harmonics. Optionally, you can also pass a back MarkerVolume (reverse gradient) in which case
 it will also calcualte the B0 harmonics. Basically this makes your life easier, but you give up fine control over
-the marker matching, B calc, and harmonic fitting steps.  I’d put it inside utilities, but that creates circular
-imports which I suspect is bad…</p>
+the marker matching, B calc, and harmonic fitting steps.
+Note that the gradient harmonics will be normalised to a gradient strengt of 1 mT/m</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
