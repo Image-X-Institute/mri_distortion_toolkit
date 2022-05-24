@@ -1,4 +1,5 @@
 from MRI_DistortionQA.Reports import MRI_QA_Reporter
+from MRI_DistortionQA.Reports import DefaultTestSuite
 import pandas as pd
 from pathlib import Path
 
@@ -13,31 +14,14 @@ report.write_html_report()
 
 # Harmonic case: pass harmonics to MRI_QA_Reporter so that data can be recontructed
 # ----------------------------------------------------------------------------------
-class CustomTestSuite:
-
-    def test_case_1(self):
-        # a test can return a bool:
-        return True
-
-    def test_case_2(self):
-        # or a test can return a string:
-        return "I am a string!"
-
-    def test_case_3(self):
-        # tests have access to the test data:
-        test_data = self._extract_data_from_MatchedMarkerVolume(r_max=100)
-        if test_data.abs_dis.max() < 2:
-            return True
-        else:
-            return False
-
 
 G_x_harmonics = pd.read_csv('_example_data/G_x_harmonics.csv', index_col=0).squeeze("columns")
 G_y_harmonics = pd.read_csv('_example_data/G_y_harmonics.csv', index_col=0).squeeze("columns")
 G_z_harmonics = pd.read_csv('_example_data/G_z_harmonics.csv', index_col=0).squeeze("columns")
+B0_harmonics  = pd.read_csv('_example_data/B0_harmonics.csv', index_col=0).squeeze("columns")
 
-report = MRI_QA_Reporter(gradient_harmonics=[G_x_harmonics, G_y_harmonics, G_z_harmonics],
-                         r_outer=150, dicom_data=dicom_data_loc, tests_to_run=CustomTestSuite)
+report = MRI_QA_Reporter(gradient_harmonics=[G_x_harmonics, G_y_harmonics, G_z_harmonics], B0_harmonics=B0_harmonics,
+                         r_outer=150, dicom_data=dicom_data_loc, tests_to_run=DefaultTestSuite)
 report.write_html_report()
 
 

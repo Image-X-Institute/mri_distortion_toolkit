@@ -32,12 +32,26 @@
 {% endfor %}
 </table>
 
-<div></iframe><h2 id='distortion versus r'><span>Distortion versus r</span></h2><iframe width="85%," height="650," src={{ dist_v_r_source }} style="border:none;"></iframe></div>
-<div></iframe><h2 id='3d-cut-planes'><span>3D cut planes</span></h2><iframe width="85%," height="700," src={{ cutplanes_source }} style="border:none;"></iframe></div>
-{% if dsv_surf_source -%}
-    <div align="left"></iframe><h2 id='B0 surface'><span>B0 surface</span></h2><iframe width="50%," height="700," src={{ dsv_surf_source }} style="border:none;"</iframe></div>
-    <div align="right"></iframe><h2 id='B0 data'></h2><iframe width="300," height="350," src= {{ B0_table_source }} style="border:none;"</iframe></div>
+   <div></iframe>
+      <h2 id='distortion versus r'><span>Distortion versus r</span></h2><iframe width="85%," height="650,"
+         src={{ dist_v_r_source }}  style="border:none;"></iframe>
+   </div>
+   <div></iframe>
+      <h2 id='3d-cut-planes'><span>3D cut planes</span></h2><iframe width="85%," height="700,"
+         src={{ cutplanes_source }} style="border:none;"></iframe>
+   </div>
 
+{% if dsv_surf_source -%}
+    <div>
+      <div align="left"></iframe>
+         <h2 id='B0 surface'><span>B0 surface</span></h2><iframe width="50%," height="700,"
+            src={{ dsv_surf_source }} l style="border:none;" </iframe>
+      </div>
+      <div align="right"></iframe>
+         <iframe width="400," height="700," src= {{ B0_table_source }}
+            style="border:none;" </iframe>
+      </div>
+   </div>d-cut-planes'><span>3D cut planes</span></h2><iframe width="85%," height="700," src={{ cutplanes_source }} style="border:none;"></iframe></div>
 {% endif %}
 
 </body>

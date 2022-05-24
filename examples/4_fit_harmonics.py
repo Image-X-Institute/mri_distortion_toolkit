@@ -34,6 +34,12 @@ GradZdata = GradZdata.rename(columns={"B_Gz": "Bz"})
 G_z_Harmonics = SphericalHarmonicFit(GradZdata, n_order=n_order, r_outer=150, scale=1/gradient_strength[2])
 G_z_Harmonics.harmonics.to_csv('_example_data/G_z_harmonics.csv')
 
+# B0 Harmonics
+GradZdata = FieldData[['x', 'y', 'z', 'B0']]
+GradZdata = GradZdata.rename(columns={"B0": "Bz"})
+G_z_Harmonics = SphericalHarmonicFit(GradZdata, n_order=n_order, r_outer=150, scale=1/gradient_strength[2])
+G_z_Harmonics.harmonics.to_csv('_example_data/B0_harmonics.csv')
+
 # some plotting examples
 G_x_Harmonics.plot_cut_planes()
 G_x_Harmonics.plot_harmonics_pk_pk(cut_off=.01)
