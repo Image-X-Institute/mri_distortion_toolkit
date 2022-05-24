@@ -49,8 +49,6 @@ class ConvertMatchedMarkersToBz:
         self._check_dicom_data()
         self._calculate_Bz()
 
-
-
     def _check_dicom_data(self):
         """
         check that the minium data we will be needing is there.
@@ -93,9 +91,6 @@ class ConvertMatchedMarkersToBz:
     def _calculate_Bz(self):
         """
         Calculate Gradient Bz at each point. This is based on code from Shanshan.
-
-        ToDo:: If we have reverse gradient data, want to calculate G and B0
-
         Shanshans notes:
         - When reversing gradient polarity, the readout (z) and phase encoding (y) directions are reversed,
          however, the slice selction direction (x) is not.
@@ -118,7 +113,6 @@ class ConvertMatchedMarkersToBz:
         B0_fields = ['x_B0', 'y_B0', 'z_B0']
         B0_calc_possible = all([el in self.MatchedCentroids.columns for el in B0_fields])
         if B0_calc_possible:
-
             self._get_B0_calc_direction()
             self.MagneticFields['B0'] = self.MatchedCentroids[[self._B0_direction_string]] * 1e-3 * \
                                         gradient_strength[self._B0_direction_bool][0]

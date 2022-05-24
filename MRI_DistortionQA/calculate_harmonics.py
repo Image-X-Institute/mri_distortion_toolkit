@@ -2,6 +2,7 @@ from .MarkerAnalysis import MatchedMarkerVolumes
 from .FieldCalculation import ConvertMatchedMarkersToBz
 from .FieldAnalysis import SphericalHarmonicFit
 from .utilities import get_dicom_data
+import numpy as np
 
 
 def calculate_harmonics(ground_truth_volume, distorted_volume, distorted_volume_rev=None, dicom_data=None, n_order=8):
@@ -10,8 +11,8 @@ def calculate_harmonics(ground_truth_volume, distorted_volume, distorted_volume_
     and a forward (distorted) MarkerVolume, it will calculate and return the Gx, Gy, and Gz
     harmonics. Optionally, you can also pass a back MarkerVolume (reverse gradient) in which case
     it will also calcualte the B0 harmonics. Basically this makes your life easier, but you give up fine control over
-    the marker matching, B calc, and harmonic fitting steps.  I'd put it inside utilities, but that creates circular
-    imports which I suspect is bad...
+    the marker matching, B calc, and harmonic fitting steps.
+    Note that the gradient harmonics will be normalised to a gradient strengt of 1 mT/m
     
     :param ground_truth_volume: ground truth MarkerVolume
     :type ground_truth_volume: object
@@ -30,10 +31,10 @@ def calculate_harmonics(ground_truth_volume, distorted_volume, distorted_volume_
             raise AttributeError('please supply dicom data')
             return
     dicom_data = get_dicom_data(dicom_data)
+    gradient_strength = np.array(dicom_data['gradient_strength']) * 1e3
     # match the markers
     matched_markers = MatchedMarkerVolumes(ground_truth_volume, distorted_volume, sorting_method='radial', ReferenceMarkers=11,
                                               WarpSearchData=True, ReverseGradientData=distorted_volume_rev)
-    matched_markers.MatchedCentroids.to_csv('MatchedMarkerVolume.csv')
 
     # calculate B fields
     B_fields = ConvertMatchedMarkersToBz(matched_markers.MatchedCentroids, dicom_data)
@@ -51,19 +52,19 @@ def calculate_harmonics(ground_truth_volume, distorted_volume, distorted_volume_
     GradXdata = B_fields.MagneticFields[['x', 'y', 'z', 'B_Gx']]
     GradXdata = GradXdata.rename(
         columns={"B_Gx": "Bz"})  # spherical harmonics code expects to receieve one field called Bz
-    G_x_Harmonics = SphericalHarmonicFit(GradXdata, n_order=n_order, r_outer=150)
-    G_x_Harmonics.harmonics.to_csv('G_x_harmonics.csv')
+    G_x_Harmonics = SphericalHarmonicFit(GradXdata, n_order=n_order, r_outer=150, scale=1/gradient_strength[0])
+
     # Gy
     GradYdata = B_fields.MagneticFields[['x', 'y', 'z', 'B_Gy']]
     GradYdata = GradYdata.rename(
         columns={"B_Gy": "Bz"})  # spherical harmonics code expects to receieve one field called Bz
-    G_y_Harmonics = SphericalHarmonicFit(GradYdata, n_order=n_order, r_outer=150)
-    G_y_Harmonics.harmonics.to_csv('G_y_harmonics.csv')
+    G_y_Harmonics = SphericalHarmonicFit(GradYdata, n_order=n_order, r_outer=150, scale=1/gradient_strength[1])
+
     # G_z
     GradZdata = B_fields.MagneticFields[['x', 'y', 'z', 'B_Gz']]
     GradZdata = GradZdata.rename(
         columns={"B_Gz": "Bz"})  # spherical harmonics code expects to receieve one field called Bz
-    G_z_Harmonics = SphericalHarmonicFit(GradZdata, n_order=n_order, r_outer=150)
-    G_z_Harmonics.harmonics.to_csv('G_z_harmonics.csv')
+    G_z_Harmonics = SphericalHarmonicFit(GradZdata, n_order=n_order, r_outer=150, scale=1/gradient_strength[2])
+
 
     return B0_Harmonics, G_x_Harmonics, G_y_Harmonics, G_z_Harmonics

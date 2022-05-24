@@ -41,12 +41,17 @@ class SphericalHarmonicFit:
     :type QuantifyFit: bool, optional
     :param TrimDataBy_r_outer: if True, any input data outside r_outer is deleted
     :type TrimDataBy_r_outer: bool, optional
+    :param scale: Value to scale the harmonics by. The main intention of this parameter is to normalise gradient
+        field harmonics to gradient strength. To work with our distortion correction code, you should scale each
+        gradient by 1/gradient_strength in mT/m; e.g. if the gradient strength is 10 mT/m then scale should be 1/10
+    :type scale: float, optional
     """
     def __init__(self, input_Bz_data, r_outer=150, n_order=8, AssessHarmonicPk_Pk=True, QuantifyFit=True,
-                 TrimDataBy_r_outer=False):
+                 TrimDataBy_r_outer=False, scale=1):
 
         # attributes:
-        self.tol = 1e-3  # tolerance for coordinate filtering in mm
+        self._tol = 1e-3  # tolerance for coordinate filtering in mm
+        self.scale = scale
         self.TrimDataBy_r_outer = TrimDataBy_r_outer
         self.r_outer = r_outer
         self.QuantifyFit = QuantifyFit
@@ -69,7 +74,11 @@ class SphericalHarmonicFit:
 
         if self.AssessHarmonicPk_Pk:
             self._assess_harmonic_pk_pk()
-
+        
+        if not self.scale == 1:
+            logger.warning(f'scaling harmonics by {self.scale}')
+            self.harmonics = self.harmonics*scale
+        
     def _check_data_input(self):
 
         """
@@ -90,7 +99,7 @@ class SphericalHarmonicFit:
         filter the Bz data by radial coordinate, removing any entries that fall outside self.r_outer
         """
 
-        data_to_delete_ind = self.input_Bz_data.r > (self.r_outer + self.tol)
+        data_to_delete_ind = self.input_Bz_data.r > (self.r_outer + self._tol)
         self.input_Bz_data = self.input_Bz_data.drop(self.input_Bz_data[data_to_delete_ind].index)
         self.input_Bz_data.reset_index(inplace=True)
         n_deleted = np.count_nonzero(data_to_delete_ind)

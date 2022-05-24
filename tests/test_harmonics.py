@@ -57,3 +57,13 @@ def test_harmonic_conversion():
     g_x_harmonics_numpy = g_x_harmonics.to_numpy()
     g_x_harmonics_no_norm_numpy = convert_spherical_harmonics(g_x_harmonics_numpy, input_format='full', output_format='none')
     assert np.allclose(g_x_harmonics_no_norm, g_x_harmonics_no_norm_numpy)
+
+
+def test_scale_harmonics():
+    data_loc = this_dir / 'test_data' / 'OperaTableTest.table'
+    data = np.loadtxt(str(data_loc), skiprows=6)
+    data_pd =  pd.DataFrame(data, columns = ['x', 'y', 'z', 'Bz'])
+    harmonics = SphericalHarmonicFit(data_pd, n_order=10)
+    harmonics_scaled = SphericalHarmonicFit(data_pd, n_order=10, scale=10)
+    scale_factor = np.mean(np.divide(harmonics_scaled.harmonics, harmonics.harmonics))
+    assert np.isclose(10, scale_factor)
