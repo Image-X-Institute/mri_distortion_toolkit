@@ -9,6 +9,7 @@ from MRI_DistortionQA.FieldAnalysis import SphericalHarmonicFit
 from MRI_DistortionQA import calculate_harmonics
 from MRI_DistortionQA.MarkerAnalysis import MarkerVolume
 from MRI_DistortionQA.utilities import convert_spherical_harmonics
+from MRI_DistortionQA.utilities import get_dicom_data
 
 
 def test_spherical_harmonics_stability():
@@ -35,15 +36,17 @@ def test_calculate_harmonics():
     distorted_volume = MarkerVolume(test_data_dir / 'MR.mrk.json')
     ground_truth_volume = MarkerVolume(test_data_dir / 'CT.mrk.json')
     dicom_data_loc = test_data_dir / 'dicom_data.json'
+    dicom_data = get_dicom_data(dicom_data_loc)
+    gradient_strength = np.array(dicom_data['gradient_strength']) * 1e3
 
     B0_Harmonics, G_x_Harmonics, G_y_Harmonics, G_z_Harmonics = calculate_harmonics(ground_truth_volume,
                                                                                     distorted_volume,
                                                                                     dicom_data=dicom_data_loc)
     assert B0_Harmonics is None
     # can't be bothered saving in and reading all harmonics so just checking max:
-    assert np.allclose(G_x_Harmonics.harmonics.max(), 10.312607980186499)
-    assert np.allclose(G_y_Harmonics.harmonics.max(), 0.3535400057558178)
-    assert np.allclose(G_z_Harmonics.harmonics.max(), 0.5673060754134269)
+    assert np.allclose(G_x_Harmonics.harmonics.max(), 10.312607980186499/gradient_strength[0])
+    assert np.allclose(G_y_Harmonics.harmonics.max(), 0.3535400057558178/gradient_strength[1])
+    assert np.allclose(G_z_Harmonics.harmonics.max(), 0.5673060754134269/gradient_strength[2])
 
 
 def test_harmonic_conversion():
