@@ -51,18 +51,18 @@ def calculate_harmonics(ground_truth_volume, distorted_volume, distorted_volume_
     GradXdata = GradXdata.rename(
         columns={"B_Gx": "Bz"})  # spherical harmonics code expects to receieve one field called Bz
     G_x_Harmonics = SphericalHarmonicFit(GradXdata, n_order=n_order, r_outer=150)
-    G_x_Harmonics.harmonics.to_csv('G_x_harmonics.csv')
+
     # Gy
     GradYdata = B_fields.MagneticFields[['x', 'y', 'z', 'B_Gy']]
     GradYdata = GradYdata.rename(
         columns={"B_Gy": "Bz"})  # spherical harmonics code expects to receieve one field called Bz
     G_y_Harmonics = SphericalHarmonicFit(GradYdata, n_order=n_order, r_outer=150)
-    G_y_Harmonics.harmonics.to_csv('G_y_harmonics.csv')
+
     # G_z
     GradZdata = B_fields.MagneticFields[['x', 'y', 'z', 'B_Gz']]
     GradZdata = GradZdata.rename(
         columns={"B_Gz": "Bz"})  # spherical harmonics code expects to receieve one field called Bz
     G_z_Harmonics = SphericalHarmonicFit(GradZdata, n_order=n_order, r_outer=150)
-    G_z_Harmonics.harmonics.to_csv('G_z_harmonics.csv')
+
 
     return B0_Harmonics, G_x_Harmonics, G_y_Harmonics, G_z_Harmonics

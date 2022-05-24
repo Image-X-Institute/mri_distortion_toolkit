@@ -7,7 +7,7 @@ import numpy as np
 FieldData = pd.read_csv('_example_data/Bfields.csv', index_col=0).squeeze("columns")
 dicom_data_loc = Path('_example_data') / 'MR' / '04 gre_trans_AP_330' / 'dicom_data.json'  # previosly saved from a MarkerVolume
 dicom_data = get_dicom_data(dicom_data_loc)
-gradient_strength = np.array(dicom_data['gradient_strength']) # get gradient strength in mT/m
+gradient_strength = np.array(dicom_data['gradient_strength']) * 1e3 # get gradient strength in mT/m
 '''
 This data contains columns ['x', 'y', 'z', 'B_Gx', 'B_Gy', 'B_Gz']
 but the spherical harmonics code expects to receieve [x, y, z, Bz]

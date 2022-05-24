@@ -50,7 +50,8 @@ class SphericalHarmonicFit:
                  TrimDataBy_r_outer=False, scale=1):
 
         # attributes:
-        self.tol = 1e-3  # tolerance for coordinate filtering in mm
+        self._tol = 1e-3  # tolerance for coordinate filtering in mm
+        self.scale = scale
         self.TrimDataBy_r_outer = TrimDataBy_r_outer
         self.r_outer = r_outer
         self.QuantifyFit = QuantifyFit
@@ -73,7 +74,11 @@ class SphericalHarmonicFit:
 
         if self.AssessHarmonicPk_Pk:
             self._assess_harmonic_pk_pk()
-
+        
+        if not self.scale == 1:
+            logger.warning(f'scaling harmonics by {self.scale}')
+            self.harmonics = self.harmonics*scale
+        
     def _check_data_input(self):
 
         """
@@ -94,7 +99,7 @@ class SphericalHarmonicFit:
         filter the Bz data by radial coordinate, removing any entries that fall outside self.r_outer
         """
 
-        data_to_delete_ind = self.input_Bz_data.r > (self.r_outer + self.tol)
+        data_to_delete_ind = self.input_Bz_data.r > (self.r_outer + self._tol)
         self.input_Bz_data = self.input_Bz_data.drop(self.input_Bz_data[data_to_delete_ind].index)
         self.input_Bz_data.reset_index(inplace=True)
         n_deleted = np.count_nonzero(data_to_delete_ind)
