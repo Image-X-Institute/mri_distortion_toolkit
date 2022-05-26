@@ -93,7 +93,6 @@ class MarkerVolume:
                     dicom_to_numpy(self.input_data_path, file_extension='dcm', return_XYZ=True)
 
                 self._calculate_MR_acquisition_data()
-                self._calculate_gradient_strength()
                 self.ThresholdVolume, self.BlurredVolume = self._threshold_volume(self.InputVolume)
                 centroids = self._find_contour_centroids()
                 self.MarkerCentroids = pd.DataFrame(centroids, columns=['x', 'y', 'z'])
@@ -223,22 +222,15 @@ class MarkerVolume:
             slice_dir_ind = np.equal(example_dicom_file.ImageOrientationPatient[:3],
                                      example_dicom_file.ImageOrientationPatient[3:])
             self.dicom_data['slice_direction'] = np.array(directions)[slice_dir_ind][0]
+            bandwidth = np.array(self.dicom_data['bandwidth'])
+            image_size = np.array(self.dicom_data['image_size'])
+            gama = np.array(self.dicom_data['gama'])
+            FOV = np.array(self.dicom_data['FOV'])
+            gradient_strength = bandwidth * image_size / (gama * 1e6 * FOV * 1e-3)  # unit(T / m)
+            self.dicom_data['gradient_strength'] = list(gradient_strength)
 
         else:
             self.dicom_data = None
-
-    def _calculate_gradient_strength(self):
-        """
-        calculate the gradient strengths in T/m
-        """
-
-        bandwidth = np.array(self.dicom_data['bandwidth'])
-        image_size = np.array(self.dicom_data['image_size'])
-        gama = np.array(self.dicom_data['gama'])
-        FOV = np.array(self.dicom_data['FOV'])
-
-        gradient_strength = bandwidth * image_size / (gama * 1e6 * FOV * 1e-3)  # unit(T / m)
-        self.dicom_data['gradient_strength'] = list(gradient_strength)
 
     def _calculate_chemical_shift_vector(self, fat_shift_direction=1):
         """
