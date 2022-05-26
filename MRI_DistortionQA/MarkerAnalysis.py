@@ -102,7 +102,6 @@ class MarkerVolume:
                 if self._correct_fat_water_shift:
                     self._calculate_chemical_shift_vector(fat_shift_direction=fat_shift_direction)
                     self.MarkerCentroids = self.MarkerCentroids + self._chemical_shift_vector
-                self.export_to_slicer()
                 self.save_dicom_data()
             elif (os.path.isfile(self.input_data_path) and os.path.splitext(self.input_data_path)[1] == '.json'):
                 # slicer input
