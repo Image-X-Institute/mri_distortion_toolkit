@@ -19,7 +19,7 @@ import MRI_DistortionQA.utilities as ut
 
 
 test_data_dir = (this_dir / 'test_data').resolve()
-dicom_directory = (test_data_dir / 'dicom_files').resolve()
+dicom_directory = (test_data_dir / 'MR_dicom').resolve()
 test_coordinates = pd.read_csv((test_data_dir / 'test_coords.csv').resolve()).squeeze("columns")
 test_coordinates_spherical = ut.convert_cartesian_to_spherical(test_coordinates)
 
