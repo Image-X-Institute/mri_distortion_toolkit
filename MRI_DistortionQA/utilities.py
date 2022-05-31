@@ -519,7 +519,7 @@ def compare_recon_report_with_ground_truth_report(ground_truth_report, recon_rep
     """
     This is to compare the distortion data contained within two Reports.MRI_QA_recon_reporter
     objects. The original purpose was to compare a recon_report generated from direct data, and one
-    generated via harmonics, although in principle it can take any two recon_reports.
+    generated via harmonics, although in principle it can take any two reports.
 
     :param ground_truth_report: Reports.MRI_QA_recon_reporter instance
     :param recon_report: Reports.MRI_QA_recon_reporter instance
