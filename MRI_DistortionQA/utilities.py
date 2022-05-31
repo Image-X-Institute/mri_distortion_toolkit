@@ -203,11 +203,14 @@ def convert_cartesian_to_spherical(InputCoords):
     Converts cartesian coordinates [x,y,z] to spherical coordinates [r, azimuth, elevation].
     If r, azimuth, or elevation already exist as column names they are overwritten.
     The convention used here matches the convention
-    `matlab uses <https://www.mathworks.com/help/matlab/ref/cart2sph.html>`_;
-    this is because parts of this code were ported from an earlier version in matlab.
+    `matlab uses <https://www.mathworks.com/help/matlab/ref/cart2sph.html>`_, except that we add pi to the azimuth and
+    pi/2 to the elevation such that
 
     - 0 <= azimuth <= 2*pi
     - 0 <= elevation <= pi
+
+    There was once a very good reason for doing this; I can't remember what it was anymore but I like to stick
+    to tradition.
 
     :param InputCoords: a data frame containing (at least) columns x, y, z.
     :returns InputCoords: same data frame with additional columns [r, azimuth, elevation]
@@ -316,7 +319,6 @@ def convert_spherical_harmonics(harmonics, input_format='full', output_format='n
     if output_format not in formats:
         raise NotImplementedError(f'no method exists to convert {output_format} format')
 
-
     case_string = input_format.lower() + '_' + output_format.lower()
     if input_format.lower == output_format.lower():
         case_string = 'same'  # will do nothing, except return the data as a series
@@ -341,9 +343,9 @@ def convert_spherical_harmonics(harmonics, input_format='full', output_format='n
             Norm.append(((-1) ** m) * np.sqrt((n + 0.5) * (np.math.factorial(n - m)) / np.math.factorial(n + m)))
 
     if case_string == 'full_none':
-        converted_harmonics = np.divide(harmonics, Norm)
-    if case_string == 'none_full':
         converted_harmonics = np.multiply(harmonics, Norm)
+    if case_string == 'none_full':
+        converted_harmonics = np.divide(harmonics, Norm)
     if isinstance(converted_harmonics, np.ndarray):
         converted_harmonics = pd.DataFrame(converted_harmonics, index=coeff_names).squeeze()
 
