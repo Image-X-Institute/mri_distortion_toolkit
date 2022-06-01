@@ -456,7 +456,7 @@ The reference I used to create the affine is <a class="reference external" href=
 <span class="sig-prename descclassname"><span class="pre">MRI_DistortionQA.utilities.</span></span><span class="sig-name descname"><span class="pre">compare_recon_report_with_ground_truth_report</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ground_truth_report</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recon_report</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.utilities.compare_recon_report_with_ground_truth_report" title="Permalink to this definition"></a></dt>
 <dd><p>This is to compare the distortion data contained within two Reports.MRI_QA_recon_reporter
 objects. The original purpose was to compare a recon_report generated from direct data, and one
-generated via harmonics, although in principle it can take any two recon_reports.</p>
+generated via harmonics, although in principle it can take any two reports.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -474,12 +474,14 @@ generated via harmonics, although in principle it can take any two recon_reports
 <dd><p>Converts cartesian coordinates [x,y,z] to spherical coordinates [r, azimuth, elevation].
 If r, azimuth, or elevation already exist as column names they are overwritten.
 The convention used here matches the convention
-<a class="reference external" href="https://www.mathworks.com/help/matlab/ref/cart2sph.html">matlab uses</a>;
-this is because parts of this code were ported from an earlier version in matlab.</p>
+<a class="reference external" href="https://www.mathworks.com/help/matlab/ref/cart2sph.html">matlab uses</a>, except that we add pi to the azimuth and
+pi/2 to the elevation such that</p>
 <ul class="simple">
 <li><p>0 &lt;= azimuth &lt;= 2*pi</p></li>
 <li><p>0 &lt;= elevation &lt;= pi</p></li>
 </ul>
+<p>There was once a very good reason for doing this; I can’t remember what it was anymore but I like to stick
+to tradition.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>InputCoords</strong> – a data frame containing (at least) columns x, y, z.</p>
