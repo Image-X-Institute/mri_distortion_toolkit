@@ -22,7 +22,8 @@ def test_field_calculation():
                   'InPlanePhaseEncodingDirection': 'ROW',
                   'phase_encode_direction': 'x',
                   'freq_encode_direction': 'z',
-                  'slice_direction': 'y'}
+                  'slice_direction': 'y',
+                  'gradient_strength': [0.00236859, 0.00152663, 0.00236859]}
 
     b_fields = ConvertMatchedMarkersToBz(test_data, dicom_data)
     expected_columns = ['x', 'y', 'z', 'B_Gx', 'B_Gy', 'B_Gz', 'B0']

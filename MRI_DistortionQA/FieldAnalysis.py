@@ -80,7 +80,6 @@ class SphericalHarmonicFit:
             self.harmonics = self.harmonics*scale
         
     def _check_data_input(self):
-
         """
         - Make sure the input data actually covers a sphere. If it doesn't, it normally means something has or will go wrong
             so a warning is triggered.

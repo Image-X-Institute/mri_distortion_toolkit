@@ -63,7 +63,6 @@ class ConvertMatchedMarkersToBz:
         if we have information about the frequency encode direction and information about B0 distortion,
         we should find that the max B0 distortion occurs in the frequency direction.
         If not, something problably is wrong.
-
         in any case, the direction of maximum B0 distortion is returned and used to calcualte B0
         """
 
@@ -97,13 +96,7 @@ class ConvertMatchedMarkersToBz:
         - B0 inhomogeneity distortion appears at readout diretion and is neglectable at phase encoding direction.
         - This is distorted marker position caused by GNL-only along readout and phase encoding directions
         """
-
-        bandwidth = np.array(self.dicom_data['bandwidth'])
-        image_size = np.array(self.dicom_data['image_size'])
-        gama = np.array(self.dicom_data['gama'])
-        FOV = np.array(self.dicom_data['FOV'])
-
-        gradient_strength = bandwidth * image_size / (gama*1e6 * FOV*1e-3)  # unit(T / m)
+        gradient_strength = np.array(self.dicom_data['gradient_strength'])  # unit(T / m)
         # ^ this is a vector [gx, gy, gz]
         self.MagneticFields['B_Gx'] = self.MatchedCentroids.x_gnl * gradient_strength[0] * 1e-3
         self.MagneticFields['B_Gy'] = self.MatchedCentroids.y_gnl * gradient_strength[1] * 1e-3
