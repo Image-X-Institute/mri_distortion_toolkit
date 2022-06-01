@@ -96,7 +96,7 @@ class ConvertMatchedMarkersToBz:
         - B0 inhomogeneity distortion appears at readout diretion and is neglectable at phase encoding direction.
         - This is distorted marker position caused by GNL-only along readout and phase encoding directions
         """
-        gradient_strength = self.dicom_data['gradient_strength']  # unit(T / m)
+        gradient_strength = np.array(self.dicom_data['gradient_strength'])  # unit(T / m)
         # ^ this is a vector [gx, gy, gz]
         self.MagneticFields['B_Gx'] = self.MatchedCentroids.x_gnl * gradient_strength[0] * 1e-3
         self.MagneticFields['B_Gy'] = self.MatchedCentroids.y_gnl * gradient_strength[1] * 1e-3
