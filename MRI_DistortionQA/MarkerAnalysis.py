@@ -133,7 +133,7 @@ class MarkerVolume:
         self._filter_markers_by_r()
         if self._n_markers_expected is not None:
             if not (self.MarkerCentroids.shape[0] == n_markers_expected):
-                logger.warning(f'For data {self.input_data_path}\nYou entered that you expected to find'
+                logger.warning(f'For data {self.input_data_path} You entered that you expected to find'
                                f' {n_markers_expected}, but actually found {self.MarkerCentroids.shape[0]}.')
 
     def _filter_markers_by_r(self):
@@ -200,7 +200,6 @@ class MarkerVolume:
             # extract the frequency, phase, and slice directions (B0 effects occur in freq and slice)
             directions = ['x', 'y', 'z']
             phase_encode_direction = None
-            freq_encode_direction = None
             if self.dicom_data['InPlanePhaseEncodingDirection'] == 'ROW':
                 phase_cosines = example_dicom_file.ImageOrientationPatient[:3]
                 row_cosines = example_dicom_file.ImageOrientationPatient[3:]
@@ -215,7 +214,7 @@ class MarkerVolume:
             if phase_encode_direction is None:
                 logger.warning('failed to extract phase encoding direction from dicom data, continuing')
             if freq_encode_direction is None:
-                logger.warning('failed to extract frequency encoding direction from dicom data, continuing')
+                logger.warning('failed to extract phase encoding direction from dicom data, continuing')
             self.dicom_data['phase_encode_direction'] = phase_encode_direction
             self.dicom_data['freq_encode_direction'] = freq_encode_direction
             # get slice direction
@@ -267,7 +266,6 @@ class MarkerVolume:
         """
         # de noise with gaussian blurring
         BlurredVolume = gaussian(VolumeToThreshold, sigma=self._gaussian_image_filter_sd)
-        # use_local_threshold = True
         if self._cutoffpoint is None:
             self._cutoffpoint = threshold_otsu(BlurredVolume)
         ThresholdVolume = BlurredVolume > self._cutoffpoint
@@ -282,6 +280,19 @@ class MarkerVolume:
         """
         self._labels = label(self.ThresholdVolume, background=0)
         self.unique_labels = np.unique(self._labels)[1:]  # first label is background so skip
+        if self.unique_labels.shape[0] < 3:
+            '''
+            in this case, it seems very likely that the only thing that has been segmented is the load
+            remove it and try again. We may want to enable this in situations where any large object is detected...
+            '''
+            logger.warning('automatic thresholding didnt work, trying to remove load and try again...')
+            for label_level in self.unique_labels:
+                RegionInd = self._labels == label_level
+                self.InputVolume[RegionInd] = 0
+            self._cutoffpoint = None
+            self.ThresholdVolume, self.BlurredVolume = self._threshold_volume(self.InputVolume)
+            self._labels = label(self.ThresholdVolume, background=0)
+            self.unique_labels = np.unique(self._labels)[1:]  # first label is background so skip
 
         n_voxels = []  # going to keep track of this so we can remove any very small regions if needed
 
