@@ -53,7 +53,7 @@ class ConvertMatchedMarkersToBz:
         """
         check that the minium data we will be needing is there.
         """
-        expected_keys = ['FOV', 'bandwidth', 'gama', 'pixel_spacing', 'image_size']
+        expected_keys = ['FOV', 'bandwidth', 'gama', 'pixel_spacing', 'image_size', 'gradient_strength']
         for key in expected_keys:
             if not key in self.dicom_data.keys():
                 raise AttributeError(f'missing required dicom_data field: {key}')
