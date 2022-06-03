@@ -564,3 +564,19 @@ def compare_recon_report_with_ground_truth_report(ground_truth_report, recon_rep
               f' and the value in the reconstructed is {recon_data.abs_dis.iloc[ind]: 1.1f}')
 
 
+def enumerate_subfolders(data_loc):
+    """
+    A simple function that prints all the subfolders in data_loc as a dict, e.g.
+
+    {'1': 'folder1',
+     '2': 'folder2'} etc
+
+    I find this is a useful to create a dict object that I copy to the start of my analysis scripts
+    """
+    data_dict = {}
+    subfolders = [ f.path for f in os.scandir(data_loc) if f.is_dir() ]
+    for i, dir in enumerate(subfolders):
+        folder_name = os.path.split(dir)[1]
+        data_dict[str(i)] = folder_name
+    for key in data_dict.keys():
+        print(f"'{key}': '{data_dict[key]}',")

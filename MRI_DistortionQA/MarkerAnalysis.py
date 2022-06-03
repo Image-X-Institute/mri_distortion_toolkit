@@ -133,7 +133,7 @@ class MarkerVolume:
         self._filter_markers_by_r()
         if self._n_markers_expected is not None:
             if not (self.MarkerCentroids.shape[0] == n_markers_expected):
-                logger.warning(f'For data {self.input_data_path} You entered that you expected to find'
+                logger.warning(f'For data {self.input_data_path}\nYou entered that you expected to find'
                                f' {n_markers_expected}, but actually found {self.MarkerCentroids.shape[0]}.')
 
     def _filter_markers_by_r(self):
@@ -200,6 +200,7 @@ class MarkerVolume:
             # extract the frequency, phase, and slice directions (B0 effects occur in freq and slice)
             directions = ['x', 'y', 'z']
             phase_encode_direction = None
+            freq_encode_direction = None
             if self.dicom_data['InPlanePhaseEncodingDirection'] == 'ROW':
                 phase_cosines = example_dicom_file.ImageOrientationPatient[:3]
                 row_cosines = example_dicom_file.ImageOrientationPatient[3:]
@@ -214,7 +215,7 @@ class MarkerVolume:
             if phase_encode_direction is None:
                 logger.warning('failed to extract phase encoding direction from dicom data, continuing')
             if freq_encode_direction is None:
-                logger.warning('failed to extract phase encoding direction from dicom data, continuing')
+                logger.warning('failed to extract frequency encoding direction from dicom data, continuing')
             self.dicom_data['phase_encode_direction'] = phase_encode_direction
             self.dicom_data['freq_encode_direction'] = freq_encode_direction
             # get slice direction
