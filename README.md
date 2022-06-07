@@ -10,7 +10,7 @@ flowchart LR
     A[Marker <br>Extraction]--->B[Marker <br>Matching]
     B[Marker <br>Matching]--->C[Field <br> Calculation] & E[Automated <br>reporting]
     C[Field <br> Calculation]-->D[Spherical Harmonic <br>Analysis]
-    D[Spherical Harmonic <br>Analysis]-->E[Automated <br>reporting];
+    D[Spherical Harmonic <br>Analysis]-->E[Automated <br>reporting] & F[Distortion <br>correction];
     click A "https://acrf-image-x-institute.github.io/MRI_DistortionQA/code_docs.html#MRI_DistortionQA.MarkerAnalysis.MarkerVolume"
     click B "https://acrf-image-x-institute.github.io/MRI_DistortionQA/code_docs.html#MRI_DistortionQA.MarkerAnalysis.MatchedMarkerVolumes"
     click C "https://acrf-image-x-institute.github.io/MRI_DistortionQA/code_docs.html#MRI_DistortionQA.FieldCalculation.ConvertMatchedMarkersToBz"
