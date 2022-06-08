@@ -281,6 +281,48 @@ class MarkerVolume:
         ThresholdVolume = BlurredVolume > self._cutoffpoint
         return ThresholdVolume, BlurredVolume
 
+    def find_iterative_cutoff(self):
+
+        if self._n_markers_expected is None:
+            logger.warning('this method requires an expected number of markers')
+            return
+
+        # finds a range of thresholds that give a number of segments near to the number of expected markers
+        histogram_division = 200
+        valid_thresholds = []
+
+        # divide the range into segments and calculate how many volumes result from each segment
+        background_value = np.median(np.round(self.BlurredVolume))
+        intensity_range = np.max(self.BlurredVolume) - background_value
+        histogram_segment = intensity_range / histogram_division
+
+        # Testing each histogram segment
+        for i in range(1, histogram_division - 1):
+
+            n_segments = 0
+
+            cutoff = background_value + i * histogram_segment
+            threshold_volume = self.BlurredVolume > cutoff
+
+            labels = label(threshold_volume, background=0)
+            unique_labels = np.unique(labels)[1:]  # first label is background so skip
+
+            # Check number of segments falls within valid range:
+            if len(unique_labels) < self._n_markers_expected or len(unique_labels) > self._n_markers_expected * 1.1:
+                continue  # Too few or too many segments
+            else:
+                for label_level in unique_labels:  # first label is background so skip
+                    RegionInd = labels == label_level
+                    if np.count_nonzero(RegionInd) > 2:
+                        n_segments += 1
+
+                if n_segments > self._n_markers_expected:
+                    valid_thresholds.append(cutoff)
+                    if self.verbose:
+                        print('Threshold: ' + str(format(cutoff, '.2f')) + ', ' + str(n_segments) + ' segments')
+
+        self._cutoffpoint = np.mean(valid_thresholds)
+
     def _find_contour_centroids(self):
         """
         This code loops through all the found regions, extracts the cartesian coordiantes, and takes the
