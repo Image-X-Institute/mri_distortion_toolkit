@@ -13,7 +13,6 @@ import json
 import pandas as pd
 from scipy.spatial.distance import cdist
 from scipy.spatial import transform
-from time import perf_counter
 from datetime import datetime
 
 
@@ -89,7 +88,7 @@ class MarkerVolume:
             self.input_data_path = Path(input_data)
             if self.input_data_path.is_dir():
                 # dicom input
-                start_time =  perf_counter()
+
                 self.InputVolume, self.dicom_affine, (self.X, self.Y, self.Z) = \
                     dicom_to_numpy(self.input_data_path, file_extension='dcm', return_XYZ=True)
 
@@ -97,8 +96,6 @@ class MarkerVolume:
                 self.ThresholdVolume, self.BlurredVolume = self._threshold_volume(self.InputVolume)
                 centroids = self._find_contour_centroids()
                 self.MarkerCentroids = pd.DataFrame(centroids, columns=['x', 'y', 'z'])
-                finish_time = perf_counter()
-                self._t_dicom_read_in = finish_time - start_time
                 # Correct for oil water shift
                 if self._correct_fat_water_shift:
                     self._calculate_chemical_shift_vector(fat_shift_direction=fat_shift_direction)
