@@ -21,11 +21,10 @@ def test_mr_dicom_data_read_in():
     """
 
     volume = MarkerVolume((this_dir / 'test_data' / 'MR_dicom').resolve())
-    assert volume.MarkerCentroids.shape[0] > 20
-    assert volume.MarkerCentroids.shape[0] < 35
+    assert volume.MarkerCentroids.shape[0] > 50
+    assert volume.MarkerCentroids.shape[0] < 65
+    # there should be 58 I think so this is a very loose test but should catch gross errors
 
-
-    # there should be 28 I think so this is a very loose test but should catch gross errors
     assert volume.dicom_data is not None
     # test manual cutoff works:
     volume2 = MarkerVolume((this_dir / 'test_data' / 'MR_dicom').resolve(), cutoff_point=volume._cutoffpoint)

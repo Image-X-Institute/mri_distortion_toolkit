@@ -32,24 +32,24 @@ def test_dicom_read_in():
     """
 
     dicom_files = ut.get_all_files(dicom_directory, '.dcm')
-    assert dicom_files.__len__() == 8
+    assert dicom_files.__len__() == 11
     assert np.all([os.path.splitext(el)[1] == '.dcm' for el in dicom_files])
     CompletePathFiles = [str(Path(dicom_directory) / file) for file in dicom_files]
     dicom_slices = [pydicom.read_file(f) for f in CompletePathFiles]
     sorted_dicom_files = ut._sort_dicom_slices(dicom_slices)
-    expected_order = ['MR000001.dcm', 'MR000002.dcm', 'MR000003.dcm', 'MR000004.dcm', 'MR000005.dcm',
-                      'MR000006.dcm', 'MR000007.dcm', 'MR000008.dcm']
+    expected_order = ['MR000040.dcm', 'MR000041.dcm', 'MR000042.dcm', 'MR000043.dcm', 'MR000044.dcm', 'MR000045.dcm',
+                      'MR000046.dcm', 'MR000047.dcm', 'MR000048.dcm', 'MR000049.dcm', 'MR000050.dcm']
     actual_order = [os.path.split(el.filename)[1] for el in sorted_dicom_files]
     assert np.array_equal(expected_order, actual_order)
     dicom_affine1 = ut.build_dicom_affine(sorted_dicom_files)
-    expected_affine = np.array([[0., 3.125, 0., -200.],
-                                [3.125, 0., 0., -200.],
-                                [0., 0., 4., -178.],
+    expected_affine = np.array([[0., 2.578125, 0., -165.],
+                                [2.578125, 0., 0., -165.],
+                                [0., 0., 4., -22.],
                                 [0., 0., 0., 0.]])
     assert np.allclose(dicom_affine1, expected_affine)
     DicomVolume, dicom_affine2, (X, Y, Z) = \
         ut.dicom_to_numpy(dicom_directory, FilesToReadIn=None, file_extension='dcm', return_XYZ=True)
-    assert DicomVolume.shape == (128, 128, 8)
+    assert DicomVolume.shape == (128, 128, 11)
     assert np.allclose(dicom_affine1, dicom_affine2)
     assert DicomVolume.shape == X.shape == Y.shape == Z.shape
 

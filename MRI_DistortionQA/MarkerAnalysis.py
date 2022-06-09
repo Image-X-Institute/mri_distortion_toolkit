@@ -371,8 +371,6 @@ class MarkerVolume:
         # Set up min and max marker volumes based on expected number of markers
         n_voxels_median = np.median(np.array(n_voxels))
         voxel_min = (1-self._marker_size_lower_tol) * n_voxels_median
-        if voxel_min < 2:
-            voxel_min = 2
         voxel_max = (1+self._marker_size_upper_tol) * n_voxels_median
 
         if self.verbose:
