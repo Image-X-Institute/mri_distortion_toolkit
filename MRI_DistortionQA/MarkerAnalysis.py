@@ -13,7 +13,6 @@ import json
 import pandas as pd
 from scipy.spatial.distance import cdist
 from scipy.spatial import transform
-from time import perf_counter
 from datetime import datetime
 
 
@@ -43,6 +42,8 @@ class MarkerVolume:
     :type r_max: float, optional
     :param cutoff_point: Manually set the threshold value. If this is left as None otsu's method is used
     :type cutoff_point: float, optional
+    :param cutoff_point: Manually set the threshold value. If this is left as None otsu's method is used
+    :type cutoff_point: float, optional
     :param n_markers_expected: if you know how many markers you expect, you can enter the value here. The code will
         then warn you if it finds a different number.
     :type n_markers_expected: int, optional
@@ -69,7 +70,8 @@ class MarkerVolume:
 
     def __init__(self, input_data, ImExtension='dcm', r_min=None, r_max=None, precise_segmentation=False,
                  n_markers_expected=None, fat_shift_direction=None, verbose=False, gaussian_image_filter_sd=1,
-                 correct_fat_water_shift=False, marker_size_lower_tol=0.9, marker_size_upper_tol=1):
+                 correct_fat_water_shift=False, marker_size_lower_tol=0.9, marker_size_upper_tol=1,
+                 precise_segmentation=False):
 
         self.verbose = verbose
         self._file_extension = ImExtension
@@ -78,7 +80,7 @@ class MarkerVolume:
         self._n_markers_expected = n_markers_expected
         self._r_min = r_min
         self._r_max = r_max
-        self._cutoffpoint = None
+        self._cutoffpoint = cutoff_point
         self._precise_segmentation = precise_segmentation
         self._chemical_shift_vector = None
         self._gaussian_image_filter_sd = gaussian_image_filter_sd
@@ -89,7 +91,7 @@ class MarkerVolume:
             self.input_data_path = Path(input_data)
             if self.input_data_path.is_dir():
                 # dicom input
-                start_time =  perf_counter()
+
                 self.InputVolume, self.dicom_affine, (self.X, self.Y, self.Z) = \
                     dicom_to_numpy(self.input_data_path, file_extension='dcm', return_XYZ=True)
 
@@ -97,13 +99,10 @@ class MarkerVolume:
                 self.ThresholdVolume, self.BlurredVolume = self._threshold_volume(self.InputVolume)
                 centroids = self._find_contour_centroids()
                 self.MarkerCentroids = pd.DataFrame(centroids, columns=['x', 'y', 'z'])
-                finish_time = perf_counter()
-                self._t_dicom_read_in = finish_time - start_time
                 # Correct for oil water shift
                 if self._correct_fat_water_shift:
                     self._calculate_chemical_shift_vector(fat_shift_direction=fat_shift_direction)
                     self.MarkerCentroids = self.MarkerCentroids + self._chemical_shift_vector
-                self.save_dicom_data()
             elif (os.path.isfile(self.input_data_path) and os.path.splitext(self.input_data_path)[1] == '.json'):
                 # slicer input
                 with open(self.input_data_path) as f:
@@ -323,8 +322,7 @@ class MarkerVolume:
     def _threshold_volume(self, VolumeToThreshold):
         """
         For a 3D numpy array, turn all elements < cutoff to zero, and all other elements to 1.
-
-        ToDo:: Need to determine a good way to automatically threshold the image
+        If no cutoff is entered, otsu's method is used to auto-threshold.
         """
         # de noise with gaussian blurring
         BlurredVolume = gaussian(VolumeToThreshold, sigma=self._gaussian_image_filter_sd)
@@ -376,6 +374,9 @@ class MarkerVolume:
         if voxel_min < 2:
             voxel_min = 2
         voxel_max = (1+self._marker_size_upper_tol) * n_voxels_median
+        if voxel_min < 2:
+            voxel_min = 2
+
 
         if self.verbose:
             print('Median marker volume: ' + str(n_voxels_median))
