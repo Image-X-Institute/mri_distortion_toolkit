@@ -68,7 +68,7 @@ class MarkerVolume:
     :type fat_shift_direction: int, optional
     """
 
-    def __init__(self, input_data, ImExtension='dcm', r_min=None, r_max=None, cutoff_point=None,
+    def __init__(self, input_data, ImExtension='dcm', r_min=None, r_max=None, precise_segmentation=False,
                  n_markers_expected=None, fat_shift_direction=None, verbose=False, gaussian_image_filter_sd=1,
                  correct_fat_water_shift=False, marker_size_lower_tol=0.9, marker_size_upper_tol=1,
                  precise_segmentation=False):
@@ -371,6 +371,8 @@ class MarkerVolume:
         # Set up min and max marker volumes based on expected number of markers
         n_voxels_median = np.median(np.array(n_voxels))
         voxel_min = (1-self._marker_size_lower_tol) * n_voxels_median
+        if voxel_min < 2:
+            voxel_min = 2
         voxel_max = (1+self._marker_size_upper_tol) * n_voxels_median
         if voxel_min < 2:
             voxel_min = 2
