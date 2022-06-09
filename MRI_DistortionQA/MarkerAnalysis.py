@@ -71,7 +71,7 @@ class MarkerVolume:
     def __init__(self, input_data, ImExtension='dcm', r_min=None, r_max=None, precise_segmentation=False,
                  n_markers_expected=None, fat_shift_direction=None, verbose=False, gaussian_image_filter_sd=1,
                  correct_fat_water_shift=False, marker_size_lower_tol=0.9, marker_size_upper_tol=1,
-                 precise_segmentation=False):
+                 cutoff_point=None):
 
         self.verbose = verbose
         self._file_extension = ImExtension
@@ -327,12 +327,9 @@ class MarkerVolume:
         # de noise with gaussian blurring
         BlurredVolume = gaussian(VolumeToThreshold, sigma=self._gaussian_image_filter_sd)
         if self._precise_segmentation is True:
-            cutoff = self._find_iterative_cutoff(BlurredVolume)
-            if cutoff is None:
-                cutoff = threshold_otsu(BlurredVolume)
-        else:
-            cutoff = threshold_otsu(BlurredVolume)
-        self._cutoffpoint = cutoff
+            self._cutoffpoint = self._find_iterative_cutoff(BlurredVolume)
+        if self._cutoffpoint is None:
+            self._cutoffpoint = threshold_otsu(BlurredVolume)
 
         ThresholdVolume = BlurredVolume > self._cutoffpoint
 
