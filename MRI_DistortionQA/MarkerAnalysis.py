@@ -94,7 +94,6 @@ class MarkerVolume:
                     dicom_to_numpy(self.input_data_path, file_extension='dcm', return_XYZ=True)
 
                 self._calculate_MR_acquisition_data()
-                self._calculate_gradient_strength()
                 self.ThresholdVolume, self.BlurredVolume = self._threshold_volume(self.InputVolume)
                 centroids = self._find_contour_centroids()
                 self.MarkerCentroids = pd.DataFrame(centroids, columns=['x', 'y', 'z'])
@@ -104,7 +103,6 @@ class MarkerVolume:
                 if self._correct_fat_water_shift:
                     self._calculate_chemical_shift_vector(fat_shift_direction=fat_shift_direction)
                     self.MarkerCentroids = self.MarkerCentroids + self._chemical_shift_vector
-                self.export_to_slicer()
                 self.save_dicom_data()
             elif (os.path.isfile(self.input_data_path) and os.path.splitext(self.input_data_path)[1] == '.json'):
                 # slicer input
@@ -224,22 +222,15 @@ class MarkerVolume:
             slice_dir_ind = np.equal(example_dicom_file.ImageOrientationPatient[:3],
                                      example_dicom_file.ImageOrientationPatient[3:])
             self.dicom_data['slice_direction'] = np.array(directions)[slice_dir_ind][0]
+            bandwidth = np.array(self.dicom_data['bandwidth'])
+            image_size = np.array(self.dicom_data['image_size'])
+            gama = np.array(self.dicom_data['gama'])
+            FOV = np.array(self.dicom_data['FOV'])
+            gradient_strength = bandwidth * image_size / (gama * 1e6 * FOV * 1e-3)  # unit(T / m)
+            self.dicom_data['gradient_strength'] = list(gradient_strength)
 
         else:
             self.dicom_data = None
-
-    def _calculate_gradient_strength(self):
-        """
-        calculate the gradient strengths in T/m
-        """
-
-        bandwidth = np.array(self.dicom_data['bandwidth'])
-        image_size = np.array(self.dicom_data['image_size'])
-        gama = np.array(self.dicom_data['gama'])
-        FOV = np.array(self.dicom_data['FOV'])
-
-        gradient_strength = bandwidth * image_size / (gama * 1e6 * FOV * 1e-3)  # unit(T / m)
-        self.dicom_data['gradient_strength'] = list(gradient_strength)
 
     def _calculate_chemical_shift_vector(self, fat_shift_direction=1):
         """
@@ -337,15 +328,14 @@ class MarkerVolume:
         """
         # de noise with gaussian blurring
         BlurredVolume = gaussian(VolumeToThreshold, sigma=self._gaussian_image_filter_sd)
-
         if self._precise_segmentation is True:
             cutoff = self._find_iterative_cutoff(BlurredVolume)
             if cutoff is None:
                 cutoff = threshold_otsu(BlurredVolume)
         else:
             cutoff = threshold_otsu(BlurredVolume)
-
         self._cutoffpoint = cutoff
+
         ThresholdVolume = BlurredVolume > self._cutoffpoint
 
         return ThresholdVolume, BlurredVolume
@@ -359,6 +349,19 @@ class MarkerVolume:
         """
         self._labels = label(self.ThresholdVolume, background=0)
         self.unique_labels = np.unique(self._labels)[1:]  # first label is background so skip
+        if self.unique_labels.shape[0] < 3:
+            '''
+            in this case, it seems very likely that the only thing that has been segmented is the load
+            remove it and try again. We may want to enable this in situations where any large object is detected...
+            '''
+            logger.warning('automatic thresholding didnt work, trying to remove load and try again...')
+            for label_level in self.unique_labels:
+                RegionInd = self._labels == label_level
+                self.InputVolume[RegionInd] = 0
+            self._cutoffpoint = None
+            self.ThresholdVolume, self.BlurredVolume = self._threshold_volume(self.InputVolume)
+            self._labels = label(self.ThresholdVolume, background=0)
+            self.unique_labels = np.unique(self._labels)[1:]  # first label is background so skip
 
         n_voxels = []  # going to keep track of this so we can remove any very small regions if needed
 

@@ -10,17 +10,8 @@ sys.path.insert(0, str(this_dir.parent))
 from MRI_DistortionQA.MarkerAnalysis import MarkerVolume, MatchedMarkerVolumes
 from MRI_DistortionQA.utilities import get_dicom_data
 
-'''
-the below was conceived so we could have a more detailed test data directory and only run some tests if it is 
-detected. but at the moment it is not in use...
-'''
-test_data_loc = Path(r'X:\PRJ-RPL\2RESEARCH\2_ProjectData\MRI-Linac\20220428 MR Linac^Test\18 gre_trans_PA_reshim_refreq')
-if os.path.isdir(test_data_loc):
-    run_all_tests = True
-else:
-    run_all_tests = False
 
-def test_dicom_data_read_in():
+def test_mr_dicom_data_read_in():
     """
     - test that we read in dicom data and return a number at least in the vicinity of the right answer
     - tests that the dicom data exists and frequency encoding direction is correctly extracted
@@ -29,7 +20,7 @@ def test_dicom_data_read_in():
     - tests that we can export and read back in the dicom_data
     """
 
-    volume = MarkerVolume((this_dir / 'test_data' / 'dicom_files').resolve())
+    volume = MarkerVolume((this_dir / 'test_data' / 'MR_dicom').resolve())
     assert volume.MarkerCentroids.shape[0] > 20
     assert volume.MarkerCentroids.shape[0] < 35
     # there should be 28 I think so this is a very loose test but should catch gross errors
@@ -42,6 +33,22 @@ def test_dicom_data_read_in():
     assert new_dicom_data == volume.dicom_data
     volume2 = MarkerVolume(str(this_dir / 'test_data' / 'dicom_export_test.mrk.json'))
     assert np.allclose(volume.MarkerCentroids, volume2.MarkerCentroids, rtol=1e-01, atol=1e-01)
+
+def test_ct_dicom_data_read_in():
+    """
+    - test that we read in dicom data and return a number at least in the vicinity of the right answer
+    - tests that the dicom data exists and frequency encoding direction is correctly extracted
+    - tests that we can export this data to slicer format, read it back in, and that those two datasets are correctly
+        matched
+    - tests that we can export and read back in the dicom_data
+    """
+
+    volume = MarkerVolume((this_dir / 'test_data' / 'CT_dicom').resolve())
+    assert volume.MarkerCentroids.shape[0] > 1
+    assert volume.MarkerCentroids.shape[0] < 4
+    # there should be 3 I think so this is a very loose test but should catch gross errors
+    assert volume.dicom_data is None
+
 
 
 def test_pandas_read_in():
