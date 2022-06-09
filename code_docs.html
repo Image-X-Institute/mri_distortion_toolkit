@@ -14,6 +14,7 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
         <script>mermaid.initialize({startOnLoad:true});</script>
@@ -77,9 +78,9 @@
            <div itemprop="articleBody">
              
   <section id="code-documentation">
-<h1>Code Documentation<a class="headerlink" href="#code-documentation" title="Permalink to this headline"></a></h1>
+<h1>Code Documentation<a class="headerlink" href="#code-documentation" title="Permalink to this heading"></a></h1>
 <section id="module-MRI_DistortionQA.MarkerAnalysis">
-<span id="marker-analysis"></span><h2>Marker Analysis<a class="headerlink" href="#module-MRI_DistortionQA.MarkerAnalysis" title="Permalink to this headline"></a></h2>
+<span id="marker-analysis"></span><h2>Marker Analysis<a class="headerlink" href="#module-MRI_DistortionQA.MarkerAnalysis" title="Permalink to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MRI_DistortionQA.MarkerAnalysis.MarkerVolume">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MRI_DistortionQA.MarkerAnalysis.</span></span><span class="sig-name descname"><span class="pre">MarkerVolume</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ImExtension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dcm'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_min</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutoff_point</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_markers_expected</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fat_shift_direction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gaussian_image_filter_sd</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">correct_fat_water_shift</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">marker_size_lower_tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">marker_size_upper_tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.MarkerAnalysis.MarkerVolume" title="Permalink to this definition"></a></dt>
@@ -214,7 +215,7 @@ for this to not matter either way is to not have any set up error!</p></li>
 
 </section>
 <section id="module-MRI_DistortionQA.FieldCalculation">
-<span id="field-calculation"></span><h2>Field Calculation<a class="headerlink" href="#module-MRI_DistortionQA.FieldCalculation" title="Permalink to this headline"></a></h2>
+<span id="field-calculation"></span><h2>Field Calculation<a class="headerlink" href="#module-MRI_DistortionQA.FieldCalculation" title="Permalink to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MRI_DistortionQA.FieldCalculation.ConvertMatchedMarkersToBz">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MRI_DistortionQA.FieldCalculation.</span></span><span class="sig-name descname"><span class="pre">ConvertMatchedMarkersToBz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">MatchedCentroids</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dicom_data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.FieldCalculation.ConvertMatchedMarkersToBz" title="Permalink to this definition"></a></dt>
@@ -245,7 +246,7 @@ to json using:</p>
 
 </section>
 <section id="module-MRI_DistortionQA.FieldAnalysis">
-<span id="harmonic-analysis"></span><h2>Harmonic Analysis<a class="headerlink" href="#module-MRI_DistortionQA.FieldAnalysis" title="Permalink to this headline"></a></h2>
+<span id="harmonic-analysis"></span><h2>Harmonic Analysis<a class="headerlink" href="#module-MRI_DistortionQA.FieldAnalysis" title="Permalink to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MRI_DistortionQA.FieldAnalysis.SphericalHarmonicFit">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MRI_DistortionQA.FieldAnalysis.</span></span><span class="sig-name descname"><span class="pre">SphericalHarmonicFit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_Bz_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_outer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">150</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">AssessHarmonicPk_Pk</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">QuantifyFit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">TrimDataBy_r_outer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.FieldAnalysis.SphericalHarmonicFit" title="Permalink to this definition"></a></dt>
@@ -318,7 +319,7 @@ less than 10% the pk-pk perturbation of the dominant harmonic are ignored.</p>
 
 </section>
 <section id="module-MRI_DistortionQA.Reports">
-<span id="reports"></span><h2>Reports<a class="headerlink" href="#module-MRI_DistortionQA.Reports" title="Permalink to this headline"></a></h2>
+<span id="reports"></span><h2>Reports<a class="headerlink" href="#module-MRI_DistortionQA.Reports" title="Permalink to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MRI_DistortionQA.Reports.DefaultTestSuite">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MRI_DistortionQA.Reports.</span></span><span class="sig-name descname"><span class="pre">DefaultTestSuite</span></span><a class="headerlink" href="#MRI_DistortionQA.Reports.DefaultTestSuite" title="Permalink to this definition"></a></dt>
@@ -427,7 +428,7 @@ plotly figures</p>
 
 </section>
 <section id="module-MRI_DistortionQA.utilities">
-<span id="utilities"></span><h2>utilities<a class="headerlink" href="#module-MRI_DistortionQA.utilities" title="Permalink to this headline"></a></h2>
+<span id="utilities"></span><h2>utilities<a class="headerlink" href="#module-MRI_DistortionQA.utilities" title="Permalink to this heading"></a></h2>
 <p>General purpose reusable functions</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="MRI_DistortionQA.utilities.bcolors">
@@ -703,7 +704,7 @@ elevation, azimuth, and r</p></li>
 
 </section>
 <section id="module-MRI_DistortionQA.calculate_harmonics">
-<span id="calculate-harmonics"></span><h2>calculate_harmonics<a class="headerlink" href="#module-MRI_DistortionQA.calculate_harmonics" title="Permalink to this headline"></a></h2>
+<span id="calculate-harmonics"></span><h2>calculate_harmonics<a class="headerlink" href="#module-MRI_DistortionQA.calculate_harmonics" title="Permalink to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="MRI_DistortionQA.calculate_harmonics.calculate_harmonics">
 <span class="sig-prename descclassname"><span class="pre">MRI_DistortionQA.calculate_harmonics.</span></span><span class="sig-name descname"><span class="pre">calculate_harmonics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ground_truth_volume</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distorted_volume</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distorted_volume_rev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dicom_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.calculate_harmonics.calculate_harmonics" title="Permalink to this definition"></a></dt>

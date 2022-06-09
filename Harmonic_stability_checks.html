@@ -14,6 +14,7 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
         <script>mermaid.initialize({startOnLoad:true});</script>
@@ -68,7 +69,7 @@
            <div itemprop="articleBody">
              
   <section id="harmonics-perturbation-analysis">
-<h1>Harmonics perturbation analysis<a class="headerlink" href="#harmonics-perturbation-analysis" title="Permalink to this headline"></a></h1>
+<h1>Harmonics perturbation analysis<a class="headerlink" href="#harmonics-perturbation-analysis" title="Permalink to this heading"></a></h1>
 <p>Our workflow relies on extracting the coordinates of markers from MRI images and using them to characterize distortion and/or spherical harmonics. However, finding the marker centroids is not a trivial task and is hindered by:</p>
 <ol class="arabic simple">
 <li><p>Low SNR</p></li>
@@ -78,7 +79,7 @@
 <p>The purpose of this analysis is therefore to assess the stability of spherical harmonics as larger and larger errors are introduced into the extracted marker positions. We will be using the <a class="reference external" href="https://acrf-image-x-institute.github.io/MRI_DistortionQA/code_docs.html#MRI_DistortionQA.MarkerAnalysis.MarkerVolume.perturb_marker_positions">perturb_marker_positions</a> method.</p>
 <p><strong>ToDo: get an estimate of marker volume</strong></p>
 <section id="comparison-of-harmonics-and-residuals">
-<h2>Comparison of harmonics and residuals<a class="headerlink" href="#comparison-of-harmonics-and-residuals" title="Permalink to this headline"></a></h2>
+<h2>Comparison of harmonics and residuals<a class="headerlink" href="#comparison-of-harmonics-and-residuals" title="Permalink to this heading"></a></h2>
 <p>The below plot shows the percentage in residual (perurbation we are unable to fit with spherical harmonics) and the first, second, and third most dominant harmonic for each of the gradient fields.</p>
 <p>What we see:</p>
 <ul class="simple">
@@ -89,7 +90,7 @@
 <p><img alt="" src="_images/PerturbationAnalysis.png" /></p>
 </section>
 <section id="comparison-of-predicted-distortion-with-different-sets-of-harmonics">
-<h2>comparison of predicted distortion with different sets of harmonics<a class="headerlink" href="#comparison-of-predicted-distortion-with-different-sets-of-harmonics" title="Permalink to this headline"></a></h2>
+<h2>comparison of predicted distortion with different sets of harmonics<a class="headerlink" href="#comparison-of-predicted-distortion-with-different-sets-of-harmonics" title="Permalink to this heading"></a></h2>
 <p>We can <a class="reference external" href="https://acrf-image-x-institute.github.io/MRI_DistortionQA/reporting.html">use a set of gradient harmonics to create a report</a> and then we can use <a class="reference external" href="https://acrf-image-x-institute.github.io/MRI_DistortionQA/code_docs.html#MRI_DistortionQA.utilities.compare_recon_report_with_ground_truth_report">this function</a> to compare the reconstructed data. The below two plots show the reports with random 1mm perturbations and random 3 mm perturbations.</p>
 <p>From this data, we can see the following:</p>
 <ul class="simple">
@@ -102,7 +103,7 @@
 <p><img alt="" src="_images/PerturbationComparison_3mm.png" /></p>
 </section>
 <section id="code">
-<h2>code<a class="headerlink" href="#code" title="Permalink to this headline"></a></h2>
+<h2>code<a class="headerlink" href="#code" title="Permalink to this heading"></a></h2>
 <p>probably won’t keep this here long term but for now:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">MRI_DistortionQA.MarkerAnalysis</span> <span class="kn">import</span> <span class="n">MarkerVolume</span><span class="p">,</span> <span class="n">MatchedMarkerVolumes</span>

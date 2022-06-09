@@ -14,6 +14,7 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
         <script>mermaid.initialize({startOnLoad:true});</script>
@@ -85,9 +86,9 @@
            <div itemprop="articleBody">
              
   <section id="marker-extraction">
-<h1>Marker Extraction<a class="headerlink" href="#marker-extraction" title="Permalink to this headline"></a></h1>
+<h1>Marker Extraction<a class="headerlink" href="#marker-extraction" title="Permalink to this heading"></a></h1>
 <section id="basic-examples">
-<h2>Basic examples<a class="headerlink" href="#basic-examples" title="Permalink to this headline"></a></h2>
+<h2>Basic examples<a class="headerlink" href="#basic-examples" title="Permalink to this heading"></a></h2>
 <p>Say that you have <a class="reference external" href="https://acrf-image-x-institute.github.io/MRI_DistortionPhantom/phantom_construction.html">built</a> and <a class="reference external" href="https://acrf-image-x-institute.github.io/MRI_DistortionPhantom/phantom_imaging.html">imaged</a> a marker-based distortion phantom. To use this data within this library, you first have to extract the position of the markers and create a ‘MarkerVolume’. This example shows you how do that.</p>
 <blockquote>
 <div><p>:warning: For this part you will need some data. <strong>Example data is provided <a class="reference external" href="https://cloudstor.aarnet.edu.au/plus/s/Wm9vndV47u941JU">here</a></strong>. Download and unzip this data somewhere and take note of the path.</p>
@@ -127,18 +128,18 @@
 <p>At this point, you are free to move on to the next step: automatic matching of markers, or you can read on to find out a little bit more about how you can handle marker extraction in challenging datasets…</p>
 </section>
 <section id="do-we-guarantee-that-we-will-find-your-markers">
-<h2>Do we guarantee that we will find your markers?<a class="headerlink" href="#do-we-guarantee-that-we-will-find-your-markers" title="Permalink to this headline"></a></h2>
+<h2>Do we guarantee that we will find your markers?<a class="headerlink" href="#do-we-guarantee-that-we-will-find-your-markers" title="Permalink to this heading"></a></h2>
 <p>Short answer: No!</p>
 <p>Although the automatic extraction works quite well in most cases, because there are so many variables in MR, we have no knowledge of the signal-to-noise, contrast-to-noise, contrast type, voxel size, etc. that you may be using. This means that it is very difficult to automatically know what settings to use for marker extraction. In some low SNR cases, no matter what settings you use automatic extraction is difficult, but in most cases you should be able to find a reliable combination of settings for a given scan and scanner.</p>
 </section>
 <section id="is-that-a-major-issue">
-<h2>Is that a major issue?<a class="headerlink" href="#is-that-a-major-issue" title="Permalink to this headline"></a></h2>
+<h2>Is that a major issue?<a class="headerlink" href="#is-that-a-major-issue" title="Permalink to this heading"></a></h2>
 <p>Also no!</p>
 <p>We provide an easy interface to <a class="reference external" href="https://www.slicer.org/">slicer</a> via the <code class="docutils literal notranslate"><span class="pre">export_to_slicer</span></code> method; we also read these slicer .json files back in as demonstrated in the example above. This means that in situations where the automatic marker processing fails, you are free to move, delete and add markers through the excellent slicer GUI. Once you are satisfied, you can go file&gt;&gt;save data and save the *.mrk.json file for reading back into this workflow. A screenshot of the process of editing marker locations in slicer is below:</p>
 <p><img alt="" src="_images/Slicer_Markers_screengrab.PNG" /></p>
 </section>
 <section id="handling-fat-water-shift">
-<h2>Handling Fat-water shift<a class="headerlink" href="#handling-fat-water-shift" title="Permalink to this headline"></a></h2>
+<h2>Handling Fat-water shift<a class="headerlink" href="#handling-fat-water-shift" title="Permalink to this heading"></a></h2>
 <p>If you are using a phantom with oil filled markers, your images may be subject to <a class="reference external" href="https://acrf-image-x-institute.github.io/MRI_DistortionPhantom/phantom_imaging.html#fat-water-chemical-shift">fat-water shift</a>.</p>
 <p>The best way to check this is to take a forward/reverse gradient pair of images, and compare the markers in the middle of the DSV. Since B0 homogeneity is very good here, if the markers are offset from each other it is due to fat/water shift.</p>
 <p>You can read about the different options for handling this effect <a class="reference external" href="https://acrf-image-x-institute.github.io/MRI_DistortionPhantom/phantom_imaging.html#fat-water-chemical-shift">here</a>; but one option is to correct for this in software. If you want to do that, the code would look this:</p>

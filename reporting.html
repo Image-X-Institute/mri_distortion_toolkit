@@ -14,6 +14,7 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
         <script>mermaid.initialize({startOnLoad:true});</script>
@@ -84,7 +85,7 @@
            <div itemprop="articleBody">
              
   <section id="reporting">
-<h1>Reporting<a class="headerlink" href="#reporting" title="Permalink to this headline"></a></h1>
+<h1>Reporting<a class="headerlink" href="#reporting" title="Permalink to this heading"></a></h1>
 <p>OK, the final step of our journey!</p>
 <p>This section demonstrates how you can automatically generate interactive html reports from the data we have generated. There are two ways for you to do this, both of which will be demonstrated:
 An example of the types of reports you can generate is <a class="reference external" href="https://acrf-image-x-institute.github.io/MRI_DistortionQA/_static/MR_QA_report_20_05_2022.html">here</a>.</p>
@@ -93,7 +94,7 @@ An example of the types of reports you can generate is <a class="reference exter
 <li><p>Pass the reporting code spherical harmonics</p></li>
 </ol>
 <section id="case-1-passing-data-directly">
-<h2>Case 1: passing data directly<a class="headerlink" href="#case-1-passing-data-directly" title="Permalink to this headline"></a></h2>
+<h2>Case 1: passing data directly<a class="headerlink" href="#case-1-passing-data-directly" title="Permalink to this heading"></a></h2>
 <p>Create a new file called ‘reporting.py’. Copy the below code into it.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MRI_DistortionQA.Reports</span> <span class="kn">import</span> <span class="n">MRI_QA_Reporter</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
@@ -117,7 +118,7 @@ An example of the types of reports you can generate is <a class="reference exter
 </div></blockquote>
 </section>
 <section id="case-2-harmonic-reconstruction">
-<h2>Case 2: harmonic reconstruction<a class="headerlink" href="#case-2-harmonic-reconstruction" title="Permalink to this headline"></a></h2>
+<h2>Case 2: harmonic reconstruction<a class="headerlink" href="#case-2-harmonic-reconstruction" title="Permalink to this heading"></a></h2>
 <p>the code for harmonic reconstruction is below:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MRI_DistortionQA.Reports</span> <span class="kn">import</span> <span class="n">MRI_QA_Reporter</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
@@ -145,7 +146,7 @@ An example of the types of reports you can generate is <a class="reference exter
 </div>
 </section>
 <section id="adding-custom-tests">
-<h2>Adding custom tests<a class="headerlink" href="#adding-custom-tests" title="Permalink to this headline"></a></h2>
+<h2>Adding custom tests<a class="headerlink" href="#adding-custom-tests" title="Permalink to this heading"></a></h2>
 <p>You will notice that some tests have been run (and failed) from ‘DefaultTestSuite’. What is that and how do you add your own tests?</p>
 <p>Code demonstration the creation of a custom test suite is below:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MRI_DistortionQA.Reports</span> <span class="kn">import</span> <span class="n">MRI_QA_Reporter</span>
