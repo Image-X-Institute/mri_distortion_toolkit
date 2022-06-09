@@ -68,9 +68,10 @@ class MarkerVolume:
     :type fat_shift_direction: int, optional
     """
 
-    def __init__(self, input_data, ImExtension='dcm', r_min=None, r_max=None, precise_segmentation=False,
+    def __init__(self, input_data, ImExtension='dcm', r_min=None, r_max=None, cutoff_point=None,
                  n_markers_expected=None, fat_shift_direction=None, verbose=False, gaussian_image_filter_sd=1,
-                 correct_fat_water_shift=False, marker_size_lower_tol=0.5, marker_size_upper_tol=1, cutoff_point=None):
+                 correct_fat_water_shift=False, marker_size_lower_tol=0.9, marker_size_upper_tol=1,
+                 precise_segmentation=False):
 
         self.verbose = verbose
         self._file_extension = ImExtension
@@ -321,8 +322,7 @@ class MarkerVolume:
     def _threshold_volume(self, VolumeToThreshold):
         """
         For a 3D numpy array, turn all elements < cutoff to zero, and all other elements to 1.
-
-        ToDo:: Need to determine a good way to automatically threshold the image
+        If no cutoff is entered, otsu's method is used to auto-threshold.
         """
         # de noise with gaussian blurring
         BlurredVolume = gaussian(VolumeToThreshold, sigma=self._gaussian_image_filter_sd)
