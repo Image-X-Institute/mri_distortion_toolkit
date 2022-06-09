@@ -67,7 +67,7 @@ class MarkerVolume:
     :type fat_shift_direction: int, optional
     """
 
-    def __init__(self, input_data, ImExtension='dcm', r_min=None, r_max=None, cutoff_point=None,
+    def __init__(self, input_data, ImExtension='dcm', r_min=None, r_max=None, precise_segmentation=False,
                  n_markers_expected=None, fat_shift_direction=None, verbose=False, gaussian_image_filter_sd=1,
                  correct_fat_water_shift=False, marker_size_lower_tol=0.9, marker_size_upper_tol=1):
 
@@ -78,7 +78,8 @@ class MarkerVolume:
         self._n_markers_expected = n_markers_expected
         self._r_min = r_min
         self._r_max = r_max
-        self._cutoffpoint = cutoff_point
+        self._cutoffpoint = None
+        self._precise_segmentation = precise_segmentation
         self._chemical_shift_vector = None
         self._gaussian_image_filter_sd = gaussian_image_filter_sd
         self._marker_size_lower_tol = marker_size_lower_tol
@@ -258,6 +259,67 @@ class MarkerVolume:
         shift = direction * self.dicom_data['chem_shift_magnitude']
         self._chemical_shift_vector = shift * np.array(self.dicom_data['pixel_spacing'])[direction.astype(bool)] * fat_shift_direction
 
+    def _find_iterative_cutoff(self, blurred_volume):
+
+        if self._n_markers_expected is None:
+            logger.warning('This method requires the expected number of markers to be input')
+            return None
+
+        # finds a range of thresholds that give a number of segments near to the number of expected markers
+        histogram_division = 100
+        candidate_thresholds = []       # Thresholds that have fewer markers than expected, use when no valid thresholds
+        valid_thresholds = []           # Thresholds that should give the corrected number of markers
+
+        # divide the range into segments and calculate how many volumes result from each segment
+        background_value = np.median(np.round(blurred_volume))
+        intensity_range = np.max(blurred_volume) - background_value
+        histogram_segment = intensity_range / histogram_division
+
+        # Testing each histogram segment
+        for i in range(1, histogram_division - 1):
+
+            n_segments = 0
+
+            cutoff = background_value + i * histogram_segment
+            threshold_volume = blurred_volume > cutoff
+
+            labels = label(threshold_volume, background=0)
+            unique_labels = np.unique(labels)[1:]  # first label is background so skip
+
+            # Check number of segments falls within valid range:
+            if len(unique_labels) < self._n_markers_expected or len(unique_labels) > self._n_markers_expected * 1.1:
+                continue  # Too few or too many segments
+            else:
+                # This threshold is possibly valid
+                candidate_thresholds.append(cutoff)
+
+                # Remove small volumes and check if still valid
+                for label_level in unique_labels:
+                    RegionInd = labels == label_level
+                    if np.count_nonzero(RegionInd) > 2:
+                        n_segments += 1
+
+                if n_segments > self._n_markers_expected:
+                    valid_thresholds.append(cutoff)
+                    if self.verbose:
+                        print('Threshold: ' + str(format(cutoff, '.2f')) + ', ' + str(n_segments) + ' segments.')
+                else:
+                    if self.verbose:
+                        print('Threshold: ' + str(format(cutoff, '.2f')) + ' is a candidate.')
+
+            if len(unique_labels) < 10:
+                # threshold is too high and we can stop
+                break
+
+        if len(valid_thresholds) > 0:
+            return np.mean(valid_thresholds)
+        elif len(candidate_thresholds) > 0:
+            logger.warning('No valid thresholds were found. Using closest possible value.')
+            return np.mean(candidate_thresholds)
+        else:
+            logger.warning('No valid thresholds were found. Try lowering gaussian blur level.')
+            return None
+
     def _threshold_volume(self, VolumeToThreshold):
         """
         For a 3D numpy array, turn all elements < cutoff to zero, and all other elements to 1.
@@ -266,9 +328,16 @@ class MarkerVolume:
         """
         # de noise with gaussian blurring
         BlurredVolume = gaussian(VolumeToThreshold, sigma=self._gaussian_image_filter_sd)
-        if self._cutoffpoint is None:
-            self._cutoffpoint = threshold_otsu(BlurredVolume)
+        if self._precise_segmentation is True:
+            cutoff = self._find_iterative_cutoff(BlurredVolume)
+            if cutoff is None:
+                cutoff = threshold_otsu(BlurredVolume)
+        else:
+            cutoff = threshold_otsu(BlurredVolume)
+        self._cutoffpoint = cutoff
+
         ThresholdVolume = BlurredVolume > self._cutoffpoint
+
         return ThresholdVolume, BlurredVolume
 
     def _find_contour_centroids(self):
@@ -304,6 +373,8 @@ class MarkerVolume:
         # Set up min and max marker volumes based on expected number of markers
         n_voxels_median = np.median(np.array(n_voxels))
         voxel_min = (1-self._marker_size_lower_tol) * n_voxels_median
+        if voxel_min < 2:
+            voxel_min = 2
         voxel_max = (1+self._marker_size_upper_tol) * n_voxels_median
 
         if self.verbose:
