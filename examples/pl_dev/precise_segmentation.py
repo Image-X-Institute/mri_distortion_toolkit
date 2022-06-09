@@ -45,27 +45,27 @@ ground_truth_volume = MarkerVolume(data_loc_CT / 'CT' / 'slicer_centroids.mrk.js
 # matched_volume_precise = MatchedMarkerVolumes(ground_truth_volume, distorted_volume_12_precise, ReferenceMarkers=11)
 # matched_volume_precise.plot_3D_markers(title='Precise')
 
-# ####################
-# # Data 1, Scan 14
-# # Original (Otsu threshold)
-# distorted_volume_14 = MarkerVolume(data_loc / '14 gre_cor_RL' / 'Original', verbose=True)
-# distorted_volume_14.plot_3D_markers(title='Otsu')
-#
-# # Precise threshold
-# distorted_volume_14_precise = MarkerVolume(data_loc / '14 gre_cor_RL' / 'Original', verbose=True, precise_segmentation=True, n_markers_expected=336, gaussian_image_filter_sd=0.7)
-# # will still fail at other guassian values
-# distorted_volume_14_precise.plot_3D_markers(title='Precise')
-#
-# matched_volume_precise = MatchedMarkerVolumes(ground_truth_volume, distorted_volume_14_precise, ReferenceMarkers=11)
-# matched_volume_precise.plot_3D_markers(title='Precise match')
-
 ####################
-# Data 2, Scan 2
+# Data 1, Scan 14
 # Original (Otsu threshold)
-distorted_volume_2 = MarkerVolume(data_loc2 / '02 gre_tra_AP' / 'Original', verbose=True, gaussian_image_filter_sd=0.7)
-distorted_volume_2.plot_3D_markers(title='Otsu')
+distorted_volume_14 = MarkerVolume(data_loc / '14 gre_cor_RL' / 'Original', verbose=True)
+distorted_volume_14.plot_3D_markers(title='Otsu')
 
 # Precise threshold
-distorted_volume_2_precise = MarkerVolume(data_loc2 / '02 gre_tra_AP' / 'Original', verbose=True, precise_segmentation=True, n_markers_expected=145, gaussian_image_filter_sd=0.75)
+distorted_volume_14_precise = MarkerVolume(data_loc / '14 gre_cor_RL' / 'Original', verbose=True, precise_segmentation=True, n_markers_expected=336, gaussian_image_filter_sd=0.75)
 # will still fail at other guassian values
-distorted_volume_2_precise.plot_3D_markers(title='Precise')
+distorted_volume_14_precise.plot_3D_markers(title='Precise')
+
+matched_volume_precise = MatchedMarkerVolumes(ground_truth_volume, distorted_volume_14_precise, ReferenceMarkers=11)
+matched_volume_precise.plot_3D_markers(title='Precise match')
+
+# ####################
+# # Data 2, Scan 2
+# # Original (Otsu threshold)
+# distorted_volume_2 = MarkerVolume(data_loc2 / '02 gre_tra_AP' / 'Original', verbose=True, gaussian_image_filter_sd=0.7)
+# distorted_volume_2.plot_3D_markers(title='Otsu')
+#
+# # Precise threshold
+# distorted_volume_2_precise = MarkerVolume(data_loc2 / '02 gre_tra_AP' / 'Original', verbose=True, precise_segmentation=True, n_markers_expected=145, gaussian_image_filter_sd=0.75)
+# # will still fail at other guassian values
+# distorted_volume_2_precise.plot_3D_markers(title='Precise')

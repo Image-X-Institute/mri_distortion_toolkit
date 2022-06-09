@@ -271,13 +271,13 @@ class MarkerVolume:
     def _find_iterative_cutoff(self, blurred_volume):
 
         if self._n_markers_expected is None:
-            logger.warning('this method requires an expected number of markers')
+            logger.warning('This method requires the expected number of markers to be input')
             return None
 
         # finds a range of thresholds that give a number of segments near to the number of expected markers
         histogram_division = 100
-        canditate_thresholds = []
-        valid_thresholds = []
+        candidate_thresholds = []       # Thresholds that have fewer markers than expected, use when no valid thresholds
+        valid_thresholds = []           # Thresholds that should give the corrected number of markers
 
         # divide the range into segments and calculate how many volumes result from each segment
         background_value = np.median(np.round(blurred_volume))
@@ -300,7 +300,7 @@ class MarkerVolume:
                 continue  # Too few or too many segments
             else:
                 # This threshold is possibly valid
-                canditate_thresholds.append(cutoff)
+                candidate_thresholds.append(cutoff)
 
                 # Remove small volumes and check if still valid
                 for label_level in unique_labels:
@@ -322,9 +322,9 @@ class MarkerVolume:
 
         if len(valid_thresholds) > 0:
             return np.mean(valid_thresholds)
-        elif len(canditate_thresholds) > 0:
+        elif len(candidate_thresholds) > 0:
             logger.warning('No valid thresholds were found. Using closest possible value.')
-            return np.mean(canditate_thresholds)
+            return np.mean(candidate_thresholds)
         else:
             logger.warning('No valid thresholds were found. Try lowering gaussian blur level.')
             return None
@@ -346,8 +346,8 @@ class MarkerVolume:
             cutoff = threshold_otsu(BlurredVolume)
 
         self._cutoffpoint = cutoff
-
         ThresholdVolume = BlurredVolume > self._cutoffpoint
+
         return ThresholdVolume, BlurredVolume
 
     def _find_contour_centroids(self):
