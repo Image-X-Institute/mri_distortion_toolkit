@@ -332,6 +332,8 @@ class MarkerVolume:
         If no cutoff is entered, otsu's method is used to auto-threshold.
         """
 
+        BlurredVolume = None
+
         if self._cutoffpoint is not None:
             # If cutoff point has been manually entered, go straight to thresholding
             self._iterative_segmentation = False
