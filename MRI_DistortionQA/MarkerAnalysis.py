@@ -332,7 +332,7 @@ class MarkerVolume:
         If no cutoff is entered, otsu's method is used to auto-threshold.
         """
 
-        BlurredVolume = VolumeToThreshold
+        BlurredVolume = gaussian(VolumeToThreshold, sigma=self._gaussian_image_filter_sd)
 
         if self._cutoffpoint is not None:
             # If cutoff point has been manually entered, go straight to thresholding
@@ -343,7 +343,6 @@ class MarkerVolume:
             BlurredVolume = gaussian(VolumeToThreshold, sigma=self._gaussian_image_filter_sd * 0.75)
             self._cutoffpoint = self._find_iterative_cutoff(BlurredVolume)
         if self._cutoffpoint is None:
-            BlurredVolume = gaussian(VolumeToThreshold, sigma=self._gaussian_image_filter_sd)
             self._cutoffpoint = threshold_otsu(BlurredVolume)
 
         ThresholdVolume = BlurredVolume > self._cutoffpoint
