@@ -31,7 +31,7 @@ Detailed documentation is [here](https://acrf-image-x-institute.github.io/MRI_Di
 
 ## Directory Structure
 
-- *docs* contains html documentation
 - *docsrc* markdown/rst source documentation
 - *tests* test cases
 - *MRI_DistortionQA* source code
+- *examples* source code for the [worked examples](https://acrf-image-x-institute.github.io/MRI_DistortionQA/examples.html)
