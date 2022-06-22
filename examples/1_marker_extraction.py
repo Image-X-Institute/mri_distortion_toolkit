@@ -1,27 +1,28 @@
-
-
 from MRI_DistortionQA.MarkerAnalysis import MarkerVolume
 from pathlib import Path
-import numpy as np
-import pandas as pd
 
 '''
 download example data and unzip:
 https://cloudstor.aarnet.edu.au/plus/s/Wm9vndV47u941JU
 '''
 
-data_loc = Path('C:\\Users\\Brendan\\Downloads\\MRI_distortion_QA_sample_data(2)\\MRI_distortion_QA_sample_data\\')
+data_loc = Path('/home/brendan/Downloads/MRI_distortion_QA_sample_data')
 # ^^ update to where you put the sample data!!
-marker_volume = MarkerVolume(data_loc / 'CT', verbose=True)
-marker_volume.plot_3D_markers()  # produce a quick plot of marker positions
+this_file_loc = Path(__file__).parent.resolve()
 
-# # pandas data frame read in
-# r_outer = 150
-# test_data = np.random.rand(100, 3) * r_outer  # create some random data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
+gt_data_loc = data_loc / 'CT'
+mr_data_loc = data_loc / 'MR' / '04 gre_trans_AP_330'
+mr_data_loc_reverse_gradient = data_loc / 'MR' / '05 gre_trans_PA_330'
 
-# test_data = pd.DataFrame(test_data, columns=['x', 'y', 'z'])  # convert to data frame
-# pandas_volume = MarkerVolume(test_data)  # create MarkerVolume
-#
-# # json read in
-# json_file = data_loc / 'MR' / '04 gre_trans_AP_330' / 'slicer_centroids.mrk.json'
-# json_volume = MarkerVolume(json_file)  # create MarkerVolume
+gt_volume = MarkerVolume(gt_data_loc, r_max=300)
+gt_volume.plot_3D_markers()  # produce a quick plot of marker positions
+gt_volume.export_to_slicer(save_path=this_file_loc / '_example_data' / 'CT')
+
+mr_volume = MarkerVolume(mr_data_loc, correct_fat_water_shift=True, fat_shift_direction=-1)
+mr_volume.save_dicom_data(save_path=this_file_loc / '_example_data' / 'MR' / '04 gre_trans_AP_330')
+# save necessary acquisition data as json for easy use later (only works for MR data)
+mr_volume.export_to_slicer(save_path=this_file_loc / '_example_data' / 'MR' / '04 gre_trans_AP_330')
+
+mr_volume_rev = MarkerVolume(mr_data_loc_reverse_gradient, correct_fat_water_shift=True, fat_shift_direction=1)
+mr_volume_rev.save_dicom_data(save_path=this_file_loc / '_example_data' / 'MR' / '05 gre_trans_PA_330')
+mr_volume_rev.export_to_slicer(save_path=this_file_loc / '_example_data' / 'MR' / '05 gre_trans_PA_330')
