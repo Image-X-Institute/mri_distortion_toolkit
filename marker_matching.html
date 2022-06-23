@@ -94,7 +94,7 @@
 <h2>Simple example<a class="headerlink" href="#simple-example" title="Permalink to this heading"></a></h2>
 <p>To quantify geometric distortion using markers, we need three things:</p>
 <ol class="arabic simple">
-<li><p><strong>Ground truth marker location.</strong> (We recommend CT imaging for this also technically you can also use the CAD design files)</p></li>
+<li><p><strong>Ground truth marker location.</strong> (We recommend CT imaging for this, but technically you can use the CAD design files)</p></li>
 <li><p>Distorted marker location</p></li>
 <li><p>Knowledge of which distorted marker location corresponds to which ground truth marker location</p></li>
 </ol>
@@ -113,13 +113,14 @@
 
 <span class="c1"># distorted centroids</span>
 <span class="n">distorted_volume</span> <span class="o">=</span> <span class="n">MarkerVolume</span><span class="p">(</span><span class="n">data_loc</span> <span class="o">/</span> <span class="s1">&#39;MR&#39;</span> <span class="o">/</span> <span class="s1">&#39;04 gre_trans_AP_330&#39;</span> <span class="o">/</span> <span class="s1">&#39;slicer_centroids.mrk.json&#39;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">distorted_volume_rev</span> <span class="o">=</span> <span class="n">MarkerVolume</span><span class="p">(</span><span class="n">data_loc</span> <span class="o">/</span> <span class="s1">&#39;MR&#39;</span> <span class="o">/</span> <span class="s1">&#39;05 gre_trans_PA_330&#39;</span> <span class="o">/</span> <span class="s1">&#39;slicer_centroids.mrk.json&#39;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 <span class="c1"># ground truth centroids</span>
 <span class="n">ground_truth_volume</span> <span class="o">=</span> <span class="n">MarkerVolume</span><span class="p">(</span><span class="n">data_loc</span> <span class="o">/</span> <span class="s1">&#39;CT&#39;</span> <span class="o">/</span> <span class="s1">&#39;slicer_centroids.mrk.json&#39;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 <span class="c1"># matched volumes</span>
-<span class="n">matched_volume</span> <span class="o">=</span> <span class="n">MatchedMarkerVolumes</span><span class="p">(</span><span class="n">ground_truth_volume</span><span class="p">,</span> <span class="n">distorted_volume</span><span class="p">,</span> <span class="n">ReferenceMarkers</span><span class="o">=</span><span class="mi">11</span><span class="p">)</span>
-<span class="n">matched_volume</span><span class="o">.</span><span class="n">MatchedCentroids</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;Matched_Markers.csv&#39;</span><span class="p">)</span>  <span class="c1"># for use in later examples</span>
+<span class="n">matched_volume</span> <span class="o">=</span> <span class="n">MatchedMarkerVolumes</span><span class="p">(</span><span class="n">ground_truth_volume</span><span class="p">,</span> <span class="n">distorted_volume</span><span class="p">,</span>                  <span class="n">ReferenceMarkers</span><span class="o">=</span><span class="mi">11</span><span class="p">)</span>
+<span class="n">matched_volume</span><span class="o">.</span><span class="n">MatchedCentroids</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;_example_data/Matched_Markers.csv&#39;</span><span class="p">)</span>  <span class="c1"># for use in later examples</span>
 
 <span class="c1"># plot the match</span>
 <span class="n">matched_volume</span><span class="o">.</span><span class="n">plot_3D_markers</span><span class="p">()</span>

@@ -46,6 +46,7 @@
 <li class="toctree-l2"><a class="reference internal" href="Preamble.html">Preamble</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Marker Extraction</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#basic-examples">Basic examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#comparing-markervolumes">Comparing MarkerVolumes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#do-we-guarantee-that-we-will-find-your-markers">Do we guarantee that we will find your markers?</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#is-that-a-major-issue">Is that a major issue?</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#handling-fat-water-shift">Handling Fat-water shift</a></li>
@@ -91,7 +92,7 @@
 <h2>Basic examples<a class="headerlink" href="#basic-examples" title="Permalink to this heading"></a></h2>
 <p>Say that you have <a class="reference external" href="https://acrf-image-x-institute.github.io/MRI_DistortionPhantom/phantom_construction.html">built</a> and <a class="reference external" href="https://acrf-image-x-institute.github.io/MRI_DistortionPhantom/phantom_imaging.html">imaged</a> a marker-based distortion phantom. To use this data within this library, you first have to extract the position of the markers and create a ‘MarkerVolume’. This example shows you how do that.</p>
 <blockquote>
-<div><p>:warning: For this part you will need some data. <strong>Example data is provided <a class="reference external" href="https://cloudstor.aarnet.edu.au/plus/s/Wm9vndV47u941JU">here</a></strong>. Download and unzip this data somewhere and take note of the path.</p>
+<div><p>:warning: For this part you will need some data. <strong>Example data is provided <a class="reference external" href="https://cloudstor.aarnet.edu.au/plus/s/Wm9vndV47u941JU">here</a></strong>. Download and unzip this data somewhere and take note of the path. The source code this example is based on is <a class="reference external" href="https://github.com/ACRF-Image-X-Institute/MRI_DistortionQA/tree/main/examples">here</a>.</p>
 </div></blockquote>
 <p>First, create a directory called ‘MRI_QA_tutorial’ or something like that. Within that directory, create a new python file called ‘MarkerExtractionExample’. Copy the below code into it, and update</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MRI_DistortionQA.MarkerAnalysis</span> <span class="kn">import</span> <span class="n">MarkerVolume</span>
@@ -104,28 +105,54 @@
 <span class="sd">https://cloudstor.aarnet.edu.au/plus/s/Wm9vndV47u941JU</span>
 <span class="sd">&#39;&#39;&#39;</span>
 
-<span class="n">data_loc</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;C:\Users\Brendan\Downloads\MRI_distortion_QA_sample_data\MRI_distortion_QA_sample_data&#39;</span><span class="p">)</span>
+<span class="n">data_loc</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s1">&#39;/home/brendan/Downloads/MRI_distortion_QA_sample_data&#39;</span><span class="p">)</span>
+<span class="n">gt_data_loc</span> <span class="o">=</span> <span class="n">data_loc</span> <span class="o">/</span> <span class="s1">&#39;CT&#39;</span>
 <span class="c1"># ^^ update to where you put the sample data!!</span>
-<span class="n">marker_volume</span> <span class="o">=</span> <span class="n">MarkerVolume</span><span class="p">(</span><span class="n">data_loc</span> <span class="o">/</span> <span class="s1">&#39;MR&#39;</span> <span class="o">/</span> <span class="s1">&#39;04 gre_trans_AP_330&#39;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">marker_volume</span><span class="o">.</span><span class="n">export_to_slicer</span><span class="p">()</span>  <span class="c1"># save this data as json for easy use later</span>
-<span class="n">marker_volume</span><span class="o">.</span><span class="n">save_dicom_data</span><span class="p">()</span>  <span class="c1"># save this data as json for easy use later</span>
-<span class="n">marker_volume</span><span class="o">.</span><span class="n">plot_3D_markers</span><span class="p">()</span>  <span class="c1"># produce a quick plot of marker positions</span>
+<span class="n">gt_volume</span> <span class="o">=</span> <span class="n">MarkerVolume</span><span class="p">(</span><span class="n">gt_data_loc</span><span class="p">,</span> <span class="n">r_max</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+<span class="n">gt_volume</span><span class="o">.</span><span class="n">plot_3D_markers</span><span class="p">()</span>  <span class="c1"># produce a quick plot of marker positions</span>
 </pre></div>
 </div>
-<p>This is the simplest interface to creating an instance of ‘MarkerVolume’ from a series of dicom slices. If you want to get at the underlying data, it is stored in <code class="docutils literal notranslate"><span class="pre">marker_volume.MarkerCentroids</span></code> as a pandas dataframe. The MarkerVolume object is one of the building blocks of this code. As such, there are multiple ways you can instantiate it:</p>
+<p>There are various code options that can help extract markers for more difficult data; you can read about them <a class="reference external" href="https://acrf-image-x-institute.github.io/MRI_DistortionQA/code_docs.html#module-MRI_DistortionQA.MarkerAnalysis">here</a>. If you want to get at the segmented data, it is stored in <code class="docutils literal notranslate"><span class="pre">marker_volume.MarkerCentroids</span></code> as a pandas dataframe.</p>
+<p>For large datasets, it can be quite time consuming to read in and process the data. Therefore, we provide a means to save the data so you can quickly read it back in later:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">marker_volume</span><span class="o">.</span><span class="n">export_to_slicer</span><span class="p">()</span>  
+</pre></div>
+</div>
+<p>This will save a file called <em>slicer_centroids.mrk.json</em> at gt_data_loc. As the name implies, you can also import this file into <a class="reference external" href="https://www.slicer.org/">Slicer</a> If you want you can specify a different location and filename instead:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">marker_volume</span><span class="o">.</span><span class="n">export_to_slicer</span><span class="p">(</span><span class="n">save_path</span><span class="o">=</span><span class="s1">&#39;path</span><span class="se">\t</span><span class="s1">o\save&#39;</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;slicer_centroids&#39;</span><span class="p">):</span>
+</pre></div>
+</div>
+<p>To read the resultant mrk.json file back in, you simply have to pass it as the main argument:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gt_volume_from_json</span> <span class="o">=</span> <span class="n">MarkerVolume</span><span class="p">(</span><span class="n">gt_data_loc</span> <span class="o">/</span> <span class="s1">&#39;slicer_centroids.mrk.json&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If you wanted to continue to create volume for MR data, the process is very similar:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">mr_data_loc</span> <span class="o">=</span> <span class="n">data_loc</span> <span class="o">/</span> <span class="s1">&#39;MR&#39;</span> <span class="o">/</span> <span class="s1">&#39;04 gre_trans_AP_330&#39;</span>
+<span class="n">mr_data_loc_reverse_gradient</span> <span class="o">=</span> <span class="n">data_loc</span> <span class="o">/</span> <span class="s1">&#39;MR&#39;</span> <span class="o">/</span> <span class="s1">&#39;05 gre_trans_PA_330&#39;</span>
+<span class="n">mr_volume</span> <span class="o">=</span> <span class="n">MarkerVolume</span><span class="p">(</span><span class="n">mr_data_loc</span><span class="p">,</span> <span class="n">correct_fat_water_shift</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fat_shift_direction</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note that we are correcting fat water shift here; you can read more about that <a class="reference external" href="https://acrf-image-x-institute.github.io/MRI_DistortionPhantom/phantom_imaging.html">here</a></p>
+<p>You can also create a MarkerVolume from a pandas data frame:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># pandas data frame read in</span>
 <span class="n">r_outer</span> <span class="o">=</span> <span class="mi">150</span>
 <span class="n">test_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="n">r_outer</span>  <span class="c1"># create some random data</span>
 <span class="n">test_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">test_data</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">])</span>  <span class="c1"># convert to data frame</span>
 <span class="n">pandas_volume</span> <span class="o">=</span> <span class="n">MarkerVolume</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>  <span class="c1"># create MarkerVolume</span>
-
-<span class="c1"># json read in</span>
-<span class="n">json_file</span> <span class="o">=</span> <span class="n">data_loc</span> <span class="o">/</span> <span class="s1">&#39;MR&#39;</span> <span class="o">/</span> <span class="s1">&#39;04 gre_trans_AP_330&#39;</span> <span class="o">/</span> <span class="s1">&#39;MR.mrk.json&#39;</span>
-<span class="c1"># this file was created with the export_to_slicer step above; this is also the format used by slicer</span>
-<span class="n">json_volume</span> <span class="o">=</span> <span class="n">MarkerVolume</span><span class="p">(</span><span class="n">json_file</span><span class="p">)</span>  <span class="c1"># create MarkerVolume</span>
 </pre></div>
 </div>
-<p>At this point, you are free to move on to the next step: automatic matching of markers, or you can read on to find out a little bit more about how you can handle marker extraction in challenging datasets…</p>
+<p>This allows you to use the rest of the code even if you are working with a different distortion phantom - all you need is a set of ground truth control points and distorted control points.</p>
+<p>At this point, you are free to move on to the next step: <a class="reference external" href="https://acrf-image-x-institute.github.io/MRI_DistortionQA/marker_matching.html">automatic matching of markers</a>, or you can read on about some more advanced features below…</p>
+</section>
+<section id="comparing-markervolumes">
+<h2>Comparing MarkerVolumes<a class="headerlink" href="#comparing-markervolumes" title="Permalink to this heading"></a></h2>
+<p>It is a common situation to have two marker volumes and want to compare what they look like. We provide <a class="reference external" href="https://acrf-image-x-institute.github.io/MRI_DistortionQA/code_docs.html#MRI_DistortionQA.utilities.plot_MarkerVolume_overlay">a few plotting methods</a> to do this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MRI_DistortionQA.utilities</span> <span class="kn">import</span> <span class="n">plot_MarkerVolume_overlay</span>
+<span class="kn">from</span> <span class="nn">MRI_DistortionQA.utilities</span> <span class="kn">import</span> <span class="n">plot_compressed_MarkerVolumes</span>
+
+<span class="n">plot_MarkerVolume_overlay</span><span class="p">([</span><span class="n">mr_volume</span><span class="p">,</span> <span class="n">mr_volume_rev</span><span class="p">])</span>
+<span class="n">plot_compressed_MarkerVolumes</span><span class="p">([</span><span class="n">mr_volume</span><span class="p">,</span> <span class="n">mr_volume_rev</span><span class="p">])</span>
+</pre></div>
+</div>
 </section>
 <section id="do-we-guarantee-that-we-will-find-your-markers">
 <h2>Do we guarantee that we will find your markers?<a class="headerlink" href="#do-we-guarantee-that-we-will-find-your-markers" title="Permalink to this heading"></a></h2>

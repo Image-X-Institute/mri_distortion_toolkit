@@ -1,31 +1,35 @@
 # Spherical Harmonics
 
-## Simple example
+## 
 
-Create a new file 'fit_harmonics.py' and copy the below code into it.
+
 
 ```python
-from MRI_DistortionQA.FieldAnalysis import SphericalHarmonicFit
+from MRI_DistortionQA.MarkerAnalysis import MarkerVolume
+from MRI_DistortionQA import calculate_harmonics
+from pathlib import Path
 import pandas as pd
-
-FieldData = pd.read_csv('Bfields.csv', index_col=0).squeeze("columns")
-# load previously saved data
-
+from MRI_DistortionQA.utilities import get_dicom_data
 '''
-This data contains columns ['x', 'y', 'z', 'B_Gx', 'B_Gy', 'B_Gz']
-but the spherical harmonics code expects to receieve [x, y, z, Bz]
-therefore, we will need to create a new dataframe with appropriately named columns
-for each field we want to fit to:
+the _4_fit_harmonics.py example shows you how to fit harmonics generally, but if you are happy to use default settings
+in the marker matching step you can do it the easy way directly from two volumes:
 '''
 
-n_order = 8
-# G_x Harmonics
-GradXdata = FieldData[['x', 'y', 'z', 'B_Gx']]
-GradXdata = GradXdata.rename(columns={"B_Gx": "Bz"})  # spherical harmonics code expects to receieve one field called Bz
-G_x_Harmonics = SphericalHarmonicFit(GradXdata, n_order=n_order, r_outer=150)
-G_x_Harmonics.harmonics.to_csv('G_x_harmonics.csv')
+FieldData = pd.read_csv('_example_data/Bfields.csv', index_col=0).squeeze("columns")
+dicom_data_loc = Path('_example_data') / 'MR' / '04 gre_trans_AP_330' / 'dicom_data.json'  # previosly saved from a MarkerVolume
+dicom_data = get_dicom_data(dicom_data_loc)
+gradient_strength = dicom_data['gradient_strength']
+normalisation_factor = [1/gradient_strength[0], 1/gradient_strength[1], 1/gradient_strength[2], 1]  # this normalised gradient harmonics to 1mT/m
 
-# some plotting examples
+G_x_Harmonics, G_y_Harmonics, G_z_Harmonics, B0_Harmonics = calculate_harmonics(FieldData, norm=normalisation_factor, n_order=8)
+# note that B0_harmonics is None as we did not provide distorted_volume_rev to calculate_harmonics
+```
+
+## some plotting examples
+
+Each instance of spherical harmonic fit has some handly plotting function you can use to quickly visualise the fields and harmonics: examples below.
+
+```python
 G_x_Harmonics.plot_cut_planes()
 G_x_Harmonics.plot_harmonics_pk_pk(cut_off=.01)
 G_x_Harmonics.print_key_harmonics(cut_off=.01)
@@ -55,54 +59,6 @@ The warning here is telling us that the sample points do not appear to cover a f
 - [ ] ToDo: automate this check!!
 
 The second part is telling us the peak-to-peak perturbation over the surface of r_outer (150 mm in this case). We would like to see that the reconstructed pk-pk closely matches the input, and that the residual pk-pk is low relative to the total. In this case, the reconstructed pk-pk is within 0.4 μT and the residual is < 1%, so the fit is pretty good!
-
-## Remaining harmonics
-
-Now we have the X-harmonics; we need to do the same thing for the other two gradient coils:
-
-````python
-# G_y Harmonics
-GradYdata = FieldData[['x', 'y', 'z', 'B_Gy']]
-GradYdata = GradYdata.rename(columns={"B_Gy": "Bz"})
-G_y_Harmonics = SphericalHarmonicFit(GradYdata, n_order=n_order, r_outer=150)
-G_y_Harmonics.harmonics.to_csv('G_y_harmonics.csv')
-
-# G_z Harmonics
-GradZdata = FieldData[['x', 'y', 'z', 'B_Gz']]
-GradZdata = GradZdata.rename(columns={"B_Gz": "Bz"})
-G_z_Harmonics = SphericalHarmonicFit(GradZdata, n_order=n_order, r_outer=150)
-G_z_Harmonics.harmonics.to_csv('G_z_harmonics.csv')
-````
-
-## The easy way...
-
-Calculating harmonics from marker volumes involves three steps:
-
-1. Matching the volumes
-2. Calculating fields from the markers
-3. Calculating harmonics from the fields
-
-The way we just showed you gives you a lot of fine control over every step. However, if you are willing to give up this control, we have written a wrapper function that allows you to do this all in one step:
-
-```python
-from MRI_DistortionQA.MarkerAnalysis import MarkerVolume
-from MRI_DistortionQA import calculate_harmonics
-from pathlib import Path
-
-# download example data and unzip:
-# https://cloudstor.aarnet.edu.au/plus/s/Wm9vndV47u941JU
-data_loc = Path(r'C:\Users\Brendan\Downloads\MRI_distortion_QA_sample_data(2)\MRI_distortion_QA_sample_data')
-# ^^ update to where you put the sample data!!
-
-# distorted centroids
-distorted_volume = MarkerVolume(data_loc / 'MR' / '04 gre_trans_AP_330' / 'slicer_centroids.mrk.json', verbose=False)
-# ground truth centroids
-ground_truth_volume = MarkerVolume(data_loc / 'CT' / 'slicer_centroids.mrk.json', verbose=False, r_max=300)
-dicom_data_loc = data_loc / 'MR' / '04 gre_trans_AP_330' / 'dicom_data.json'  # previosly saved from a MarkerVolume
-
-B0_Harmonics, G_x_Harmonics, G_y_Harmonics, G_z_Harmonics = 	calculate_harmonics(ground_truth_volume, distorted_volume, dicom_data=dicom_data_loc)
-# note that B0_harmonics is None as we did not provide distorted_volume_rev to calculate_harmonics
-```
 
 ## Next steps
 

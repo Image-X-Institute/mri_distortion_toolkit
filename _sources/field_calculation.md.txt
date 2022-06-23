@@ -4,7 +4,7 @@
 
 Once we have the marker positions created from each field, we can convert these positions into magnetic fields for each of the gradient coils (and, if you used the reverse gradient technique, and estimate of B0). This example shows how to do this.
 
-Create a new python file called field_calculation.py and copy the below code into it:
+ coverage-badge -f -o docsrc/__resources/coverage.svgbash
 
 ```python
 from MRI_DistortionQA.FieldCalculation import ConvertMatchedMarkersToBz

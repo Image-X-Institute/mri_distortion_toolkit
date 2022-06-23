@@ -710,24 +710,24 @@ elevation, azimuth, and r</p></li>
 <span id="calculate-harmonics"></span><h2>calculate_harmonics<a class="headerlink" href="#module-MRI_DistortionQA.calculate_harmonics" title="Permalink to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="MRI_DistortionQA.calculate_harmonics.calculate_harmonics">
-<span class="sig-prename descclassname"><span class="pre">MRI_DistortionQA.calculate_harmonics.</span></span><span class="sig-name descname"><span class="pre">calculate_harmonics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ground_truth_volume</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distorted_volume</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distorted_volume_rev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dicom_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.calculate_harmonics.calculate_harmonics" title="Permalink to this definition"></a></dt>
-<dd><p>this function is essentially a wrapper of convenience. Given a ground truth MarkerVolume
-and a forward (distorted) MarkerVolume, it will calculate and return the Gx, Gy, and Gz
-harmonics. Optionally, you can also pass a back MarkerVolume (reverse gradient) in which case
-it will also calcualte the B0 harmonics. Basically this makes your life easier, but you give up fine control over
-the marker matching, B calc, and harmonic fitting steps.
+<span class="sig-prename descclassname"><span class="pre">MRI_DistortionQA.calculate_harmonics.</span></span><span class="sig-name descname"><span class="pre">calculate_harmonics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">MagneticFields</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">norm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.calculate_harmonics.calculate_harmonics" title="Permalink to this definition"></a></dt>
+<dd><p>This function is essentially a wrapper of convenience. Given a set of B fields and dicom_data,
+it will calculate and return the Gx, Gy, and Gz harmonics.
 Note that the gradient harmonics will be normalised to a gradient strengt of 1 mT/m</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>ground_truth_volume</strong> (<em>object</em>) – ground truth MarkerVolume</p></li>
-<li><p><strong>distorted_volume</strong> (<em>object</em>) – distorted MarkerVolume</p></li>
-<li><p><strong>distorted_volume_rev</strong> (<em>object</em><em>, </em><em>optional</em>) – distorted MarkerVolume taken with reverse gradient</p></li>
+<li><p><strong>MagneticFields</strong> (<em>pandas dataframe</em>) – a pandas dataframe with columns [‘x’, ‘y’, ‘z’, ‘B_Gx’, ‘B_Gy’, ‘B_Gz’, ‘B0’]. B0 is optional.
+x, y, z are in mm and the fields are in any unit - the harmonics will reflect the units</p></li>
+<li><p><strong>dicom_data</strong> (<em>dict</em>) – a dict containing required dicom data, such as that generated within the MarkerVolume class</p></li>
 <li><p><strong>n_order</strong> (<em>int</em><em>, </em><em>optional</em>) – order of harmonic fit</p></li>
+<li><p><strong>norm</strong> – Can pass a list of four valuues, the four returned harmonic lists will be normalised accordingly.
+e.g. norm = [2,2,2,2] will divide all harmonics by 2. This is useful so you can normalise the fields to some
+value</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>B0_Harmonics, G_x_Harmonics, G_y_Harmonics, G_z_Harmonics</p>
+<dd class="field-even"><p>G_x_Harmonics, G_y_Harmonics, G_z_Harmonics, B0_Harmonics</p>
 </dd>
 </dl>
 </dd></dl>
