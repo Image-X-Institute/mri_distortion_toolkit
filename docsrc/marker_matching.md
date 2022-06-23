@@ -4,7 +4,7 @@
 
 To quantify geometric distortion using markers, we need three things:
 
-1. **Ground truth marker location.** (We recommend CT imaging for this also technically you can also use the CAD design files)
+1. **Ground truth marker location.** (We recommend CT imaging for this, but technically you can use the CAD design files)
 2. Distorted marker location
 3. Knowledge of which distorted marker location corresponds to which ground truth marker location
 
@@ -26,13 +26,14 @@ data_loc = Path(r'C:\Users\Brendan\Downloads\MRI_distortion_QA_sample_data(1)\MR
 
 # distorted centroids
 distorted_volume = MarkerVolume(data_loc / 'MR' / '04 gre_trans_AP_330' / 'slicer_centroids.mrk.json', verbose=False)
+distorted_volume_rev = MarkerVolume(data_loc / 'MR' / '05 gre_trans_PA_330' / 'slicer_centroids.mrk.json', verbose=False)
 
 # ground truth centroids
 ground_truth_volume = MarkerVolume(data_loc / 'CT' / 'slicer_centroids.mrk.json', verbose=False)
 
 # matched volumes
-matched_volume = MatchedMarkerVolumes(ground_truth_volume, distorted_volume, ReferenceMarkers=11)
-matched_volume.MatchedCentroids.to_csv('Matched_Markers.csv')  # for use in later examples
+matched_volume = MatchedMarkerVolumes(ground_truth_volume, distorted_volume,                  ReferenceMarkers=11)
+matched_volume.MatchedCentroids.to_csv('_example_data/Matched_Markers.csv')  # for use in later examples
 
 # plot the match
 matched_volume.plot_3D_markers()

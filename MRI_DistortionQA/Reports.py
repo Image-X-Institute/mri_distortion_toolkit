@@ -11,8 +11,6 @@ import plotly.graph_objects as go
 from distutils.dir_util import copy_tree
 from datetime import datetime
 from jinja2 import Template
-import pathlib
-import json
 from .utilities import get_dicom_data
 
 ch = logging.StreamHandler()

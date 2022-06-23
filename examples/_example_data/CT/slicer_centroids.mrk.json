@@ -335,5 +335,8 @@
 { "label": " ", "position": [-4.28,  207.07,  28.82], "locked": true},
 { "label": " ", "position": [-24.13,  209.13, -6.40], "locked": true},
 { "label": " ", "position": [ 14.72,  208.85, -6.37], "locked": true},
-{ "label": " ", "position": [-4.68,  210.50, -6.38], "locked": true}
+{ "label": " ", "position": [-4.68,  210.50, -6.38], "locked": true},
+{ "label": " ", "position": [ 233.26,  220.61, -154.24], "locked": true},
+{ "label": " ", "position": [ 231.83,  220.54, -7.89], "locked": true},
+{ "label": " ", "position": [-227.03,  221.62, -154.60], "locked": true}
 ]}]}
