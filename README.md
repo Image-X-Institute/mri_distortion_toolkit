@@ -10,7 +10,7 @@ flowchart LR
     A[Marker <br>Extraction]--->B[Marker <br>Matching]
     B[Marker <br>Matching]--->C[Field <br> Calculation] & E[Automated <br>reporting]
     C[Field <br> Calculation]-->D[Spherical Harmonic <br>Analysis]
-    D[Spherical Harmonic <br>Analysis]-->E[Automated <br>reporting] & F[Distortion <br>correction];
+    D[Spherical Harmonic <br>Analysis]-->E[Automated <br>reporting];
     click A "https://acrf-image-x-institute.github.io/MRI_DistortionQA/code_docs.html#MRI_DistortionQA.MarkerAnalysis.MarkerVolume"
     click B "https://acrf-image-x-institute.github.io/MRI_DistortionQA/code_docs.html#MRI_DistortionQA.MarkerAnalysis.MatchedMarkerVolumes"
     click C "https://acrf-image-x-institute.github.io/MRI_DistortionQA/code_docs.html#MRI_DistortionQA.FieldCalculation.ConvertMatchedMarkersToBz"
@@ -31,7 +31,7 @@ Detailed documentation is [here](https://acrf-image-x-institute.github.io/MRI_Di
 
 ## Directory Structure
 
-- *docs* contains html documentation
 - *docsrc* markdown/rst source documentation
 - *tests* test cases
 - *MRI_DistortionQA* source code
+- *examples* source code for the [worked examples](https://acrf-image-x-institute.github.io/MRI_DistortionQA/examples.html)

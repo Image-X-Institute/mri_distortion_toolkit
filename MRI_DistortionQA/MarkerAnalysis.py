@@ -40,9 +40,11 @@ class MarkerVolume:
     :type r_min: float ,optional
     :param r_max: any markers at radii greater than this will be discounted.
     :type r_max: float, optional
-    :param cutoff_point: Manually set the threshold value. If this is left as None otsu's method is used
-    :type cutoff_point: float, optional
-    :param cutoff_point: Manually set the threshold value. If this is left as None otsu's method is used
+    :param iterative_segmentation: If set to true, a slower iterative method will be used to find the threshold value
+        used to segment the markers. Otherwise, otsu's method is used.
+    :type iterative_segmentation: bool, optional
+    :param cutoff_point: Manually set the threshold value. If this is left as None otsu's method is used.
+        This will replace the iterative segmentation method regardless of flag.
     :type cutoff_point: float, optional
     :param n_markers_expected: if you know how many markers you expect, you can enter the value here. The code will
         then warn you if it finds a different number.
@@ -68,10 +70,10 @@ class MarkerVolume:
     :type fat_shift_direction: int, optional
     """
 
-    def __init__(self, input_data, ImExtension='dcm', r_min=None, r_max=None, precise_segmentation=False,
-                 n_markers_expected=None, fat_shift_direction=None, verbose=False, gaussian_image_filter_sd=1,
-                 correct_fat_water_shift=False, marker_size_lower_tol=0.9, marker_size_upper_tol=1,
-                 cutoff_point=None):
+    def __init__(self, input_data, ImExtension='dcm', r_min=None, r_max=None, iterative_segmentation=False,
+                 cutoff_point=None, n_markers_expected=None, fat_shift_direction=None, verbose=False,
+                 gaussian_image_filter_sd=1, correct_fat_water_shift=False, marker_size_lower_tol=0.9,
+                 marker_size_upper_tol=1):
 
         self.verbose = verbose
         self._file_extension = ImExtension
@@ -81,7 +83,7 @@ class MarkerVolume:
         self._r_min = r_min
         self._r_max = r_max
         self._cutoffpoint = cutoff_point
-        self._precise_segmentation = precise_segmentation
+        self._iterative_segmentation = iterative_segmentation
         self._chemical_shift_vector = None
         self._gaussian_image_filter_sd = gaussian_image_filter_sd
         self._marker_size_lower_tol = marker_size_lower_tol
@@ -260,9 +262,14 @@ class MarkerVolume:
         self._chemical_shift_vector = shift * np.array(self.dicom_data['pixel_spacing'])[direction.astype(bool)] * fat_shift_direction
 
     def _find_iterative_cutoff(self, blurred_volume):
+        """
+        Replaces the otsu threshold with a slower, iterative method to find the best threshold for segmenting markers.
+        A range of valid thresholds are found and the mean is returned as the best threshold.
+        If no valid thresholds are found, the mean of candidate thresholds that will miss some markers is returned.
+        """
 
         if self._n_markers_expected is None:
-            logger.warning('This method requires the expected number of markers to be input')
+            logger.warning('Iterative segmentation method requires the expected number of markers to be input.')
             return None
 
         # finds a range of thresholds that give a number of segments near to the number of expected markers
@@ -325,9 +332,16 @@ class MarkerVolume:
         For a 3D numpy array, turn all elements < cutoff to zero, and all other elements to 1.
         If no cutoff is entered, otsu's method is used to auto-threshold.
         """
-        # de noise with gaussian blurring
+
         BlurredVolume = gaussian(VolumeToThreshold, sigma=self._gaussian_image_filter_sd)
-        if self._precise_segmentation is True:
+
+        if self._cutoffpoint is not None:
+            # If cutoff point has been manually entered, go straight to thresholding
+            self._iterative_segmentation = False
+        if self._iterative_segmentation is True:
+            # de noise with gaussian blurring. iterative segmentation works better with less blur so a 0.75 fudge
+            # factor has been added
+            BlurredVolume = gaussian(VolumeToThreshold, sigma=self._gaussian_image_filter_sd * 0.75)
             self._cutoffpoint = self._find_iterative_cutoff(BlurredVolume)
         if self._cutoffpoint is None:
             self._cutoffpoint = threshold_otsu(BlurredVolume)
