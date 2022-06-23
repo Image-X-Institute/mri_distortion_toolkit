@@ -27,7 +27,7 @@ pip install MRI_DistortionQA
 
 ## Usage
 
-Detailed documentation is [here](https://acrf-image-x-institute.github.io/MRI_DistortionQA/)
+Detailed documentation is [here](https://acrf-image-x-institute.github.io/MRI_DistortionQA/).
 
 ## Directory Structure
 
