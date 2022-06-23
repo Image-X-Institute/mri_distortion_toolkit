@@ -89,7 +89,7 @@ class SphericalHarmonicFit:
         if self.input_Bz_data.r.mean() < 10:
             logger.warning('it appears that your input data is in m, not mm - please use mm!')
 
-        if (self.input_Bz_data.elevation.max() - self.input_Bz_data.elevation.min()) < 0.9 * np.pi or \
+        if (self.input_Bz_data.elevation.max() - self.input_Bz_data.elevation.min()) < 0.75 * np.pi or \
                 (self.input_Bz_data.azimuth.max() - self.input_Bz_data.azimuth.min()) < 1.8 * np.pi:
             logger.warning('input sample points do not appear to cover a full sphere')
 

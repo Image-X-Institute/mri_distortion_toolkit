@@ -11,7 +11,7 @@ from pathlib import Path
 import pandas as pd
 from MRI_DistortionQA.utilities import get_dicom_data
 '''
-the 4_fit_harmonics.py example shows you how to fit harmonics generally, but if you are happy to use default settings
+the _4_fit_harmonics.py example shows you how to fit harmonics generally, but if you are happy to use default settings
 in the marker matching step you can do it the easy way directly from two volumes:
 '''
 

@@ -18,4 +18,3 @@ ground_truth_volume = MarkerVolume(data_loc / 'CT' / 'slicer_centroids.mrk.json'
 matched_volume = MatchedMarkerVolumes(ground_truth_volume, distorted_volume, ReverseGradientData=distorted_volume_rev,
                                       ReferenceMarkers=11)
 matched_volume.MatchedCentroids.to_csv(data_loc / 'Matched_Markers.csv')  # for use in later examples
-
