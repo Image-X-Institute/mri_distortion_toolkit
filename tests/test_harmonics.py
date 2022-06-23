@@ -39,14 +39,21 @@ def test_calculate_harmonics():
     dicom_data = get_dicom_data(dicom_data_loc)
     gradient_strength = np.array(dicom_data['gradient_strength']) * 1e3
 
-    B0_Harmonics, G_x_Harmonics, G_y_Harmonics, G_z_Harmonics = calculate_harmonics(ground_truth_volume,
-                                                                                    distorted_volume,
-                                                                                    dicom_data=dicom_data_loc)
-    assert B0_Harmonics is None
+    FieldData = pd.read_csv(test_data_dir / 'MagneticFieldData.csv', index_col=0).squeeze("columns")
+    dicom_data_loc = Path(test_data_dir / 'dicom_data.json')  # previosly saved from a MarkerVolume
+    dicom_data = get_dicom_data(dicom_data_loc)
+    gradient_strength = np.array(dicom_data['gradient_strength']) * 1e3
+    normalisation_factor = [1 / gradient_strength[0], 1 / gradient_strength[1], 1 / gradient_strength[2],
+                            1]  # this normalised gradient harmonics to 1mT/m
+
+    G_x_Harmonics, G_y_Harmonics, G_z_Harmonics, B0_Harmonics = calculate_harmonics(FieldData,
+                                                                                    norm=normalisation_factor,
+                                                                                    n_order=8)
+
     # can't be bothered saving in and reading all harmonics so just checking max:
-    assert np.allclose(G_x_Harmonics.harmonics.max(), 10.312607980186499/gradient_strength[0])
-    assert np.allclose(G_y_Harmonics.harmonics.max(), 0.3535400057558178/gradient_strength[1])
-    assert np.allclose(G_z_Harmonics.harmonics.max(), 0.5673060754134269/gradient_strength[2])
+    assert np.allclose(G_x_Harmonics.harmonics.max(), 0.40997688028675766)
+    assert np.allclose(G_y_Harmonics.harmonics.max(), 0.7000613996928333)
+    assert np.allclose(G_z_Harmonics.harmonics.max(), 0.5690328634698217)
 
 
 def test_harmonic_conversion():
