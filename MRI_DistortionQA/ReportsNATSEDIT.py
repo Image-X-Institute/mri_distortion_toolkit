@@ -430,7 +430,7 @@ class MRI_QA_Reporter:
             v=plot_data['y_dis'],
             w=plot_data['z_dis'],
 
-            colorbar=dict(title= 'B(uT)'),
+            colorbar=dict(title= 'mm'),
 
             sizemode="absolute",
             sizeref=40))
