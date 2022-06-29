@@ -107,6 +107,9 @@
 
 <span class="n">G_x_Harmonics</span><span class="p">,</span> <span class="n">G_y_Harmonics</span><span class="p">,</span> <span class="n">G_z_Harmonics</span><span class="p">,</span> <span class="n">B0_Harmonics</span> <span class="o">=</span> <span class="n">calculate_harmonics</span><span class="p">(</span><span class="n">FieldData</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="n">normalisation_factor</span><span class="p">,</span> <span class="n">n_order</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
 <span class="c1"># note that B0_harmonics is None as we did not provide distorted_volume_rev to calculate_harmonics</span>
+<span class="n">G_x_Harmonics</span><span class="o">.</span><span class="n">harmonics</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">data_loc</span> <span class="o">/</span> <span class="s1">&#39;G_x_Harmonics.csv&#39;</span><span class="p">)</span>
+<span class="n">G_y_Harmonics</span><span class="o">.</span><span class="n">harmonics</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">data_loc</span> <span class="o">/</span> <span class="s1">&#39;G_y_Harmonics.csv&#39;</span><span class="p">)</span>
+<span class="n">G_z_Harmonics</span><span class="o">.</span><span class="n">harmonics</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">data_loc</span> <span class="o">/</span> <span class="s1">&#39;G_z_Harmonics.csv&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>

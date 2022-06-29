@@ -23,6 +23,9 @@ normalisation_factor = [1/gradient_strength[0], 1/gradient_strength[1], 1/gradie
 
 G_x_Harmonics, G_y_Harmonics, G_z_Harmonics, B0_Harmonics = calculate_harmonics(FieldData, norm=normalisation_factor, n_order=8)
 # note that B0_harmonics is None as we did not provide distorted_volume_rev to calculate_harmonics
+G_x_Harmonics.harmonics.to_csv(data_loc / 'G_x_Harmonics.csv')
+G_y_Harmonics.harmonics.to_csv(data_loc / 'G_y_Harmonics.csv')
+G_z_Harmonics.harmonics.to_csv(data_loc / 'G_z_Harmonics.csv')
 ```
 
 ## some plotting examples
