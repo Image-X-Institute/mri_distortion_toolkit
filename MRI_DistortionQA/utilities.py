@@ -88,7 +88,8 @@ def build_dicom_affine(Dicomfiles):
     return CoordinateMatrix
 
 
-def dicom_to_numpy(path_to_dicoms, FilesToReadIn=None, file_extension='dcm', return_XYZ=False):
+def dicom_to_numpy(path_to_dicoms, FilesToReadIn=None, file_extension='dcm', return_XYZ=False,
+                   zero_pad=0):
     """
     This function does two things:
 
@@ -104,10 +105,14 @@ def dicom_to_numpy(path_to_dicoms, FilesToReadIn=None, file_extension='dcm', ret
     :type file_extension: string
     :param return_XYZ: if True, will build and return three matrics containing the X, Y, and Z coords at each i,j,k
         pixel.
-    :type return_XYZ: bool
-    :returns ImageArray: a numpy array of voxels
-    :returns dicom_affine: a matrix that transforms the [r,c,s] indices into [x,y,z] coordinates
-    :returns (X, Y, Z): Coordinate arrays the same size as ImageArray. Optional
+    :type return_XYZ: bool, optional
+    :param zero_pad: this many zeros will be placed around the returned volume and the coordinates updated accordingly.
+        main use case was for distortion correction. Note that all returned objects will be self consistently affected
+        by this parameter
+    :type zero_pad: int, optional
+    :returns: ImageArray: a numpy array of voxels
+    :returns: dicom_affine: a matrix that transforms the [r,c,s] indices into [x,y,z] coordinates
+    :returns: (X, Y, Z): Coordinate arrays the same size as ImageArray. Optional
     """
     if not FilesToReadIn:
         FilesToReadIn = get_all_files(path_to_dicoms, file_extension=file_extension)
@@ -119,18 +124,20 @@ def dicom_to_numpy(path_to_dicoms, FilesToReadIn=None, file_extension='dcm', ret
     elif isinstance(FilesToReadIn, (str, pathlib.Path)):
         CompletePathFiles = [str(Path(path_to_dicoms) / FilesToReadIn)]
 
-
     dicom_slices = [pydicom.read_file(f) for f in CompletePathFiles]
     dicom_slices = sort_dicom_slices(dicom_slices)
     dicom_affine = build_dicom_affine(dicom_slices)
-
-    n_rows = dicom_slices[0].Rows
-    n_cols = dicom_slices[0].Columns
-    n_slices = len(dicom_slices)
+    dicom_affine[0:3, 3] = dicom_affine[0:3, 3] - (zero_pad*dicom_affine[0:3, 0:3].sum(axis=0))  # update start point for zero padding
+    n_rows = dicom_slices[0].Rows + zero_pad*2
+    n_cols = dicom_slices[0].Columns + zero_pad*2
+    n_slices = len(dicom_slices) + zero_pad*2
 
     ImageArray = np.zeros([n_rows, n_cols, n_slices])
     for i, file in enumerate(dicom_slices):
-        ImageArray[:, :, i] = file.pixel_array
+        if zero_pad > 0:
+            ImageArray[zero_pad:-zero_pad, zero_pad:-zero_pad, i+zero_pad] = file.pixel_array
+        else:
+            ImageArray[:, :, i] = file.pixel_array
     if return_XYZ:
         rcsMatrix = np.zeros([4, n_rows * n_cols * n_slices])
         r_indices = np.arange(0, n_rows)
@@ -145,7 +152,7 @@ def dicom_to_numpy(path_to_dicoms, FilesToReadIn=None, file_extension='dcm', ret
         X = np.reshape(XYZtemp[0, :], ImageArray.shape)
         Y = np.reshape(XYZtemp[1, :], ImageArray.shape)
         Z = np.reshape(XYZtemp[2, :], ImageArray.shape)
-
+        assert ImageArray.shape == X.shape
         return ImageArray, dicom_affine, (X, Y, Z)
     else:
         return ImageArray, dicom_affine
