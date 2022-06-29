@@ -38,6 +38,7 @@ def test_mr_dicom_data_read_in():
     volume2 = MarkerVolume(str(this_dir / 'test_data' / 'dicom_export_test.mrk.json'))
     assert np.allclose(volume.MarkerCentroids, volume2.MarkerCentroids, rtol=1e-01, atol=1e-01)
 
+
 def test_ct_dicom_data_read_in():
     """
     - test that we read in dicom data and return a number at least in the vicinity of the right answer
@@ -52,7 +53,6 @@ def test_ct_dicom_data_read_in():
     assert volume.MarkerCentroids.shape[0] < 4
     # there should be 3 I think so this is a very loose test but should catch gross errors
     assert volume.dicom_data is None
-
 
 
 def test_pandas_read_in():
