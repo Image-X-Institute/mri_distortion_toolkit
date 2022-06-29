@@ -121,7 +121,7 @@ def dicom_to_numpy(path_to_dicoms, FilesToReadIn=None, file_extension='dcm', ret
 
 
     dicom_slices = [pydicom.read_file(f) for f in CompletePathFiles]
-    dicom_slices = _sort_dicom_slices(dicom_slices)
+    dicom_slices = sort_dicom_slices(dicom_slices)
     dicom_affine = build_dicom_affine(dicom_slices)
 
     n_rows = dicom_slices[0].Rows
@@ -151,7 +151,7 @@ def dicom_to_numpy(path_to_dicoms, FilesToReadIn=None, file_extension='dcm', ret
         return ImageArray, dicom_affine
 
 
-def _sort_dicom_slices(dicom_datasets):
+def sort_dicom_slices(dicom_datasets):
     """
     sort slices by instance number
     :param dicom_datasets: list of pydicom files
