@@ -538,7 +538,7 @@ if the cartesian columns ‘x’, ‘y’, ‘z’ already exist, they will be o
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MRI_DistortionQA.utilities.dicom_to_numpy">
-<span class="sig-prename descclassname"><span class="pre">MRI_DistortionQA.utilities.</span></span><span class="sig-name descname"><span class="pre">dicom_to_numpy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path_to_dicoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">FilesToReadIn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_extension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dcm'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_XYZ</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.utilities.dicom_to_numpy" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MRI_DistortionQA.utilities.</span></span><span class="sig-name descname"><span class="pre">dicom_to_numpy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path_to_dicoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">FilesToReadIn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_extension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dcm'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_XYZ</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zero_pad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.utilities.dicom_to_numpy" title="Permalink to this definition"></a></dt>
 <dd><p>This function does two things:</p>
 <ol class="arabic simple">
 <li><p>Loads all the dicom files in path_to_dicoms in a numpy array. data is ordered according to [row, column, slice]</p></li>
@@ -551,18 +551,21 @@ if the cartesian columns ‘x’, ‘y’, ‘z’ already exist, they will be o
 <li><p><strong>FilesToReadIn</strong> (<em>list</em><em>, </em><em>optional</em>) – By default, this function will read in all files of file type file_extension. If you only want
 to read in a subset of files, you can specify them with FilesToReadIn</p></li>
 <li><p><strong>file_extension</strong> (<em>string</em>) – extension of dicom files, e.g. ‘dcm’ or ‘IMA’</p></li>
-<li><p><strong>return_XYZ</strong> (<em>bool</em>) – if True, will build and return three matrics containing the X, Y, and Z coords at each i,j,k
+<li><p><strong>return_XYZ</strong> (<em>bool</em><em>, </em><em>optional</em>) – if True, will build and return three matrics containing the X, Y, and Z coords at each i,j,k
 pixel.</p></li>
+<li><p><strong>zero_pad</strong> (<em>int</em><em>, </em><em>optional</em>) – this many zeros will be placed around the returned volume and the coordinates updated accordingly.
+main use case was for distortion correction. Note that all returned objects will be self consistently affected
+by this parameter</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns ImageArray</dt>
-<dd class="field-even"><p>a numpy array of voxels</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>ImageArray: a numpy array of voxels</p>
 </dd>
-<dt class="field-odd">Returns dicom_affine</dt>
-<dd class="field-odd"><p>a matrix that transforms the [r,c,s] indices into [x,y,z] coordinates</p>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>dicom_affine: a matrix that transforms the [r,c,s] indices into [x,y,z] coordinates</p>
 </dd>
-<dt class="field-even">Returns (X, Y, Z)</dt>
-<dd class="field-even"><p>Coordinate arrays the same size as ImageArray. Optional</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(X, Y, Z): Coordinate arrays the same size as ImageArray. Optional</p>
 </dd>
 </dl>
 </dd></dl>
@@ -703,6 +706,14 @@ elevation, azimuth, and r</p></li>
 <dd class="field-even"><p>Pandase series with the value of Bz at each element in coords</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="MRI_DistortionQA.utilities.sort_dicom_slices">
+<span class="sig-prename descclassname"><span class="pre">MRI_DistortionQA.utilities.</span></span><span class="sig-name descname"><span class="pre">sort_dicom_slices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dicom_datasets</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MRI_DistortionQA.utilities.sort_dicom_slices" title="Permalink to this definition"></a></dt>
+<dd><p>sort slices by instance number
+:param dicom_datasets: list of pydicom files
+:return: sorted list of pydicom files</p>
 </dd></dl>
 
 </section>
