@@ -1,8 +1,7 @@
 # Spherical Harmonics
 
-## 
-
-
+Spherical harmonics can be used to characterise any magnetic field in a source free region. Practically, this means that if you can fit spherical harmonics to a limited number of data points, you can reconstruct the underlying magnetic field anywhere. This is particualrly useful for distortion correction algorithsm, but as we will see later can also be used to to generate data rich reports.
+A basic code to calculate spherical harmonics from the field data we have just calculated is below:
 
 ```python
 from MRI_DistortionQA.MarkerAnalysis import MarkerVolume
@@ -10,10 +9,7 @@ from MRI_DistortionQA import calculate_harmonics
 from pathlib import Path
 import pandas as pd
 from MRI_DistortionQA.utilities import get_dicom_data
-'''
-the _4_fit_harmonics.py example shows you how to fit harmonics generally, but if you are happy to use default settings
-in the marker matching step you can do it the easy way directly from two volumes:
-'''
+
 
 FieldData = pd.read_csv('_example_data/Bfields.csv', index_col=0).squeeze("columns")
 dicom_data_loc = Path('_example_data') / 'MR' / '04 gre_trans_AP_330' / 'dicom_data.json'  # previosly saved from a MarkerVolume
