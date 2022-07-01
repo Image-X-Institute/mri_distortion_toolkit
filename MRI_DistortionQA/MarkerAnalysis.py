@@ -383,11 +383,8 @@ class MarkerVolume:
         n_voxels_median = np.median(np.array(n_voxels))
         voxel_min = (1-self._marker_size_lower_tol) * n_voxels_median
         if voxel_min < 2:
-            voxel_min = 2
+            voxel_min = 2.1
         voxel_max = (1+self._marker_size_upper_tol) * n_voxels_median
-        if voxel_min < 2:
-            voxel_min = 2
-
 
         if self.verbose:
             print('Median marker volume: ' + str(n_voxels_median))
@@ -730,8 +727,11 @@ class MatchedMarkerVolumes:
         translation_vector = dist_reference.mean() - gt_reference.mean()
 
         # Calculate rotation vector
-        matched_reference = _match_crosshair(gt_reference + translation_vector, dist_reference)
-        rotation_vector, error = transform.Rotation.align_vectors(dist_reference, matched_reference)
+        if self._n_reference_markers < 3:
+            rotation = False
+        else:
+            matched_reference = _match_crosshair(gt_reference + translation_vector, dist_reference)
+            rotation_vector, error = transform.Rotation.align_vectors(dist_reference, matched_reference)
 
         # Transform centroids
         aligned = self.ground_truth_centroids[['x', 'y', 'z']] + translation_vector
