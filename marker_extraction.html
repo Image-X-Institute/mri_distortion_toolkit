@@ -95,7 +95,7 @@
 <h2>Basic examples<a class="headerlink" href="#basic-examples" title="Permalink to this heading"></a></h2>
 <p>Say that you have <a class="reference external" href="https://acrf-image-x-institute.github.io/MRI_DistortionPhantom/phantom_construction.html">built</a> and <a class="reference external" href="https://acrf-image-x-institute.github.io/MRI_DistortionPhantom/phantom_imaging.html">imaged</a> a marker-based distortion phantom. To use this data within this library, you first have to extract the position of the markers and create a ‘MarkerVolume’. This example shows you how do that.</p>
 <blockquote>
-<div><p>:warning: For this part you will need some data. <strong>Example data is provided <a class="reference external" href="https://cloudstor.aarnet.edu.au/plus/s/Wm9vndV47u941JU">here</a></strong>. Download and unzip this data somewhere and take note of the path. The source code this example is based on is <a class="reference external" href="https://github.com/ACRF-Image-X-Institute/MRI_DistortionQA/tree/main/examples">here</a>.</p>
+<div><p>|:warning:| For this part you will need some data. <strong>Example data is provided <a class="reference external" href="https://cloudstor.aarnet.edu.au/plus/s/Wm9vndV47u941JU">here</a></strong>. Download and unzip this data somewhere and take note of the path. The source code this example is based on is <a class="reference external" href="https://github.com/ACRF-Image-X-Institute/MRI_DistortionQA/tree/main/examples">here</a>.</p>
 </div></blockquote>
 <p>First, create a directory called ‘MRI_QA_tutorial’ or something like that. Within that directory, create a new python file called ‘MarkerExtractionExample’. Copy the below code into it, and update</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MRI_DistortionQA.MarkerAnalysis</span> <span class="kn">import</span> <span class="n">MarkerVolume</span>
@@ -160,7 +160,7 @@
 <section id="do-we-guarantee-that-we-will-find-your-markers">
 <h2>Do we guarantee that we will find your markers?<a class="headerlink" href="#do-we-guarantee-that-we-will-find-your-markers" title="Permalink to this heading"></a></h2>
 <p>Short answer: No!</p>
-<p>Although the automatic extraction works quite well in most cases, because there are so many variables in MR, we have no knowledge of the signal-to-noise, contrast-to-noise, contrast type, voxel size, etc. that you may be using. This means that it is very difficult to automatically know what settings to use for marker extraction. In some low SNR cases, no matter what settings you use automatic extraction is difficult, but in most cases you should be able to find a reliable combination of settings for a given scan and scanner.</p>
+<p>Although the automatic extraction works quite well in most cases, because there are so many variables in MR, we have no knowledge of the signal-to-noise, contrast-to-noise, contrast type, voxel size, etc. that you may be using. This means that it is very difficult to automatically know what <a class="reference external" href="https://acrf-image-x-institute.github.io/MRI_DistortionQA/code_docs.html">settings</a> to use for marker extraction. In some low SNR cases, no matter what settings you use automatic extraction is difficult, but in most cases you should be able to find a reliable combination of settings for a given scan and scanner.</p>
 </section>
 <section id="is-that-a-major-issue">
 <h2>Is that a major issue?<a class="headerlink" href="#is-that-a-major-issue" title="Permalink to this heading"></a></h2>
@@ -205,7 +205,7 @@
 </li>
 </ul>
 <blockquote>
-<div><p>:information_source: Slicer can sometimes be a bit buggy and laggy when handling markers. At this point I don’t have  fix for this :disappointed:</p>
+<div><p>|:information_source:| Slicer can sometimes be a bit buggy and laggy when handling markers. At this point I don’t have  fix for this |:disappointed:|</p>
 </div></blockquote>
 </section>
 </section>

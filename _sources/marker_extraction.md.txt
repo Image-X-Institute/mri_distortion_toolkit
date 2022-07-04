@@ -5,7 +5,7 @@
 Say that you have [built](https://acrf-image-x-institute.github.io/MRI_DistortionPhantom/phantom_construction.html) and [imaged](https://acrf-image-x-institute.github.io/MRI_DistortionPhantom/phantom_imaging.html) a marker-based distortion phantom. To use this data within this library, you first have to extract the position of the markers and create a 'MarkerVolume'. This example shows you how do that.
 
 
-> :warning: For this part you will need some data. **Example data is provided [here](https://cloudstor.aarnet.edu.au/plus/s/Wm9vndV47u941JU)**. Download and unzip this data somewhere and take note of the path. The source code this example is based on is [here](https://github.com/ACRF-Image-X-Institute/MRI_DistortionQA/tree/main/examples).
+> |:warning:| For this part you will need some data. **Example data is provided [here](https://cloudstor.aarnet.edu.au/plus/s/Wm9vndV47u941JU)**. Download and unzip this data somewhere and take note of the path. The source code this example is based on is [here](https://github.com/ACRF-Image-X-Institute/MRI_DistortionQA/tree/main/examples).
 
 First, create a directory called 'MRI_QA_tutorial' or something like that. Within that directory, create a new python file called 'MarkerExtractionExample'. Copy the below code into it, and update
 
@@ -87,7 +87,7 @@ plot_compressed_MarkerVolumes([mr_volume, mr_volume_rev])
 
 Short answer: No! 
 
-Although the automatic extraction works quite well in most cases, because there are so many variables in MR, we have no knowledge of the signal-to-noise, contrast-to-noise, contrast type, voxel size, etc. that you may be using. This means that it is very difficult to automatically know what settings to use for marker extraction. In some low SNR cases, no matter what settings you use automatic extraction is difficult, but in most cases you should be able to find a reliable combination of settings for a given scan and scanner.
+Although the automatic extraction works quite well in most cases, because there are so many variables in MR, we have no knowledge of the signal-to-noise, contrast-to-noise, contrast type, voxel size, etc. that you may be using. This means that it is very difficult to automatically know what [settings](https://acrf-image-x-institute.github.io/MRI_DistortionQA/code_docs.html) to use for marker extraction. In some low SNR cases, no matter what settings you use automatic extraction is difficult, but in most cases you should be able to find a reliable combination of settings for a given scan and scanner.
 
 ## Is that a major issue?
 
@@ -128,7 +128,7 @@ See [here](https://slicer.readthedocs.io/en/latest/user_guide/modules/markups.ht
   edited_volume = MarkerVolume('path/to/edited_file.mrk.json')
   ```
 
-> :information_source: Slicer can sometimes be a bit buggy and laggy when handling markers. At this point I don't have  fix for this :disappointed:
+> |:information_source:| Slicer can sometimes be a bit buggy and laggy when handling markers. At this point I don't have  fix for this |:disappointed:|
 
 
 
