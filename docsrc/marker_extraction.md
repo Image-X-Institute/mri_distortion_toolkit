@@ -97,6 +97,41 @@ We provide an easy interface to [slicer](https://www.slicer.org/) via the ```exp
 
 ![](__resources/Slicer_Markers_screengrab.PNG)
 
+### Editing marker positions in slicer
+
+See [here](https://slicer.readthedocs.io/en/latest/user_guide/modules/markups.html) for the official slicer documentation on markups.
+
+- To **delete** an unwanted marker hover over the marker and left click. While the marker is still highlighted (i.e. without moving the mouse) press delete
+- to **add** new markers:
+  - Activate markups menu
+  - select the imported points list
+  - `Toggle Markups toolbar` (blue arrow with red dot, on the right hand toolbar circled below)
+  - `place a control point` and select `place multiple control points`  - this confusingly uses the same icon of red dot/ blue arrow but is not located in the newly activated tool bar (middle of image below)
+  - click away! the newly placed markers will by default have a Name attached to them. You don't have to worry about them, but if they annoy you you can just delete the name from the Control point list
+
+
+![](__resources/slicer_add_centroids.png)
+
+- to **move** existing markers:
+  - First you have to make sure the list is unlocked by click the little padlock symbol in the points list. When it is unlocked you should see a red cross next to the lock symbol as per the image below. 
+  - Now you can right click and drag the marker, or else manually edit it's coordinates
+
+![](__resources/slicer_edit_centroids.png)
+
+- to **save** the edits
+
+  - go `file` `save data`
+  - Slicer will give you a list of all the things it can save. you just have to save the *.mrk.json file.
+  - You can then read that file back into our code using
+
+  ```python
+  edited_volume = MarkerVolume('path/to/edited_file.mrk.json')
+  ```
+
+> :information_source: Slicer can sometimes be a bit buggy and laggy when handling markers. At this point I don't have  fix for this :disappointed:
+
+
+
 ## Handling Fat-water shift 
 
 If you are using a phantom with oil filled markers, your images may be subject to [fat-water shift](https://acrf-image-x-institute.github.io/MRI_DistortionPhantom/phantom_imaging.html#fat-water-chemical-shift).

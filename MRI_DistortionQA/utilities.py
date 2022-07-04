@@ -422,6 +422,23 @@ def plot_compressed_MarkerVolumes(MarkerVolumeList, z_max=20, z_min=-20, title=N
         if title:
             plt.title(title)
 
+def plot_MatchedMarkerVolume_hist(MatchedMarkerVolumeList, legend=None):
+    """
+    creates a histogram of absolute distortion.
+
+    :param MatchedMarkerVolumeList: a list of MatchedMarkerVolumes
+    """
+    for volume in MatchedMarkerVolumeList:
+        bins = np.linspace(0, 10, 30)
+        plt.figure()
+        plt.hist(volume.MatchedCentroids.match_distance, bins=bins, alpha=0.5)
+
+        plt.xlabel('distortion [mm]')
+        plt.tight_layout()
+        plt.show()
+    if legend:
+        plt.legend(['original', 'corrected'])
+
 
 def get_gradient_spherical_harmonics(Gx_Harmonics, Gy_Harmonics, Gz_Harmonics):
     """
