@@ -961,6 +961,7 @@ class MatchedMarkerVolumes:
         axs.set_title(title)
         axs.set_box_aspect((np.ptp(self.MatchedCentroids.x_gt), np.ptp(self.MatchedCentroids.y_gt),
                             np.ptp(self.MatchedCentroids.z_gt)))
+        plt.legend(['ground truth', 'distorted'])
         plt.show()
 
     def plot_compressed_markers(self, z_max=20, z_min=-20, add_arrows=True, title=None):  # pragma: no cover
