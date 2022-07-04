@@ -39,7 +39,8 @@ extensions = [
     # 'recommonmark',
     'sphinx_markdown_tables',
     'sphinxcontrib.mermaid',
-    'myst_parser']
+    'myst_parser',
+    'sphinxemoji']
 
 source_suffix = {
     '.rst': 'restructuredtext',
