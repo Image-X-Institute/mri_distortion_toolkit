@@ -470,7 +470,7 @@ class MarkerVolume:
 
     def export_to_slicer(self, save_path=None, filename='slicer_centroids'):
         """
-        export a csv file that can be read in by slicer, allowing a good way to visualise marker segmentation
+        export a json file that can be read in by slicer, allowing a good way to visualise marker segmentation
         performance. This file will be saved at the same spot as input data if dicom was input, otherwise it will be
         saved to save_path.
         """
