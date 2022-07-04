@@ -55,8 +55,8 @@ def build_dicom_affine(Dicomfiles):
     assert isinstance(Dicomfiles[0], pydicom.dataset.FileDataset)
 
     ds = Dicomfiles[0]  # just use first one, they all give the same result
-    if not np.logical_or(np.equal(np.abs(ds.ImageOrientationPatient), 1),
-                         np.equal(np.abs(ds.ImageOrientationPatient), 0)).all():
+    if not np.logical_or(np.isclose(np.abs(ds.ImageOrientationPatient), 1),
+                         np.isclose(np.abs(ds.ImageOrientationPatient), 0)).all():
         '''
         This just checks that the ImageOrientationPatient tag only contains 0 or 1, i.e. that no weird oblique
         orientation is in use. For now I don't want to support or think about non cardinal encoding directions
