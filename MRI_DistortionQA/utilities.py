@@ -304,7 +304,7 @@ def generate_legendre_basis(InputCoords, n_order):
     :type InputCoords: Dataframe
     :param n_order: order of harmonic fit
     :type n_order: int
-    :returns: legendre_basis: a pandas data frame of size [Ncoords, (n_order +1)**2)]
+    :returns legendre_basis: a pandas data frame of size [Ncoords, (n_order +1)**2)]
     """
 
     if InputCoords.r.mean() < 10:
@@ -463,10 +463,9 @@ def plot_MatchedMarkerVolume_hist(MatchedMarkerVolumeList, legend=None):
         plt.figure()
         plt.hist(volume.MatchedCentroids.match_distance, bins=bins, alpha=0.5)
 
-    plt.xlabel('distortion [mm]')
-    plt.ylabel('#n points')
-    plt.tight_layout()
-    plt.show()
+        plt.xlabel('distortion [mm]')
+        plt.tight_layout()
+        plt.show()
     if legend:
         plt.legend(['original', 'corrected'])
 
