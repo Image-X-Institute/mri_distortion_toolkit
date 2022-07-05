@@ -87,6 +87,35 @@ def build_dicom_affine(Dicomfiles):
 
     return CoordinateMatrix
 
+def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, length = 100, fill = '█'):
+    """
+    [credit here](https://gist.github.com/greenstick/b23e475d2bfdc3a82e34eaa1f6781ee4)
+
+    Call in a loop to create terminal progress bar
+
+        iteration   - Required  :
+        total       - Required  :
+        prefix      - Optional  :
+        suffix      - Optional  :
+        decimals    - Optional  :
+        length      - Optional  :
+        fill        - Optional  :
+        printEnd    - Optional  : end character (e.g. "\r", "\r\n") (Str)
+
+    :param iteration: current iteration (Int)
+    :param total: total iterations (Int)
+    :param prefix:  prefix string (Str)
+    :param suffix: suffix string (Str)
+    :param decimals: positive number of decimals in percent complete (Int)
+    :param length: character length of bar (Int)
+    :param fill: bar fill character (Str)
+    :return: progress_string: the string to print
+    """
+    percent = ("{0:." + str(decimals) + "f}").format(100 * (iteration / float(total)))
+    filledLength = int(length * iteration // total)
+    bar = fill * filledLength + '-' * (length - filledLength)
+    progress_string = f'\r{prefix} |{bar}| {percent}% {suffix}'
+    return progress_string
 
 def dicom_to_numpy(path_to_dicoms, FilesToReadIn=None, file_extension='dcm', return_XYZ=False,
                    zero_pad=0):
@@ -422,6 +451,7 @@ def plot_compressed_MarkerVolumes(MarkerVolumeList, z_max=20, z_min=-20, title=N
         if title:
             plt.title(title)
 
+
 def plot_MatchedMarkerVolume_hist(MatchedMarkerVolumeList, legend=None):
     """
     creates a histogram of absolute distortion.
@@ -438,6 +468,27 @@ def plot_MatchedMarkerVolume_hist(MatchedMarkerVolumeList, legend=None):
         plt.show()
     if legend:
         plt.legend(['original', 'corrected'])
+
+
+def plot_matched_volume_hist(VolumeList, legend=None):
+    """
+    create a histogram of total distortion for all input volumes
+
+    :param VolumeList: a list of [matched marker volumes](https://acrf-image-x-institute.github.io/MRI_DistortionQA/code_docs.html#MRI_DistortionQA.MarkerAnalysis.MatchedMarkerVolumes)
+    :type VolumeList: list
+    :param legend: legend to print
+    :type legend: list, optional
+    :return: None
+    """
+    bins = np.linspace(0, 10, 30)
+    plt.figure()
+    for marker_volume in VolumeList:
+        plt.hist(marker_volume.MatchedCentroids.match_distance, bins=bins, alpha=0.5)
+    if legend:
+        plt.legend(['original', 'corrected'])
+    plt.xlabel('distortion [mm]')
+    plt.tight_layout()
+    plt.show()
 
 
 def get_gradient_spherical_harmonics(Gx_Harmonics, Gy_Harmonics, Gz_Harmonics):
