@@ -4,11 +4,11 @@ import warnings
 
 import pydicom
 import matplotlib.pyplot as plt
-import multiprocessing as mp
+# import multiprocessing as mp
 from finufft import Plan
 from finufft import nufft2d3
-import torch
-import torchkbnufft as nufft
+# import torch
+# import torchkbnufft as nufft
 import numpy as np
 from scipy.fft import fft2
 from scipy.fft import fftshift
@@ -18,7 +18,6 @@ import pandas as pd
 from pathlib import Path
 sys.path.insert(0, '/home/brendan/python/MRI_DistortionQA')
 from MRI_DistortionQA.utilities import get_all_files, convert_cartesian_to_spherical, generate_legendre_basis, dicom_to_numpy
-from MRI_DistortionQA.utilities import sort_dicom_slices
 from MRI_DistortionQA.utilities import get_gradient_spherical_harmonics
 import seaborn as sns
 from .utilities import printProgressBar
@@ -38,7 +37,7 @@ class KspaceDistortionCorrector:
     """
 
     def __init__(self, ImageDirectory, NufftLibrary='finufft', Gx_Harmonics=None, Gy_Harmonics=None,
-                 Gz_Harmonics=None, ImExtension='.dcm', dicom_data=None, correct_through_plane=False):
+                 Gz_Harmonics=None, ImExtension='.dcm', dicom_data=None):
         """
 
         :param ImageDirectory:
@@ -48,9 +47,7 @@ class KspaceDistortionCorrector:
         :param Gz_Harmonics:
         :param ImExtension:
         :param dicom_data:
-        :param correct_through_plane:
         """
-        self.correct_through_plane = correct_through_plane
         self._n_zero_pad = 10  # n_pixels to add around each edge of volume. set to 0 for no zero padding
         self._dicom_data = dicom_data
         self._calculate_gradient_strength()
@@ -58,7 +55,7 @@ class KspaceDistortionCorrector:
             get_gradient_spherical_harmonics(Gx_Harmonics, Gy_Harmonics, Gz_Harmonics)
         self._Gx_Harmonics = self._Gx_Harmonics * self._gradient_strength[0]
         self._Gy_Harmonics = self._Gy_Harmonics * self._gradient_strength[1]
-        self._Gz_Harmonics = self._Gz_Harmonics * self._gradient_strength[2] * -1
+        self._Gz_Harmonics = self._Gz_Harmonics * self._gradient_strength[2]
 
         self.ImageDirectory = Path(ImageDirectory)
         self._all_dicom_files = get_all_files(self.ImageDirectory, ImExtension)
@@ -72,7 +69,6 @@ class KspaceDistortionCorrector:
                                                                                     return_XYZ=True,
                                                                                     zero_pad=self._n_zero_pad)
         self._get_rows_and_cols()
-        self._enforce_increasing_coords()
         self.n_order = int(np.sqrt(self._Gx_Harmonics.size) - 1)
         self.Images = get_all_files(self.ImageDirectory, ImExtension)
         self.r_DSV = 150  # only for drawing on the plot
@@ -114,29 +110,9 @@ class KspaceDistortionCorrector:
         self._calculate_encoding_fields()
         # self._plot_encoding_fields()  # useful for debugging
         self._generate_Kspace_data()
-        self._generate_kspace_indices()
+        self._generate_distorted_indices()
         self._perform_least_squares_optimisation()
 
-    def _enforce_increasing_coords(self):
-        """
-        This will update the dicom_affine such that coordinates are always order in increasing order - smallest
-        values first, largest values last. This is important because ultimately we derive the distorted image indices
-        xn_dis yn_dis, and as indices these are assumed to be always increasing. Note that this means that the coordinates
-        are not guaranteed to be ordered according to dicom standards
-        """
-        new_affine = self._dicom_affine.copy()
-        coordinates_end = [self._X[-1, -1, -1], self._Y[-1, -1, -1], self._Z[-1, -1, -1]]
-        for col in [0, 1]:  # check first two cols
-            for i, pixel_increment in enumerate(self._dicom_affine[:, col]):
-                if pixel_increment < 0:
-                    '''
-                    then we need to force this to positive, and switch the start position to the 
-                    currend end position
-                    '''
-                    new_affine[i, col] = -1 * pixel_increment
-                    new_start = coordinates_end[i]
-                    new_affine[i, 3] = new_start
-        self._dicom_affine = new_affine
 
     def _unpad_image_arrays(self):
         """
@@ -149,9 +125,7 @@ class KspaceDistortionCorrector:
             self._image_array_corrected = self._image_array_corrected[self._n_zero_pad:-self._n_zero_pad,
                                           self._n_zero_pad:-self._n_zero_pad,
                                           self._n_zero_pad:-self._n_zero_pad]
-            # self._image_array_corrected2 = self._image_array_corrected2[self._n_zero_pad:-self._n_zero_pad,
-            #                               self._n_zero_pad:-self._n_zero_pad,
-            #                               self._n_zero_pad:-self._n_zero_pad]
+
 
     def _calculate_gradient_strength(self):
         """
@@ -172,8 +146,6 @@ class KspaceDistortionCorrector:
         Based on the spherical harmonics and the coordinates derived from the dicom, estimate the encoding
         fields that have been applied to each voxel
         """
-        # X_middle = np.zeros([size_m, self.num_order])
-
         legendre_basis = generate_legendre_basis(self.coords, self.n_order)
         self.Gx_encode = (legendre_basis @ self._Gx_Harmonics)
         self.Gy_encode = (legendre_basis @ self._Gy_Harmonics)
@@ -224,7 +196,7 @@ class KspaceDistortionCorrector:
         """
         self.k_space = fftshift(fft2(fftshift(self._image_to_correct)))
 
-    def _generate_kspace_indices(self):
+    def _generate_distorted_indices(self):
         """
         I don't entirely know what is happening here...
         we now reshape our encoding signals and add scaling factors...
@@ -252,6 +224,10 @@ class KspaceDistortionCorrector:
 
         self.xj = self.xj.to_numpy()
         self.yj = self.yj.to_numpy()
+        # enforce increasing order:
+        if self.xj[0] > self.xj[-1]:           self.xj = self.xj * -1
+        if self.yj[0] > self.yj[-1]:
+            self.yj = self.yj * -1
         self.nj = self._Rows * self._Cols
         self.nk = self._Rows * self._Cols
         # as currently codded it will always come out as 1/2..??
@@ -383,14 +359,8 @@ class KspaceDistortionCorrector:
         :return:
         """
 
-        if self.correct_through_plane:
-            n_images_to_correct = self._n_dicom_files + (self.ImageArray.shape[0] - 2 * self._n_zero_pad)
-        else:
-            n_images_to_correct = self._n_dicom_files
-        loop_axis = np.where([self._dicom_data['slice_direction'] in axis for axis in ['x', 'y', 'z']])[0][0]
+        n_images_to_correct = self._n_dicom_files
         loop_axis = 2  # ImageArray always has slice last
-        # nb: the below code allows us to wrap all the data into one 'itterable'; it also changes the view
-        # such that we are looping over the slice direction
         zipped_data = zip(np.rollaxis(self.ImageArray, loop_axis),
                           np.rollaxis(self._X, loop_axis),
                           np.rollaxis(self._Y, loop_axis),
@@ -399,7 +369,8 @@ class KspaceDistortionCorrector:
         i = 0
         self._image_array_corrected = np.zeros(self.ImageArray.shape)
         for array_slice, X, Y, Z in zipped_data:
-            if i < self._n_zero_pad or i > self._n_dicom_files:
+
+            if i < self._n_zero_pad or i > (self._n_dicom_files+self._n_zero_pad):
                 # skip these files, they have no meaning anyway and we can't (easily) write them to dicom
                 i += 1
                 continue
@@ -416,42 +387,6 @@ class KspaceDistortionCorrector:
             t_stop = perf_counter()
             print(f"Elapsed time {t_stop - t_start}")
             i += 1
-
-        if self.correct_through_plane:
-
-            self._ImageOrientationPatient = [1, 0, 0, 0, 1, 0]
-            # which directions are already corrected:
-            corrected_dims = np.array(['x', 'y', 'z'])[([self._dicom_data['slice_direction'] not in axis for axis in ['x', 'y', 'z']])]
-            self._force_linear_harmonics(corrected_dims)  # this forces already corrected dimensions to be linear
-            loop_axis = 0
-
-            zipped_data = zip(np.rollaxis(self._image_array_corrected, loop_axis),
-                              np.rollaxis(self._X, loop_axis),
-                              np.rollaxis(self._Y, loop_axis),
-                              np.rollaxis(self._Z, loop_axis))
-            self._image_array_corrected2 = np.zeros(np.rollaxis(self._image_array_corrected, loop_axis).shape)
-            j = 0
-            self._Rows = np.rollaxis(self._image_array_corrected, loop_axis).shape[1]
-            self._Cols = np.rollaxis(self._image_array_corrected, loop_axis).shape[2]
-            n_slices = np.rollaxis(self._image_array_corrected, loop_axis).shape[0] - 2*self._n_zero_pad
-            for array_slice, X, Y, Z in zipped_data:
-                if j < self._n_zero_pad or j > n_slices:
-                    # skip these files, they have no meaning anyway and we can't (easily) write them to dicom
-                    j += 1
-                    continue
-
-                t_start = perf_counter()
-                print(f'Through Plane correction: {j - self._n_zero_pad}')
-                print(printProgressBar(i+j-(self._n_zero_pad*2), n_images_to_correct))
-                self._image_to_correct = array_slice
-                self._X_slice = X
-                self._Y_slice = Y
-                self._Z_slice = Z
-                self._correct_image()
-                self._image_array_corrected2[j, :, :] = self.outputImage
-                t_stop = perf_counter()
-                print(f"Elapsed time {t_stop - t_start}")
-                j += 1
 
         self._unpad_image_arrays()
 

@@ -1,5 +1,5 @@
 # MRI_DistortionQA  
-![](docsrc/__resources/coverage.svg) ![](docsrc/__resources/interrogate.svg) ![](https://github.com/ACRF-Image-X-Institute/MRI_DistortionQA/blob/main/.github/workflows/run_tests.yml/coverage.svg) ![tests](https://github.com/ACRF-Image-X-Institute/MRI_DistortionQA/actions/workflows/run_tests.yml/badge.svg) ![docs](https://github.com/ACRF-Image-X-Institute/MRI_DistortionQA/actions/workflows/build_docs.yml/badge.svg)
+![](docsrc/__resources/coverage.svg) ![](docsrc/__resources/interrogate.svg) ![tests](https://github.com/ACRF-Image-X-Institute/MRI_DistortionQA/actions/workflows/run_tests.yml/badge.svg) ![docs](https://github.com/ACRF-Image-X-Institute/MRI_DistortionQA/actions/workflows/build_docs.yml/badge.svg)
 
 **Authors:** Brendan Whelan, Paul Liu, Shanshan Shan
 
@@ -10,7 +10,8 @@ flowchart LR
     A[Marker <br>Extraction]--->B[Marker <br>Matching]
     B[Marker <br>Matching]--->C[Field <br> Calculation] & E[Automated <br>reporting]
     C[Field <br> Calculation]-->D[Spherical Harmonic <br>Analysis]
-    D[Spherical Harmonic <br>Analysis]-->E[Automated <br>reporting];
+    D[Spherical Harmonic <br>Analysis]-->E[Automated <br>reporting] & F[Distortion correction] 
+    F[Distortion correction]-->E[Automated <br>reporting];
     click A "https://acrf-image-x-institute.github.io/MRI_DistortionQA/code_docs.html#MRI_DistortionQA.MarkerAnalysis.MarkerVolume"
     click B "https://acrf-image-x-institute.github.io/MRI_DistortionQA/code_docs.html#MRI_DistortionQA.MarkerAnalysis.MatchedMarkerVolumes"
     click C "https://acrf-image-x-institute.github.io/MRI_DistortionQA/code_docs.html#MRI_DistortionQA.FieldCalculation.ConvertMatchedMarkersToBz"
