@@ -5,7 +5,7 @@
 Say that you have [built](https://acrf-image-x-institute.github.io/MRI_DistortionPhantom/phantom_construction.html) and [imaged](https://acrf-image-x-institute.github.io/MRI_DistortionPhantom/phantom_imaging.html) a marker-based distortion phantom. To use this data within this library, you first have to extract the position of the markers and create a 'MarkerVolume'. This example shows you how do that.
 
 
-> :warning: For this part you will need some data. **Example data is provided [here](https://cloudstor.aarnet.edu.au/plus/s/Wm9vndV47u941JU)**. Download and unzip this data somewhere and take note of the path.
+> |:warning:| For this part you will need some data. **Example data is provided [here](https://cloudstor.aarnet.edu.au/plus/s/Wm9vndV47u941JU)**. Download and unzip this data somewhere and take note of the path. The source code this example is based on is [here](https://github.com/ACRF-Image-X-Institute/MRI_DistortionQA/tree/main/examples).
 
 First, create a directory called 'MRI_QA_tutorial' or something like that. Within that directory, create a new python file called 'MarkerExtractionExample'. Copy the below code into it, and update
 
@@ -20,15 +20,44 @@ download example data and unzip:
 https://cloudstor.aarnet.edu.au/plus/s/Wm9vndV47u941JU
 '''
 
-data_loc = Path(r'C:\Users\Brendan\Downloads\MRI_distortion_QA_sample_data\MRI_distortion_QA_sample_data')
+data_loc = Path('/home/brendan/Downloads/MRI_distortion_QA_sample_data')
+gt_data_loc = data_loc / 'CT'
 # ^^ update to where you put the sample data!!
-marker_volume = MarkerVolume(data_loc / 'MR' / '04 gre_trans_AP_330', verbose=False)
-marker_volume.export_to_slicer()  # save this data as json for easy use later
-marker_volume.save_dicom_data()  # save this data as json for easy use later
-marker_volume.plot_3D_markers()  # produce a quick plot of marker positions
+gt_volume = MarkerVolume(gt_data_loc, r_max=300)
+gt_volume.plot_3D_markers()  # produce a quick plot of marker positions
 ```
 
-This is the simplest interface to creating an instance of 'MarkerVolume' from a series of dicom slices. If you want to get at the underlying data, it is stored in ```marker_volume.MarkerCentroids``` as a pandas dataframe. The MarkerVolume object is one of the building blocks of this code. As such, there are multiple ways you can instantiate it:
+There are various code options that can help extract markers for more difficult data; you can read about them [here](https://acrf-image-x-institute.github.io/MRI_DistortionQA/code_docs.html#module-MRI_DistortionQA.MarkerAnalysis). If you want to get at the segmented data, it is stored in ```marker_volume.MarkerCentroids``` as a pandas dataframe. 
+
+For large datasets, it can be quite time consuming to read in and process the data. Therefore, we provide a means to save the data so you can quickly read it back in later:
+
+```python
+marker_volume.export_to_slicer()  
+```
+
+This will save a file called *slicer_centroids.mrk.json* at gt_data_loc. As the name implies, you can also import this file into [Slicer](https://www.slicer.org/) If you want you can specify a different location and filename instead:
+
+```
+marker_volume.export_to_slicer(save_path='path\to\save', filename='slicer_centroids'):
+```
+
+To read the resultant mrk.json file back in, you simply have to pass it as the main argument:
+
+```
+gt_volume_from_json = MarkerVolume(gt_data_loc / 'slicer_centroids.mrk.json')
+```
+
+If you wanted to continue to create volume for MR data, the process is very similar:
+
+```python
+mr_data_loc = data_loc / 'MR' / '04 gre_trans_AP_330'
+mr_data_loc_reverse_gradient = data_loc / 'MR' / '05 gre_trans_PA_330'
+mr_volume = MarkerVolume(mr_data_loc, correct_fat_water_shift=True, fat_shift_direction=-1)
+```
+
+Note that we are correcting fat water shift here; you can read more about that [here](https://acrf-image-x-institute.github.io/MRI_DistortionPhantom/phantom_imaging.html)
+
+You can also create a MarkerVolume from a pandas data frame:
 
 ```python
 # pandas data frame read in
@@ -36,20 +65,29 @@ r_outer = 150
 test_data = np.random.rand(100, 3) * r_outer  # create some random data
 test_data = pd.DataFrame(test_data, columns=['x', 'y', 'z'])  # convert to data frame
 pandas_volume = MarkerVolume(test_data)  # create MarkerVolume
-
-# json read in
-json_file = data_loc / 'MR' / '04 gre_trans_AP_330' / 'MR.mrk.json'
-# this file was created with the export_to_slicer step above; this is also the format used by slicer
-json_volume = MarkerVolume(json_file)  # create MarkerVolume
 ```
 
-At this point, you are free to move on to the next step: automatic matching of markers, or you can read on to find out a little bit more about how you can handle marker extraction in challenging datasets...
+This allows you to use the rest of the code even if you are working with a different distortion phantom - all you need is a set of ground truth control points and distorted control points.
+
+ At this point, you are free to move on to the next step: [automatic matching of markers](https://acrf-image-x-institute.github.io/MRI_DistortionQA/marker_matching.html), or you can read on about some more advanced features below...
+
+## Comparing MarkerVolumes
+
+It is a common situation to have two marker volumes and want to compare what they look like. We provide [a few plotting methods](https://acrf-image-x-institute.github.io/MRI_DistortionQA/code_docs.html#MRI_DistortionQA.utilities.plot_MarkerVolume_overlay) to do this:
+
+```
+from MRI_DistortionQA.utilities import plot_MarkerVolume_overlay
+from MRI_DistortionQA.utilities import plot_compressed_MarkerVolumes
+
+plot_MarkerVolume_overlay([mr_volume, mr_volume_rev])
+plot_compressed_MarkerVolumes([mr_volume, mr_volume_rev])
+```
 
 ## Do we guarantee that we will find your markers?
 
 Short answer: No! 
 
-Although the automatic extraction works quite well in most cases, because there are so many variables in MR, we have no knowledge of the signal-to-noise, contrast-to-noise, contrast type, voxel size, etc. that you may be using. This means that it is very difficult to automatically know what settings to use for marker extraction. In some low SNR cases, no matter what settings you use automatic extraction is difficult, but in most cases you should be able to find a reliable combination of settings for a given scan and scanner.
+Although the automatic extraction works quite well in most cases, because there are so many variables in MR, we have no knowledge of the signal-to-noise, contrast-to-noise, contrast type, voxel size, etc. that you may be using. This means that it is very difficult to automatically know what [settings](https://acrf-image-x-institute.github.io/MRI_DistortionQA/code_docs.html) to use for marker extraction. In some low SNR cases, no matter what settings you use automatic extraction is difficult, but in most cases you should be able to find a reliable combination of settings for a given scan and scanner.
 
 ## Is that a major issue?
 
@@ -58,6 +96,41 @@ Also no!
 We provide an easy interface to [slicer](https://www.slicer.org/) via the ```export_to_slicer``` method; we also read these slicer .json files back in as demonstrated in the example above. This means that in situations where the automatic marker processing fails, you are free to move, delete and add markers through the excellent slicer GUI. Once you are satisfied, you can go file>>save data and save the *.mrk.json file for reading back into this workflow. A screenshot of the process of editing marker locations in slicer is below:
 
 ![](__resources/Slicer_Markers_screengrab.PNG)
+
+### Editing marker positions in slicer
+
+See [here](https://slicer.readthedocs.io/en/latest/user_guide/modules/markups.html) for the official slicer documentation on markups.
+
+- To **delete** an unwanted marker hover over the marker and left click. While the marker is still highlighted (i.e. without moving the mouse) press delete
+- to **add** new markers:
+  - Activate markups menu
+  - select the imported points list
+  - `Toggle Markups toolbar` (blue arrow with red dot, on the right hand toolbar circled below)
+  - `place a control point` and select `place multiple control points`  - this confusingly uses the same icon of red dot/ blue arrow but is not located in the newly activated tool bar (middle of image below)
+  - click away! the newly placed markers will by default have a Name attached to them. You don't have to worry about them, but if they annoy you you can just delete the name from the Control point list
+
+
+![](__resources/slicer_add_centroids.png)
+
+- to **move** existing markers:
+  - First you have to make sure the list is unlocked by click the little padlock symbol in the points list. When it is unlocked you should see a red cross next to the lock symbol as per the image below. 
+  - Now you can right click and drag the marker, or else manually edit it's coordinates
+
+![](__resources/slicer_edit_centroids.png)
+
+- to **save** the edits
+
+  - go `file` `save data`
+  - Slicer will give you a list of all the things it can save. you just have to save the *.mrk.json file.
+  - You can then read that file back into our code using
+
+  ```python
+  edited_volume = MarkerVolume('path/to/edited_file.mrk.json')
+  ```
+
+> |:information_source:| Slicer can sometimes be a bit buggy and laggy when handling markers. At this point I don't have  fix for this |:disappointed:|
+
+
 
 ## Handling Fat-water shift 
 

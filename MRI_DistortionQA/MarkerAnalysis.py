@@ -135,7 +135,8 @@ class MarkerVolume:
         self._filter_markers_by_r()
         if self._n_markers_expected is not None:
             if not (self.MarkerCentroids.shape[0] == n_markers_expected):
-                logger.warning(f'For data {self.input_data_path} You entered that you expected to find'
+                logger.warning(f'For data {self.input_data_path}\n'
+                               f'You entered that you expected to find'
                                f' {n_markers_expected}, but actually found {self.MarkerCentroids.shape[0]}.')
 
     def _filter_markers_by_r(self):
@@ -483,7 +484,7 @@ class MarkerVolume:
 
     def export_to_slicer(self, save_path=None, filename='slicer_centroids'):
         """
-        export a csv file that can be read in by slicer, allowing a good way to visualise marker segmentation
+        export a json file that can be read in by slicer, allowing a good way to visualise marker segmentation
         performance. This file will be saved at the same spot as input data if dicom was input, otherwise it will be
         saved to save_path.
         """
@@ -977,6 +978,7 @@ class MatchedMarkerVolumes:
         axs.set_title(title)
         axs.set_box_aspect((np.ptp(self.MatchedCentroids.x_gt), np.ptp(self.MatchedCentroids.y_gt),
                             np.ptp(self.MatchedCentroids.z_gt)))
+        plt.legend(['ground truth', 'distorted'])
         plt.show()
 
     def plot_compressed_markers(self, z_max=20, z_min=-20, add_arrows=True, title=None):  # pragma: no cover
