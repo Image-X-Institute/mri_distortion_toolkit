@@ -1,14 +1,9 @@
 import sys, os
 import logging
 import warnings
-
 import pydicom
 import matplotlib.pyplot as plt
-import multiprocessing as mp
 from finufft import Plan
-from finufft import nufft2d3
-import torch
-import torchkbnufft as nufft
 import numpy as np
 from scipy.fft import fft2
 from scipy.fft import fftshift
@@ -16,11 +11,8 @@ from scipy.sparse.linalg import lsqr
 from scipy.sparse.linalg import LinearOperator
 import pandas as pd
 from pathlib import Path
-sys.path.insert(0, '/home/brendan/python/MRI_DistortionQA')
-from MRI_DistortionQA.utilities import get_all_files, convert_cartesian_to_spherical, generate_legendre_basis, dicom_to_numpy
-from MRI_DistortionQA.utilities import sort_dicom_slices
-from MRI_DistortionQA.utilities import get_gradient_spherical_harmonics
-import seaborn as sns
+from .utilities import get_all_files, convert_cartesian_to_spherical, generate_legendre_basis, dicom_to_numpy
+from .utilities import get_gradient_spherical_harmonics
 from .utilities import printProgressBar
 from time import perf_counter
 
@@ -29,8 +21,6 @@ from time import perf_counter
 logging.basicConfig(format='[%(filename)s: line %(lineno)d] %(message)s', level=logging.WARNING)
 logger = logging.getLogger(__name__)
 
-# sns.set_theme(style="whitegrid")
-sns.reset_orig()
 
 class KspaceDistortionCorrector:
     """
@@ -38,9 +28,8 @@ class KspaceDistortionCorrector:
     """
 
     def __init__(self, ImageDirectory, NufftLibrary='finufft', Gx_Harmonics=None, Gy_Harmonics=None,
-                 Gz_Harmonics=None, ImExtension='.dcm', dicom_data=None, correct_through_plane=False):
+                 Gz_Harmonics=None, ImExtension='.dcm', dicom_data=None, correct_through_plane=True):
         """
-
         :param ImageDirectory:
         :param NufftLibrary:
         :param Gx_Harmonics:
@@ -289,23 +278,6 @@ class KspaceDistortionCorrector:
         y = self.Nufft_Atb_Plan.execute(x, None)
         return y.flatten()
 
-    def torch_nufft_backward(self, x):
-        "NUFFT backward"
-        y = torch.from_numpy(x)
-        y = torch.reshape(y, [1, 1, self.pixel_array.shape[0], self.pixel_array.shape[1]])
-        y = self.AH_op(y, self.ktraj)
-        y = y.numpy()
-        y = np.reshape(y, (1, self.pixel_array.size))
-        return y
-
-    def torch_nufft_forward(self, x):
-        x = torch.from_numpy(x)
-        x = torch.reshape(x, [1, 1, self.pixel_array.size])
-        x = self.A_op(x, self.ktraj)
-        x = x.numpy()
-        x = np.reshape(x, (1, self.pixel_array.size))
-        return x
-
     def _perform_least_squares_optimisation(self):
         """
         From
@@ -332,27 +304,6 @@ class KspaceDistortionCorrector:
             self.Nufft_Atb_Plan.setpts(self.sk, self.tk, None, self.xj, self.yj)
             A = LinearOperator((fk1.shape[0], fk1.shape[0]), matvec=self._fiNufft_Ax, rmatvec=self._fiNufft_Atb)
             StartingImage = self._image_to_correct.flatten().astype(complex)
-        elif self.NUFFTlibrary == 'torchnufft':
-            device = "cpu"
-            ImShape = self.pixel_array.shape
-            ImSize = self.pixel_array.size
-            self.k_xy_dis = torch.from_numpy(self.k_xy_dis).float()
-            self.A_op = nufft.KbNufftAdjoint(im_size=ImShape).to(device)
-            self.AH_op = nufft.KbNufft(im_size=ImShape).to(device)
-            self.ktraj = np.array(self.k_xy_dis)
-            self.ktraj = torch.from_numpy(self.ktraj).float()
-            self.ktraj = self.ktraj.T
-            self.ktraj = self.ktraj.to(device)
-            fk1 = np.expand_dims(fk1, axis=1)
-            fk1 = np.array(fk1)
-            fk1 = torch.from_numpy(fk1)
-            fk1 = fk1.clone().detach().to(torch.complex64)
-            fk1 = torch.squeeze(fk1, 1)
-            fk1 = torch.unsqueeze(fk1, 0)
-            fk1 = torch.unsqueeze(fk1, 0)
-            fk1 = fk1.to(device)
-            A = LinearOperator(shape=(ImSize, ImSize), matvec=self.torch_nufft_forward,
-                               rmatvec=self.torch_nufft_backward, dtype=complex)
 
         maxit = 20
         x1 = lsqr(A, fk1, iter_lim=maxit, x0=StartingImage)
@@ -387,7 +338,6 @@ class KspaceDistortionCorrector:
             n_images_to_correct = self._n_dicom_files + (self.ImageArray.shape[0] - 2 * self._n_zero_pad)
         else:
             n_images_to_correct = self._n_dicom_files
-        loop_axis = np.where([self._dicom_data['slice_direction'] in axis for axis in ['x', 'y', 'z']])[0][0]
         loop_axis = 2  # ImageArray always has slice last
         # nb: the below code allows us to wrap all the data into one 'itterable'; it also changes the view
         # such that we are looping over the slice direction
@@ -399,7 +349,7 @@ class KspaceDistortionCorrector:
         i = 0
         self._image_array_corrected = np.zeros(self.ImageArray.shape)
         for array_slice, X, Y, Z in zipped_data:
-            if i < self._n_zero_pad or i > self._n_dicom_files:
+            if i < self._n_zero_pad or i > self._n_dicom_files + self._n_zero_pad:
                 # skip these files, they have no meaning anyway and we can't (easily) write them to dicom
                 i += 1
                 continue
@@ -433,9 +383,9 @@ class KspaceDistortionCorrector:
             j = 0
             self._Rows = np.rollaxis(self._image_array_corrected, loop_axis).shape[1]
             self._Cols = np.rollaxis(self._image_array_corrected, loop_axis).shape[2]
-            n_slices = np.rollaxis(self._image_array_corrected, loop_axis).shape[0] - 2*self._n_zero_pad
+            n_slices = np.rollaxis(self._image_array_corrected, loop_axis).shape[0]
             for array_slice, X, Y, Z in zipped_data:
-                if j < self._n_zero_pad or j > n_slices:
+                if j < self._n_zero_pad or j > n_slices + self._n_zero_pad:
                     # skip these files, they have no meaning anyway and we can't (easily) write them to dicom
                     j += 1
                     continue
@@ -448,7 +398,7 @@ class KspaceDistortionCorrector:
                 self._Y_slice = Y
                 self._Z_slice = Z
                 self._correct_image()
-                self._image_array_corrected2[j, :, :] = self.outputImage
+                self._image_array_corrected[j, :, :] = self.outputImage
                 t_stop = perf_counter()
                 print(f"Elapsed time {t_stop - t_start}")
                 j += 1
