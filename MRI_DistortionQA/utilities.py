@@ -127,7 +127,7 @@ def dicom_to_numpy(path_to_dicoms, FilesToReadIn=None, file_extension='dcm', ret
     dicom_slices = [pydicom.read_file(f) for f in CompletePathFiles]
     dicom_slices = sort_dicom_slices(dicom_slices)
     dicom_affine = build_dicom_affine(dicom_slices)
-    dicom_affine[0:3, 3] = dicom_affine[0:3, 3] - (zero_pad*dicom_affine[0:3, 0:3].sum(axis=0))  # update start point for zero padding
+    dicom_affine[0:3, 3] = dicom_affine[0:3, 3] + (-1*zero_pad*dicom_affine[0:3, 0:3].sum(axis=1))  # update start point for zero padding
     n_rows = dicom_slices[0].Rows + zero_pad*2
     n_cols = dicom_slices[0].Columns + zero_pad*2
     n_slices = len(dicom_slices) + zero_pad*2
