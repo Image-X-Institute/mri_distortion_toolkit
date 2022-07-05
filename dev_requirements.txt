@@ -21,3 +21,4 @@ build
 myst_parser
 twine
 sphinxemoji
+finufft

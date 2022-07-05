@@ -1,14 +1,10 @@
-from .MarkerAnalysis import MatchedMarkerVolumes
-from .FieldCalculation import ConvertMatchedMarkersToBz
 from .FieldAnalysis import SphericalHarmonicFit
-from .utilities import get_dicom_data
 import numpy as np
 
 def calculate_harmonics(MagneticFields, n_order=8, norm=None):
     """
-    This function is essentially a wrapper of convenience. Given a set of B fields and dicom_data,
-    it will calculate and return the Gx, Gy, and Gz harmonics.
-    Note that the gradient harmonics will be normalised to a gradient strengt of 1 mT/m
+    This function is essentially a wrapper of convenience. Given a set of magnetic fields,
+    it will calculate and return the Gx, Gy, and Gz harmonics, as well as the optionally the B0 harmonics.
 
     :param MagneticFields: a pandas dataframe with columns ['x', 'y', 'z', 'B_Gx', 'B_Gy', 'B_Gz', 'B0']. B0 is optional.
         x, y, z are in mm and the fields are in any unit - the harmonics will reflect the units
