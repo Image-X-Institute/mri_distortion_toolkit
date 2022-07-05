@@ -5,7 +5,7 @@
 Say that you have [built](https://acrf-image-x-institute.github.io/MRI_DistortionPhantom/phantom_construction.html) and [imaged](https://acrf-image-x-institute.github.io/MRI_DistortionPhantom/phantom_imaging.html) a marker-based distortion phantom. To use this data within this library, you first have to extract the position of the markers and create a 'MarkerVolume'. This example shows you how do that.
 
 
-> :warning: For this part you will need some data. **Example data is provided [here](https://cloudstor.aarnet.edu.au/plus/s/Wm9vndV47u941JU)**. Download and unzip this data somewhere and take note of the path. The source code this example is based on is [here](https://github.com/ACRF-Image-X-Institute/MRI_DistortionQA/tree/main/examples).
+> |:warning:| For this part you will need some data. **Example data is provided [here](https://cloudstor.aarnet.edu.au/plus/s/Wm9vndV47u941JU)**. Download and unzip this data somewhere and take note of the path. The source code this example is based on is [here](https://github.com/ACRF-Image-X-Institute/MRI_DistortionQA/tree/main/examples).
 
 First, create a directory called 'MRI_QA_tutorial' or something like that. Within that directory, create a new python file called 'MarkerExtractionExample'. Copy the below code into it, and update
 
@@ -87,7 +87,7 @@ plot_compressed_MarkerVolumes([mr_volume, mr_volume_rev])
 
 Short answer: No! 
 
-Although the automatic extraction works quite well in most cases, because there are so many variables in MR, we have no knowledge of the signal-to-noise, contrast-to-noise, contrast type, voxel size, etc. that you may be using. This means that it is very difficult to automatically know what settings to use for marker extraction. In some low SNR cases, no matter what settings you use automatic extraction is difficult, but in most cases you should be able to find a reliable combination of settings for a given scan and scanner.
+Although the automatic extraction works quite well in most cases, because there are so many variables in MR, we have no knowledge of the signal-to-noise, contrast-to-noise, contrast type, voxel size, etc. that you may be using. This means that it is very difficult to automatically know what [settings](https://acrf-image-x-institute.github.io/MRI_DistortionQA/code_docs.html) to use for marker extraction. In some low SNR cases, no matter what settings you use automatic extraction is difficult, but in most cases you should be able to find a reliable combination of settings for a given scan and scanner.
 
 ## Is that a major issue?
 
@@ -96,6 +96,41 @@ Also no!
 We provide an easy interface to [slicer](https://www.slicer.org/) via the ```export_to_slicer``` method; we also read these slicer .json files back in as demonstrated in the example above. This means that in situations where the automatic marker processing fails, you are free to move, delete and add markers through the excellent slicer GUI. Once you are satisfied, you can go file>>save data and save the *.mrk.json file for reading back into this workflow. A screenshot of the process of editing marker locations in slicer is below:
 
 ![](__resources/Slicer_Markers_screengrab.PNG)
+
+### Editing marker positions in slicer
+
+See [here](https://slicer.readthedocs.io/en/latest/user_guide/modules/markups.html) for the official slicer documentation on markups.
+
+- To **delete** an unwanted marker hover over the marker and left click. While the marker is still highlighted (i.e. without moving the mouse) press delete
+- to **add** new markers:
+  - Activate markups menu
+  - select the imported points list
+  - `Toggle Markups toolbar` (blue arrow with red dot, on the right hand toolbar circled below)
+  - `place a control point` and select `place multiple control points`  - this confusingly uses the same icon of red dot/ blue arrow but is not located in the newly activated tool bar (middle of image below)
+  - click away! the newly placed markers will by default have a Name attached to them. You don't have to worry about them, but if they annoy you you can just delete the name from the Control point list
+
+
+![](__resources/slicer_add_centroids.png)
+
+- to **move** existing markers:
+  - First you have to make sure the list is unlocked by click the little padlock symbol in the points list. When it is unlocked you should see a red cross next to the lock symbol as per the image below. 
+  - Now you can right click and drag the marker, or else manually edit it's coordinates
+
+![](__resources/slicer_edit_centroids.png)
+
+- to **save** the edits
+
+  - go `file` `save data`
+  - Slicer will give you a list of all the things it can save. you just have to save the *.mrk.json file.
+  - You can then read that file back into our code using
+
+  ```python
+  edited_volume = MarkerVolume('path/to/edited_file.mrk.json')
+  ```
+
+> |:information_source:| Slicer can sometimes be a bit buggy and laggy when handling markers. At this point I don't have  fix for this |:disappointed:|
+
+
 
 ## Handling Fat-water shift 
 

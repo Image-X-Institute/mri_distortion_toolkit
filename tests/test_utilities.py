@@ -36,7 +36,7 @@ def test_dicom_read_in():
     assert np.all([os.path.splitext(el)[1] == '.dcm' for el in dicom_files])
     CompletePathFiles = [str(Path(dicom_directory) / file) for file in dicom_files]
     dicom_slices = [pydicom.read_file(f) for f in CompletePathFiles]
-    sorted_dicom_files = ut._sort_dicom_slices(dicom_slices)
+    sorted_dicom_files = ut.sort_dicom_slices(dicom_slices)
     expected_order = ['MR000040.dcm', 'MR000041.dcm', 'MR000042.dcm', 'MR000043.dcm', 'MR000044.dcm', 'MR000045.dcm',
                       'MR000046.dcm', 'MR000047.dcm', 'MR000048.dcm', 'MR000049.dcm', 'MR000050.dcm']
     actual_order = [os.path.split(el.filename)[1] for el in sorted_dicom_files]
@@ -52,6 +52,25 @@ def test_dicom_read_in():
     assert DicomVolume.shape == (128, 128, 11)
     assert np.allclose(dicom_affine1, dicom_affine2)
     assert DicomVolume.shape == X.shape == Y.shape == Z.shape
+
+
+def test_marker_volume_zero_padding():
+
+    data_loc = (this_dir / 'test_data' / 'MR_dicom').resolve()
+    n_zero_pad = 2
+    ImageArray, dicom_affine, (X, Y, Z) = ut.dicom_to_numpy(data_loc, file_extension='dcm',
+                                                         return_XYZ=True,
+                                                         zero_pad=0)
+    ImageArray, dicom_affine_zp, (X_zp, Y_zp, Z_zp) = ut.dicom_to_numpy(data_loc, file_extension='dcm',
+                                                         return_XYZ=True,
+                                                         zero_pad=n_zero_pad)
+    xyz_spacing = dicom_affine[0:3, 0:3].sum(axis=0)
+    assert X_zp.min() == X.min() - xyz_spacing[0] * n_zero_pad
+    assert X_zp.max() == X.max() + xyz_spacing[0] * n_zero_pad
+    assert Y_zp.min() == Y.min() - xyz_spacing[1] * n_zero_pad
+    assert Y_zp.max() == Y.max() + xyz_spacing[1] * n_zero_pad
+    assert Z_zp.min() == Z.min() - xyz_spacing[2] * n_zero_pad
+    assert Z_zp.max() == Z.max() + xyz_spacing[2] * n_zero_pad
 
 
 def test_spherical_to_cartesian():
