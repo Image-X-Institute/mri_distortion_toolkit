@@ -399,8 +399,14 @@ class MRI_QA_Reporter:
 
 
         plot_data = pd.concat([all_dsv_plot_data, xy_plot_data, zx_plot_data, zy_plot_data], ignore_index=True, axis=0)
-        self._fig_distortion_v_r = px.scatter(plot_data, x="r_gt", y="abs_dis", color="plane",
+        self._fig_distortion_v_r = px.scatter(plot_data, x="r_gt", y="abs_dis",color="plane",
+                                              labels={
+                                                  "r_gt": "Distance from the center (mm)", #rename the x axis
+                                                  "abs_dis": " Absolute Distortion (mm)", #rename the y axis
+                                              },
                                               title=f"Cardinal plane data, {self.r_outer} DSV")
+
+
         self._fig_distortion_v_r.update_layout(template=self._plotly_theme)
         if self._show_plots:
             self._fig_distortion_v_r.show()
@@ -421,14 +427,22 @@ class MRI_QA_Reporter:
             u=plot_data['x_dis'],
             v=plot_data['y_dis'],
             w=plot_data['z_dis'],
+
+            colorbar=dict(title= 'mm'),
+
             sizemode="absolute",
             sizeref=40))
 
+
         self._fig_3D_planes.update_layout(scene=dict(aspectratio=dict(x=1, y=1, z=0.8),
                                                      camera_eye=dict(x=1.2, y=1.2, z=0.6)))
-        self._fig_3D_planes.update_layout(template=self._plotly_theme)
+        self._fig_3D_planes.update_layout(template=self._plotly_theme, scene = dict(
+                    xaxis_title='X Axis (mm)',
+                    yaxis_title='Y Axis (mm)',
+                    zaxis_title='Z Axis (mm)'))
         if self._show_plots:
             self._fig_3D_planes.show()
+
 
     def _plot_B0_surface(self):
         """
@@ -454,9 +468,14 @@ class MRI_QA_Reporter:
         z = surface_coords.z.to_numpy().reshape(100, 100)
         B0 = B0.to_numpy().reshape(100, 100)
 
-        self._fig_DSV_surface = go.Figure(data=[go.Surface(z=z, x=x, y=y, surfacecolor=B0)])
+        self._fig_DSV_surface = go.Figure(data=[go.Surface(z=z, x=x, y=y,colorbar=dict(title= 'B(uT)'), surfacecolor=B0)])
+
         self._fig_DSV_surface.update_layout(title='DSV surface [uT]', autosize=True,
-                          template=self._plotly_theme)
+                          template=self._plotly_theme, scene = dict(
+                    xaxis_title='X Axis (mm)',
+                    yaxis_title='Y Axis (mm)',
+                    zaxis_title='Z Axis (mm)') )
+
         if self._show_plots:
             self._fig_DSV_surface.show()
 
@@ -590,4 +609,6 @@ class MRI_QA_Reporter:
         report_string = j2_template.render(self._jinja_dict)
         with open(report_name, 'w') as f:
             f.write(report_string)
+
+        print('The report has been compiled and can be found in the MR_QA_Reports folder') #let the user know where to find the finished report
 

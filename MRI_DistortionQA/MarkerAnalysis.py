@@ -380,20 +380,34 @@ class MarkerVolume:
             RegionInd = self._labels == label_level
             n_voxels.append(np.count_nonzero(RegionInd))
 
-        # Set up min and max marker volumes based on expected number of markers
+        # Set up min and max marker volumes
         n_voxels_median = np.median(np.array(n_voxels))
         voxel_min = (1-self._marker_size_lower_tol) * n_voxels_median
-        if voxel_min < 2:
-            voxel_min = 2
         voxel_max = (1+self._marker_size_upper_tol) * n_voxels_median
-        if voxel_min < 2:
-            voxel_min = 2
 
+        # Modify based on number of markers
+        if self._n_markers_expected is not None:
+            n_voxels_copy = np.array(n_voxels)
+            voxel_difference = np.absolute(np.array(n_voxels) - n_voxels_median)
+            # Loop that deletes the marker size with the largest difference from median until the expected # of markers
+            while len(n_voxels_copy) > self._n_markers_expected:
+                n_voxels_copy = np.delete(n_voxels_copy, np.argmax(voxel_difference))
+                voxel_difference = np.delete(voxel_difference, np.argmax(voxel_difference))
+            # Set min and max based on the remaining list
+            if np.min(n_voxels_copy) > voxel_min:
+                voxel_min = np.min(n_voxels_copy)
+            if np.max(n_voxels_copy) < voxel_max:
+                voxel_max = np.max(n_voxels_copy)
+
+        # 3 voxels is the absolute floor
+        if voxel_min < 2:
+            voxel_min = 2.1
 
         if self.verbose:
+            print('Threshold value: ' + str(self._cutoffpoint))
             print('Median marker volume: ' + str(n_voxels_median))
             print('Expected marker volume: ' + str(voxel_min) + ' to ' + str(voxel_max))
-            print(f'regions to check: {self.unique_labels.shape}')
+            print(f'Regions to check: {self.unique_labels.shape}')
 
         x_centroids = []
         y_centroids = []
@@ -731,8 +745,11 @@ class MatchedMarkerVolumes:
         translation_vector = dist_reference.mean() - gt_reference.mean()
 
         # Calculate rotation vector
-        matched_reference = _match_crosshair(gt_reference + translation_vector, dist_reference)
-        rotation_vector, error = transform.Rotation.align_vectors(dist_reference, matched_reference)
+        if self._n_reference_markers < 3:
+            rotation = False
+        else:
+            matched_reference = _match_crosshair(gt_reference + translation_vector, dist_reference)
+            rotation_vector, error = transform.Rotation.align_vectors(dist_reference, matched_reference)
 
         # Transform centroids
         aligned = self.ground_truth_centroids[['x', 'y', 'z']] + translation_vector
