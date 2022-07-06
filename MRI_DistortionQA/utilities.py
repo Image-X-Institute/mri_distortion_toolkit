@@ -388,109 +388,6 @@ def convert_spherical_harmonics(harmonics, input_format='full', output_format='n
     return converted_harmonics
 
 
-def plot_MarkerVolume_overlay(MarkerVolumeList, legend=None):  # pragma: no cover
-    """
-    Plot overlaid 3D scatter plots of the marker positions in each MarkerVolume
-
-    :param MarkerVolumeList: list of MarkerVolume instances
-    :param legend: legend to display on plot
-    :return: None
-    """
-
-    assert isinstance(MarkerVolumeList, list)
-
-    fig = plt.figure()
-    axs = fig.add_subplot(111, projection='3d')
-    for MarkerVolume in MarkerVolumeList:
-        axs.scatter(MarkerVolume.MarkerCentroids.x, MarkerVolume.MarkerCentroids.y, MarkerVolume.MarkerCentroids.z)
-        axs.set_xlabel('X [mm]')
-        axs.set_ylabel('Y [mm]')
-        axs.set_zlabel('Z [mm]')
-        axs.set_title('3D marker positions')
-    axs.set_box_aspect((np.ptp(MarkerVolume.MarkerCentroids.x),
-                        np.ptp(MarkerVolume.MarkerCentroids.y),
-                        np.ptp(MarkerVolume.MarkerCentroids.z)))
-    if legend:
-        plt.legend(legend)
-    plt.show()
-
-
-def plot_compressed_MarkerVolumes(MarkerVolumeList, z_max=20, z_min=-20, title=None, legend=None): # pragma: no cover
-    """
-    plot overlay of compressed marker volumes (z coord is ignored)
-
-    :param MarkerVolumeList:  list of MarkerVolume instances
-    :type MarkerVolumeList: list
-    :param z_max: max z data to include
-    :type z_max: float, optional
-    :param z_min: min z data to include
-    :type z_min: float, optional
-    :param title: title of plot
-    :type title: str, optional
-    :param legend: legend of plot
-    :type legend: list, optional
-    :return: None
-    """
-
-    fig, axs = plt.subplots(figsize=[8, 8], ncols=1, nrows=1)
-    for MarkerVolume in MarkerVolumeList:
-        data_ind = np.logical_and(MarkerVolume.MarkerCentroids.z > z_min, MarkerVolume.MarkerCentroids.z < z_max)
-        plot_data = MarkerVolume.MarkerCentroids[data_ind]
-        axs.scatter(plot_data.x, plot_data.y)
-        axs.set_xlim([-150, 150])
-        axs.set_ylim([-150, 150])
-        axs.set_xlabel('x [mm]', fontsize=15)
-        axs.set_ylabel('y [mm]', fontsize=15)
-        axs.tick_params(axis='both', which='major', labelsize=12)
-        axs.tick_params(axis='both', which='minor', labelsize=12)
-        axs.axis("equal")
-        axs.grid()
-        plt.subplots_adjust(bottom=0.25)
-        if legend:
-            plt.legend(legend)
-        if title:
-            plt.title(title)
-
-
-def plot_MatchedMarkerVolume_hist(MatchedMarkerVolumeList, legend=None):
-    """
-    creates a histogram of absolute distortion.
-
-    :param MatchedMarkerVolumeList: a list of MatchedMarkerVolumes
-    """
-    for volume in MatchedMarkerVolumeList:
-        bins = np.linspace(0, 10, 30)
-        plt.figure()
-        plt.hist(volume.MatchedCentroids.match_distance, bins=bins, alpha=0.5)
-
-        plt.xlabel('distortion [mm]')
-        plt.tight_layout()
-        plt.show()
-    if legend:
-        plt.legend(['original', 'corrected'])
-
-
-def plot_matched_volume_hist(VolumeList, legend=None):
-    """
-    create a histogram of total distortion for all input volumes
-
-    :param VolumeList: a list of [matched marker volumes](https://acrf-image-x-institute.github.io/MRI_DistortionQA/code_docs.html#MRI_DistortionQA.MarkerAnalysis.MatchedMarkerVolumes)
-    :type VolumeList: list
-    :param legend: legend to print
-    :type legend: list, optional
-    :return: None
-    """
-    bins = np.linspace(0, 10, 30)
-    plt.figure()
-    for marker_volume in VolumeList:
-        plt.hist(marker_volume.MatchedCentroids.match_distance, bins=bins, alpha=0.5)
-    if legend:
-        plt.legend(['original', 'corrected'])
-    plt.xlabel('distortion [mm]')
-    plt.tight_layout()
-    plt.show()
-
-
 def get_gradient_spherical_harmonics(Gx_Harmonics, Gy_Harmonics, Gz_Harmonics):
     """
     return the gradient spherical harmonics as as pandas series. this function is simply a clean way to handle
@@ -655,3 +552,128 @@ def enumerate_subfolders(data_loc):
         data_dict[str(i)] = folder_name
     for key in data_dict.keys():
         print(f"'{key}': '{data_dict[key]}',")
+
+
+def plot_MarkerVolume_overlay(MarkerVolumeList, legend=None):  # pragma: no cover
+    """
+    Plot overlaid 3D scatter plots of the marker positions in each MarkerVolume
+
+    :param MarkerVolumeList: list of MarkerVolume instances
+    :param legend: legend to display on plot
+    :return: None
+    """
+
+    assert isinstance(MarkerVolumeList, list)
+
+    fig = plt.figure()
+    axs = fig.add_subplot(111, projection='3d')
+    for MarkerVolume in MarkerVolumeList:
+        axs.scatter(MarkerVolume.MarkerCentroids.x, MarkerVolume.MarkerCentroids.y, MarkerVolume.MarkerCentroids.z)
+        axs.set_xlabel('X [mm]')
+        axs.set_ylabel('Y [mm]')
+        axs.set_zlabel('Z [mm]')
+        axs.set_title('3D marker positions')
+    axs.set_box_aspect((np.ptp(MarkerVolume.MarkerCentroids.x),
+                        np.ptp(MarkerVolume.MarkerCentroids.y),
+                        np.ptp(MarkerVolume.MarkerCentroids.z)))
+    if legend:
+        plt.legend(legend)
+    plt.show()
+
+
+def plot_compressed_MarkerVolumes(MarkerVolumeList, z_max=20, z_min=-20, title=None, legend=None): # pragma: no cover
+    """
+    plot overlay of compressed marker volumes (z coord is ignored)
+
+    :param MarkerVolumeList:  list of MarkerVolume instances
+    :type MarkerVolumeList: list
+    :param z_max: max z data to include
+    :type z_max: float, optional
+    :param z_min: min z data to include
+    :type z_min: float, optional
+    :param title: title of plot
+    :type title: str, optional
+    :param legend: legend of plot
+    :type legend: list, optional
+    :return: None
+    """
+
+    fig, axs = plt.subplots(figsize=[8, 8], ncols=1, nrows=1)
+    for MarkerVolume in MarkerVolumeList:
+        data_ind = np.logical_and(MarkerVolume.MarkerCentroids.z > z_min, MarkerVolume.MarkerCentroids.z < z_max)
+        plot_data = MarkerVolume.MarkerCentroids[data_ind]
+        axs.scatter(plot_data.x, plot_data.y)
+        axs.set_xlim([-150, 150])
+        axs.set_ylim([-150, 150])
+        axs.set_xlabel('x [mm]', fontsize=15)
+        axs.set_ylabel('y [mm]', fontsize=15)
+        axs.tick_params(axis='both', which='major', labelsize=12)
+        axs.tick_params(axis='both', which='minor', labelsize=12)
+        axs.axis("equal")
+        axs.grid()
+        plt.subplots_adjust(bottom=0.25)
+        if legend:
+            plt.legend(legend)
+        if title:
+            plt.title(title)
+
+
+def plot_MatchedMarkerVolume_hist(MatchedMarkerVolumeList, legend=None):
+    """
+    creates a histogram of absolute distortion.
+
+    :param MatchedMarkerVolumeList: a list of MatchedMarkerVolumes
+    """
+    for volume in MatchedMarkerVolumeList:
+        bins = np.linspace(0, 10, 30)
+        plt.figure()
+        plt.hist(volume.MatchedCentroids.match_distance, bins=bins, alpha=0.5)
+
+        plt.xlabel('distortion [mm]')
+        plt.tight_layout()
+        plt.show()
+    if legend:
+        plt.legend(['original', 'corrected'])
+
+
+def plot_matched_volume_hist(VolumeList, legend=None):
+    """
+    create a histogram of total distortion for all input volumes
+
+    :param VolumeList: a list of [matched marker volumes](https://acrf-image-x-institute.github.io/MRI_DistortionQA/code_docs.html#MRI_DistortionQA.MarkerAnalysis.MatchedMarkerVolumes)
+    :type VolumeList: list
+    :param legend: legend to print
+    :type legend: list, optional
+    :return: None
+    """
+    bins = np.linspace(0, 10, 30)
+    plt.figure()
+    for marker_volume in VolumeList:
+        plt.hist(marker_volume.MatchedCentroids.match_distance, bins=bins, alpha=0.5)
+    if legend:
+        plt.legend(['original', 'corrected'])
+    plt.xlabel('distortion [mm]')
+    plt.tight_layout()
+    plt.show()
+
+
+def plot_disortion_xyz_hist(MatchedMarkerVolume):
+    """
+    plot overlaid x, y, z distortion for an input instance of
+    [MatchedMarkerVolume](https://acrf-image-x-institute.github.io/MRI_DistortionQA/code_docs.html#MRI_DistortionQA.MarkerAnalysis.MatchedMarkerVolumes)
+
+    :param MatchedMarkerVolume: an instance of MatchedMarkerVolumes
+    """
+
+    x_dis = MatchedMarkerVolume.MatchedCentroids.x_gt - MatchedMarkerVolume.MatchedCentroids.x_gnl
+    y_dis = MatchedMarkerVolume.MatchedCentroids.y_gt - MatchedMarkerVolume.MatchedCentroids.y_gnl
+    z_dis = MatchedMarkerVolume.MatchedCentroids.z_gt - MatchedMarkerVolume.MatchedCentroids.z_gnl
+
+    plt.figure()
+    bins = np.linspace(0, 10, 30)
+    plt.hist(abs(x_dis), bins=bins, alpha=0.5)
+    plt.hist(abs(y_dis), bins=bins, alpha=0.5)
+    plt.hist(abs(z_dis), bins=bins, alpha=0.5)
+    plt.legend(['x', 'y', 'z'])
+    plt.xlabel('distortion [mm]')
+

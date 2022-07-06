@@ -8,13 +8,14 @@ from MRI_DistortionQA.MarkerAnalysis import MarkerVolume
 from MRI_DistortionQA.MarkerAnalysis import MatchedMarkerVolumes
 from MRI_DistortionQA.FieldCalculation import ConvertMatchedMarkersToBz
 from MRI_DistortionQA import calculate_harmonics
+from MRI_DistortionQA.utilities import plot_disortion_xyz_hist
 import numpy as np
 from MRI_DistortionQA.K_SpaceCorrector import KspaceDistortionCorrector
 from MRI_DistortionQA.utilities import plot_matched_volume_hist
 
 # the MR data can be downloaded from here
 # https://cloudstor.aarnet.edu.au/plus/apps/files/?dir=/Shared/MRI-Linac%20Experimental%20Data/Goam2%5EMr/20220428%20MR%20Linac%5ETest/10%20gre_trans_AP_330&fileid=6603056421
-distorted_data_loc = Path('/home/brendan/Dropbox (Sydney Uni)/abstracts,presentations etc/temp/MrGoam images')
+distorted_data_loc = Path('/home/brendan/Downloads/Goam2^Mr/20220428 MR Linac^Test/18 gre_trans_PA_reshim_refreq/Original')
 
 # extract markers:
 gt_volume = MarkerVolume('/home/brendan/Downloads/MRI_distortion_QA_sample_data/CT/slicer_centroids.mrk.json', r_max=300)
@@ -35,7 +36,8 @@ GDC = KspaceDistortionCorrector(ImageDirectory=distorted_data_loc.resolve(),
                                 Gy_Harmonics=G_y_Harmonics.harmonics,
                                 Gz_Harmonics=G_z_Harmonics.harmonics,
                                 ImExtension='dcm',
-                                dicom_data=dis_volume.dicom_data)
+                                dicom_data=dis_volume.dicom_data,
+                                correct_through_plane=False)
 GDC.correct_all_images()
 GDC.save_all_images()
 GDC.save_all_images_as_dicom()
@@ -46,3 +48,4 @@ remove_ind = np.logical_and(corrected_volume.MarkerCentroids.r>=70,corrected_vol
 corrected_volume.MarkerCentroids = corrected_volume.MarkerCentroids.drop(corrected_volume.MarkerCentroids.index[remove_ind])
 matched_volume_corrected = MatchedMarkerVolumes(gt_volume, corrected_volume, ReferenceMarkers=11)
 plot_matched_volume_hist([matched_volume, matched_volume_corrected], ['original', 'corrected'])
+plot_disortion_xyz_hist(matched_volume_corrected)
