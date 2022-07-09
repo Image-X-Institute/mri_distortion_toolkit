@@ -236,6 +236,11 @@ class KspaceDistortionCorrector:
             self.xj = xn_dis * 2 * np.pi
             yn_dis = self.Gx_encode / (self._PixelSpacing[0])
             self.yj = yn_dis * 2 * np.pi
+        elif (np.round(self._ImageOrientationPatient) == [1, 1, 1, 1, 1, 1]).all():
+            xn_dis = self.Gz_encode / (self._PixelSpacing[1])
+            self.yj = -1*xn_dis * 2 * np.pi
+            yn_dis = self.Gx_encode / (self._PixelSpacing[0])
+            self.xj = yn_dis * 2 * np.pi
         else:
             raise NotImplementedError('this slice orientation is not handled sorry')
 
@@ -244,11 +249,15 @@ class KspaceDistortionCorrector:
         self.nj = self._Rows * self._Cols
         self.nk = self._Rows * self._Cols
         # as currently codded it will always come out as 1/2..??
-        temp1 = np.linspace(-1/2, 1/2 - (1 / self._Rows), self._Rows)
-        temp2 = np.linspace(-1/2, 1/2 - (1 / self._Cols), self._Cols)
+        temp1 = np.linspace(-1/2, 1/2, self._Rows)
+        temp2 = np.linspace(-1/2, 1/2, self._Cols)
         [T1, T2] = np.meshgrid(temp2, temp1)
         self.sk = T2.flatten()
         self.tk = T1.flatten()
+
+        if (np.round(self._ImageOrientationPatient) == [1, 1, 1, 1, 1, 1]).all():
+            print('helo')
+
 
     def _fiNufft_Ax(self, x):
         """
@@ -304,6 +313,16 @@ class KspaceDistortionCorrector:
             self.Nufft_Atb_Plan.setpts(self.sk, self.tk, None, self.xj, self.yj)
             A = LinearOperator((fk1.shape[0], fk1.shape[0]), matvec=self._fiNufft_Ax, rmatvec=self._fiNufft_Atb)
             StartingImage = self._image_to_correct.flatten().astype(complex)
+        if False:
+            fig, axs = plt.subplots(nrows=2,ncols=2, figsize=[10,10])
+            axs[0, 0].plot(self.xj)
+            axs[0, 1].plot(self.yj)
+            axs[1, 0].plot(self.sk)
+            axs[1, 1].plot(self.tk)
+        if False:
+            fig, axs = plt.subplots(nrows=1, ncols=2, figsize=[10,5])
+            axs[0].imshow(self._image_to_correct)
+            axs[1].imshow(self.outputImage)
 
         maxit = 20
         x1 = lsqr(A, fk1, iter_lim=maxit, x0=StartingImage)
@@ -333,7 +352,6 @@ class KspaceDistortionCorrector:
         This will loop through and correct all IMA files in the input directory
         :return:
         """
-
         if self.correct_through_plane:
             n_images_to_correct = self._n_dicom_files + (self.ImageArray.shape[0] - 2 * self._n_zero_pad)
         else:
@@ -369,17 +387,22 @@ class KspaceDistortionCorrector:
 
         if self.correct_through_plane:
 
-            self._ImageOrientationPatient = [1, 0, 0, 0, 1, 0]
+            if self._ImageOrientationPatient == [1, 0, 0, 0, 1, 0]:
+                self._ImageOrientationPatient = [1, 1, 1, 1, 1, 1]
+                # [1, 0, 0, 0, 0, -1]
+                # [0, 1, 0, 0, 0, -1]
+            else:
+                raise NotImplementedError
             # which directions are already corrected:
             corrected_dims = np.array(['x', 'y', 'z'])[([self._dicom_data['slice_direction'] not in axis for axis in ['x', 'y', 'z']])]
+            corrected_dims = np.array(['x', 'y', 'z'])
             self._force_linear_harmonics(corrected_dims)  # this forces already corrected dimensions to be linear
             loop_axis = 0
-
             zipped_data = zip(np.rollaxis(self._image_array_corrected, loop_axis),
                               np.rollaxis(self._X, loop_axis),
                               np.rollaxis(self._Y, loop_axis),
                               np.rollaxis(self._Z, loop_axis))
-            self._image_array_corrected2 = np.zeros(np.rollaxis(self._image_array_corrected, loop_axis).shape)
+            self._image_array_corrected2 =self._image_array_corrected.copy()
             j = 0
             self._Rows = np.rollaxis(self._image_array_corrected, loop_axis).shape[1]
             self._Cols = np.rollaxis(self._image_array_corrected, loop_axis).shape[2]
@@ -389,10 +412,12 @@ class KspaceDistortionCorrector:
                     # skip these files, they have no meaning anyway and we can't (easily) write them to dicom
                     j += 1
                     continue
+                if j == 25:
+                    print('gelo')
 
                 t_start = perf_counter()
                 print(f'Through Plane correction: {j - self._n_zero_pad}')
-                print(printProgressBar(i+j-(self._n_zero_pad*2), n_images_to_correct))
+                print(printProgressBar(i+j-(self._n_zero_pad*4), n_images_to_correct))
                 self._image_to_correct = array_slice
                 self._X_slice = X
                 self._Y_slice = Y
@@ -401,7 +426,9 @@ class KspaceDistortionCorrector:
                 self._image_array_corrected[j, :, :] = self.outputImage
                 t_stop = perf_counter()
                 print(f"Elapsed time {t_stop - t_start}")
+
                 j += 1
+
 
         self._unpad_image_arrays()
 
@@ -424,7 +451,7 @@ class KspaceDistortionCorrector:
             # axs[0].set_xlabel(self._row_label)
             # axs[0].set_ylabel(self._col_label)
             axs[0].grid(True)
-            fig.colorbar(im1, ax=axs[0])
+            # fig.colorbar(im1, ax=axs[0])
 
             # axs[1].imshow(self.outputImage, extent=self._extent)
             im2 = axs[1].imshow(corrected_image)
@@ -433,7 +460,7 @@ class KspaceDistortionCorrector:
             # axs[1].set_xlabel(self._row_label)
             # axs[1].set_ylabel(self._col_label)
             axs[1].grid(True)
-            fig.colorbar(im2, ax=axs[1])
+            # fig.colorbar(im2, ax=axs[1])
 
             plt.tight_layout()
             plt.savefig(self.ImageDirectory / 'Corrected' / (str(i) + '.png'), format='png')

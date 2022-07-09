@@ -12,13 +12,14 @@ from MRI_DistortionQA.utilities import plot_disortion_xyz_hist
 import numpy as np
 from MRI_DistortionQA.K_SpaceCorrector import KspaceDistortionCorrector
 from MRI_DistortionQA.utilities import plot_matched_volume_hist
+from MRI_DistortionQA.utilities import plot_MarkerVolume_overlay
 
 # the MR data can be downloaded from here
 # https://cloudstor.aarnet.edu.au/plus/apps/files/?dir=/Shared/MRI-Linac%20Experimental%20Data/Goam2%5EMr/20220428%20MR%20Linac%5ETest/10%20gre_trans_AP_330&fileid=6603056421
-distorted_data_loc = Path('/home/brendan/Downloads/Goam2^Mr/20220428 MR Linac^Test/18 gre_trans_PA_reshim_refreq/Original')
-
+distorted_data_loc = Path(r'C:\Users\bwhe3635\Downloads\MRI_distortion_QA_sample_data\MRI_distortion_QA_sample_data\MR\04 gre_trans_AP_330')
+gt_data_loc = Path(r'C:\Users\bwhe3635\Downloads\MRI_distortion_QA_sample_data\MRI_distortion_QA_sample_data\CT\slicer_centroids.mrk.json')
 # extract markers:
-gt_volume = MarkerVolume('/home/brendan/Downloads/MRI_distortion_QA_sample_data/CT/slicer_centroids.mrk.json', r_max=300)
+gt_volume = MarkerVolume(gt_data_loc, r_max=300)
 dis_volume = MarkerVolume(distorted_data_loc, n_markers_expected=336, iterative_segmentation=True)
 # match markers:
 matched_volume = MatchedMarkerVolumes(gt_volume, dis_volume, ReferenceMarkers=11)
@@ -27,6 +28,7 @@ B_fields = ConvertMatchedMarkersToBz(matched_volume.MatchedCentroids, dis_volume
 # calculate harmonics
 gradient_strength = np.array(dis_volume.dicom_data['gradient_strength'])
 normalisation_factor = [1/gradient_strength[0], 1/gradient_strength[1], 1/gradient_strength[2], 1]  # this normalised gradient harmonics to 1mT/m
+# normalisation_factor = [1,1,1,1]
 G_x_Harmonics, G_y_Harmonics, G_z_Harmonics, B0_Harmonics = calculate_harmonics(B_fields.MagneticFields,
                                                                                 n_order=8,
                                                                                 norm=normalisation_factor)
@@ -37,7 +39,7 @@ GDC = KspaceDistortionCorrector(ImageDirectory=distorted_data_loc.resolve(),
                                 Gz_Harmonics=G_z_Harmonics.harmonics,
                                 ImExtension='dcm',
                                 dicom_data=dis_volume.dicom_data,
-                                correct_through_plane=False)
+                                correct_through_plane=True)
 GDC.correct_all_images()
 GDC.save_all_images()
 GDC.save_all_images_as_dicom()
