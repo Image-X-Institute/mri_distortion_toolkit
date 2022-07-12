@@ -112,6 +112,13 @@ class MarkerVolume:
                 arrays = [el for el in data['markups'][0]['controlPoints']]
                 points = [el['position'] for el in arrays]
                 self.MarkerCentroids = pd.DataFrame(points, columns=['x', 'y', 'z'])
+                
+                # look for dicom_data json file
+                try:
+                    with open(os.path.join(self.input_data_path.parent, 'dicom_data.json')) as f:
+                        self.dicom_data = json.load(f)
+                except:
+                    logger.warning(f'No dicom data found at {self.input_data_path.parent}.')
             else:
                 raise FileNotFoundError(f'could not find any data at {self.input_data_path}')
         elif isinstance(input_data, np.ndarray):
