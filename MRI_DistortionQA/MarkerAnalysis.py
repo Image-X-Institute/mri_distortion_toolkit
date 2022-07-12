@@ -1035,3 +1035,20 @@ class MatchedMarkerVolumes:
 
         plot_data = get_markers_as_function_of_z()
         plot_markers_inner(plot_data)
+
+    def export_to_csv(self, save_path=None, filename='matched_markers'):
+        """
+        exports matched markers as csv
+        """
+        # sort out where to save:
+        if save_path is not None:
+            try:
+                save_path = Path(save_path)
+            except:
+                save_path = None
+
+        if self.MatchedCentroids is not None:
+            filename = filename + '.csv'
+            file_loc = save_path / filename
+            self.MatchedCentroids.to_csv(file_loc)
+
