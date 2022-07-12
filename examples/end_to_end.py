@@ -39,7 +39,7 @@ GDC = KspaceDistortionCorrector(ImageDirectory=distorted_data_loc.resolve(),
                                 Gz_Harmonics=G_z_Harmonics.harmonics,
                                 ImExtension='dcm',
                                 dicom_data=dis_volume.dicom_data,
-                                correct_through_plane=True)
+                                correct_through_plane=False)
 GDC.correct_all_images()
 GDC.save_all_images()
 GDC.save_all_images_as_dicom()
