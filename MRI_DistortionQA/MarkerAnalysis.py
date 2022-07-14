@@ -92,12 +92,13 @@ class MarkerVolume:
         if isinstance(input_data, (pathlib.Path, str)):
             self.input_data_path = Path(input_data)
             if self.input_data_path.is_dir():
-                # dicom input
-
+                # DICOM input
                 self.InputVolume, self.dicom_affine, (self.X, self.Y, self.Z) = \
                     dicom_to_numpy(self.input_data_path, file_extension='dcm', return_XYZ=True)
 
                 self._calculate_MR_acquisition_data()
+                # Segmenting markers
+                self._filter_volume_by_r()
                 self.ThresholdVolume, self.BlurredVolume = self._threshold_volume(self.InputVolume)
                 centroids = self._find_contour_centroids()
                 self.MarkerCentroids = pd.DataFrame(centroids, columns=['x', 'y', 'z'])
@@ -138,6 +139,26 @@ class MarkerVolume:
                 logger.warning(f'For data {self.input_data_path}\n'
                                f'You entered that you expected to find'
                                f' {n_markers_expected}, but actually found {self.MarkerCentroids.shape[0]}.')
+
+    def _filter_volume_by_r(self):
+        """
+        Accelerates and improves segmenting by setting all voxels outside of specified radius to the background
+        """
+        if self._r_max or self._r_min:
+
+            max = 10000
+            min = -1
+            if self._r_max:
+                max = self._r_max
+            if self._r_min:
+                min = self._r_min
+            background = np.median(self.InputVolume)
+
+            it = np.nditer(self.InputVolume, flags=['multi_index'])
+            for voxel in it:
+                distance = np.sqrt(self.X[it.multi_index] ** 2 + self.Y[it.multi_index] ** 2 + self.Z[it.multi_index] ** 2)
+                if distance < min or distance > max:
+                    self.InputVolume[it.multi_index] = background
 
     def _filter_markers_by_r(self):
         """
