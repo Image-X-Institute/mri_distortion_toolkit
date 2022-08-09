@@ -40,14 +40,14 @@ class KspaceDistortionCorrector:
         :param correct_through_plane:
         """
         self.correct_through_plane = correct_through_plane
-        self._n_zero_pad = 10  # n_pixels to add around each edge of volume. set to 0 for no zero padding
+        self._n_zero_pad = 0  # n_pixels to add around each edge of volume. set to 0 for no zero padding
         self._dicom_data = dicom_data
         self._calculate_gradient_strength()
         self._Gx_Harmonics, self._Gy_Harmonics, self._Gz_Harmonics = \
             get_gradient_spherical_harmonics(Gx_Harmonics, Gy_Harmonics, Gz_Harmonics)
         self._Gx_Harmonics = self._Gx_Harmonics * self._gradient_strength[0]
         self._Gy_Harmonics = self._Gy_Harmonics * self._gradient_strength[1]
-        self._Gz_Harmonics = self._Gz_Harmonics * self._gradient_strength[2] * -1
+        self._Gz_Harmonics = self._Gz_Harmonics * self._gradient_strength[2]
 
         self.ImageDirectory = Path(ImageDirectory)
         self._all_dicom_files = get_all_files(self.ImageDirectory, ImExtension)
@@ -56,12 +56,14 @@ class KspaceDistortionCorrector:
         # self._all_dicom_files = sort_dicom_slices(self._all_dicom_files)
         self._n_dicom_files = len(self._all_dicom_files)
 
-        self.ImageArray, self._dicom_affine, (self._X, self._Y, self._Z) = dicom_to_numpy(self.ImageDirectory,
-                                                                                    file_extension='dcm',
-                                                                                    return_XYZ=True,
-                                                                                    zero_pad=self._n_zero_pad)
+        self.ImageArray,\
+        self._dicom_affine,\
+        (self._X, self._Y, self._Z) = dicom_to_numpy(self.ImageDirectory,
+                                                     file_extension='dcm',
+                                                     return_XYZ=True,
+                                                     zero_pad=self._n_zero_pad,
+                                                     enforce_increasing_coords=True)
         self._get_rows_and_cols()
-        self._enforce_increasing_coords()
         self.n_order = int(np.sqrt(self._Gx_Harmonics.size) - 1)
         self.Images = get_all_files(self.ImageDirectory, ImExtension)
         self.r_DSV = 150  # only for drawing on the plot
@@ -81,7 +83,7 @@ class KspaceDistortionCorrector:
         self._Rows, self._Cols = self.ImageArray.shape[0:2]
 
         self._ImageOrientationPatient = demo_header.ImageOrientationPatient
-        self._PixelSpacing = demo_header.PixelSpacing
+        self._PixelSpacing = self._dicom_data['pixel_spacing']
 
     def _check_input_data(self):
         """
@@ -105,27 +107,6 @@ class KspaceDistortionCorrector:
         self._generate_Kspace_data()
         self._generate_kspace_indices()
         self._perform_least_squares_optimisation()
-
-    def _enforce_increasing_coords(self):
-        """
-        This will update the dicom_affine such that coordinates are always order in increasing order - smallest
-        values first, largest values last. This is important because ultimately we derive the distorted image indices
-        xn_dis yn_dis, and as indices these are assumed to be always increasing. Note that this means that the coordinates
-        are not guaranteed to be ordered according to dicom standards
-        """
-        new_affine = self._dicom_affine.copy()
-        coordinates_end = [self._X[-1, -1, -1], self._Y[-1, -1, -1], self._Z[-1, -1, -1]]
-        for col in [0, 1]:  # check first two cols
-            for i, pixel_increment in enumerate(self._dicom_affine[:, col]):
-                if pixel_increment < 0:
-                    '''
-                    then we need to force this to positive, and switch the start position to the 
-                    currend end position
-                    '''
-                    new_affine[i, col] = -1 * pixel_increment
-                    new_start = coordinates_end[i]
-                    new_affine[i, 3] = new_start
-        self._dicom_affine = new_affine
 
     def _unpad_image_arrays(self):
         """
@@ -174,28 +155,28 @@ class KspaceDistortionCorrector:
         """
         fig, axs = plt.subplots(nrows=1, ncols=3, figsize=[15, 5])
         gah = np.squeeze(np.reshape(self.Gx_encode.to_numpy(), self._image_shape)) * 1e6
-        Xim = axs[0].imshow(gah, extent=self._extent, vmin=vmin, vmax=vmax)
+        Xim = axs[0].imshow(gah, vmin=vmin, vmax=vmax)
         axs[0].set_title('Gx')
-        axs[0].set_xlabel(self._row_label)
-        axs[0].set_ylabel(self._col_label)
+        # axs[0].set_xlabel(self._row_label)
+        # axs[0].set_ylabel(self._col_label)
         draw_circle = plt.Circle((0, 0), 150, fill=False)
         axs[0].add_artist(draw_circle)
         axs[0].grid(False)
 
         gah = np.squeeze(np.reshape(self.Gy_encode.to_numpy(), self._image_shape)) * 1e6
-        Yim = axs[1].imshow(gah, extent=self._extent, vmin=vmin, vmax=vmax)
+        Yim = axs[1].imshow(gah, vmin=vmin, vmax=vmax)
         axs[1].set_title('Gy')
-        axs[1].set_xlabel(self._row_label)
-        axs[1].set_ylabel(self._col_label)
+        # axs[1].set_xlabel(self._row_label)
+        # axs[1].set_ylabel(self._col_label)
         draw_circle = plt.Circle((0, 0), 150, fill=False)
         axs[1].add_artist(draw_circle)
         axs[1].grid(False)
 
         gah = np.squeeze(np.reshape(self.Gz_encode.to_numpy(), self._image_shape)) * 1e6
-        Zim = axs[2].imshow(gah, extent=self._extent, vmin=vmin, vmax=vmax)
+        Zim = axs[2].imshow(gah, vmin=vmin, vmax=vmax)
         axs[2].set_title('Gz')
-        axs[2].set_xlabel(self._row_label)
-        axs[2].set_ylabel(self._col_label)
+        # axs[2].set_xlabel(self._row_label)
+        # axs[2].set_ylabel(self._col_label)
         draw_circle = plt.Circle((0, 0), 150, fill=False)
         axs[2].add_artist(draw_circle)
         axs[2].grid(False)
@@ -218,9 +199,18 @@ class KspaceDistortionCorrector:
         I don't entirely know what is happening here...
         we now reshape our encoding signals and add scaling factors...
          k_xy_dis represent the k-space indices of non-uniform points.
-         ToDo:: is it correct to always have 0.5 as k-space indices? this is what is currently coded...
         :return:
         """
+
+        self.nj = self._Rows * self._Cols
+        self.nk = self._Rows * self._Cols
+        # as currently codded it will always come out as 1/2..??
+        temp1 = np.linspace(-1/2, 1/2, self._Rows)
+        temp2 = np.linspace(-1/2, 1/2, self._Cols)
+        [T1, T2] = np.meshgrid(temp2, temp1)
+        self.sk = T2.flatten()
+        self.tk = T1.flatten()
+
         if (np.round(self._ImageOrientationPatient) == [0, 1, 0, 0, 0, -1]).all():
             xn_dis = self.Gz_encode / (self._PixelSpacing[1])
             self.xj = xn_dis * 2 * np.pi
@@ -237,27 +227,35 @@ class KspaceDistortionCorrector:
             yn_dis = self.Gx_encode / (self._PixelSpacing[0])
             self.yj = yn_dis * 2 * np.pi
         elif (np.round(self._ImageOrientationPatient) == [1, 1, 1, 1, 1, 1]).all():
-            xn_dis = self.Gz_encode / (self._PixelSpacing[1])
-            self.yj = -1*xn_dis * 2 * np.pi
-            yn_dis = self.Gx_encode / (self._PixelSpacing[0])
-            self.xj = yn_dis * 2 * np.pi
+            # this is for through plane correction where the real images are [1, 0, 0, 0, 1, 0]
+            # xn_dis = self.Gx_encode / (self._PixelSpacing[0])
+            # self.xj = xn_dis * 2 * np.pi
+            self.xj = pd.Series(self.sk)
+            yn_dis = self.Gz_encode / (self._PixelSpacing[2])
+            self.yj = yn_dis * 2 * np.pi
+        elif np.round(self._ImageOrientationPatient == [2, 2, 2, 2, 2, 2]).all():
+            # this is for through plane correction where the real images are [0, 1, 0, 0, 0, -1]
+            xn_dis = self.Gz_encode / (self._PixelSpacing[2])
+            self.xj = xn_dis * 2 * np.pi
+            yn_dis = self.Gx_encode / (self._PixelSpacing[2])
+            self.yj = yn_dis * 2 * np.pi
         else:
             raise NotImplementedError('this slice orientation is not handled sorry')
 
         self.xj = self.xj.to_numpy()
         self.yj = self.yj.to_numpy()
-        self.nj = self._Rows * self._Cols
-        self.nk = self._Rows * self._Cols
-        # as currently codded it will always come out as 1/2..??
-        temp1 = np.linspace(-1/2, 1/2, self._Rows)
-        temp2 = np.linspace(-1/2, 1/2, self._Cols)
-        [T1, T2] = np.meshgrid(temp2, temp1)
-        self.sk = T2.flatten()
-        self.tk = T1.flatten()
+        # self.xj = self.sk
+        # self.yj=self.tk
 
-        if (np.round(self._ImageOrientationPatient) == [1, 1, 1, 1, 1, 1]).all():
-            print('helo')
 
+        if (np.round(self._ImageOrientationPatient) == [1, 1, 1, 1, 1, 1]).all() or \
+                (np.round(self._ImageOrientationPatient) == [2,2,2,2,2,2]).all():
+            try:
+                self.dodgy_ind = self.dodgy_ind + 1
+            except:
+                self.dodgy_ind = 0
+            # if self.dodgy_ind > 6:
+            #     print('helo')
 
     def _fiNufft_Ax(self, x):
         """
@@ -300,10 +298,8 @@ class KspaceDistortionCorrector:
         - The noisy measurements are self.k_space
         - We use the NUFFT to compute the image most likely to have produced k_space, given the encoding fields that we computed.
         """
-        try:
-            fk1 = np.reshape(self.k_space, [self._Rows * self._Cols])
-        except:
-            print('helo')
+
+        fk1 = np.reshape(self.k_space, [self._Rows * self._Cols])
         StartingImage = None  # x0 for lsqr. can be overwritten for each option below.
 
         if self.NUFFTlibrary == 'finufft':
@@ -314,11 +310,11 @@ class KspaceDistortionCorrector:
             A = LinearOperator((fk1.shape[0], fk1.shape[0]), matvec=self._fiNufft_Ax, rmatvec=self._fiNufft_Atb)
             StartingImage = self._image_to_correct.flatten().astype(complex)
         if False:
-            fig, axs = plt.subplots(nrows=2,ncols=2, figsize=[10,10])
-            axs[0, 0].plot(self.xj)
-            axs[0, 1].plot(self.yj)
-            axs[1, 0].plot(self.sk)
-            axs[1, 1].plot(self.tk)
+            fig, axs = plt.subplots(nrows=2,ncols=2, figsize=[8,8])
+            axs[0, 0].plot(self.xj); axs[0, 0].set_title('xj')
+            axs[0, 1].plot(self.yj); axs[0, 1].set_title('yj')
+            axs[1, 0].plot(self.sk); axs[1, 0].set_title('sk')
+            axs[1, 1].plot(self.tk); axs[1, 1].set_title('tk')
         if False:
             fig, axs = plt.subplots(nrows=1, ncols=2, figsize=[10,5])
             axs[0].imshow(self._image_to_correct)
@@ -386,18 +382,17 @@ class KspaceDistortionCorrector:
             i += 1
 
         if self.correct_through_plane:
-
             if self._ImageOrientationPatient == [1, 0, 0, 0, 1, 0]:
                 self._ImageOrientationPatient = [1, 1, 1, 1, 1, 1]
-                # [1, 0, 0, 0, 0, -1]
-                # [0, 1, 0, 0, 0, -1]
+            elif self._ImageOrientationPatient == [0, 1, 0, 0, 0, -1]:
+                self._ImageOrientationPatient = [2, 2, 2, 2, 2, 2]
             else:
                 raise NotImplementedError
             # which directions are already corrected:
             corrected_dims = np.array(['x', 'y', 'z'])[([self._dicom_data['slice_direction'] not in axis for axis in ['x', 'y', 'z']])]
-            corrected_dims = np.array(['x', 'y', 'z'])
+            # corrected_dims = np.array(['x', 'y', 'z'])
             self._force_linear_harmonics(corrected_dims)  # this forces already corrected dimensions to be linear
-            loop_axis = 0
+            loop_axis = 1
             zipped_data = zip(np.rollaxis(self._image_array_corrected, loop_axis),
                               np.rollaxis(self._X, loop_axis),
                               np.rollaxis(self._Y, loop_axis),
@@ -412,9 +407,6 @@ class KspaceDistortionCorrector:
                     # skip these files, they have no meaning anyway and we can't (easily) write them to dicom
                     j += 1
                     continue
-                if j == 25:
-                    print('gelo')
-
                 t_start = perf_counter()
                 print(f'Through Plane correction: {j - self._n_zero_pad}')
                 print(printProgressBar(i+j-(self._n_zero_pad*4), n_images_to_correct))
@@ -423,12 +415,11 @@ class KspaceDistortionCorrector:
                 self._Y_slice = Y
                 self._Z_slice = Z
                 self._correct_image()
-                self._image_array_corrected[j, :, :] = self.outputImage
+                self._image_array_corrected[:, j, :] = self.outputImage
                 t_stop = perf_counter()
                 print(f"Elapsed time {t_stop - t_start}")
 
                 j += 1
-
 
         self._unpad_image_arrays()
 

@@ -65,6 +65,7 @@ def build_dicom_affine(Dicomfiles):
 
     CoordinateMatrix = np.zeros([4, 4])
     F = np.array([ds.ImageOrientationPatient[3:], ds.ImageOrientationPatient[:3]]).T
+    F = np.round(F)
     first_col = np.multiply(F[:, 0], ds.PixelSpacing[0])
     sec_col = np.multiply(F[:, 1], ds.PixelSpacing[1])
     CoordinateMatrix[:, 0][0:3] = first_col
@@ -117,8 +118,9 @@ def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, 
     progress_string = f'\r{prefix} |{bar}| {percent}% {suffix}'
     return progress_string
 
+
 def dicom_to_numpy(path_to_dicoms, FilesToReadIn=None, file_extension='dcm', return_XYZ=False,
-                   zero_pad=0):
+                   zero_pad=0, enforce_increasing_coords=False):
     """
     This function does two things:
 
@@ -162,6 +164,21 @@ def dicom_to_numpy(path_to_dicoms, FilesToReadIn=None, file_extension='dcm', ret
     n_slices = len(dicom_slices) + zero_pad*2
 
     ImageArray = np.zeros([n_rows, n_cols, n_slices])
+    if enforce_increasing_coords:
+        # this option exists for the distortion correction code, which increasing indices
+        new_affine = dicom_affine.copy()
+        coordinates_end = dicom_affine @ [n_rows-1, n_cols-1, n_slices-1, 1]
+        for col in [0, 1]:  # check first two cols
+            for i, pixel_increment in enumerate(dicom_affine[:, col]):
+                if pixel_increment < 0:
+                    '''
+                    then we need to force this to positive, and switch the start position to the 
+                    current end position
+                    '''
+                    new_affine[i, col] = -1 * pixel_increment
+                    new_start = coordinates_end[i]
+                    new_affine[i, 3] = new_start
+        dicom_affine = new_affine
     for i, file in enumerate(dicom_slices):
         if zero_pad > 0:
             ImageArray[zero_pad:-zero_pad, zero_pad:-zero_pad, i+zero_pad] = file.pixel_array
@@ -181,7 +198,9 @@ def dicom_to_numpy(path_to_dicoms, FilesToReadIn=None, file_extension='dcm', ret
         X = np.reshape(XYZtemp[0, :], ImageArray.shape)
         Y = np.reshape(XYZtemp[1, :], ImageArray.shape)
         Z = np.reshape(XYZtemp[2, :], ImageArray.shape)
+
         assert ImageArray.shape == X.shape
+
         return ImageArray, dicom_affine, (X, Y, Z)
     else:
         return ImageArray, dicom_affine
@@ -677,4 +696,13 @@ def plot_disortion_xyz_hist(MatchedMarkerVolume):
     plt.legend(['x', 'y', 'z'])
     plt.xlabel('distortion [mm]')
     plt.show()
+
+
+def print_dict(dict):
+    """
+    just provides a nicer display of the input dict than the default print function,
+    got sick of writing the same code over and over...
+    """
+    for key in dict.keys():
+        print(f'{key}: {dict[key]}')
 
