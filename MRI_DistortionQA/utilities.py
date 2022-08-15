@@ -88,6 +88,7 @@ def build_dicom_affine(Dicomfiles):
 
     return CoordinateMatrix
 
+
 def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, length = 100, fill = '█'):
     """
     [credit here](https://gist.github.com/greenstick/b23e475d2bfdc3a82e34eaa1f6781ee4)

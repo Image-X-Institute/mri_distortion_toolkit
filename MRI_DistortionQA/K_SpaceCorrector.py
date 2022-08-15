@@ -47,7 +47,7 @@ class KspaceDistortionCorrector:
             get_gradient_spherical_harmonics(Gx_Harmonics, Gy_Harmonics, Gz_Harmonics)
         self._Gx_Harmonics = self._Gx_Harmonics * self._gradient_strength[0]
         self._Gy_Harmonics = self._Gy_Harmonics * self._gradient_strength[1]
-        self._Gz_Harmonics = self._Gz_Harmonics * self._gradient_strength[2]
+        self._Gz_Harmonics = self._Gz_Harmonics * self._gradient_strength[2] * -1
 
         self.ImageDirectory = Path(ImageDirectory)
         self._all_dicom_files = get_all_files(self.ImageDirectory, ImExtension)
@@ -62,7 +62,7 @@ class KspaceDistortionCorrector:
                                                      file_extension='dcm',
                                                      return_XYZ=True,
                                                      zero_pad=self._n_zero_pad,
-                                                     enforce_increasing_coords=True)
+                                                     enforce_increasing_coords=False)
         self._get_rows_and_cols()
         self.n_order = int(np.sqrt(self._Gx_Harmonics.size) - 1)
         self.Images = get_all_files(self.ImageDirectory, ImExtension)
@@ -212,12 +212,12 @@ class KspaceDistortionCorrector:
         self.tk = T1.flatten()
 
         if (np.round(self._ImageOrientationPatient) == [0, 1, 0, 0, 0, -1]).all():
-            xn_dis = self.Gz_encode / (self._PixelSpacing[1])
+            xn_dis = self.Gz_encode / (self._PixelSpacing[2])
             self.xj = xn_dis * 2 * np.pi
-            yn_dis = self.Gy_encode / (self._PixelSpacing[0])
+            yn_dis = self.Gy_encode / (self._PixelSpacing[1])
             self.yj = yn_dis * 2 * np.pi
         elif (np.round(self._ImageOrientationPatient) == [1, 0, 0, 0, 0, -1]).all():
-            xn_dis = self.Gz_encode / (self._PixelSpacing[1])
+            xn_dis = self.Gz_encode / (self._PixelSpacing[2])
             self.xj = xn_dis * 2 * np.pi
             yn_dis = self.Gx_encode / (self._PixelSpacing[0])
             self.yj = yn_dis * 2 * np.pi
@@ -237,7 +237,7 @@ class KspaceDistortionCorrector:
             # this is for through plane correction where the real images are [0, 1, 0, 0, 0, -1]
             xn_dis = self.Gz_encode / (self._PixelSpacing[2])
             self.xj = xn_dis * 2 * np.pi
-            yn_dis = self.Gx_encode / (self._PixelSpacing[2])
+            yn_dis = self.Gx_encode / (self._PixelSpacing[0])
             self.yj = yn_dis * 2 * np.pi
         else:
             raise NotImplementedError('this slice orientation is not handled sorry')
@@ -370,7 +370,7 @@ class KspaceDistortionCorrector:
 
             t_start = perf_counter()
             print(f'2D correction: {i-self._n_zero_pad} of {n_images_to_correct}')
-            print(printProgressBar(i-self._n_zero_pad, n_images_to_correct))
+            print(printProgressBar(i-self._n_zero_pad, n_images_to_correct).encode('utf-8'))
             self._image_to_correct = array_slice
             self._X_slice = X
             self._Y_slice = Y

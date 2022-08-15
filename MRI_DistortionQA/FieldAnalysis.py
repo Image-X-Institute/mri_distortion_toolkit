@@ -176,9 +176,9 @@ class SphericalHarmonicFit:
         recon_pk_pk = float(abs(self.input_Bz_data.Bz.max() - self.input_Bz_data.Bz.min()) * 1e6)
         self._residual_pk_pk = float(abs(Residual.max() - Residual.min()) * 1e6)
 
-        print(f'Initial pk-pk:       {initial_pk_pk: 1.3f} \u03BCT')
-        print(f'Reconstructed pk-pk: {recon_pk_pk: 1.3f} \u03BCT')
-        print(f'Residual pk-pk:      {self._residual_pk_pk: 1.3f} \u03BCT')
+        print(f'Initial pk-pk:       {initial_pk_pk: 1.3f} \u03BCT'.encode('utf-8'))
+        print(f'Reconstructed pk-pk: {recon_pk_pk: 1.3f} \u03BCT'.encode('utf-8'))
+        print(f'Residual pk-pk:      {self._residual_pk_pk: 1.3f} \u03BCT'.encode('utf-8'))
 
         residual_percentage = abs(self._residual_pk_pk)*100/initial_pk_pk
         if residual_percentage > 5:
