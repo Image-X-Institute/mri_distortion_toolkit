@@ -87,6 +87,7 @@ class KspaceDistortionCorrector:
 
         self._PixelSpacing = self._dicom_data['pixel_spacing']
 
+
     def _check_input_data(self):
         """
         Put any tests of input data here
@@ -107,7 +108,7 @@ class KspaceDistortionCorrector:
         self._calculate_encoding_fields()
         # self._plot_encoding_fields()  # useful for debugging
         self._generate_Kspace_data()
-        self._generate_kspace_indices()
+        self._generate_distorted_indices()
         self._perform_least_squares_optimisation()
 
     def _unpad_image_arrays(self):
@@ -202,7 +203,7 @@ class KspaceDistortionCorrector:
         """
         self.k_space = fftshift(fft2(fftshift(self._image_to_correct)))
 
-    def _generate_kspace_indices(self):
+    def _generate_distorted_indices(self):
         """
         I don't entirely know what is happening here...
         we now reshape our encoding signals and add scaling factors...
@@ -239,9 +240,9 @@ class KspaceDistortionCorrector:
         elif (np.round(self._ImageOrientationPatient) == [1, 1, 1, 1, 1, 1]).all():
 
             # this is for through plane correction where the real images are [1, 0, 0, 0, 1, 0]
-            # xn_dis = self.Gx_encode / (self._PixelSpacing[0])
-            # self.xj = xn_dis * 2 * np.pi
-            self.xj = pd.Series(self.sk)
+            xn_dis = self.Gx_encode / (self._PixelSpacing[0])
+            self.xj = xn_dis * 2 * np.pi
+            # self.xj = pd.Series(self.sk)
             yn_dis = self.Gz_encode / (self._PixelSpacing[2])
             self.yj = yn_dis * 2 * np.pi
         elif np.round(self._ImageOrientationPatient == [2, 2, 2, 2, 2, 2]).all():
@@ -325,13 +326,11 @@ class KspaceDistortionCorrector:
             A = LinearOperator((fk1.shape[0], fk1.shape[0]), matvec=self._fiNufft_Ax, rmatvec=self._fiNufft_Atb)
             StartingImage = self._image_to_correct.flatten().astype(complex)
         if False:
-
             fig, axs = plt.subplots(nrows=2,ncols=2, figsize=[8,8])
             axs[0, 0].plot(self.xj); axs[0, 0].set_title('xj')
             axs[0, 1].plot(self.yj); axs[0, 1].set_title('yj')
             axs[1, 0].plot(self.sk); axs[1, 0].set_title('sk')
             axs[1, 1].plot(self.tk); axs[1, 1].set_title('tk')
-
         if False:
             fig, axs = plt.subplots(nrows=1, ncols=2, figsize=[10,5])
             axs[0].imshow(self._image_to_correct)
@@ -388,7 +387,7 @@ class KspaceDistortionCorrector:
             t_start = perf_counter()
             print(f'2D correction: {i-self._n_zero_pad} of {n_images_to_correct}')
 
-            print(printProgressBar(i-self._n_zero_pad, n_images_to_correct).encode('utf-8'))
+            print(printProgressBar(i-self._n_zero_pad, n_images_to_correct))
             self._image_to_correct = array_slice
             self._X_slice = X
             self._Y_slice = Y
@@ -408,7 +407,8 @@ class KspaceDistortionCorrector:
             else:
                 raise NotImplementedError
             # which directions are already corrected:
-            corrected_dims = np.array(['x', 'y', 'z'])[([self._dicom_data['slice_direction'] not in axis for axis in ['x', 'y', 'z']])]
+            corrected_dims = np.array(['x', 'y', 'z'])[([self._dicom_data['slice_direction'] not in
+                                                         axis for axis in ['x', 'y', 'z']])]
 
             # corrected_dims = np.array(['x', 'y', 'z'])
             self._force_linear_harmonics(corrected_dims)  # this forces already corrected dimensions to be linear
@@ -417,7 +417,7 @@ class KspaceDistortionCorrector:
                               np.rollaxis(self._X, loop_axis),
                               np.rollaxis(self._Y, loop_axis),
                               np.rollaxis(self._Z, loop_axis))
-            self._image_array_corrected2 =self._image_array_corrected.copy()
+            self._image_array_corrected2 = self._image_array_corrected.copy()
             j = 0
             self._Rows = np.rollaxis(self._image_array_corrected, loop_axis).shape[1]
             self._Cols = np.rollaxis(self._image_array_corrected, loop_axis).shape[2]
@@ -440,6 +440,7 @@ class KspaceDistortionCorrector:
                 print(f"Elapsed time {t_stop - t_start}")
 
                 j += 1
+
 
         self._unpad_image_arrays()
 

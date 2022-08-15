@@ -27,7 +27,7 @@ dis_data = {'0': '01 localiser_gre',
             '5': '06 gre_cor_RL_330',
             '6': '07 gre_cor_LR_330',
             '7': 'k_space'}
-distorted_data_loc = dis_data_loc / dis_data['3'] / 'Original'
+distorted_data_loc = dis_data_loc / dis_data['1'] / 'Original'
 gt_data_loc = Path(r'C:\Users\bwhe3635\Downloads\CT\CT\slicer_centroids.mrk.json')
 
 # extract markers:
@@ -60,7 +60,7 @@ GDC.save_all_images_as_dicom()
 
 corrected_volume = MarkerVolume(distorted_data_loc / 'Corrected_dcm',
                                 n_markers_expected=336,
-                                iterative_segmentation=True, r_max=160)
+                                iterative_segmentation=True, r_max=160, threshold=30)
 remove_ind = np.logical_and(corrected_volume.MarkerCentroids.r>=70,corrected_volume.MarkerCentroids.r <= 140)
 corrected_volume.MarkerCentroids = corrected_volume.MarkerCentroids.drop(corrected_volume.MarkerCentroids.index[remove_ind])
 matched_volume_corrected = MatchedMarkerVolumes(gt_volume, corrected_volume, ReferenceMarkers=11)
