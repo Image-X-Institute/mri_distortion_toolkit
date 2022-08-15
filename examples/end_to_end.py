@@ -11,13 +11,25 @@ from MRI_DistortionQA import calculate_harmonics
 from MRI_DistortionQA.utilities import plot_disortion_xyz_hist
 import numpy as np
 from MRI_DistortionQA.K_SpaceCorrector import KspaceDistortionCorrector
-from MRI_DistortionQA.utilities import plot_matched_volume_hist
-from MRI_DistortionQA.utilities import plot_MarkerVolume_overlay
 
-# the MR data can be downloaded from here
-# https://cloudstor.aarnet.edu.au/plus/apps/files/?dir=/Shared/MRI-Linac%20Experimental%20Data/Goam2%5EMr/20220428%20MR%20Linac%5ETest/10%20gre_trans_AP_330&fileid=6603056421
-distorted_data_loc = Path(r'C:\Users\bwhe3635\Downloads\MRI_distortion_QA_sample_data\MRI_distortion_QA_sample_data\MR\04 gre_trans_AP_330')
-gt_data_loc = Path(r'C:\Users\bwhe3635\Downloads\MRI_distortion_QA_sample_data\MRI_distortion_QA_sample_data\CT\slicer_centroids.mrk.json')
+from MRI_DistortionQA.utilities import plot_matched_volume_hist, print_dict
+from MRI_DistortionQA.utilities import plot_MarkerVolume_overlay
+from matplotlib import pyplot as plt
+plt.rcParams["figure.dpi"] = 150  # for 4k screens
+
+# Data import
+dis_data_loc = Path(r'C:\Users\bwhe3635\cloudstor\Shared\Goam2^Mr\20220624 QA^QA')
+dis_data = {'0': '01 localiser_gre',
+            '1': '02 gre_trans_AP_330',
+            '2': '03 gre_trans_PA_330',
+            '3': '04 gre_sag_AP_330',
+            '4': '05 gre_sag_PA_330',
+            '5': '06 gre_cor_RL_330',
+            '6': '07 gre_cor_LR_330',
+            '7': 'k_space'}
+distorted_data_loc = dis_data_loc / dis_data['3'] / 'Original'
+gt_data_loc = Path(r'C:\Users\bwhe3635\Downloads\CT\CT\slicer_centroids.mrk.json')
+
 # extract markers:
 gt_volume = MarkerVolume(gt_data_loc, r_max=300)
 dis_volume = MarkerVolume(distorted_data_loc, n_markers_expected=336, iterative_segmentation=True)
@@ -32,6 +44,7 @@ normalisation_factor = [1/gradient_strength[0], 1/gradient_strength[1], 1/gradie
 G_x_Harmonics, G_y_Harmonics, G_z_Harmonics, B0_Harmonics = calculate_harmonics(B_fields.MagneticFields,
                                                                                 n_order=8,
                                                                                 norm=normalisation_factor)
+
 # correct input images
 GDC = KspaceDistortionCorrector(ImageDirectory=distorted_data_loc.resolve(),
                                 Gx_Harmonics=G_x_Harmonics.harmonics,
@@ -44,7 +57,9 @@ GDC.correct_all_images()
 GDC.save_all_images()
 GDC.save_all_images_as_dicom()
 # Now we have the corrected images, we can compare the original and the corrected to the GT:
-corrected_volume = MarkerVolume(distorted_data_loc / 'Corrected_dcm', gaussian_image_filter_sd=1, n_markers_expected=336,
+
+corrected_volume = MarkerVolume(distorted_data_loc / 'Corrected_dcm',
+                                n_markers_expected=336,
                                 iterative_segmentation=True, r_max=160)
 remove_ind = np.logical_and(corrected_volume.MarkerCentroids.r>=70,corrected_volume.MarkerCentroids.r <= 140)
 corrected_volume.MarkerCentroids = corrected_volume.MarkerCentroids.drop(corrected_volume.MarkerCentroids.index[remove_ind])
