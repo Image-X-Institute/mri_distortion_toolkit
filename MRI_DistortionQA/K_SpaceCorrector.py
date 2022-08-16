@@ -251,7 +251,7 @@ class KspaceDistortionCorrector:
             #xn_dis should match the image indices
             self.xj = pd.Series(xn_lin * 2 * np.pi)
             # self.xj = pd.Series(self.sk)
-            yn_dis = self.Gz_encode / (self._PixelSpacing[2])
+            yn_dis = -1*self.Gz_encode / (self._PixelSpacing[2])
             self.yj = yn_dis * 2 * np.pi
         elif np.round(self._ImageOrientationPatient == [2, 2, 2, 2, 2, 2]).all():
             # this is for through plane correction where the real images are [0, 1, 0, 0, 0, -1]
@@ -278,8 +278,6 @@ class KspaceDistortionCorrector:
                 self.dodgy_ind = self.dodgy_ind + 1
             except:
                 self.dodgy_ind = 0
-            if self.dodgy_ind > 30:
-                print('hello')
 
     def _fiNufft_Ax(self, x):
         """
