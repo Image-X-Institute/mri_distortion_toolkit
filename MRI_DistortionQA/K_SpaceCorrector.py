@@ -40,7 +40,7 @@ class KspaceDistortionCorrector:
         :param correct_through_plane:
         """
         self.correct_through_plane = correct_through_plane
-        self._n_zero_pad = 10  # n_pixels to add around each edge of volume. set to 0 for no zero padding
+        self._n_zero_pad = 0  # n_pixels to add around each edge of volume. set to 0 for no zero padding
         self._dicom_data = dicom_data
         self._calculate_gradient_strength()
         self._Gx_Harmonics, self._Gy_Harmonics, self._Gz_Harmonics = \
@@ -102,9 +102,9 @@ class KspaceDistortionCorrector:
         """
 
         self._image_shape = np.array(np.squeeze(self._X_slice).shape)
-        coords = np.array([self._X_slice.flatten(), self._Y_slice.flatten(), self._Z_slice.flatten()])
-        self.coords = pd.DataFrame(coords.T, columns=['x', 'y', 'z'])
-        self.coords = convert_cartesian_to_spherical(self.coords)
+        coords_cartesian = np.array([self._X_slice.flatten(), self._Y_slice.flatten(), self._Z_slice.flatten()])
+        coords_cartesian = pd.DataFrame(coords_cartesian.T, columns=['x', 'y', 'z'])
+        self.coords = convert_cartesian_to_spherical(coords_cartesian)
         self._calculate_encoding_fields()
         # self._plot_encoding_fields()  # useful for debugging
         self._generate_Kspace_data()
@@ -131,14 +131,7 @@ class KspaceDistortionCorrector:
         Calculate the gradient strengths from dicom header.
         Probably have to use these to scale the harmonics... or is it only the relative values that matter...
         """
-        # self._gradient_strength = bandwidth * image_size / (gama * 1e6 * FOV * 1e-3)  # in T/m
-        # self._gradient_strength[np.isnan(self._gradient_strength)] = .002  # don't know best way to handle slice gradient...
-        self._gradient_strength = np.array(self._dicom_data['gradient_strength']) * 1
         self._gradient_strength = [1e3, 1e3, 1e3]
-        self._scale_factor = 1
-        if not self._scale_factor == 1:  # fudge factor
-            logger.warning(f'scaling gradient strength by hard coded fudge factor {self._scale_factor}')
-            self._gradient_strength = self._gradient_strength * self._scale_factor
 
     def _calculate_encoding_fields(self):
         """
@@ -196,6 +189,18 @@ class KspaceDistortionCorrector:
         plt.tight_layout()
         plt.show()
 
+    def _plot_indices(self):
+        """
+        handy debug plot routine to plot linear/distorted indices
+        :return:
+        """
+
+        fig, axs = plt.subplots(nrows=2,ncols=2, figsize=[8,8])
+        axs[0, 0].plot(self.xj); axs[0, 0].set_title('xj')
+        axs[0, 1].plot(self.yj); axs[0, 1].set_title('yj')
+        axs[1, 0].plot(self.sk); axs[1, 0].set_title('sk')
+        axs[1, 1].plot(self.tk); axs[1, 1].set_title('tk')
+
     def _generate_Kspace_data(self):
         """
         Get the k space of the current slice data.
@@ -248,6 +253,18 @@ class KspaceDistortionCorrector:
             # self.xj = pd.Series(self.sk)
             yn_dis = self.Gz_encode / (self._PixelSpacing[2])
             self.yj = yn_dis * 2 * np.pi
+        elif np.round(self._ImageOrientationPatient == [2, 2, 2, 2, 2, 2]).all():
+            # this is for through plane correction where the real images are [0, 1, 0, 0, 0, -1]
+            x_lin_size, y_lin_size = self._image_to_correct.shape
+            xn_lin = np.linspace(-x_lin_size/2, x_lin_size/2, x_lin_size)
+            yn_lin = np.linspace(-y_lin_size/2, y_lin_size/2, y_lin_size)
+            [xn_lin, yn_lin] = np.meshgrid(xn_lin, yn_lin, indexing='ij')
+            xn_lin = xn_lin.flatten()
+            yn_lin = yn_lin.flatten()
+            xn_dis = self.Gx_encode / (self._PixelSpacing[0])
+            self.xj = pd.Series(xn_lin * 2 * np.pi)
+            yn_dis = self.Gx_encode / (self._PixelSpacing[0])
+            self.yj = yn_dis * 2 * np.pi
         else:
             raise NotImplementedError('this slice orientation is not handled yet sorry')
 
@@ -261,8 +278,8 @@ class KspaceDistortionCorrector:
                 self.dodgy_ind = self.dodgy_ind + 1
             except:
                 self.dodgy_ind = 0
-            # if self.dodgy_ind > 6:
-            #     print('helo')
+            if self.dodgy_ind > 30:
+                print('hello')
 
     def _fiNufft_Ax(self, x):
         """
@@ -318,12 +335,7 @@ class KspaceDistortionCorrector:
             self.Nufft_Atb_Plan.setpts(self.sk, self.tk, None, self.xj, self.yj)
             A = LinearOperator((fk1.shape[0], fk1.shape[0]), matvec=self._fiNufft_Ax, rmatvec=self._fiNufft_Atb)
             StartingImage = self._image_to_correct.flatten().astype(complex)
-        if False:
-            fig, axs = plt.subplots(nrows=2,ncols=2, figsize=[8,8])
-            axs[0, 0].plot(self.xj); axs[0, 0].set_title('xj')
-            axs[0, 1].plot(self.yj); axs[0, 1].set_title('yj')
-            axs[1, 0].plot(self.sk); axs[1, 0].set_title('sk')
-            axs[1, 1].plot(self.tk); axs[1, 1].set_title('tk')
+
         if False:
             fig, axs = plt.subplots(nrows=1, ncols=2, figsize=[10,5])
             axs[0].imshow(self._image_to_correct)
@@ -378,7 +390,7 @@ class KspaceDistortionCorrector:
                 continue
 
             t_start = perf_counter()
-            print(f'2D correction: {i-self._n_zero_pad} of {n_images_to_correct}')
+            print(f'2D correction: {i-self._n_zero_pad} of {self._n_dicom_files}')
 
             print(printProgressBar(i-self._n_zero_pad, n_images_to_correct))
             self._image_to_correct = array_slice
@@ -404,7 +416,7 @@ class KspaceDistortionCorrector:
                                                          axis for axis in ['x', 'y', 'z']])]
 
             # corrected_dims = np.array(['x', 'y', 'z'])
-            self._force_linear_harmonics(corrected_dims)  # this forces already corrected dimensions to be linear
+            # self._force_linear_harmonics(corrected_dims)  # this forces already corrected dimensions to be linear
             loop_axis = 1
             zipped_data = zip(np.rollaxis(self._image_array_corrected, loop_axis),
                               np.rollaxis(self._X, loop_axis),
@@ -429,6 +441,11 @@ class KspaceDistortionCorrector:
                 self._Z_slice = Z
                 self._correct_image()
                 self._image_array_corrected[:, j, :] = self.outputImage
+                if False:
+                    fig, axs = plt.subplots(nrows=1, ncols=3)
+                    axs[0].imshow(self._image_array_corrected[:, j, :] )
+                    axs[1].imshow(self._image_to_correct)
+                    axs[2].imshow(self.outputImage)
                 t_stop = perf_counter()
                 print(f"Elapsed time {t_stop - t_start}")
 

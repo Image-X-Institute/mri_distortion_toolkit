@@ -18,16 +18,16 @@ from matplotlib import pyplot as plt
 plt.rcParams["figure.dpi"] = 150  # for 4k screens
 
 # Data import
-dis_data_loc = Path(r'C:\Users\bwhe3635\cloudstor\Shared\Goam2^Mr\20220624 QA^QA')
-dis_data = {'0': '01 localiser_gre',
-            '1': '02 gre_trans_AP_330',
-            '2': '03 gre_trans_PA_330',
-            '3': '04 gre_sag_AP_330',
-            '4': '05 gre_sag_PA_330',
-            '5': '06 gre_cor_RL_330',
-            '6': '07 gre_cor_LR_330',
-            '7': 'k_space'}
-distorted_data_loc = dis_data_loc / dis_data['1'] / 'Original'
+distorted_data_loc = Path(r'C:\Users\bwhe3635\Documents\temp\MRILinac_DistortionCorrection\MrGoam Image Correction\MrGoam images')
+# dis_data = {'0': '01 localiser_gre',
+#             '1': '02 gre_trans_AP_330',
+#             '2': '03 gre_trans_PA_330',
+#             '3': '04 gre_sag_AP_330',
+#             '4': '05 gre_sag_PA_330',
+#             '5': '06 gre_cor_RL_330',
+#             '6': '07 gre_cor_LR_330',
+#             '7': 'k_space'}
+# distorted_data_loc = dis_data_loc / dis_data['1'] / 'Original'
 gt_data_loc = Path(r'C:\Users\bwhe3635\Downloads\CT\CT\slicer_centroids.mrk.json')
 
 # extract markers:
