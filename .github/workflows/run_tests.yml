@@ -29,10 +29,7 @@ jobs:
         pip install -r dev_requirements.txt
     - name: Test with pytest
       run: |
-        coverage run -m pytest
-        echo "Test coverage:" 
-        coverage report
-        echo "Doc string coverage:" 
-        interrogate -c setup.cfg MRI_DistortionQA/ -v
-
+          pytest --cov-report xml --cov=MRI_DistortionQA/
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
       
