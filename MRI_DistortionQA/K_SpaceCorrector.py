@@ -379,7 +379,7 @@ class KspaceDistortionCorrector:
         :return:
         """
         if self.correct_through_plane:
-            n_images_to_correct = self._n_dicom_files + (self.ImageArray.shape[0] - 2 * self._n_zero_pad)
+            n_images_to_correct = self._n_dicom_files + (self.ImageArray.shape[1] - 2 * self._n_zero_pad)
         else:
             n_images_to_correct = self._n_dicom_files
         loop_axis = 2  # ImageArray always has slice last
@@ -444,7 +444,7 @@ class KspaceDistortionCorrector:
                     j += 1
                     continue
                 t_start = perf_counter()
-                print(f'Through Plane correction: {j - self._n_zero_pad}')
+                print(f'Through Plane correction: {j - self._n_zero_pad} of {self.ImageArray.shape[loop_axis] - (2*self._n_zero_pad)}')
                 print(printProgressBar(i+j-(self._n_zero_pad*4), n_images_to_correct))
                 self._image_to_correct = array_slice
                 self._X_slice = X

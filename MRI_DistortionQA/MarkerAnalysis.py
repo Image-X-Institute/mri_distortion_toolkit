@@ -318,13 +318,10 @@ class MarkerVolume:
         for i in range(1, histogram_division - 1):
 
             n_segments = 0
-
             cutoff = background_value + i * histogram_segment
             threshold_volume = blurred_volume > cutoff
-
             labels = label(threshold_volume, background=0)
             unique_labels = np.unique(labels)[1:]  # first label is background so skip
-
             # Check number of segments falls within valid range:
             tol = 0.1
             if len(unique_labels) < self._n_markers_expected*(1-tol) or len(unique_labels) > self._n_markers_expected * (1+tol):
@@ -332,15 +329,13 @@ class MarkerVolume:
             else:
                 # This threshold is possibly valid
                 candidate_thresholds.append(cutoff)
-                candidate_n_points.append(len(unique_labels))
-
                 # Remove small volumes and check if still valid
                 for label_level in unique_labels:
                     RegionInd = labels == label_level
                     if np.count_nonzero(RegionInd) > 2:
                         n_segments += 1
-
-                if n_segments > self._n_markers_expected:
+                candidate_n_points.append(n_segments)
+                if n_segments >= self._n_markers_expected:
                     valid_thresholds.append(cutoff)
                     if self.verbose:
                         print('Threshold: ' + str(format(cutoff, '.2f')) + ', ' + str(n_segments) + ' segments.')
@@ -376,7 +371,6 @@ class MarkerVolume:
             # If cutoff point has been manually entered, go straight to thresholding
             self._iterative_segmentation = False
         if self._iterative_segmentation is True:
-
             self._cutoffpoint = self._find_iterative_cutoff(BlurredVolume)
         if self._cutoffpoint is None:
             self._cutoffpoint = threshold_otsu(BlurredVolume)
@@ -389,7 +383,7 @@ class MarkerVolume:
         """
         This code loops through all the found regions, extracts the cartesian coordiantes, and takes the
         intensity-weighted average as the centroid.
-        It will also exlcude volumes that are bigger/ smaller than the median using the params
+        It excludes volumes that are bigger/ smaller than the median using the params
         marker_size_upper_tol and marker_size_lower_tol
         """
         self._labels = label(self.ThresholdVolume, background=0)
@@ -435,8 +429,8 @@ class MarkerVolume:
                 voxel_max = np.max(n_voxels_copy)
 
         # 3 voxels is the absolute floor
-        if voxel_min < 2:
-            voxel_min = 2.1
+        if voxel_min < 3:
+            voxel_min = 3
 
         if self.verbose:
             print('Threshold value: ' + str(self._cutoffpoint))
