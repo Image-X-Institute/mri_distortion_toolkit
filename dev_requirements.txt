@@ -9,6 +9,7 @@ seaborn
 plotly
 jinja2
 pytest
+pytest-cov
 sphinx
 recommonmark
 sphinx_markdown_tables
