@@ -40,7 +40,7 @@ class KspaceDistortionCorrector:
         :param correct_through_plane:
         """
         self.correct_through_plane = correct_through_plane
-        self._n_zero_pad = 0  # n_pixels to add around each edge of volume. set to 0 for no zero padding
+        self._n_zero_pad = 10  # n_pixels to add around each edge of volume. set to 0 for no zero padding
         self._dicom_data = dicom_data
         self._calculate_gradient_strength()
         self._Gx_Harmonics, self._Gy_Harmonics, self._Gz_Harmonics = \
@@ -205,11 +205,8 @@ class KspaceDistortionCorrector:
 
     def _generate_distorted_indices(self):
         """
-        I don't entirely know what is happening here...
-        we now reshape our encoding signals and add scaling factors...
-         k_xy_dis represent the k-space indices of non-uniform points.
-
-        :return:
+        generates both the linear (i.e. assumed) indices and the distorted indices.
+        These indices are passed to the NUFFT library.
         """
 
         self.nj = self._Rows * self._Cols
@@ -240,26 +237,22 @@ class KspaceDistortionCorrector:
         elif (np.round(self._ImageOrientationPatient) == [1, 1, 1, 1, 1, 1]).all():
 
             # this is for through plane correction where the real images are [1, 0, 0, 0, 1, 0]
-            xn_dis = self.Gx_encode / (self._PixelSpacing[0])
-            self.xj = xn_dis * 2 * np.pi
+            # xn_dis = self.Gy_encode / (self._PixelSpacing[1])
+            x_lin_size, y_lin_size = self._image_to_correct.shape
+            xn_lin = np.linspace(-x_lin_size/2, x_lin_size/2, x_lin_size)
+            yn_lin = np.linspace(-y_lin_size/2, y_lin_size/2, y_lin_size)
+            [xn_lin, yn_lin] = np.meshgrid(xn_lin, yn_lin, indexing='ij')
+            xn_lin = xn_lin.flatten()
+            #xn_dis should match the image indices
+            self.xj = pd.Series(xn_lin * 2 * np.pi)
             # self.xj = pd.Series(self.sk)
             yn_dis = self.Gz_encode / (self._PixelSpacing[2])
             self.yj = yn_dis * 2 * np.pi
-        elif np.round(self._ImageOrientationPatient == [2, 2, 2, 2, 2, 2]).all():
-            # this is for through plane correction where the real images are [0, 1, 0, 0, 0, -1]
-            xn_dis = self.Gz_encode / (self._PixelSpacing[2])
-            self.xj = xn_dis * 2 * np.pi
-            yn_dis = self.Gx_encode / (self._PixelSpacing[0])
-            self.yj = yn_dis * 2 * np.pi
-
         else:
-            raise NotImplementedError('this slice orientation is not handled sorry')
+            raise NotImplementedError('this slice orientation is not handled yet sorry')
 
         self.xj = self.xj.to_numpy()
         self.yj = self.yj.to_numpy()
-
-        # self.xj = self.sk
-        # self.yj=self.tk
 
 
         if (np.round(self._ImageOrientationPatient) == [1, 1, 1, 1, 1, 1]).all() or \

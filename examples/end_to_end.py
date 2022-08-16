@@ -52,7 +52,7 @@ GDC = KspaceDistortionCorrector(ImageDirectory=distorted_data_loc.resolve(),
                                 Gz_Harmonics=G_z_Harmonics.harmonics,
                                 ImExtension='dcm',
                                 dicom_data=dis_volume.dicom_data,
-                                correct_through_plane=False)
+                                correct_through_plane=True)
 GDC.correct_all_images()
 GDC.save_all_images()
 GDC.save_all_images_as_dicom()
@@ -60,7 +60,7 @@ GDC.save_all_images_as_dicom()
 
 corrected_volume = MarkerVolume(distorted_data_loc / 'Corrected_dcm',
                                 n_markers_expected=336,
-                                iterative_segmentation=True, r_max=160, threshold=30)
+                                iterative_segmentation=True, r_max=160)
 remove_ind = np.logical_and(corrected_volume.MarkerCentroids.r>=70,corrected_volume.MarkerCentroids.r <= 140)
 corrected_volume.MarkerCentroids = corrected_volume.MarkerCentroids.drop(corrected_volume.MarkerCentroids.index[remove_ind])
 matched_volume_corrected = MatchedMarkerVolumes(gt_volume, corrected_volume, ReferenceMarkers=11)
