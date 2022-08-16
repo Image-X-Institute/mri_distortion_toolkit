@@ -15,7 +15,6 @@ from scipy.spatial.distance import cdist
 from scipy.spatial import transform
 from datetime import datetime
 
-
 ch = logging.StreamHandler()
 formatter = logging.Formatter('[%(filename)s: line %(lineno)d %(levelname)8s] %(message)s')
 ch.setFormatter(formatter)
@@ -96,11 +95,14 @@ class MarkerVolume:
 
                 self.InputVolume, self.dicom_affine, (self.X, self.Y, self.Z) = \
                     dicom_to_numpy(self.input_data_path, file_extension='dcm', return_XYZ=True)
-
                 self._calculate_MR_acquisition_data()
+
+                # Segmenting markers
+                self._filter_volume_by_r()
                 self.ThresholdVolume, self.BlurredVolume = self._threshold_volume(self.InputVolume)
                 centroids = self._find_contour_centroids()
                 self.MarkerCentroids = pd.DataFrame(centroids, columns=['x', 'y', 'z'])
+
                 # Correct for oil water shift
                 if self._correct_fat_water_shift:
                     self._calculate_chemical_shift_vector(fat_shift_direction=fat_shift_direction)
@@ -112,6 +114,13 @@ class MarkerVolume:
                 arrays = [el for el in data['markups'][0]['controlPoints']]
                 points = [el['position'] for el in arrays]
                 self.MarkerCentroids = pd.DataFrame(points, columns=['x', 'y', 'z'])
+
+                # look for dicom_data json file
+                try:
+                    with open(os.path.join(self.input_data_path.parent, 'dicom_data.json')) as f:
+                        self.dicom_data = json.load(f)
+                except:
+                    logger.warning(f'No dicom data found at {self.input_data_path.parent}.')
             else:
                 raise FileNotFoundError(f'could not find any data at {self.input_data_path}')
         elif isinstance(input_data, np.ndarray):
@@ -139,6 +148,26 @@ class MarkerVolume:
                                f'You entered that you expected to find'
                                f' {n_markers_expected}, but actually found {self.MarkerCentroids.shape[0]}.')
 
+    def _filter_volume_by_r(self):
+        """
+        Accelerates and improves segmenting by setting all voxels outside of specified radius to the background
+        """
+        if self._r_max or self._r_min:
+            _max = 10000
+            _min = -1
+            if self._r_max:
+                _max = self._r_max
+            if self._r_min:
+                _min = self._r_min
+            background = np.median(self.InputVolume)
+
+            it = np.nditer(self.InputVolume, flags=['multi_index'])
+            for voxel in it:
+                distance = np.sqrt(
+                    self.X[it.multi_index] ** 2 + self.Y[it.multi_index] ** 2 + self.Z[it.multi_index] ** 2)
+                if distance < _min or distance > _max:
+                    self.InputVolume[it.multi_index] = background
+
     def _filter_markers_by_r(self):
         """
         Remove any markers that are less than r_min or more than r_max
@@ -165,8 +194,9 @@ class MarkerVolume:
 
         if example_dicom_file.Modality == 'MR':
             if not example_dicom_file.Manufacturer == 'SIEMENS':
-                logger.warning('this code has not been tested with non-siemens scanners. If dicom standards work properly'
-                               'this code will too...')
+                logger.warning(
+                    'this code has not been tested with non-siemens scanners. If dicom standards work properly'
+                    'this code will too...')
             x = np.unique(self.X)
             y = np.unique(self.Y)
             z = np.unique(self.Z)
@@ -177,7 +207,6 @@ class MarkerVolume:
             y_fov = y.max() - y.min() + y_pixel_spacing
             z_fov = z.max() - z.min() + z_pixel_spacing
             self._dicom_header = example_dicom_file
-
 
             self.dicom_data = {}  # fill up below
             self.dicom_data['FOV'] = [x_fov, y_fov, z_fov]
@@ -259,7 +288,8 @@ class MarkerVolume:
         direction = np.array(([int(el == self.dicom_data['freq_encode_direction']) for el in directions]))
         # ^ this just gives a vector with a 1 in the correct direction e.g. [0,1,0]
         shift = direction * self.dicom_data['chem_shift_magnitude']
-        self._chemical_shift_vector = shift * np.array(self.dicom_data['pixel_spacing'])[direction.astype(bool)] * fat_shift_direction
+        self._chemical_shift_vector = shift * np.array(self.dicom_data['pixel_spacing'])[
+            direction.astype(bool)] * fat_shift_direction
 
     def _find_iterative_cutoff(self, blurred_volume):
         """
@@ -274,8 +304,8 @@ class MarkerVolume:
 
         # finds a range of thresholds that give a number of segments near to the number of expected markers
         histogram_division = 100
-        candidate_thresholds = []       # Thresholds that have fewer markers than expected, use when no valid thresholds
-        valid_thresholds = []           # Thresholds that should give the corrected number of markers
+        candidate_thresholds = []  # Thresholds that have fewer markers than expected, use when no valid thresholds
+        valid_thresholds = []  # Thresholds that should give the corrected number of markers
 
         # divide the range into segments and calculate how many volumes result from each segment
         background_value = np.median(np.round(blurred_volume))
@@ -382,8 +412,8 @@ class MarkerVolume:
 
         # Set up min and max marker volumes
         n_voxels_median = np.median(np.array(n_voxels))
-        voxel_min = (1-self._marker_size_lower_tol) * n_voxels_median
-        voxel_max = (1+self._marker_size_upper_tol) * n_voxels_median
+        voxel_min = (1 - self._marker_size_lower_tol) * n_voxels_median
+        voxel_max = (1 + self._marker_size_upper_tol) * n_voxels_median
 
         # Modify based on number of markers
         if self._n_markers_expected is not None:
@@ -475,9 +505,12 @@ class MarkerVolume:
         :type systemic_perturbation: float, optional
         """
 
-        x_peturb = np.random.uniform(low=-random_perturbation, high=random_perturbation, size=self.MarkerCentroids.x.shape)
-        y_peturb = np.random.uniform(low=-random_perturbation, high=random_perturbation, size=self.MarkerCentroids.x.shape)
-        z_peturb = np.random.uniform(low=-random_perturbation, high=random_perturbation, size=self.MarkerCentroids.x.shape)
+        x_peturb = np.random.uniform(low=-random_perturbation, high=random_perturbation,
+                                     size=self.MarkerCentroids.x.shape)
+        y_peturb = np.random.uniform(low=-random_perturbation, high=random_perturbation,
+                                     size=self.MarkerCentroids.x.shape)
+        z_peturb = np.random.uniform(low=-random_perturbation, high=random_perturbation,
+                                     size=self.MarkerCentroids.x.shape)
         self.MarkerCentroids.x = self.MarkerCentroids.x + x_peturb + systemic_perturbation
         self.MarkerCentroids.y = self.MarkerCentroids.y + y_peturb + systemic_perturbation
         self.MarkerCentroids.z = self.MarkerCentroids.z + z_peturb + systemic_perturbation
@@ -538,7 +571,7 @@ class MarkerVolume:
         filename = _file_name + _file_extension
         full_filename = save_path / filename
 
-        with open(full_filename,'w') as f:
+        with open(full_filename, 'w') as f:
             json.dump(self.dicom_data, f)
 
 
@@ -576,7 +609,6 @@ class MatchedMarkerVolumes:
     def __init__(self, GroundTruthData, DistortedData, ReverseGradientData=None, WarpSearchData=True,
                  AutomatchMarkers=True, AllowDoubleMatching=False, sorting_method='radial', ReferenceMarkers=0):
 
-
         # warping parameters:
         self.WarpSearchData = WarpSearchData
         self.AutomatchMarkers = AutomatchMarkers
@@ -605,10 +637,10 @@ class MatchedMarkerVolumes:
             self._align_reference()
 
         if self.AutomatchMarkers:
-            self.distorted_centroids =  self._sort_distorted_centroids(self.distorted_centroids)
+            self.distorted_centroids = self._sort_distorted_centroids(self.distorted_centroids)
             self._CentroidMatch = self._match_distorted_markers_to_ground_truth(self.distorted_centroids)
             if self.distorted_centroidsRev is not None:
-                self.distorted_centroidsRev = self._sort_distorted_centroids(self.distorted_centroidsRev )
+                self.distorted_centroidsRev = self._sort_distorted_centroids(self.distorted_centroidsRev)
                 self._CentroidMatchRev = self._match_distorted_markers_to_ground_truth(self.distorted_centroidsRev)
         else:
             self._create_marker_data_prematched_markers()
@@ -616,7 +648,6 @@ class MatchedMarkerVolumes:
 
         # analyse marker positions
         self._generate_marker_position_data()
-
 
     def _check_input_data(self):
         """
