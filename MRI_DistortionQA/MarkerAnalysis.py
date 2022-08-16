@@ -42,9 +42,9 @@ class MarkerVolume:
     :param iterative_segmentation: If set to true, a slower iterative method will be used to find the threshold value
         used to segment the markers. Otherwise, otsu's method is used.
     :type iterative_segmentation: bool, optional
-    :param cutoff_point: Manually set the threshold value. If this is left as None otsu's method is used.
+    :param threshold: Manually set the threshold value. If this is left as None otsu's method is used.
         This will replace the iterative segmentation method regardless of flag.
-    :type cutoff_point: float, optional
+    :type threshold: float, optional
     :param n_markers_expected: if you know how many markers you expect, you can enter the value here. The code will
         then warn you if it finds a different number.
     :type n_markers_expected: int, optional
@@ -70,7 +70,7 @@ class MarkerVolume:
     """
 
     def __init__(self, input_data, ImExtension='dcm', r_min=None, r_max=None, iterative_segmentation=False,
-                 cutoff_point=None, n_markers_expected=None, fat_shift_direction=None, verbose=False,
+                 threshold=None, n_markers_expected=None, fat_shift_direction=None, verbose=False,
                  gaussian_image_filter_sd=1, correct_fat_water_shift=False, marker_size_lower_tol=0.9,
                  marker_size_upper_tol=1):
 
@@ -81,7 +81,7 @@ class MarkerVolume:
         self._n_markers_expected = n_markers_expected
         self._r_min = r_min
         self._r_max = r_max
-        self._cutoffpoint = cutoff_point
+        self._cutoffpoint = threshold
         self._iterative_segmentation = iterative_segmentation
         self._chemical_shift_vector = None
         self._gaussian_image_filter_sd = gaussian_image_filter_sd
@@ -120,7 +120,7 @@ class MarkerVolume:
                     with open(os.path.join(self.input_data_path.parent, 'dicom_data.json')) as f:
                         self.dicom_data = json.load(f)
                 except:
-                    logger.warning(f'No dicom data found at {self.input_data_path.parent}.')
+                    logger.warning(f'MR data file dicom_data.json not found at {self.input_data_path.parent}. Continuing')
             else:
                 raise FileNotFoundError(f'could not find any data at {self.input_data_path}')
         elif isinstance(input_data, np.ndarray):
@@ -304,8 +304,10 @@ class MarkerVolume:
 
         # finds a range of thresholds that give a number of segments near to the number of expected markers
         histogram_division = 100
-        candidate_thresholds = []  # Thresholds that have fewer markers than expected, use when no valid thresholds
-        valid_thresholds = []  # Thresholds that should give the corrected number of markers
+
+        candidate_thresholds = []       # Thresholds that have fewer markers than expected, use when no valid thresholds
+        candidate_n_points = []
+        valid_thresholds = []           # Thresholds that should give the corrected number of markers
 
         # divide the range into segments and calculate how many volumes result from each segment
         background_value = np.median(np.round(blurred_volume))
@@ -324,11 +326,13 @@ class MarkerVolume:
             unique_labels = np.unique(labels)[1:]  # first label is background so skip
 
             # Check number of segments falls within valid range:
-            if len(unique_labels) < self._n_markers_expected or len(unique_labels) > self._n_markers_expected * 1.1:
+            tol = 0.1
+            if len(unique_labels) < self._n_markers_expected*(1-tol) or len(unique_labels) > self._n_markers_expected * (1+tol):
                 continue  # Too few or too many segments
             else:
                 # This threshold is possibly valid
                 candidate_thresholds.append(cutoff)
+                candidate_n_points.append(len(unique_labels))
 
                 # Remove small volumes and check if still valid
                 for label_level in unique_labels:
@@ -351,8 +355,11 @@ class MarkerVolume:
         if len(valid_thresholds) > 0:
             return np.mean(valid_thresholds)
         elif len(candidate_thresholds) > 0:
-            logger.warning('No valid thresholds were found. Using closest possible value.')
-            return np.mean(candidate_thresholds)
+            ind = np.argmin(abs(np.subtract(self._n_markers_expected, candidate_n_points)))
+            best_threshold = candidate_thresholds[ind]
+            logger.warning(f'No valid thresholds were found. Using closest possible value of {best_threshold}'
+                           f'which found {candidate_n_points[ind]} markers')
+            return best_threshold
         else:
             logger.warning('No valid thresholds were found. Try lowering gaussian blur level.')
             return None
@@ -369,9 +376,7 @@ class MarkerVolume:
             # If cutoff point has been manually entered, go straight to thresholding
             self._iterative_segmentation = False
         if self._iterative_segmentation is True:
-            # de noise with gaussian blurring. iterative segmentation works better with less blur so a 0.75 fudge
-            # factor has been added
-            BlurredVolume = gaussian(VolumeToThreshold, sigma=self._gaussian_image_filter_sd * 0.75)
+
             self._cutoffpoint = self._find_iterative_cutoff(BlurredVolume)
         if self._cutoffpoint is None:
             self._cutoffpoint = threshold_otsu(BlurredVolume)

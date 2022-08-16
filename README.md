@@ -1,4 +1,5 @@
 # MRI_DistortionQA  
+
 [![codecov](https://codecov.io/gh/ACRF-Image-X-Institute/MRI_DistortionQA/branch/main/graph/badge.svg?token=3MCT7S6KVK)](https://codecov.io/gh/ACRF-Image-X-Institute/MRI_DistortionQA) ![](docsrc/__resources/interrogate.svg) ![](https://github.com/ACRF-Image-X-Institute/MRI_DistortionQA/blob/main/.github/workflows/run_tests.yml/coverage.svg) ![tests](https://github.com/ACRF-Image-X-Institute/MRI_DistortionQA/actions/workflows/run_tests.yml/badge.svg) ![docs](https://github.com/ACRF-Image-X-Institute/MRI_DistortionQA/actions/workflows/build_docs.yml/badge.svg)
 
 **Authors:** Brendan Whelan, Paul Liu, Shanshan Shan
@@ -11,6 +12,7 @@ flowchart LR
     B[Marker <br>Matching]--->C[Field <br> Calculation] & E[Automated <br>reporting]
     C[Field <br> Calculation]-->D[Spherical Harmonic <br>Analysis]
     D[Spherical Harmonic <br>Analysis]-->E[Automated <br>reporting];
+    D[Spherical Harmonic <br>Analysis]-->F[Distortion Correction]
     click A "https://acrf-image-x-institute.github.io/MRI_DistortionQA/code_docs.html#MRI_DistortionQA.MarkerAnalysis.MarkerVolume"
     click B "https://acrf-image-x-institute.github.io/MRI_DistortionQA/code_docs.html#MRI_DistortionQA.MarkerAnalysis.MatchedMarkerVolumes"
     click C "https://acrf-image-x-institute.github.io/MRI_DistortionQA/code_docs.html#MRI_DistortionQA.FieldCalculation.ConvertMatchedMarkersToBz"

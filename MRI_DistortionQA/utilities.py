@@ -65,6 +65,7 @@ def build_dicom_affine(Dicomfiles):
 
     CoordinateMatrix = np.zeros([4, 4])
     F = np.array([ds.ImageOrientationPatient[3:], ds.ImageOrientationPatient[:3]]).T
+    F = np.round(F)
     first_col = np.multiply(F[:, 0], ds.PixelSpacing[0])
     sec_col = np.multiply(F[:, 1], ds.PixelSpacing[1])
     CoordinateMatrix[:, 0][0:3] = first_col
@@ -88,8 +89,39 @@ def build_dicom_affine(Dicomfiles):
     return CoordinateMatrix
 
 
+def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, length = 100, fill = '█'):
+    """
+    [credit here](https://gist.github.com/greenstick/b23e475d2bfdc3a82e34eaa1f6781ee4)
+
+    Call in a loop to create terminal progress bar
+
+        iteration   - Required  :
+        total       - Required  :
+        prefix      - Optional  :
+        suffix      - Optional  :
+        decimals    - Optional  :
+        length      - Optional  :
+        fill        - Optional  :
+        printEnd    - Optional  : end character (e.g. "\r", "\r\n") (Str)
+
+    :param iteration: current iteration (Int)
+    :param total: total iterations (Int)
+    :param prefix:  prefix string (Str)
+    :param suffix: suffix string (Str)
+    :param decimals: positive number of decimals in percent complete (Int)
+    :param length: character length of bar (Int)
+    :param fill: bar fill character (Str)
+    :return: progress_string: the string to print
+    """
+    percent = ("{0:." + str(decimals) + "f}").format(100 * (iteration / float(total)))
+    filledLength = int(length * iteration // total)
+    bar = fill * filledLength + '-' * (length - filledLength)
+    progress_string = f'\r{prefix} |{bar}| {percent}% {suffix}'
+    return progress_string
+
+
 def dicom_to_numpy(path_to_dicoms, FilesToReadIn=None, file_extension='dcm', return_XYZ=False,
-                   zero_pad=0):
+                   zero_pad=0, enforce_increasing_coords=False):
     """
     This function does two things:
 
@@ -133,6 +165,21 @@ def dicom_to_numpy(path_to_dicoms, FilesToReadIn=None, file_extension='dcm', ret
     n_slices = len(dicom_slices) + zero_pad*2
 
     ImageArray = np.zeros([n_rows, n_cols, n_slices])
+    if enforce_increasing_coords:
+        # this option exists for the distortion correction code, which increasing indices
+        new_affine = dicom_affine.copy()
+        coordinates_end = dicom_affine @ [n_rows-1, n_cols-1, n_slices-1, 1]
+        for col in [0, 1]:  # check first two cols
+            for i, pixel_increment in enumerate(dicom_affine[:, col]):
+                if pixel_increment < 0:
+                    '''
+                    then we need to force this to positive, and switch the start position to the 
+                    current end position
+                    '''
+                    new_affine[i, col] = -1 * pixel_increment
+                    new_start = coordinates_end[i]
+                    new_affine[i, 3] = new_start
+        dicom_affine = new_affine
     for i, file in enumerate(dicom_slices):
         if zero_pad > 0:
             ImageArray[zero_pad:-zero_pad, zero_pad:-zero_pad, i+zero_pad] = file.pixel_array
@@ -152,7 +199,9 @@ def dicom_to_numpy(path_to_dicoms, FilesToReadIn=None, file_extension='dcm', ret
         X = np.reshape(XYZtemp[0, :], ImageArray.shape)
         Y = np.reshape(XYZtemp[1, :], ImageArray.shape)
         Z = np.reshape(XYZtemp[2, :], ImageArray.shape)
+
         assert ImageArray.shape == X.shape
+
         return ImageArray, dicom_affine, (X, Y, Z)
     else:
         return ImageArray, dicom_affine
@@ -359,87 +408,6 @@ def convert_spherical_harmonics(harmonics, input_format='full', output_format='n
     return converted_harmonics
 
 
-def plot_MarkerVolume_overlay(MarkerVolumeList, legend=None):  # pragma: no cover
-    """
-    Plot overlaid 3D scatter plots of the marker positions in each MarkerVolume
-
-    :param MarkerVolumeList: list of MarkerVolume instances
-    :param legend: legend to display on plot
-    :return: None
-    """
-
-    assert isinstance(MarkerVolumeList, list)
-
-    fig = plt.figure()
-    axs = fig.add_subplot(111, projection='3d')
-    for MarkerVolume in MarkerVolumeList:
-        axs.scatter(MarkerVolume.MarkerCentroids.x, MarkerVolume.MarkerCentroids.y, MarkerVolume.MarkerCentroids.z)
-        axs.set_xlabel('X [mm]')
-        axs.set_ylabel('Y [mm]')
-        axs.set_zlabel('Z [mm]')
-        axs.set_title('3D marker positions')
-    axs.set_box_aspect((np.ptp(MarkerVolume.MarkerCentroids.x),
-                        np.ptp(MarkerVolume.MarkerCentroids.y),
-                        np.ptp(MarkerVolume.MarkerCentroids.z)))
-    if legend:
-        plt.legend(legend)
-    plt.show()
-
-
-def plot_compressed_MarkerVolumes(MarkerVolumeList, z_max=20, z_min=-20, title=None, legend=None): # pragma: no cover
-    """
-    plot overlay of compressed marker volumes (z coord is ignored)
-
-    :param MarkerVolumeList:  list of MarkerVolume instances
-    :type MarkerVolumeList: list
-    :param z_max: max z data to include
-    :type z_max: float, optional
-    :param z_min: min z data to include
-    :type z_min: float, optional
-    :param title: title of plot
-    :type title: str, optional
-    :param legend: legend of plot
-    :type legend: list, optional
-    :return: None
-    """
-
-    fig, axs = plt.subplots(figsize=[8, 8], ncols=1, nrows=1)
-    for MarkerVolume in MarkerVolumeList:
-        data_ind = np.logical_and(MarkerVolume.MarkerCentroids.z > z_min, MarkerVolume.MarkerCentroids.z < z_max)
-        plot_data = MarkerVolume.MarkerCentroids[data_ind]
-        axs.scatter(plot_data.x, plot_data.y)
-        axs.set_xlim([-150, 150])
-        axs.set_ylim([-150, 150])
-        axs.set_xlabel('x [mm]', fontsize=15)
-        axs.set_ylabel('y [mm]', fontsize=15)
-        axs.tick_params(axis='both', which='major', labelsize=12)
-        axs.tick_params(axis='both', which='minor', labelsize=12)
-        axs.axis("equal")
-        axs.grid()
-        plt.subplots_adjust(bottom=0.25)
-        if legend:
-            plt.legend(legend)
-        if title:
-            plt.title(title)
-
-def plot_MatchedMarkerVolume_hist(MatchedMarkerVolumeList, legend=None):
-    """
-    creates a histogram of absolute distortion.
-
-    :param MatchedMarkerVolumeList: a list of MatchedMarkerVolumes
-    """
-    for volume in MatchedMarkerVolumeList:
-        bins = np.linspace(0, 10, 30)
-        plt.figure()
-        plt.hist(volume.MatchedCentroids.match_distance, bins=bins, alpha=0.5)
-
-        plt.xlabel('distortion [mm]')
-        plt.tight_layout()
-        plt.show()
-    if legend:
-        plt.legend(['original', 'corrected'])
-
-
 def get_gradient_spherical_harmonics(Gx_Harmonics, Gy_Harmonics, Gz_Harmonics):
     """
     return the gradient spherical harmonics as as pandas series. this function is simply a clean way to handle
@@ -604,3 +572,138 @@ def enumerate_subfolders(data_loc):
         data_dict[str(i)] = folder_name
     for key in data_dict.keys():
         print(f"'{key}': '{data_dict[key]}',")
+
+
+def plot_MarkerVolume_overlay(MarkerVolumeList, legend=None):  # pragma: no cover
+    """
+    Plot overlaid 3D scatter plots of the marker positions in each MarkerVolume
+
+    :param MarkerVolumeList: list of MarkerVolume instances
+    :param legend: legend to display on plot
+    :return: None
+    """
+
+    assert isinstance(MarkerVolumeList, list)
+
+    fig = plt.figure()
+    axs = fig.add_subplot(111, projection='3d')
+    for MarkerVolume in MarkerVolumeList:
+        axs.scatter(MarkerVolume.MarkerCentroids.x, MarkerVolume.MarkerCentroids.y, MarkerVolume.MarkerCentroids.z)
+        axs.set_xlabel('X [mm]')
+        axs.set_ylabel('Y [mm]')
+        axs.set_zlabel('Z [mm]')
+        axs.set_title('3D marker positions')
+    axs.set_box_aspect((np.ptp(MarkerVolume.MarkerCentroids.x),
+                        np.ptp(MarkerVolume.MarkerCentroids.y),
+                        np.ptp(MarkerVolume.MarkerCentroids.z)))
+    if legend:
+        plt.legend(legend)
+    plt.show()
+
+
+def plot_compressed_MarkerVolumes(MarkerVolumeList, z_max=20, z_min=-20, title=None, legend=None): # pragma: no cover
+    """
+    plot overlay of compressed marker volumes (z coord is ignored)
+
+    :param MarkerVolumeList:  list of MarkerVolume instances
+    :type MarkerVolumeList: list
+    :param z_max: max z data to include
+    :type z_max: float, optional
+    :param z_min: min z data to include
+    :type z_min: float, optional
+    :param title: title of plot
+    :type title: str, optional
+    :param legend: legend of plot
+    :type legend: list, optional
+    :return: None
+    """
+
+    fig, axs = plt.subplots(figsize=[8, 8], ncols=1, nrows=1)
+    for MarkerVolume in MarkerVolumeList:
+        data_ind = np.logical_and(MarkerVolume.MarkerCentroids.z > z_min, MarkerVolume.MarkerCentroids.z < z_max)
+        plot_data = MarkerVolume.MarkerCentroids[data_ind]
+        axs.scatter(plot_data.x, plot_data.y)
+        axs.set_xlim([-150, 150])
+        axs.set_ylim([-150, 150])
+        axs.set_xlabel('x [mm]', fontsize=15)
+        axs.set_ylabel('y [mm]', fontsize=15)
+        axs.tick_params(axis='both', which='major', labelsize=12)
+        axs.tick_params(axis='both', which='minor', labelsize=12)
+        axs.axis("equal")
+        axs.grid()
+        plt.subplots_adjust(bottom=0.25)
+        if legend:
+            plt.legend(legend)
+        if title:
+            plt.title(title)
+
+
+def plot_MatchedMarkerVolume_hist(MatchedMarkerVolumeList, legend=None):
+    """
+    creates a histogram of absolute distortion.
+
+    :param MatchedMarkerVolumeList: a list of MatchedMarkerVolumes
+    """
+    for volume in MatchedMarkerVolumeList:
+        bins = np.linspace(0, 10, 30)
+        plt.figure()
+        plt.hist(volume.MatchedCentroids.match_distance, bins=bins, alpha=0.5)
+
+        plt.xlabel('distortion [mm]')
+        plt.tight_layout()
+        plt.show()
+    if legend:
+        plt.legend(['original', 'corrected'])
+
+
+def plot_matched_volume_hist(VolumeList, legend=None):
+    """
+    create a histogram of total distortion for all input volumes
+
+    :param VolumeList: a list of [matched marker volumes](https://acrf-image-x-institute.github.io/MRI_DistortionQA/code_docs.html#MRI_DistortionQA.MarkerAnalysis.MatchedMarkerVolumes)
+    :type VolumeList: list
+    :param legend: legend to print
+    :type legend: list, optional
+    :return: None
+    """
+    bins = np.linspace(0, 10, 30)
+    plt.figure()
+    for marker_volume in VolumeList:
+        plt.hist(marker_volume.MatchedCentroids.match_distance, bins=bins, alpha=0.5)
+    if legend:
+        plt.legend(['original', 'corrected'])
+    plt.xlabel('distortion [mm]')
+    plt.tight_layout()
+    plt.show()
+
+
+def plot_disortion_xyz_hist(MatchedMarkerVolume):
+    """
+    plot overlaid x, y, z distortion for an input instance of
+    [MatchedMarkerVolume](https://acrf-image-x-institute.github.io/MRI_DistortionQA/code_docs.html#MRI_DistortionQA.MarkerAnalysis.MatchedMarkerVolumes)
+
+    :param MatchedMarkerVolume: an instance of MatchedMarkerVolumes
+    """
+
+    x_dis = MatchedMarkerVolume.MatchedCentroids.x_gt - MatchedMarkerVolume.MatchedCentroids.x_gnl
+    y_dis = MatchedMarkerVolume.MatchedCentroids.y_gt - MatchedMarkerVolume.MatchedCentroids.y_gnl
+    z_dis = MatchedMarkerVolume.MatchedCentroids.z_gt - MatchedMarkerVolume.MatchedCentroids.z_gnl
+
+    plt.figure()
+    bins = np.linspace(0, 10, 30)
+    plt.hist(abs(x_dis), bins=bins, alpha=0.5)
+    plt.hist(abs(y_dis), bins=bins, alpha=0.5)
+    plt.hist(abs(z_dis), bins=bins, alpha=0.5)
+    plt.legend(['x', 'y', 'z'])
+    plt.xlabel('distortion [mm]')
+    plt.show()
+
+
+def print_dict(dict):
+    """
+    just provides a nicer display of the input dict than the default print function,
+    got sick of writing the same code over and over...
+    """
+    for key in dict.keys():
+        print(f'{key}: {dict[key]}')
+
