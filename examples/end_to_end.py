@@ -28,7 +28,8 @@ dis_data = {'0': '01 localiser_gre',
             '5': '06 gre_cor_RL_330',
             '6': '07 gre_cor_LR_330',
             '7': 'k_space'}
-distorted_data_loc = dis_data_loc / dis_data['5'] / 'Original'
+distorted_data_loc = dis_data_loc / dis_data['3'] / 'Original'
+distorted_data_loc = Path(r'C:\Users\bwhe3635\Documents\temp\MRILinac_DistortionCorrection\MrGoam Image Correction\MrGoam images')
 gt_data_loc = Path(r'C:\Users\bwhe3635\Downloads\CT\CT\slicer_centroids.mrk.json')
 
 # extract markers:
