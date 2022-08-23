@@ -201,6 +201,14 @@ class KspaceDistortionCorrector:
         axs[1, 0].plot(self.sk); axs[1, 0].set_title('sk')
         axs[1, 1].plot(self.tk); axs[1, 1].set_title('tk')
 
+    def _plot_coords(self):
+
+        fig, axs = plt.subplots(1,3)
+        axs[0].plot(self._X_slice.flatten())
+        axs[1].plot(self._Y_slice.flatten())
+        axs[2].plot(self._Z_slice.flatten())
+        plt.show()
+
     def _generate_Kspace_data(self):
         """
         Get the k space of the current slice data.
@@ -214,8 +222,6 @@ class KspaceDistortionCorrector:
         These indices are passed to the NUFFT library.
         """
 
-        self.nj = self._Rows * self._Cols
-        self.nk = self._Rows * self._Cols
         # as currently codded it will always come out as 1/2..??
         temp1 = np.linspace(-1/2, 1/2, self._Rows)
         temp2 = np.linspace(-1/2, 1/2, self._Cols)
@@ -241,15 +247,17 @@ class KspaceDistortionCorrector:
         elif np.round(self._ImageOrientationPatient == [2, 2, 2, 2, 2, 2]).all():
             # this is for through plane correction where the real images are [0, 1, 0, 0, 0, -1]
             x_lin_size, y_lin_size = self._image_to_correct.shape
-            xn_lin = np.linspace(-x_lin_size/2, x_lin_size/2, x_lin_size)
-            yn_lin = np.linspace(-y_lin_size/2, y_lin_size/2, y_lin_size)
+            xn_lin = np.linspace(-x_lin_size/2, -x_lin_size/2+x_lin_size-1, x_lin_size)
+            yn_lin = np.linspace(-y_lin_size/2, -y_lin_size/2+y_lin_size-1, y_lin_size)
+
             [xn_lin, yn_lin] = np.meshgrid(xn_lin, yn_lin, indexing='ij')
             xn_lin = xn_lin.flatten()
             yn_lin = yn_lin.flatten()
-            xn_dis = self.Gx_encode / (self._PixelSpacing[0])
+            xn_dis = self.Gy_encode / (self._PixelSpacing[1])
             self.xj = pd.Series(xn_lin * 2 * np.pi)
             yn_dis = self.Gx_encode / (self._PixelSpacing[0])
-            self.yj = pd.Series(yn_lin * 2 * np.pi)
+            self.yj = pd.Series(yn_dis * 2 * np.pi)
+
         elif np.round(self._ImageOrientationPatient == [3, 3, 3, 3, 3, 3]).all():
             # this is for through plane correction where the real images are [1, 0, 0, 0, 0, -1]
             x_lin_size, y_lin_size = self._image_to_correct.shape
@@ -272,15 +280,11 @@ class KspaceDistortionCorrector:
             # self.xj = pd.Series(self.sk)
             yn_dis = -1*self.Gz_encode / (self._PixelSpacing[2])
             self.yj = yn_dis * 2 * np.pi
-
-
         else:
             raise NotImplementedError('this slice orientation is not handled yet sorry')
-        try:
-            self.xj = self.xj.to_numpy()
-            self.yj = self.yj.to_numpy()
-        except:
-            print('fucks ache')
+
+        self.xj = self.xj.to_numpy()
+        self.yj = self.yj.to_numpy()
 
 
         if (np.round(self._ImageOrientationPatient) == [1, 1, 1, 1, 1, 1]).all() or \
@@ -345,10 +349,6 @@ class KspaceDistortionCorrector:
             A = LinearOperator((fk1.shape[0], fk1.shape[0]), matvec=self._fiNufft_Ax, rmatvec=self._fiNufft_Atb)
             StartingImage = self._image_to_correct.flatten().astype(complex)
 
-        if False:
-            fig, axs = plt.subplots(nrows=1, ncols=2, figsize=[10,5])
-            axs[0].imshow(self._image_to_correct)
-            axs[1].imshow(self.outputImage)
 
         maxit = 20
         x1 = lsqr(A, fk1, iter_lim=maxit, x0=StartingImage)
@@ -423,9 +423,9 @@ class KspaceDistortionCorrector:
             else:
                 raise NotImplementedError
             # which directions are already corrected:
+
             corrected_dims = np.array(['x', 'y', 'z'])[([self._dicom_data['slice_direction'] not in
                                                          axis for axis in ['x', 'y', 'z']])]
-
             # corrected_dims = np.array(['x', 'y', 'z'])
             # self._force_linear_harmonics(corrected_dims)  # this forces already corrected dimensions to be linear
             loop_axis = 1
@@ -451,12 +451,20 @@ class KspaceDistortionCorrector:
                 self._Y_slice = Y
                 self._Z_slice = Z
                 self._correct_image()
-                self._image_array_corrected[:, j, :] = self.outputImage
+                if j > 13:
+                    print('gelo')
                 if False:
-                    fig, axs = plt.subplots(nrows=1, ncols=3)
-                    axs[0].imshow(self._image_array_corrected[:, j, :] )
-                    axs[1].imshow(self._image_to_correct)
-                    axs[2].imshow(self.outputImage)
+                    vmin = 20
+                    vmax = 100
+                    fig, axs = plt.subplots(nrows=2, ncols=2)
+                    axs[0, 0].imshow(self._image_array_corrected[:, j, :], vmin=vmin, vmax=vmax)
+                    axs[0, 1].imshow(self._image_to_correct, vmin=vmin, vmax=vmax)
+                    axs[1, 0].imshow(self.outputImage, vmin=vmin, vmax=vmax)
+                    axs[1, 1].imshow((abs(np.subtract(self._image_to_correct, self.outputImage))), vmin=vmin, vmax=vmax)
+                    axs[1, 1].set_title('abs_difference')
+                    plt.tight_layout()
+                self._image_array_corrected[:, j, :] = self.outputImage
+
                 t_stop = perf_counter()
                 print(f"Elapsed time {t_stop - t_start}")
 
