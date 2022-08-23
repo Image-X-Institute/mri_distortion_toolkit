@@ -249,7 +249,7 @@ class KspaceDistortionCorrector:
             xn_dis = self.Gx_encode / (self._PixelSpacing[0])
             self.xj = pd.Series(xn_lin * 2 * np.pi)
             yn_dis = self.Gx_encode / (self._PixelSpacing[0])
-            self.yj = yn_dis * 2 * np.pi
+            self.yj = pd.Series(yn_lin * 2 * np.pi)
         elif np.round(self._ImageOrientationPatient == [3, 3, 3, 3, 3, 3]).all():
             # this is for through plane correction where the real images are [1, 0, 0, 0, 0, -1]
             x_lin_size, y_lin_size = self._image_to_correct.shape

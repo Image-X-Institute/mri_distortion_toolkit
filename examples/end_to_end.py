@@ -29,7 +29,8 @@ dis_data = {'0': '01 localiser_gre',
             '6': '07 gre_cor_LR_330',
             '7': 'k_space'}
 distorted_data_loc = dis_data_loc / dis_data['5'] / 'Original'
-gt_data_loc = Path(r'C:\Users\bwhe3635\Downloads\CT\CT\slicer_centroids.mrk.json')
+distorted_data_loc = Path(r'C:\Users\Brendan\Documents\MATLAB\MRILinac_DistortionCorrection\MrGoam Image Correction\MrGoam images')
+gt_data_loc = Path(r'C:\Users\Brendan\cloudstor\MRI_distortion_QA_sample_data\CT\slicer_centroids.mrk.json')
 
 # extract markers:
 gt_volume = MarkerVolume(gt_data_loc, r_max=300)
@@ -46,7 +47,6 @@ normalisation_factor = [1 / gradient_strength[0], 1 / gradient_strength[1], 1 / 
 G_x_Harmonics, G_y_Harmonics, G_z_Harmonics, B0_Harmonics = calculate_harmonics(B_fields.MagneticFields,
                                                                                 n_order=8,
                                                                                 norm=normalisation_factor)
-
 # correct input images
 GDC = KspaceDistortionCorrector(ImageDirectory=distorted_data_loc.resolve(),
                                 Gx_Harmonics=G_x_Harmonics.harmonics,
