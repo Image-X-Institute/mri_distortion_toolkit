@@ -638,24 +638,6 @@ def plot_compressed_MarkerVolumes(MarkerVolumeList, z_max=20, z_min=-20, title=N
             plt.title(title)
 
 
-def plot_MatchedMarkerVolume_hist(MatchedMarkerVolumeList, legend=None):
-    """
-    creates a histogram of absolute distortion.
-
-    :param MatchedMarkerVolumeList: a list of MatchedMarkerVolumes
-    """
-    for volume in MatchedMarkerVolumeList:
-        bins = np.linspace(0, 10, 30)
-        plt.figure()
-        plt.hist(volume.MatchedCentroids.match_distance, bins=bins, alpha=0.5)
-
-        plt.xlabel('distortion [mm]')
-        plt.tight_layout()
-        plt.show()
-    if legend:
-        plt.legend(['original', 'corrected'])
-
-
 def plot_matched_volume_hist(VolumeList, legend=None):
     """
     create a histogram of total distortion for all input volumes
@@ -677,7 +659,7 @@ def plot_matched_volume_hist(VolumeList, legend=None):
     plt.show()
 
 
-def plot_disortion_xyz_hist(MatchedMarkerVolume):
+def plot_distortion_xyz_hist(MatchedMarkerVolume):
     """
     plot overlaid x, y, z distortion for an input instance of
     [MatchedMarkerVolume](https://acrf-image-x-institute.github.io/MRI_DistortionQA/code_docs.html#MRI_DistortionQA.MarkerAnalysis.MatchedMarkerVolumes)
