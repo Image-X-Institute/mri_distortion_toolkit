@@ -4,14 +4,13 @@ to correct the image
 '''
 
 from pathlib import Path
+import numpy as np
 from MRI_DistortionQA.MarkerAnalysis import MarkerVolume
 from MRI_DistortionQA.MarkerAnalysis import MatchedMarkerVolumes
 from MRI_DistortionQA.FieldCalculation import ConvertMatchedMarkersToBz
 from MRI_DistortionQA import calculate_harmonics
-from MRI_DistortionQA.utilities import plot_disortion_xyz_hist
-import numpy as np
+from MRI_DistortionQA.utilities import plot_distortion_xyz_hist
 from MRI_DistortionQA.K_SpaceCorrector import KspaceDistortionCorrector
-
 from MRI_DistortionQA.utilities import plot_matched_volume_hist, print_dict
 from MRI_DistortionQA.utilities import plot_MarkerVolume_overlay
 from matplotlib import pyplot as plt
@@ -69,4 +68,4 @@ corrected_volume.MarkerCentroids = corrected_volume.MarkerCentroids.drop(
     corrected_volume.MarkerCentroids.index[remove_ind])
 matched_volume_corrected = MatchedMarkerVolumes(gt_volume, corrected_volume, ReferenceMarkers=11)
 plot_matched_volume_hist([matched_volume, matched_volume_corrected], ['original', 'corrected'])
-plot_disortion_xyz_hist(matched_volume_corrected)
+plot_distortion_xyz_hist(matched_volume_corrected)

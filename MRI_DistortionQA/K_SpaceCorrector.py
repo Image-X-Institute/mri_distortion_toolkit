@@ -40,7 +40,7 @@ class KspaceDistortionCorrector:
         :param correct_through_plane:
         """
         self.correct_through_plane = correct_through_plane
-        self._n_zero_pad = 0  # n_pixels to add around each edge of volume. set to 0 for no zero padding
+        self._n_zero_pad = 20  # n_pixels to add around each edge of volume. set to 0 for no zero padding
         self._dicom_data = dicom_data
         self._calculate_gradient_strength()
         self._Gx_Harmonics, self._Gy_Harmonics, self._Gz_Harmonics = \
@@ -350,7 +350,7 @@ class KspaceDistortionCorrector:
             StartingImage = self._image_to_correct.flatten().astype(complex)
 
 
-        maxit = 20
+        maxit = 40
         x1 = lsqr(A, fk1, iter_lim=maxit, x0=StartingImage)
         self.outputImage = abs(np.reshape(x1[0], [self._Rows, self._Cols]))
 
