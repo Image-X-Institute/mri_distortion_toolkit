@@ -22,7 +22,5 @@ build
 myst_parser
 twine
 sphinxemoji
-<<<<<<< HEAD
-=======
 finufft
->>>>>>> distortion_correction
+
