@@ -48,7 +48,7 @@ G_x_Harmonics, G_y_Harmonics, G_z_Harmonics, B0_Harmonics = calculate_harmonics(
                                                                                 norm=normalisation_factor)
 # correct input images
 GDC = KspaceDistortionCorrector(ImageDirectory=distorted_data_loc.resolve(),
-                                Gx_Harmonics=G_x_Harmonics.harmonics,
+                                Gx_Harmonics='G_x_harmonics.csv',
                                 Gy_Harmonics=G_y_Harmonics.harmonics,
                                 Gz_Harmonics=G_z_Harmonics.harmonics,
                                 ImExtension='dcm',
