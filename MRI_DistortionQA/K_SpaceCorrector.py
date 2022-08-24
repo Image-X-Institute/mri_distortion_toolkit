@@ -222,12 +222,14 @@ class KspaceDistortionCorrector:
         These indices are passed to the NUFFT library.
         """
 
-        # as currently codded it will always come out as 1/2..??
-        temp1 = np.linspace(-1/2, 1/2, self._Rows)
-        temp2 = np.linspace(-1/2, 1/2, self._Cols)
-        [T1, T2] = np.meshgrid(temp2, temp1)
-        self.sk = T2.flatten()
-        self.tk = T1.flatten()
+        x_lin_size, y_lin_size = self._image_to_correct.shape
+        xn_lin = np.linspace(-x_lin_size / 2, -x_lin_size / 2 + x_lin_size - 1, x_lin_size)
+        yn_lin = np.linspace(-y_lin_size / 2, -y_lin_size / 2 + y_lin_size - 1, y_lin_size)
+        [xn_lin, yn_lin] = np.meshgrid(xn_lin, yn_lin, indexing='ij')
+        xn_lin = xn_lin.flatten()
+        yn_lin = yn_lin.flatten()
+        self.sk = xn_lin / x_lin_size
+        self.tk = yn_lin / y_lin_size
 
         if (np.round(self._ImageOrientationPatient) == [0, 1, 0, 0, 0, -1]).all():
             xn_dis = self.Gz_encode / (self._PixelSpacing[2])
@@ -246,18 +248,11 @@ class KspaceDistortionCorrector:
             self.yj = yn_dis * 2 * np.pi
         elif np.round(self._ImageOrientationPatient == [2, 2, 2, 2, 2, 2]).all():
             # this is for through plane correction where the real images are [0, 1, 0, 0, 0, -1]
-            x_lin_size, y_lin_size = self._image_to_correct.shape
-            xn_lin = np.linspace(-x_lin_size/2, -x_lin_size/2+x_lin_size-1, x_lin_size)
-            yn_lin = np.linspace(-y_lin_size/2, -y_lin_size/2+y_lin_size-1, y_lin_size)
 
-            [xn_lin, yn_lin] = np.meshgrid(xn_lin, yn_lin, indexing='ij')
-            xn_lin = xn_lin.flatten()
-            yn_lin = yn_lin.flatten()
             xn_dis = self.Gy_encode / (self._PixelSpacing[1])
             self.xj = pd.Series(xn_lin * 2 * np.pi)
             yn_dis = self.Gx_encode / (self._PixelSpacing[0])
             self.yj = pd.Series(yn_dis * 2 * np.pi)
-
         elif np.round(self._ImageOrientationPatient == [3, 3, 3, 3, 3, 3]).all():
             # this is for through plane correction where the real images are [1, 0, 0, 0, 0, -1]
             x_lin_size, y_lin_size = self._image_to_correct.shape
@@ -288,7 +283,8 @@ class KspaceDistortionCorrector:
 
 
         if (np.round(self._ImageOrientationPatient) == [1, 1, 1, 1, 1, 1]).all() or \
-                (np.round(self._ImageOrientationPatient) == [2,2,2,2,2,2]).all():
+                (np.round(self._ImageOrientationPatient) == [2,2,2,2,2,2]).all() or \
+                (np.round(self._ImageOrientationPatient) == [3,3,3,3,3,3]).all():
             try:
                 self.dodgy_ind = self.dodgy_ind + 1
             except:
@@ -350,26 +346,9 @@ class KspaceDistortionCorrector:
             StartingImage = self._image_to_correct.flatten().astype(complex)
 
 
-        maxit = 40
+        maxit = 20
         x1 = lsqr(A, fk1, iter_lim=maxit, x0=StartingImage)
         self.outputImage = abs(np.reshape(x1[0], [self._Rows, self._Cols]))
-
-    def _force_linear_harmonics(self, dims_to_force):
-
-        if 'x' in dims_to_force:
-            _Gx_Harmonics_tmp = np.zeros(self._Gx_Harmonics.shape)
-            _Gx_Harmonics_tmp[2] = self._Gx_Harmonics[2]
-            self._Gx_Harmonics = _Gx_Harmonics_tmp
-
-        if 'y' in dims_to_force:
-            _Gy_Harmonics_tmp = np.zeros(self._Gy_Harmonics.shape)
-            _Gy_Harmonics_tmp[3] = self._Gy_Harmonics[3]
-            self._Gy_Harmonics = _Gy_Harmonics_tmp
-
-        if 'z' in dims_to_force:
-            _Gz_Harmonics_tmp = np.zeros(self._Gz_Harmonics.shape)
-            _Gz_Harmonics_tmp[1] = self._Gz_Harmonics[1]
-            self._Gz_Harmonics = _Gz_Harmonics_tmp
 
     # public methods
 
@@ -422,12 +401,7 @@ class KspaceDistortionCorrector:
                 self._ImageOrientationPatient = [3, 3, 3, 3, 3, 3]
             else:
                 raise NotImplementedError
-            # which directions are already corrected:
 
-            corrected_dims = np.array(['x', 'y', 'z'])[([self._dicom_data['slice_direction'] not in
-                                                         axis for axis in ['x', 'y', 'z']])]
-            # corrected_dims = np.array(['x', 'y', 'z'])
-            # self._force_linear_harmonics(corrected_dims)  # this forces already corrected dimensions to be linear
             loop_axis = 1
             zipped_data = zip(np.rollaxis(self._image_array_corrected, loop_axis),
                               np.rollaxis(self._X, loop_axis),

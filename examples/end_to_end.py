@@ -29,8 +29,7 @@ dis_data = {'0': '01 localiser_gre',
             '7': 'k_space'}
 
 distorted_data_loc = dis_data_loc / dis_data['5'] / 'Original'
-distorted_data_loc = Path(r'C:\Users\Brendan\Documents\MATLAB\MRILinac_DistortionCorrection\MrGoam Image Correction\MrGoam images')
-gt_data_loc = Path(r'C:\Users\Brendan\cloudstor\MRI_distortion_QA_sample_data\CT\slicer_centroids.mrk.json')
+gt_data_loc = Path(r'C:\Users\bwhe3635\cloudstor\MRI_distortion_QA_sample_data\CT\slicer_centroids.mrk.json')
 
 # extract markers:
 gt_volume = MarkerVolume(gt_data_loc, r_max=300)
