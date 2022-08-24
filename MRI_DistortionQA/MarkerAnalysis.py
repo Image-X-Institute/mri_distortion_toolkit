@@ -352,8 +352,7 @@ class MarkerVolume:
         elif len(candidate_thresholds) > 0:
             ind = np.argmin(abs(np.subtract(self._n_markers_expected, candidate_n_points)))
             best_threshold = candidate_thresholds[ind]
-            logger.warning(f'No valid thresholds were found. Using closest possible value of {best_threshold}'
-                           f'which found {candidate_n_points[ind]} markers')
+            logger.warning(f'No valid thresholds were found. Using closest possible value of {best_threshold}')
             return best_threshold
         else:
             logger.warning('No valid thresholds were found. Try lowering gaussian blur level.')
@@ -379,6 +378,65 @@ class MarkerVolume:
 
         return ThresholdVolume, BlurredVolume
 
+    def _get_marker_max_min_volume(self):
+        """
+        figures out the range of voxels that a marker should have
+        """
+        self._n_voxels = []  # going to keep track of this so we can remove any very small regions if needed
+
+        for label_level in self.unique_labels:  # first label is background so skip
+            # extract x,y,z of each connected region
+            RegionInd = self._labels == label_level
+            self._n_voxels.append(np.count_nonzero(RegionInd))
+        # Set up min and max marker volumes
+        self._n_voxels_median = np.median(np.array(self._n_voxels))
+        self._voxel_min = (1 - self._marker_size_lower_tol) * self._n_voxels_median
+        self._voxel_max = (1 + self._marker_size_upper_tol) * self._n_voxels_median
+
+        # Modify based on number of markers
+        if self._n_markers_expected is not None:
+            self._n_voxels_copy = np.array(self._n_voxels)
+            voxel_difference = np.absolute(np.array(self._n_voxels) - self._n_voxels_median)
+            # Loop that deletes the marker size with the largest difference from median until the expected # of markers
+            while len(self._n_voxels_copy) > self._n_markers_expected:
+                self._n_voxels_copy = np.delete(self._n_voxels_copy, np.argmax(voxel_difference))
+                voxel_difference = np.delete(voxel_difference, np.argmax(voxel_difference))
+            # Set min and max based on the remaining list
+            if np.min(self._n_voxels_copy) > self._voxel_min:
+                self._voxel_min = np.min(self._n_voxels_copy)
+            if np.max(self._n_voxels_copy) < self._voxel_max:
+                self._voxel_max = np.max(self._n_voxels_copy)
+
+        # 3 voxels is the absolute floor
+        if self._voxel_min < 3:
+            self._voxel_min = 3
+
+    def _remove_load(self):
+        '''
+        if it seems very likely that the only thing that has been segmented is the load
+        remove it and try again. We may want to enable this in situations where any large object is detected...
+        '''
+
+        for label_level in self.unique_labels:
+            RegionInd = self._labels == label_level
+            self.InputVolume[RegionInd] = 0
+        self._cutoffpoint = None
+        self.ThresholdVolume, self.BlurredVolume = self._threshold_volume(self.InputVolume)
+        self._labels = label(self.ThresholdVolume, background=0)
+        self.unique_labels = np.unique(self._labels)[1:]  # first label is background so skip
+
+    def _print_thresholding_information(self):
+        print('Threshold value: ' + str(self._cutoffpoint))
+        print('Median marker volume: ' + str(self._n_voxels_median))
+        print('Expected marker volume: ' + str(self._voxel_min) + ' to ' + str(self._voxel_max))
+        print(f'Regions to check: {self.unique_labels.shape}')
+
+    def _print_thresholding_summary(self, n_found_markers, n_skipped_markers):
+        print('----------')
+        print(f'Total regions: {len(self.unique_labels)}')
+        print(f'Total markers found:   {n_found_markers}')
+        print(f'Total skipped:         {n_skipped_markers}')
+
     def _find_contour_centroids(self):
         """
         This code loops through all the found regions, extracts the cartesian coordiantes, and takes the
@@ -389,78 +447,32 @@ class MarkerVolume:
         self._labels = label(self.ThresholdVolume, background=0)
         self.unique_labels = np.unique(self._labels)[1:]  # first label is background so skip
         if self.unique_labels.shape[0] < 3:
-            '''
-            in this case, it seems very likely that the only thing that has been segmented is the load
-            remove it and try again. We may want to enable this in situations where any large object is detected...
-            '''
             logger.warning('automatic thresholding didnt work, trying to remove load and try again...')
-            for label_level in self.unique_labels:
-                RegionInd = self._labels == label_level
-                self.InputVolume[RegionInd] = 0
-            self._cutoffpoint = None
-            self.ThresholdVolume, self.BlurredVolume = self._threshold_volume(self.InputVolume)
-            self._labels = label(self.ThresholdVolume, background=0)
-            self.unique_labels = np.unique(self._labels)[1:]  # first label is background so skip
-
-        n_voxels = []  # going to keep track of this so we can remove any very small regions if needed
-
-        for label_level in self.unique_labels:  # first label is background so skip
-            # extract x,y,z of each connected region
-            RegionInd = self._labels == label_level
-            n_voxels.append(np.count_nonzero(RegionInd))
-
-        # Set up min and max marker volumes
-        n_voxels_median = np.median(np.array(n_voxels))
-        voxel_min = (1 - self._marker_size_lower_tol) * n_voxels_median
-        voxel_max = (1 + self._marker_size_upper_tol) * n_voxels_median
-
-        # Modify based on number of markers
-        if self._n_markers_expected is not None:
-            n_voxels_copy = np.array(n_voxels)
-            voxel_difference = np.absolute(np.array(n_voxels) - n_voxels_median)
-            # Loop that deletes the marker size with the largest difference from median until the expected # of markers
-            while len(n_voxels_copy) > self._n_markers_expected:
-                n_voxels_copy = np.delete(n_voxels_copy, np.argmax(voxel_difference))
-                voxel_difference = np.delete(voxel_difference, np.argmax(voxel_difference))
-            # Set min and max based on the remaining list
-            if np.min(n_voxels_copy) > voxel_min:
-                voxel_min = np.min(n_voxels_copy)
-            if np.max(n_voxels_copy) < voxel_max:
-                voxel_max = np.max(n_voxels_copy)
-
-        # 3 voxels is the absolute floor
-        if voxel_min < 3:
-            voxel_min = 3
+            self._remove_load()
+        self._get_marker_max_min_volume()
 
         if self.verbose:
-            print('Threshold value: ' + str(self._cutoffpoint))
-            print('Median marker volume: ' + str(n_voxels_median))
-            print('Expected marker volume: ' + str(voxel_min) + ' to ' + str(voxel_max))
-            print(f'Regions to check: {self.unique_labels.shape}')
+            self._print_thresholding_information()
 
         x_centroids = []
         y_centroids = []
         z_centroids = []
         skipped = 0
 
+        # extract x,y,z of each connected region
         for i, label_level in enumerate(self.unique_labels):
-            # extract x,y,z of each connected region
             RegionInd = np.equal(self._labels, label_level)
             voxels = np.count_nonzero(RegionInd)
-
-            if voxels < voxel_min or voxels > voxel_max:
+            if voxels < self._voxel_min or voxels > self._voxel_max:
                 skipped += 1
                 if self.verbose:
                     print('Region ' + str(i + 1) + ': Skipped, v = ' + str(voxels))
                 continue  # skip outliers
 
             region_sum = np.sum(self.InputVolume[RegionInd])
-            weighted_x = np.sum(
-                np.multiply(self.X[RegionInd], self.InputVolume[RegionInd]))
-            weighted_y = np.sum(
-                np.multiply(self.Y[RegionInd], self.InputVolume[RegionInd]))
-            weighted_z = np.sum(
-                np.multiply(self.Z[RegionInd], self.InputVolume[RegionInd]))
+            weighted_x = np.sum(np.multiply(self.X[RegionInd], self.InputVolume[RegionInd]))
+            weighted_y = np.sum(np.multiply(self.Y[RegionInd], self.InputVolume[RegionInd]))
+            weighted_z = np.sum(np.multiply(self.Z[RegionInd], self.InputVolume[RegionInd]))
             x_centroids.append(weighted_x / region_sum)
             y_centroids.append(weighted_y / region_sum)
             z_centroids.append(weighted_z / region_sum)
@@ -468,10 +480,7 @@ class MarkerVolume:
                 print('Region ' + str(i + 1) + ': Marker, v = ' + str(voxels))
 
         if self.verbose:
-            print('----------')
-            print('Total regions: ' + str(len(self.unique_labels)))
-            print('Total markers found: ' + str(len(x_centroids)))
-            print('Total skipped: ' + str(skipped))
+            self._print_thresholding_summary(len(x_centroids), skipped)
 
         return np.array([x_centroids, y_centroids, z_centroids]).T
 
