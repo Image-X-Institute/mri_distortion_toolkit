@@ -44,7 +44,7 @@ class KspaceDistortionCorrector:
             get_gradient_spherical_harmonics(Gx_Harmonics, Gy_Harmonics, Gz_Harmonics)
         self._Gx_Harmonics = self._Gx_Harmonics * 1e3
         self._Gy_Harmonics = self._Gy_Harmonics * 1e3
-        self._Gz_Harmonics = self._Gz_Harmonics * 1e3
+        self._Gz_Harmonics = self._Gz_Harmonics * -1e3
 
         self.ImageDirectory = Path(ImageDirectory)
         self._all_dicom_files = get_all_files(self.ImageDirectory, ImExtension)
