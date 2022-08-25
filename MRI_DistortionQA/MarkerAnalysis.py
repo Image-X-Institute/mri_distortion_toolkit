@@ -94,7 +94,7 @@ class MarkerVolume:
                 # dicom input
 
                 self.InputVolume, self.dicom_affine, (self.X, self.Y, self.Z) = \
-                    dicom_to_numpy(self.input_data_path, file_extension='dcm', return_XYZ=True)
+                    dicom_to_numpy(self.input_data_path, file_extension=self._file_extension, return_XYZ=True)
                 self._calculate_MR_acquisition_data()
 
                 # Segmenting markers
@@ -608,14 +608,14 @@ class MatchedMarkerVolumes:
         important. For data on a sphere, you may have more success by setting this to 'nearest', but this is a bit
         of an untested feature
     :type sorting_method: str, optional
-    :param ReferenceMarkers: the n inner_most Reference markers are used to align the ground truth to the MR volume
+    :param n_refernce_markers: the n inner_most Reference markers are used to align the ground truth to the MR volume
         before  matching. this can correct for setup errors. Note that we always move the reference. the best way
         for this to not matter either way is to not have any set up error!
-    :type ReferenceMarkers: int, optional
+    :type n_refernce_markers: int, optional
     """
 
     def __init__(self, GroundTruthData, DistortedData, ReverseGradientData=None, WarpSearchData=True,
-                 AutomatchMarkers=True, AllowDoubleMatching=False, sorting_method='radial', ReferenceMarkers=0):
+                 AutomatchMarkers=True, AllowDoubleMatching=False, sorting_method='radial', n_refernce_markers=0):
 
         # warping parameters:
         self.WarpSearchData = WarpSearchData
@@ -624,7 +624,7 @@ class MatchedMarkerVolumes:
         self.sorting_method = sorting_method
         self.AllowDoubleMatching = AllowDoubleMatching
 
-        self._n_reference_markers = ReferenceMarkers
+        self._n_reference_markers = n_refernce_markers
 
         # marker data:
         self.ground_truth_centroids = GroundTruthData.MarkerCentroids

@@ -57,7 +57,7 @@ class KspaceDistortionCorrector:
         self.ImageArray,\
         self._dicom_affine,\
         (self._X, self._Y, self._Z) = dicom_to_numpy(self.ImageDirectory,
-                                                     file_extension='dcm',
+                                                     file_extension=ImExtension,
                                                      return_XYZ=True,
                                                      zero_pad=self._n_zero_pad,
                                                      enforce_increasing_coords=False)
@@ -101,7 +101,7 @@ class KspaceDistortionCorrector:
         self.coords = convert_cartesian_to_spherical(coords_cartesian)
         self._calculate_encoding_fields()
         self._generate_Kspace_data()
-        self._generate_distorted_indices()
+        self._calculate_encoding_indices()
         self._perform_least_squares_optimisation()
 
     def _unpad_image_arrays(self):
@@ -133,7 +133,7 @@ class KspaceDistortionCorrector:
         """
         self.k_space = fftshift(fft2(fftshift(self._image_to_correct)))
 
-    def _generate_distorted_indices(self):
+    def _calculate_encoding_indices(self):
         """
         generates both the linear (i.e. assumed) indices and the distorted indices.
         These indices are passed to the NUFFT library.
@@ -176,7 +176,7 @@ class KspaceDistortionCorrector:
         elif (np.round(self._ImageOrientationPatient) == [1, 1, 1, 1, 1, 1]).all():
             # this is for through plane correction where the real images are [1, 0, 0, 0, 1, 0]
             self.xj = pd.Series(xn_lin * 2 * np.pi)
-            yn_dis = -1*self.Gz_encode / (self._PixelSpacing[2])
+            yn_dis = 1*self.Gz_encode / (self._PixelSpacing[2])
             self.yj = yn_dis * 2 * np.pi
         else:
             raise NotImplementedError('this slice orientation is not handled yet sorry')
@@ -392,7 +392,7 @@ class KspaceDistortionCorrector:
                     j += 1
                     continue
                 t_start = perf_counter()
-                print(f'Through Plane correction: {j - self._n_zero_pad} of {self.ImageArray.shape[loop_axis] - (2*self._n_zero_pad)}')
+                print(f'Through Plane correction: {j - self._n_zero_pad} of {self.ImageArray.shape[loop_axis] - (self._n_zero_pad)}')
                 print(printProgressBar(i+j-(self._n_zero_pad*4), n_images_to_correct))
                 self._image_to_correct = array_slice
                 self._X_slice = X

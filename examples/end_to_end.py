@@ -13,9 +13,8 @@ from MRI_DistortionQA.utilities import plot_distortion_xyz_hist
 from MRI_DistortionQA.K_SpaceCorrector import KspaceDistortionCorrector
 from MRI_DistortionQA.utilities import plot_matched_volume_hist, print_dict
 from MRI_DistortionQA.utilities import plot_MarkerVolume_overlay
-from matplotlib import pyplot as plt
 
-plt.rcParams["figure.dpi"] = 150  # for 4k screens
+
 
 # Data import
 dis_data_loc = Path(r'C:\Users\bwhe3635\cloudstor\Shared\Goam2^Mr\20220624 QA^QA')
@@ -28,14 +27,14 @@ dis_data = {'0': '01 localiser_gre',
             '6': '07 gre_cor_LR_330',
             '7': 'k_space'}
 
-distorted_data_loc = dis_data_loc / dis_data['5'] / 'Original'
+distorted_data_loc = dis_data_loc / dis_data['3'] / 'Original'
 gt_data_loc = Path(r'C:\Users\bwhe3635\cloudstor\MRI_distortion_QA_sample_data\CT\slicer_centroids.mrk.json')
 
 # extract markers:
 gt_volume = MarkerVolume(gt_data_loc, r_max=300)
 dis_volume = MarkerVolume(distorted_data_loc, n_markers_expected=336, iterative_segmentation=True)
 # match markers:
-matched_volume = MatchedMarkerVolumes(gt_volume, dis_volume, ReferenceMarkers=11)
+matched_volume = MatchedMarkerVolumes(gt_volume, dis_volume, n_refernce_markers=11)
 # calculate fields
 B_fields = ConvertMatchedMarkersToBz(matched_volume.MatchedCentroids, dis_volume.dicom_data)
 # calculate harmonics
@@ -48,7 +47,7 @@ G_x_Harmonics, G_y_Harmonics, G_z_Harmonics, B0_Harmonics = calculate_harmonics(
                                                                                 norm=normalisation_factor)
 # correct input images
 GDC = KspaceDistortionCorrector(ImageDirectory=distorted_data_loc.resolve(),
-                                Gx_Harmonics='G_x_harmonics.csv',
+                                Gx_Harmonics=G_x_Harmonics.harmonics,
                                 Gy_Harmonics=G_y_Harmonics.harmonics,
                                 Gz_Harmonics=G_z_Harmonics.harmonics,
                                 ImExtension='dcm',
@@ -65,6 +64,6 @@ corrected_volume = MarkerVolume(distorted_data_loc / 'Corrected_dcm',
 remove_ind = np.logical_and(corrected_volume.MarkerCentroids.r >= 70, corrected_volume.MarkerCentroids.r <= 140)
 corrected_volume.MarkerCentroids = corrected_volume.MarkerCentroids.drop(
     corrected_volume.MarkerCentroids.index[remove_ind])
-matched_volume_corrected = MatchedMarkerVolumes(gt_volume, corrected_volume, ReferenceMarkers=11)
+matched_volume_corrected = MatchedMarkerVolumes(gt_volume, corrected_volume, n_refernce_markers=11)
 plot_matched_volume_hist([matched_volume, matched_volume_corrected], ['original', 'corrected'])
 plot_distortion_xyz_hist(matched_volume_corrected)
