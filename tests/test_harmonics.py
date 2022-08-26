@@ -5,7 +5,7 @@ import pandas as pd
 this_dir = Path(__file__).parent
 test_data_dir = this_dir / 'test_data'
 sys.path.insert(0, str(this_dir.parent))
-from MRI_DistortionQA.FieldAnalysis import SphericalHarmonicFit
+from MRI_DistortionQA.Harmonics import SphericalHarmonicFit
 from MRI_DistortionQA import calculate_harmonics
 from MRI_DistortionQA.MarkerAnalysis import MarkerVolume
 from MRI_DistortionQA.utilities import convert_spherical_harmonics

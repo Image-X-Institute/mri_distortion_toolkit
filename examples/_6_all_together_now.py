@@ -24,7 +24,7 @@ ground_truth_volume = MarkerVolume(data_loc / 'CT' / 'slicer_centroids.mrk.json'
 
 # matched volumes including reversed gradient data
 matched_volume_with_rev_data = MatchedMarkerVolumes(ground_truth_volume, distorted_volume,
-                                                    ReverseGradientData=distorted_volume_rev, ReferenceMarkers=11)
+                                                    reverse_gradient_data=distorted_volume_rev, n_refernce_markers=11)
 
 # Field calculation:
 Bz_field = ConvertMatchedMarkersToBz(matched_volume_with_rev_data.MatchedCentroids, dicom_data_loc)

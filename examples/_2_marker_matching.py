@@ -1,6 +1,5 @@
 import sys
 from pathlib import Path
-sys.path.insert(0, 'C:/Users/Brendan/Documents/python/MRI_DistCorrectionPhantom')
 from MRI_DistortionQA.MarkerAnalysis import MarkerVolume
 from MRI_DistortionQA.MarkerAnalysis import MatchedMarkerVolumes
 
@@ -15,6 +14,6 @@ distorted_volume_rev = MarkerVolume(data_loc / 'MR' / '05 gre_trans_PA_330' / 's
 ground_truth_volume = MarkerVolume(data_loc / 'CT' / 'slicer_centroids.mrk.json', verbose=False, r_max=300)
 
 # matched volumes
-matched_volume = MatchedMarkerVolumes(ground_truth_volume, distorted_volume, ReverseGradientData=distorted_volume_rev,
-                                      ReferenceMarkers=11)
+matched_volume = MatchedMarkerVolumes(ground_truth_volume, distorted_volume, reverse_gradient_data=distorted_volume_rev,
+                                      n_refernce_markers=11)
 matched_volume.MatchedCentroids.to_csv(data_loc / 'Matched_Markers.csv')  # for use in later examples

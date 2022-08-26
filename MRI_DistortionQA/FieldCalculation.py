@@ -107,7 +107,7 @@ class ConvertMatchedMarkersToBz:
         B0_calc_possible = all([el in self.MatchedCentroids.columns for el in B0_fields])
         if B0_calc_possible:
             self._get_B0_calc_direction()
-            self.MagneticFields['B0'] = self.MatchedCentroids[[self._B0_direction_string]] * 1e-3 * \
-                                        gradient_strength[self._B0_direction_bool][0]
+            self.MagneticFields['B0'] = self.MatchedCentroids[[self._B0_direction_string]] * \
+                                        gradient_strength[self._B0_direction_bool][0] * 1e-3
 
 

@@ -1,4 +1,4 @@
-from .FieldAnalysis import SphericalHarmonicFit
+from .Harmonics import SphericalHarmonicFit
 import numpy as np
 
 def calculate_harmonics(MagneticFields, n_order=8, norm=None):

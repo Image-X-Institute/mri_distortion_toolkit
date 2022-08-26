@@ -138,7 +138,7 @@ in case I ever want this again:
 from MRI_DistortionQA.MarkerAnalysis import MarkerVolume, MatchedMarkerVolumes
 from pathlib import Path
 from MRI_DistortionQA.FieldCalculation import ConvertMatchedMarkersToBz
-from MRI_DistortionQA.FieldAnalysis import SphericalHarmonicFit
+from MRI_DistortionQA.Harmonics import SphericalHarmonicFit
 
 '''
 data is here
@@ -153,7 +153,7 @@ all_scans = {'1': '01 localiser_gre',
              '6': '06 gre_cor_RL_330',
              '7': '07 gre_cor_RL_330',
              '8': '08 gre_trans_AP_330_F_reset',
-             '9':  '09 gre_trans_AP_330',
+             '9': '09 gre_trans_AP_330',
              '10': '10 gre_trans_AP_330',
              '11': '11 gre_trans_PA',
              '12': '12 gre_sag_HF',
@@ -196,7 +196,7 @@ back_volume = MarkerVolume(data_loc / all_scans['13'] / 'Original', gaussian_ima
                            n_markers_expected=336, cutoff_point=50, verbose=False, r_max=165,
                            correct_fat_water_shift=correct_FW, fat_shift_direction=1)
 
-B0_Harmonics_HF, G_x_Harmonics_HF, G_y_Harmonics_HF, G_z_Harmonics_HF =\
+B0_Harmonics_HF, G_x_Harmonics_HF, G_y_Harmonics_HF, G_z_Harmonics_HF =
     calculate_harmonics(back_volume, forward_volume)
 ```
 

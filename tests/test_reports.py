@@ -4,7 +4,7 @@ this_dir = Path(__file__).parent
 sys.path.insert(0, str(this_dir.parent))
 import numpy as np
 from MRI_DistortionQA.Reports import MRI_QA_Reporter
-from MRI_DistortionQA.FieldAnalysis import SphericalHarmonicFit
+from MRI_DistortionQA.Harmonics import SphericalHarmonicFit
 import pandas as pd
 
 def test_linear_recon():

@@ -181,13 +181,13 @@ class SphericalHarmonicFit:
         residual_percentage = abs(self._residual_pk_pk) * 100 / initial_pk_pk
 
         try:
-            print(f'Initial pk-pk:       {initial_pk_pk: 1.3f} \u03BCT')
-            print(f'Reconstructed pk-pk: {recon_pk_pk: 1.3f} \u03BCT')
-            print(f'Residual pk-pk:      {self._residual_pk_pk: 1.3f} \u03BCT ({residual_percentage: 1.1f}%)')
+            print(f'Initial pk-pk:       {initial_pk_pk: 1.3e} \u03BCT')
+            print(f'Reconstructed pk-pk: {recon_pk_pk: 1.3e} \u03BCT')
+            print(f'Residual pk-pk:      {self._residual_pk_pk: 1.3e} \u03BCT ({residual_percentage: 1.1f}%)')
         except UnicodeError:
-            print(f'Initial pk-pk:       {initial_pk_pk: 1.3f} uT')
-            print(f'Reconstructed pk-pk: {recon_pk_pk: 1.3f} uT')
-            print(f'Residual pk-pk:      {self._residual_pk_pk: 1.3f} uT ({residual_percentage: 1.1f}%)')
+            print(f'Initial pk-pk:       {initial_pk_pk: 1.3e} uT')
+            print(f'Reconstructed pk-pk: {recon_pk_pk: 1.3e} uT')
+            print(f'Residual pk-pk:      {self._residual_pk_pk: 1.3e} uT ({residual_percentage: 1.1f}%)')
 
 
         if residual_percentage > 2:
