@@ -1,7 +1,4 @@
-from .MarkerAnalysis import MatchedMarkerVolumes
-from .FieldCalculation import ConvertMatchedMarkersToBz
 from .FieldAnalysis import SphericalHarmonicFit
-from .utilities import get_dicom_data
 import numpy as np
 
 def calculate_harmonics(MagneticFields, n_order=8, norm=None):

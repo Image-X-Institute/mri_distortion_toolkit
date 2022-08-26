@@ -42,9 +42,9 @@ class KspaceDistortionCorrector:
         self._dicom_data = dicom_data
         self._Gx_Harmonics, self._Gy_Harmonics, self._Gz_Harmonics = \
             get_gradient_spherical_harmonics(Gx_Harmonics, Gy_Harmonics, Gz_Harmonics)
-        self._Gx_Harmonics = self._Gx_Harmonics * 1e3
-        self._Gy_Harmonics = self._Gy_Harmonics * 1e3
-        self._Gz_Harmonics = self._Gz_Harmonics * -1e3
+        self._Gx_Harmonics = self._Gx_Harmonics * 1
+        self._Gy_Harmonics = self._Gy_Harmonics * 1
+        self._Gz_Harmonics = self._Gz_Harmonics * -1
 
         self.ImageDirectory = Path(ImageDirectory)
         self._all_dicom_files = get_all_files(self.ImageDirectory, ImExtension)
@@ -176,7 +176,7 @@ class KspaceDistortionCorrector:
         elif (np.round(self._ImageOrientationPatient) == [1, 1, 1, 1, 1, 1]).all():
             # this is for through plane correction where the real images are [1, 0, 0, 0, 1, 0]
             self.xj = pd.Series(xn_lin * 2 * np.pi)
-            yn_dis = 1*self.Gz_encode / (self._PixelSpacing[2])
+            yn_dis = -1*self.Gz_encode / (self._PixelSpacing[2])
             self.yj = yn_dis * 2 * np.pi
         else:
             raise NotImplementedError('this slice orientation is not handled yet sorry')

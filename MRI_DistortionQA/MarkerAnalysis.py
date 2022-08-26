@@ -589,8 +589,8 @@ class MatchedMarkerVolumes:
     :type GroundTruthData: MarkerVolume object, or path to dicom folder, or numpy array
     :param DistortedData:
     :type DistortedData: MarkerVolume object, or path to dicom folder, or numpy array
-    :param ReverseGradientData:
-    :type ReverseGradientData: None, or MarkerVolume object, or path to dicom folder, or numpy array
+    :param reverse_gradient_data:
+    :type reverse_gradient_data: None, or MarkerVolume object, or path to dicom folder, or numpy array
     :param WarpSearchData: if True, position of found markers is used to update expected positions for ground truth.
         Recomended is True if there is substantial distortion present.
     :type WarpSearchData: boolean
@@ -614,7 +614,7 @@ class MatchedMarkerVolumes:
     :type n_refernce_markers: int, optional
     """
 
-    def __init__(self, GroundTruthData, DistortedData, ReverseGradientData=None, WarpSearchData=True,
+    def __init__(self, GroundTruthData, DistortedData, reverse_gradient_data=None, WarpSearchData=True,
                  AutomatchMarkers=True, AllowDoubleMatching=False, sorting_method='radial', n_refernce_markers=0):
 
         # warping parameters:
@@ -630,10 +630,10 @@ class MatchedMarkerVolumes:
         self.ground_truth_centroids = GroundTruthData.MarkerCentroids
         self.distorted_centroids = DistortedData.MarkerCentroids
 
-        if ReverseGradientData is None:
+        if reverse_gradient_data is None:
             self.distorted_centroidsRev = None
         else:
-            self.distorted_centroidsRev = ReverseGradientData.MarkerCentroids
+            self.distorted_centroidsRev = reverse_gradient_data.MarkerCentroids
 
         self._check_input_data()
         # run analysis:

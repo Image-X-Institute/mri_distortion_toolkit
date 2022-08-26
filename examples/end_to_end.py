@@ -27,7 +27,7 @@ dis_data = {'0': '01 localiser_gre',
             '6': '07 gre_cor_LR_330',
             '7': 'k_space'}
 
-distorted_data_loc = dis_data_loc / dis_data['3'] / 'Original'
+distorted_data_loc = dis_data_loc / dis_data['1'] / 'Original'
 gt_data_loc = Path(r'C:\Users\bwhe3635\cloudstor\MRI_distortion_QA_sample_data\CT\slicer_centroids.mrk.json')
 
 # extract markers:
@@ -41,7 +41,7 @@ B_fields = ConvertMatchedMarkersToBz(matched_volume.MatchedCentroids, dis_volume
 gradient_strength = np.array(dis_volume.dicom_data['gradient_strength'])
 normalisation_factor = [1 / gradient_strength[0], 1 / gradient_strength[1], 1 / gradient_strength[2],
                         1]  # this normalised gradient harmonics to 1mT/m
-# normalisation_factor = [1,1,1,1]
+# normalisation_factor = [1, 1, 1, 1]
 G_x_Harmonics, G_y_Harmonics, G_z_Harmonics, B0_Harmonics = calculate_harmonics(B_fields.MagneticFields,
                                                                                 n_order=8,
                                                                                 norm=normalisation_factor)

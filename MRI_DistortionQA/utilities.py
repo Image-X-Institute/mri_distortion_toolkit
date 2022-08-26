@@ -470,7 +470,7 @@ def reconstruct_Bz(harmonics, coords, quantity='uT', r_outer=None):
     Reconstruct Bz at an arbitrary set of coordinates.
     n_order of reconstruction is derived from the shape of harmonics
 
-    :param harmonics: a pandase series of size (n_order+1)^2, such as that defined within
+    :param harmonics: a pandas series of size (n_order+1)^2, such as that defined within
         FieldAnalysis.SphericalHarmonicFit
     :param coords: a pandas Dataframe which can contain whatever you want, but MUST contain columns called:
         elevation, azimuth, and r
