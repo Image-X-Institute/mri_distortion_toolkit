@@ -443,9 +443,12 @@ class KspaceDistortionCorrector:
             plt.close(fig)
             i += 1
 
-    def save_all_images_as_dicom(self):
-        if not os.path.isdir(self.ImageDirectory / 'Corrected_dcm'):
-            os.mkdir(self.ImageDirectory / 'Corrected_dcm')
+    def save_all_images_as_dicom(self, save_loc=None):
+        if save_loc is None:
+            save_loc = os.path.isdir(self.ImageDirectory / 'Corrected_dcm')
+        save_loc = Path(save_loc)
+        if not save_loc.is_dir():
+            save_loc.mkdir()
         loop_axis = 2
         zipped_data = zip(np.rollaxis(self.ImageArray, loop_axis),
                           np.rollaxis(self._image_array_corrected, loop_axis))
@@ -454,5 +457,5 @@ class KspaceDistortionCorrector:
             current_slice = pydicom.read_file(self.ImageDirectory / self._all_dicom_files[i])
             temp_dcm = current_slice.copy()
             temp_dcm.PixelData = np.uint16(corrected_image).tobytes()
-            temp_dcm.save_as(self.ImageDirectory / 'Corrected_dcm' / (str(i) + '.dcm'))
+            temp_dcm.save_as(save_loc / (str(i) + '.dcm'))
             i += 1
