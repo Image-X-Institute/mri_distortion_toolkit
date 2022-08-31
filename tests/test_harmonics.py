@@ -30,8 +30,7 @@ def test_spherical_harmonics_stability():
 
 def test_calculate_harmonics():
     """
-    test our wrapper function
-    :return:
+    test our wrapper function; just checks for stability
     """
     distorted_volume = MarkerVolume(test_data_dir / 'MR.mrk.json')
     ground_truth_volume = MarkerVolume(test_data_dir / 'CT.mrk.json')
@@ -51,9 +50,9 @@ def test_calculate_harmonics():
                                                                                     n_order=8)
 
     # can't be bothered saving in and reading all harmonics so just checking max:
-    assert np.allclose(G_x_Harmonics.harmonics.max(), 0.40997688028675766)
-    assert np.allclose(G_y_Harmonics.harmonics.max(), 0.7000613996928333)
-    assert np.allclose(G_z_Harmonics.harmonics.max(), 0.5690328634698217)
+    assert np.allclose(G_x_Harmonics.harmonics.max(), 409.97688028675766)
+    assert np.allclose(G_y_Harmonics.harmonics.max(), 700.0613996928333)
+    assert np.allclose(G_z_Harmonics.harmonics.max(), 569.0328634698217)
 
 
 def test_harmonic_conversion():
