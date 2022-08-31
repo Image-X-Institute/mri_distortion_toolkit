@@ -23,7 +23,7 @@ flowchart LR
 ## Setup/Build/Install
 
 ```bash
-pip install MRI_DistortionQA
+pip install mri_distortion_toolkit
 ```
 
 

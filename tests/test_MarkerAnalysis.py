@@ -7,8 +7,8 @@ import pandas as pd
 
 this_dir = Path(__file__).parent
 sys.path.insert(0, str(this_dir.parent))
-from MRI_DistortionQA.MarkerAnalysis import MarkerVolume, MatchedMarkerVolumes
-from MRI_DistortionQA.utilities import get_dicom_data
+from mri_distortion_toolkit.MarkerAnalysis import MarkerVolume, MatchedMarkerVolumes
+from mri_distortion_toolkit.utilities import get_dicom_data
 
 
 def test_mr_dicom_data_read_in():

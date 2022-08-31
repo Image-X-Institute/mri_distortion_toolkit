@@ -10,7 +10,7 @@ Say that you have [built](https://acrf-image-x-institute.github.io/MRI_Distortio
 First, create a directory called 'MRI_QA_tutorial' or something like that. Within that directory, create a new python file called 'MarkerExtractionExample'. Copy the below code into it, and update
 
 ```python
-from MRI_DistortionQA.MarkerAnalysis import MarkerVolume
+from mri_distortion_toolkit.MarkerAnalysis import MarkerVolume
 from pathlib import Path
 import numpy as np
 import pandas as pd
@@ -141,9 +141,9 @@ The best way to check this is to take a forward/reverse gradient pair of images,
 You can read about the different options for handling this effect [here](https://acrf-image-x-institute.github.io/MRI_DistortionPhantom/phantom_imaging.html#fat-water-chemical-shift); but one option is to correct for this in software. If you want to do that, the code would look this:
 
 ```python
-from MRI_DistortionQA.MarkerAnalysis import MarkerVolume
+from mri_distortion_toolkit.MarkerAnalysis import MarkerVolume
 from pathlib import Path
-from MRI_DistortionQA.utilities import plot_MarkerVolume_overlay
+from mri_distortion_toolkit.utilities import plot_MarkerVolume_overlay
 
 marker_volume_forward = MarkerVolume(data_loc / 'MR' / '04 gre_trans_AP_330', verbose=False,
                              correct_fat_water_shift=True, fat_shift_direction=-1)

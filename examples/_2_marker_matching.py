@@ -1,7 +1,7 @@
 import sys
 from pathlib import Path
-from MRI_DistortionQA.MarkerAnalysis import MarkerVolume
-from MRI_DistortionQA.MarkerAnalysis import MatchedMarkerVolumes
+from mri_distortion_toolkit.MarkerAnalysis import MarkerVolume
+from mri_distortion_toolkit.MarkerAnalysis import MatchedMarkerVolumes
 
 this_file_loc = Path(__file__).parent.resolve()
 data_loc = this_file_loc / '_example_data'

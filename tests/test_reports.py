@@ -3,8 +3,8 @@ import sys
 this_dir = Path(__file__).parent
 sys.path.insert(0, str(this_dir.parent))
 import numpy as np
-from MRI_DistortionQA.Reports import MRI_QA_Reporter
-from MRI_DistortionQA.Harmonics import SphericalHarmonicFit
+from mri_distortion_toolkit.Reports import MRI_QA_Reporter
+from mri_distortion_toolkit.Harmonics import SphericalHarmonicFit
 import pandas as pd
 
 def test_linear_recon():

@@ -135,10 +135,10 @@ The main concern is the reversal in sign of the harmonics for B0, so we have to 
 in case I ever want this again:
 
 ```python
-from MRI_DistortionQA.MarkerAnalysis import MarkerVolume, MatchedMarkerVolumes
+from mri_distortion_toolkit.MarkerAnalysis import MarkerVolume, MatchedMarkerVolumes
 from pathlib import Path
-from MRI_DistortionQA.FieldCalculation import ConvertMatchedMarkersToBz
-from MRI_DistortionQA.Harmonics import SphericalHarmonicFit
+from mri_distortion_toolkit.FieldCalculation import ConvertMatchedMarkersToBz
+from mri_distortion_toolkit.Harmonics import SphericalHarmonicFit
 
 '''
 data is here

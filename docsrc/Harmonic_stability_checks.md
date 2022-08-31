@@ -46,10 +46,10 @@ probably won't keep this here long term but for now:
 
 ````python
 import numpy as np
-from MRI_DistortionQA.MarkerAnalysis import MarkerVolume, MatchedMarkerVolumes
+from mri_distortion_toolkit.MarkerAnalysis import MarkerVolume, MatchedMarkerVolumes
 from pathlib import Path
-from MRI_DistortionQA.FieldCalculation import ConvertMatchedMarkersToBz
-from MRI_DistortionQA.Harmonics import SphericalHarmonicFit
+from mri_distortion_toolkit.FieldCalculation import ConvertMatchedMarkersToBz
+from mri_distortion_toolkit.Harmonics import SphericalHarmonicFit
 from copy import deepcopy
 from matplotlib import pyplot as plt
 
@@ -185,8 +185,8 @@ axs[1, 1].set_ylabel('Harmonic value [AU]')
 plt.tight_layout()
 
 # OK, now let's make two report, one with the unperturbed harmonics and one with the perturbed harmonics and compare
-from MRI_DistortionQA.Reports import MRI_QA_Reporter
-from MRI_DistortionQA.utilities import compare_recon_report_with_ground_truth_report
+from mri_distortion_toolkit.Reports import MRI_QA_Reporter
+from mri_distortion_toolkit.utilities import compare_recon_report_with_ground_truth_report
 
 unperturbed_report = MRI_QA_Reporter(gradient_harmonics=[G_x_Harmonics_gt.harmonics,
                                                          G_y_Harmonics_gt.harmonics,

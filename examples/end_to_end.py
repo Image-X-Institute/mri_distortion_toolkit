@@ -5,14 +5,14 @@ to correct the image
 
 from pathlib import Path
 import numpy as np
-from MRI_DistortionQA.MarkerAnalysis import MarkerVolume
-from MRI_DistortionQA.MarkerAnalysis import MatchedMarkerVolumes
-from MRI_DistortionQA.FieldCalculation import ConvertMatchedMarkersToBz
-from MRI_DistortionQA import calculate_harmonics
-from MRI_DistortionQA.utilities import plot_distortion_xyz_hist
-from MRI_DistortionQA.K_SpaceCorrector import KspaceDistortionCorrector
-from MRI_DistortionQA.utilities import plot_matched_volume_hist, print_dict
-from MRI_DistortionQA.utilities import plot_MarkerVolume_overlay
+from mri_distortion_toolkit.MarkerAnalysis import MarkerVolume
+from mri_distortion_toolkit.MarkerAnalysis import MatchedMarkerVolumes
+from mri_distortion_toolkit.FieldCalculation import ConvertMatchedMarkersToBz
+from mri_distortion_toolkit import calculate_harmonics
+from mri_distortion_toolkit.utilities import plot_distortion_xyz_hist
+from mri_distortion_toolkit.K_SpaceCorrector import KspaceDistortionCorrector
+from mri_distortion_toolkit.utilities import plot_matched_volume_hist, print_dict
+from mri_distortion_toolkit.utilities import plot_MarkerVolume_overlay
 
 
 

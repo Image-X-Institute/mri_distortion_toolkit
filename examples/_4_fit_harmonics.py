@@ -1,7 +1,7 @@
-from MRI_DistortionQA import calculate_harmonics
+from mri_distortion_toolkit import calculate_harmonics
 from pathlib import Path
 import pandas as pd
-from MRI_DistortionQA.utilities import get_dicom_data
+from mri_distortion_toolkit.utilities import get_dicom_data
 import numpy as np
 
 this_file_loc = Path(__file__).parent.resolve()

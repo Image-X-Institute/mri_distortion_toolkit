@@ -1,4 +1,4 @@
-from MRI_DistortionQA.MarkerAnalysis import MarkerVolume
+from mri_distortion_toolkit.MarkerAnalysis import MarkerVolume
 from pathlib import Path
 
 '''

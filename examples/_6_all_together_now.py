@@ -1,12 +1,12 @@
 from pathlib import Path
 import numpy as np
-from MRI_DistortionQA.Reports import MRI_QA_Reporter
-from MRI_DistortionQA.Reports import DefaultTestSuite
-from MRI_DistortionQA import calculate_harmonics
-from MRI_DistortionQA.MarkerAnalysis import MarkerVolume
-from MRI_DistortionQA.MarkerAnalysis import MatchedMarkerVolumes
-from MRI_DistortionQA.FieldCalculation import ConvertMatchedMarkersToBz
-from MRI_DistortionQA.utilities import get_dicom_data
+from mri_distortion_toolkit.Reports import MRI_QA_Reporter
+from mri_distortion_toolkit.Reports import DefaultTestSuite
+from mri_distortion_toolkit import calculate_harmonics
+from mri_distortion_toolkit.MarkerAnalysis import MarkerVolume
+from mri_distortion_toolkit.MarkerAnalysis import MatchedMarkerVolumes
+from mri_distortion_toolkit.FieldCalculation import ConvertMatchedMarkersToBz
+from mri_distortion_toolkit.utilities import get_dicom_data
 
 """
 This example encapsulate all the previous examples; instead of doing things one file at a time we do them all 
