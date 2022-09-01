@@ -4,37 +4,37 @@ Code Documentation
 Marker Analysis
 ---------------
 
-.. automodule:: MRI_DistortionQA.MarkerAnalysis
+.. automodule::  mri_distortion_toolkit.MarkerAnalysis
    :members:
 
 
 Field Calculation
 -----------------
 
-.. automodule:: MRI_DistortionQA.FieldCalculation
+.. automodule:: mri_distortion_toolkit.FieldCalculation
     :members:
 
 Harmonic Analysis
 -----------------
 
-.. automodule:: MRI_DistortionQA.FieldAnalysis
+.. automodule:: mri_distortion_toolkit.FieldAnalysis
     :members:
 
 Reports
 -------
 
-.. automodule:: MRI_DistortionQA.Reports
+.. automodule:: mri_distortion_toolkit.Reports
     :members:
 
 utilities
 ---------
 
-.. automodule:: MRI_DistortionQA.utilities
+.. automodule:: mri_distortion_toolkit.utilities
     :members:
 
 calculate_harmonics
 -------------------
 
-.. automodule:: MRI_DistortionQA.calculate_harmonics
+.. automodule:: mri_distortion_toolkit.calculate_harmonics
     :members:
 
