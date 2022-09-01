@@ -28,13 +28,15 @@ dis_data = {'0': '01 localiser_gre',
             '7': 'k_space'}
 
 distorted_data_loc = dis_data_loc / dis_data['1'] / 'Original'
+distorted_data_loc_rev = dis_data_loc / dis_data['2'] / 'Original'
 gt_data_loc = Path(r'C:\Users\bwhe3635\cloudstor\MRI_distortion_QA_sample_data\CT\slicer_centroids.mrk.json')
 
 # extract markers:
 gt_volume = MarkerVolume(gt_data_loc, r_max=300)
 dis_volume = MarkerVolume(distorted_data_loc, n_markers_expected=336, iterative_segmentation=True)
+dis_volume_rev = MarkerVolume(distorted_data_loc_rev, n_markers_expected=336, iterative_segmentation=True)
 # match markers:
-matched_volume = MatchedMarkerVolumes(gt_volume, dis_volume, n_refernce_markers=11)
+matched_volume = MatchedMarkerVolumes(gt_volume, dis_volume, reverse_gradient_data=None, n_refernce_markers=11)
 # calculate fields
 B_fields = ConvertMatchedMarkersToBz(matched_volume.MatchedCentroids, dis_volume.dicom_data)
 # calculate harmonics
@@ -47,9 +49,9 @@ G_x_Harmonics, G_y_Harmonics, G_z_Harmonics, B0_Harmonics = calculate_harmonics(
                                                                                 norm=normalisation_factor)
 # correct input images
 GDC = KspaceDistortionCorrector(ImageDirectory=distorted_data_loc.resolve(),
-                                Gx_Harmonics=G_x_Harmonics.harmonics,
-                                Gy_Harmonics=G_y_Harmonics.harmonics,
-                                Gz_Harmonics=G_z_Harmonics.harmonics,
+                                gradient_harmonics=[G_x_Harmonics.harmonics,
+                                                    G_y_Harmonics.harmonics,
+                                                    G_z_Harmonics.harmonics],
                                 ImExtension='dcm',
                                 dicom_data=dis_volume.dicom_data,
                                 correct_through_plane=True)

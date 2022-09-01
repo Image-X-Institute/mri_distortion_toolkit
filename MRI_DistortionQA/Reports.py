@@ -264,17 +264,14 @@ class MRI_QA_Reporter:
 
         if gradient_harmonics is not None:
             self._check_dicom_data()
-            self.Gx_Harmonics, self.Gy_Harmonics, self.Gz_Harmonics = \
+            self._Gx_Harmonics, self._Gy_Harmonics, self._Gz_Harmonics = \
                 get_gradient_spherical_harmonics(gradient_harmonics[0], gradient_harmonics[1], gradient_harmonics[2])
-            self.Gx_Harmonics = self.Gx_Harmonics * self.dicom_data['gradient_strength'][0] * 1e3
-            self.Gy_Harmonics = self.Gy_Harmonics * self.dicom_data['gradient_strength'][1] * 1e3
-            self.Gz_Harmonics = self.Gz_Harmonics * self.dicom_data['gradient_strength'][2] * 1e3
+            # self._Gx_Harmonics = self._Gx_Harmonics * self.dicom_data['gradient_strength'][0]
+            # self._Gy_Harmonics = self._Gy_Harmonics * self.dicom_data['gradient_strength'][1]
+            # self._Gz_Harmonics = self._Gz_Harmonics * self.dicom_data['gradient_strength'][2]
             if self.r_outer is None:
-                logger.warning(
-                    'When you use gradient_harmonics to reconstruct the data, it is advisable to enter a value for'
-                    'r_outer; we use this to limit the data we show you on the reconstructed plots. '
-                    'With the harmonic approach we can reconstruct data anywhere, but it will only be'
-                    'reliable inside the sphere of data used to fit the gradient_harmonics')
+                logger.warning('no r_outer value entered, using 150 mm')
+                self.r_outer = 150
             if self.recon_coords_cartesian is None:
                 self.recon_coords_cartesian = self._generate_recon_coords()
             self.recon_coords = convert_cartesian_to_spherical(self.recon_coords_cartesian)
@@ -309,19 +306,19 @@ class MRI_QA_Reporter:
         gradient_strength = bandwidth * image_size / (gama * 1e6 * FOV * 1e-3)  # unit(T / m)
         # ^ this is a vector [gx, gy, gz]
         self._MatchedMarkerVolume = \
-            self._MatchedMarkerVolume.assign(x_gnl=self.Gx_Bfield / (gradient_strength[0] * 1e-3))
+            self._MatchedMarkerVolume.assign(x_gnl=self.Gx_Bfield / (gradient_strength[0]))
         self._MatchedMarkerVolume = \
-            self._MatchedMarkerVolume.assign(y_gnl=self.Gy_Bfield / (gradient_strength[1] * 1e-3))
+            self._MatchedMarkerVolume.assign(y_gnl=self.Gy_Bfield / (gradient_strength[1]))
         self._MatchedMarkerVolume = \
-            self._MatchedMarkerVolume.assign(z_gnl=self.Gz_Bfield / (gradient_strength[2] * 1e-3))
+            self._MatchedMarkerVolume.assign(z_gnl=self.Gz_Bfield / (gradient_strength[2]))
 
     def _reconstruct_gradient_fields(self):
         """
         utilise the utilities.reconstruct_Bz function to reconsutrct each of the gradient fields at recon_coords
         """
-        self.Gx_Bfield = reconstruct_Bz(self.Gx_Harmonics, self.recon_coords, quantity='T')
-        self.Gy_Bfield = reconstruct_Bz(self.Gy_Harmonics, self.recon_coords, quantity='T')
-        self.Gz_Bfield = reconstruct_Bz(self.Gz_Harmonics, self.recon_coords, quantity='T')
+        self.Gx_Bfield = reconstruct_Bz(self._Gx_Harmonics, self.recon_coords, quantity='T')
+        self.Gy_Bfield = reconstruct_Bz(self._Gy_Harmonics, self.recon_coords, quantity='T')
+        self.Gz_Bfield = reconstruct_Bz(self._Gz_Harmonics, self.recon_coords, quantity='T')
 
     def _build_homogeneity_report_table(self):
         """
@@ -374,9 +371,9 @@ class MRI_QA_Reporter:
         """
         Generate a grid of coordinates to perform reconstruction
         """
-        x = np.linspace(-150, 150, 50)
-        y = np.linspace(-150, 150, 50)
-        z = np.linspace(-150, 150, 50)
+        x = np.linspace(-self.r_outer, self.r_outer, 50)
+        y = np.linspace(-self.r_outer, self.r_outer, 50)
+        z = np.linspace(-self.r_outer, self.r_outer, 50)
         [x_recon, y_recon, z_recon] = np.meshgrid(x, y, z, indexing='ij')
         recon_coords = pd.DataFrame({'x': x_recon.flatten(), 'y': y_recon.flatten(), 'z': z_recon.flatten()})
         return recon_coords

@@ -92,7 +92,6 @@ class MarkerVolume:
             self.input_data_path = Path(input_data)
             if self.input_data_path.is_dir():
                 # dicom input
-
                 self.InputVolume, self.dicom_affine, (self.X, self.Y, self.Z) = \
                     dicom_to_numpy(self.input_data_path, file_extension=self._file_extension, return_XYZ=True)
                 self._calculate_MR_acquisition_data()

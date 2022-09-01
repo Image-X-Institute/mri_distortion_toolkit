@@ -25,8 +25,8 @@ class KspaceDistortionCorrector:
     This algorithm is based on `this work`_<https://onlinelibrary.wiley.com/doi/epdf/10.1002/mrm.25487>
     """
 
-    def __init__(self, ImageDirectory, NufftLibrary='finufft', Gx_Harmonics=None, Gy_Harmonics=None,
-                 Gz_Harmonics=None, ImExtension='.dcm', dicom_data=None, correct_through_plane=True):
+    def __init__(self, ImageDirectory, NufftLibrary='finufft', gradient_harmonics=None,
+                 ImExtension='.dcm', dicom_data=None, correct_through_plane=True):
         """
         :param ImageDirectory:
         :param NufftLibrary:
@@ -41,7 +41,7 @@ class KspaceDistortionCorrector:
         self._n_zero_pad = 20  # n_pixels to add around each edge of volume. set to 0 for no zero padding
         self._dicom_data = dicom_data
         self._Gx_Harmonics, self._Gy_Harmonics, self._Gz_Harmonics = \
-            get_gradient_spherical_harmonics(Gx_Harmonics, Gy_Harmonics, Gz_Harmonics)
+            get_gradient_spherical_harmonics(gradient_harmonics[0], gradient_harmonics[1], gradient_harmonics[2])
         self._Gx_Harmonics = self._Gx_Harmonics * 1
         self._Gy_Harmonics = self._Gy_Harmonics * 1
         self._Gz_Harmonics = self._Gz_Harmonics * -1

@@ -93,9 +93,6 @@ class SphericalHarmonicFit:
         if self.AssessHarmonicPk_Pk:
             self._assess_harmonic_pk_pk()
 
-        
-
-        
     def _check_data_input(self):
         """
         - Make sure the input data actually covers a sphere. If it doesn't, it normally means something has or will go wrong
@@ -210,7 +207,7 @@ class SphericalHarmonicFit:
             legendre_basis_to_use = self.legendre_basis
 
         BasisRange = legendre_basis_to_use.apply(lambda x: abs(np.max(x) - np.min(x)))
-        self.HarmonicsPk_Pk = self.harmonics * BasisRange * 1e6
+        self.HarmonicsPk_Pk = (self.harmonics/self.scale) * BasisRange * 1e6
 
     # Public Methods
 
@@ -327,7 +324,7 @@ class SphericalHarmonicFit:
         plt.tight_layout()
         plt.show()
 
-    def print_key_harmonics(self, cut_off=.1):
+    def print_key_harmonics(self, cut_off=.01):
         """
         print the harmonics with value > cut_off to the terminal in pk-pk.
 
@@ -341,7 +338,7 @@ class SphericalHarmonicFit:
 
         CutOffInd = abs(self.HarmonicsPk_Pk) < cut_off * abs(self.HarmonicsPk_Pk).max()
         KeyHarmonics = self.HarmonicsPk_Pk.drop(self.HarmonicsPk_Pk[CutOffInd].index)
-
+        pd.set_option('display.float_format', lambda x: '%1.4ef' % x)
         print(f'\nOnly displaying values >= {cut_off*100: 1.0f}% of the peak harmonic.')
         try:
             print('Values are in pk=pk [\u03BCT]')
