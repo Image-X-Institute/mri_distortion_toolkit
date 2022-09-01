@@ -42,6 +42,6 @@ def test_read_in_of_corrected_data():
     dis_volume = MarkerVolume(corrected_data)
 
     corrected_vol = MarkerVolume(corrected_data)
-    distorted_vol = MarkerVolume(test_data_dir / 'MR_dicom')
+    distorted_vol = MarkerVolume(test_data_dir / 'MR_Dicom')
     matched_vol = MatchedMarkerVolumes(corrected_vol, distorted_vol)
     assert np.isclose(np.mean(matched_vol.MatchedCentroids.match_distance), 3.560997540275499)
