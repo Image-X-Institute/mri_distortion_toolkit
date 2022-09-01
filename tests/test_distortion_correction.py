@@ -17,8 +17,13 @@ def test_execution():
     """
     execute it over some test data
     """
-    assert (test_data_dir / 'MR_dicom').is_dir()
-    assert (test_data_dir / 'G_x_harmonics.csv').resolve().is_file()
+    try:
+        assert (this_dir / 'test_data' / 'MR_dicom').resolve().is_dir()
+        assert (this_dir / 'test_data' / 'G_x_harmonics.csv').resolve().is_file()
+    except AssertionError:
+        print('FUCKKKKK')
+        print((this_dir / 'test_data' / 'MR_dicom').resolve().is_dir())
+        print((this_dir / 'test_data' / 'G_x_harmonics.csv').resolve().is_file())
     dis_volume = MarkerVolume(test_data_dir / 'MR_dicom')
     # correct input images
     GDC = KspaceDistortionCorrector(ImageDirectory=(test_data_dir / 'MR_dicom').resolve(),
