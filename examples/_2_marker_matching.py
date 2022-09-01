@@ -3,8 +3,6 @@ from pathlib import Path
 from mri_distortion_toolkit.MarkerAnalysis import MarkerVolume
 from mri_distortion_toolkit.MarkerAnalysis import MatchedMarkerVolumes
 
-this_file_loc = Path(__file__).parent.resolve()
-data_loc = this_file_loc / '_example_data'
 
 # distorted centroids
 distorted_volume = MarkerVolume(data_loc / 'MR' / '04 gre_trans_AP_330' / 'slicer_centroids.mrk.json', verbose=False)

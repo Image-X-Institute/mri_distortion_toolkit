@@ -1,13 +1,18 @@
 from pathlib import Path
+import sys
 import numpy as np
 from mri_distortion_toolkit.MarkerAnalysis import MarkerVolume
 from mri_distortion_toolkit.MarkerAnalysis import MatchedMarkerVolumes
 from mri_distortion_toolkit.FieldCalculation import ConvertMatchedMarkersToBz
 from mri_distortion_toolkit import calculate_harmonics
 from mri_distortion_toolkit.utilities import plot_distortion_xyz_hist
-from mri_distortion_toolkit.K_SpaceCorrector import KspaceDistortionCorrector
+from mri_distortion_toolkit.DistortionCorrection import KspaceDistortionCorrector
 from mri_distortion_toolkit.utilities import plot_matched_volume_hist, print_dict
 from mri_distortion_toolkit.utilities import plot_MarkerVolume_overlay
+this_file_loc = Path(__file__).parent.resolve()
+examples_loc = this_file_loc.parent / 'examples'
+sys.path.insert(0, str(examples_loc))
+
 
 def test_2D_execution():
     """

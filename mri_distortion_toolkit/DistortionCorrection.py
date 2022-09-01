@@ -445,7 +445,7 @@ class KspaceDistortionCorrector:
 
     def save_all_images_as_dicom(self, save_loc=None):
         if save_loc is None:
-            save_loc = os.path.isdir(self.ImageDirectory / 'Corrected_dcm')
+            save_loc = self.ImageDirectory / 'Corrected_dcm'
         save_loc = Path(save_loc)
         if not save_loc.is_dir():
             save_loc.mkdir()

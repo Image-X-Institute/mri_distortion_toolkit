@@ -266,9 +266,9 @@ class MRI_QA_Reporter:
             self._check_dicom_data()
             self._Gx_Harmonics, self._Gy_Harmonics, self._Gz_Harmonics = \
                 get_gradient_spherical_harmonics(gradient_harmonics[0], gradient_harmonics[1], gradient_harmonics[2])
-            # self._Gx_Harmonics = self._Gx_Harmonics * self.dicom_data['gradient_strength'][0]
-            # self._Gy_Harmonics = self._Gy_Harmonics * self.dicom_data['gradient_strength'][1]
-            # self._Gz_Harmonics = self._Gz_Harmonics * self.dicom_data['gradient_strength'][2]
+            self._Gx_Harmonics = self._Gx_Harmonics * self.dicom_data['gradient_strength'][0]
+            self._Gy_Harmonics = self._Gy_Harmonics * self.dicom_data['gradient_strength'][1]
+            self._Gz_Harmonics = self._Gz_Harmonics * self.dicom_data['gradient_strength'][2]
             if self.r_outer is None:
                 logger.warning('no r_outer value entered, using 150 mm')
                 self.r_outer = 150
@@ -439,7 +439,6 @@ class MRI_QA_Reporter:
                     zaxis_title='Z Axis (mm)'))
         if self._show_plots:
             self._fig_3D_planes.show()
-
 
     def _plot_B0_surface(self):
         """

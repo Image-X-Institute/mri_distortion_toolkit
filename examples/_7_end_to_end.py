@@ -1,6 +1,6 @@
 '''
-this demonstrates using an image to generate harmonics, then using those harmonics
-to correct the image
+this rather long script demonstrates using an image to generate harmonics, using those harmonics
+to correct the image, analysing the result, and generating a before/after report
 '''
 
 from pathlib import Path
@@ -10,26 +10,17 @@ from mri_distortion_toolkit.MarkerAnalysis import MatchedMarkerVolumes
 from mri_distortion_toolkit.FieldCalculation import ConvertMatchedMarkersToBz
 from mri_distortion_toolkit import calculate_harmonics
 from mri_distortion_toolkit.utilities import plot_distortion_xyz_hist
-from mri_distortion_toolkit.K_SpaceCorrector import KspaceDistortionCorrector
-from mri_distortion_toolkit.utilities import plot_matched_volume_hist, print_dict
-from mri_distortion_toolkit.utilities import plot_MarkerVolume_overlay
-
+from mri_distortion_toolkit.DistortionCorrection import KspaceDistortionCorrector
+from mri_distortion_toolkit.utilities import plot_matched_volume_hist
+from mri_distortion_toolkit.Reports import MRI_QA_Reporter
+this_file_loc = Path(__file__).parent.resolve()
+data_loc = this_file_loc / '_example_data'
 
 
 # Data import
-dis_data_loc = Path(r'C:\Users\bwhe3635\cloudstor\Shared\Goam2^Mr\20220624 QA^QA')
-dis_data = {'0': '01 localiser_gre',
-            '1': '02 gre_trans_AP_330',
-            '2': '03 gre_trans_PA_330',
-            '3': '04 gre_sag_AP_330',
-            '4': '05 gre_sag_PA_330',
-            '5': '06 gre_cor_RL_330',
-            '6': '07 gre_cor_LR_330',
-            '7': 'k_space'}
-
-distorted_data_loc = dis_data_loc / dis_data['1'] / 'Original'
-distorted_data_loc_rev = dis_data_loc / dis_data['2'] / 'Original'
-gt_data_loc = Path(r'C:\Users\bwhe3635\cloudstor\MRI_distortion_QA_sample_data\CT\slicer_centroids.mrk.json')
+distorted_data_loc = Path(r'C:\Users\Brendan\Downloads\MRI_distortion_QA_sample_data\MRI_distortion_QA_sample_data\MR\04 gre_trans_AP_330')
+distorted_data_loc_rev = Path(r'C:\Users\Brendan\Downloads\MRI_distortion_QA_sample_data\MRI_distortion_QA_sample_data\MR\05 gre_trans_PA_330')
+gt_data_loc = Path(r'C:\Users\Brendan\Downloads\MRI_distortion_QA_sample_data\MRI_distortion_QA_sample_data\CT\slicer_centroids.mrk.json')
 
 # extract markers:
 gt_volume = MarkerVolume(gt_data_loc, r_max=300)
@@ -54,7 +45,7 @@ GDC = KspaceDistortionCorrector(ImageDirectory=distorted_data_loc.resolve(),
                                                     G_z_Harmonics.harmonics],
                                 ImExtension='dcm',
                                 dicom_data=dis_volume.dicom_data,
-                                correct_through_plane=True)
+                                correct_through_plane=False)
 GDC.correct_all_images()
 GDC.save_all_images()
 GDC.save_all_images_as_dicom()
@@ -69,3 +60,9 @@ corrected_volume.MarkerCentroids = corrected_volume.MarkerCentroids.drop(
 matched_volume_corrected = MatchedMarkerVolumes(gt_volume, corrected_volume, n_refernce_markers=11)
 plot_matched_volume_hist([matched_volume, matched_volume_corrected], ['original', 'corrected'])
 plot_distortion_xyz_hist(matched_volume_corrected)
+
+# Reporting: generate a report on the non-corrected data
+report = MRI_QA_Reporter(gradient_harmonics=[G_x_Harmonics.harmonics, G_y_Harmonics.harmonics, G_z_Harmonics.harmonics],
+                         B0_harmonics=B0_Harmonics,
+                         r_outer=150, dicom_data=dis_volume.dicom_data)
+report.write_html_report()
