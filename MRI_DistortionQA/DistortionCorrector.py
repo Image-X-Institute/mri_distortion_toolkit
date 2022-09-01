@@ -9,6 +9,7 @@ from scipy.fft import fft2
 from scipy.fft import fftshift
 from scipy.sparse.linalg import lsqr
 from scipy.sparse.linalg import LinearOperator
+from scipy.interpolate import interp2d
 import pandas as pd
 from pathlib import Path
 from .utilities import get_all_files, convert_cartesian_to_spherical, generate_legendre_basis, dicom_to_numpy
@@ -26,7 +27,7 @@ class DistortionCorrector:
     """
 
     def __init__(self, ImageDirectory, Gx_Harmonics=None, Gy_Harmonics=None,
-                 Gz_Harmonics=None, ImExtension='.dcm', dicom_data=None, correct_through_plane=True):
+                 Gz_Harmonics=None, ImExtension='.dcm', dicom_data=None, correct_through_plane=True, pad=20):
         """
         :param ImageDirectory:
         :param Gx_Harmonics:
@@ -37,7 +38,7 @@ class DistortionCorrector:
         :param correct_through_plane:
         """
         self.correct_through_plane = correct_through_plane
-        self._n_zero_pad = 20  # n_pixels to add around each edge of volume. set to 0 for no zero padding
+        self._n_zero_pad = pad  # n_pixels to add around each edge of volume. set to 0 for no zero padding
         self._dicom_data = dicom_data
         self._Gx_Harmonics, self._Gy_Harmonics, self._Gz_Harmonics = \
             get_gradient_spherical_harmonics(Gx_Harmonics, Gy_Harmonics, Gz_Harmonics)
@@ -238,6 +239,89 @@ class DistortionCorrector:
 
     # public methods
 
+    def correct_all_images(self):
+        """
+        This will loop through and correct all IMA files in the input directory
+        :return:
+        """
+        if self.correct_through_plane:
+            n_images_to_correct = self._n_dicom_files + (self.ImageArray.shape[1] - 2 * self._n_zero_pad)
+        else:
+            n_images_to_correct = self._n_dicom_files
+        loop_axis = 2  # ImageArray always has slice last
+        # nb: the below code allows us to wrap all the data into one 'itterable'; it also changes the view
+        # such that we are looping over the slice direction
+        zipped_data = zip(np.rollaxis(self.ImageArray, loop_axis),
+                          np.rollaxis(self._X, loop_axis),
+                          np.rollaxis(self._Y, loop_axis),
+                          np.rollaxis(self._Z, loop_axis))
+
+        i = 0
+        self._image_array_corrected = np.zeros(self.ImageArray.shape)
+        for array_slice, X, Y, Z in zipped_data:
+            if i < self._n_zero_pad or i > self._n_dicom_files + self._n_zero_pad:
+                # skip these files, they have no meaning anyway and we can't (easily) write them to dicom
+                i += 1
+                continue
+
+            t_start = perf_counter()
+            print(f'2D correction: {i - self._n_zero_pad} of {self._n_dicom_files}')
+
+            print(printProgressBar(i - self._n_zero_pad, n_images_to_correct))
+            self._image_to_correct = array_slice
+            self._X_slice = X
+            self._Y_slice = Y
+            self._Z_slice = Z
+            self._correct_image()
+            self._image_array_corrected[:, :, i] = self.outputImage
+            t_stop = perf_counter()
+            print(f"Elapsed time {t_stop - t_start}")
+            i += 1
+
+        if self.correct_through_plane:
+
+            if (np.round(self._ImageOrientationPatient) == [1, 0, 0, 0, 1, 0]).all():
+                self._ImageOrientationPatient = [1, 1, 1, 1, 1, 1]
+            elif np.round(self._ImageOrientationPatient == [0, 1, 0, 0, 0, -1]).all():
+                self._ImageOrientationPatient = [2, 2, 2, 2, 2, 2]
+            elif np.round(self._ImageOrientationPatient == [1, 0, 0, 0, 0, -1]).all():
+                self._ImageOrientationPatient = [3, 3, 3, 3, 3, 3]
+            else:
+                raise NotImplementedError
+
+            loop_axis = 1
+            zipped_data = zip(np.rollaxis(self._image_array_corrected, loop_axis),
+                              np.rollaxis(self._X, loop_axis),
+                              np.rollaxis(self._Y, loop_axis),
+                              np.rollaxis(self._Z, loop_axis))
+            self._image_array_corrected2 = self._image_array_corrected.copy()
+            j = 0
+            self._Rows = np.rollaxis(self._image_array_corrected, loop_axis).shape[1]
+            self._Cols = np.rollaxis(self._image_array_corrected, loop_axis).shape[2]
+            n_slices = np.rollaxis(self._image_array_corrected, loop_axis).shape[0]
+            for array_slice, X, Y, Z in zipped_data:
+                if j < self._n_zero_pad or j > n_slices + self._n_zero_pad:
+                    # skip these files, they have no meaning anyway and we can't (easily) write them to dicom
+                    j += 1
+                    continue
+                t_start = perf_counter()
+                print(
+                    f'Through Plane correction: {j - self._n_zero_pad} of {self.ImageArray.shape[loop_axis] - (self._n_zero_pad)}')
+                print(printProgressBar(i + j - (self._n_zero_pad * 4), n_images_to_correct))
+                self._image_to_correct = array_slice
+                self._X_slice = X
+                self._Y_slice = Y
+                self._Z_slice = Z
+                self._correct_image()
+                self._image_array_corrected[:, j, :] = self.outputImage
+
+                t_stop = perf_counter()
+                print(f"Elapsed time {t_stop - t_start}")
+
+                j += 1
+
+        self._unpad_image_arrays()
+
     def save_all_images(self):
         if not os.path.isdir(self.ImageDirectory / 'Corrected'):
             os.mkdir(self.ImageDirectory / 'Corrected')
@@ -327,89 +411,6 @@ class KspaceDistortionCorrector(DistortionCorrector):
         self._calculate_encoding_indices()
         self._perform_least_squares_optimisation()
 
-    def correct_all_images(self):
-        """
-        This will loop through and correct all IMA files in the input directory
-        :return:
-        """
-        if self.correct_through_plane:
-            n_images_to_correct = self._n_dicom_files + (self.ImageArray.shape[1] - 2 * self._n_zero_pad)
-        else:
-            n_images_to_correct = self._n_dicom_files
-        loop_axis = 2  # ImageArray always has slice last
-        # nb: the below code allows us to wrap all the data into one 'itterable'; it also changes the view
-        # such that we are looping over the slice direction
-        zipped_data = zip(np.rollaxis(self.ImageArray, loop_axis),
-                          np.rollaxis(self._X, loop_axis),
-                          np.rollaxis(self._Y, loop_axis),
-                          np.rollaxis(self._Z, loop_axis))
-
-        i = 0
-        self._image_array_corrected = np.zeros(self.ImageArray.shape)
-        for array_slice, X, Y, Z in zipped_data:
-            if i < self._n_zero_pad or i > self._n_dicom_files + self._n_zero_pad:
-                # skip these files, they have no meaning anyway and we can't (easily) write them to dicom
-                i += 1
-                continue
-
-            t_start = perf_counter()
-            print(f'2D correction: {i - self._n_zero_pad} of {self._n_dicom_files}')
-
-            print(printProgressBar(i - self._n_zero_pad, n_images_to_correct))
-            self._image_to_correct = array_slice
-            self._X_slice = X
-            self._Y_slice = Y
-            self._Z_slice = Z
-            self._correct_image()
-            self._image_array_corrected[:, :, i] = self.outputImage
-            t_stop = perf_counter()
-            print(f"Elapsed time {t_stop - t_start}")
-            i += 1
-
-        if self.correct_through_plane:
-
-            if (np.round(self._ImageOrientationPatient) == [1, 0, 0, 0, 1, 0]).all():
-                self._ImageOrientationPatient = [1, 1, 1, 1, 1, 1]
-            elif np.round(self._ImageOrientationPatient == [0, 1, 0, 0, 0, -1]).all():
-                self._ImageOrientationPatient = [2, 2, 2, 2, 2, 2]
-            elif np.round(self._ImageOrientationPatient == [1, 0, 0, 0, 0, -1]).all():
-                self._ImageOrientationPatient = [3, 3, 3, 3, 3, 3]
-            else:
-                raise NotImplementedError
-
-            loop_axis = 1
-            zipped_data = zip(np.rollaxis(self._image_array_corrected, loop_axis),
-                              np.rollaxis(self._X, loop_axis),
-                              np.rollaxis(self._Y, loop_axis),
-                              np.rollaxis(self._Z, loop_axis))
-            self._image_array_corrected2 = self._image_array_corrected.copy()
-            j = 0
-            self._Rows = np.rollaxis(self._image_array_corrected, loop_axis).shape[1]
-            self._Cols = np.rollaxis(self._image_array_corrected, loop_axis).shape[2]
-            n_slices = np.rollaxis(self._image_array_corrected, loop_axis).shape[0]
-            for array_slice, X, Y, Z in zipped_data:
-                if j < self._n_zero_pad or j > n_slices + self._n_zero_pad:
-                    # skip these files, they have no meaning anyway and we can't (easily) write them to dicom
-                    j += 1
-                    continue
-                t_start = perf_counter()
-                print(
-                    f'Through Plane correction: {j - self._n_zero_pad} of {self.ImageArray.shape[loop_axis] - (self._n_zero_pad)}')
-                print(printProgressBar(i + j - (self._n_zero_pad * 4), n_images_to_correct))
-                self._image_to_correct = array_slice
-                self._X_slice = X
-                self._Y_slice = Y
-                self._Z_slice = Z
-                self._correct_image()
-                self._image_array_corrected[:, j, :] = self.outputImage
-
-                t_stop = perf_counter()
-                print(f"Elapsed time {t_stop - t_start}")
-
-                j += 1
-
-        self._unpad_image_arrays()
-
     def _fiNufft_Ax(self, x):
         """
         flatron instiute nufft
@@ -474,9 +475,8 @@ class ImageDomainDistortionCorrector(DistortionCorrector):
 
     def __init__(self, ImageDirectory, Gx_Harmonics, Gy_Harmonics, Gz_Harmonics, ImExtension,
                  dicom_data, correct_through_plane):
-
         super().__init__(ImageDirectory, Gx_Harmonics, Gy_Harmonics, Gz_Harmonics, ImExtension,
-                         dicom_data, correct_through_plane)
+                         dicom_data, correct_through_plane, pad=0)
 
     def _correct_image(self):
         """
@@ -484,9 +484,17 @@ class ImageDomainDistortionCorrector(DistortionCorrector):
         Under some circumstances some steps could be recycled for subsequent slices
         """
 
+        # plt.imshow(self._image_to_correct)
+        # plt.show()
+
         self._image_shape = np.array(np.squeeze(self._X_slice).shape)
         coords_cartesian = np.array([self._X_slice.flatten(), self._Y_slice.flatten(), self._Z_slice.flatten()])
         coords_cartesian = pd.DataFrame(coords_cartesian.T, columns=['x', 'y', 'z'])
         self.coords = convert_cartesian_to_spherical(coords_cartesian)
         self._calculate_encoding_fields()
-                   
+
+        Gx_vector = self.Gx_encode.values.reshape(self._image_shape)
+        Gy_vector = self.Gy_encode.values.reshape(self._image_shape)
+        Gz_vector = self.Gz_encode.values.reshape(self._image_shape)
+
+        print('ok')
