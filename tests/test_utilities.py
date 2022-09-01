@@ -106,12 +106,12 @@ def test_get_spherical_harmonics():
 
     global Gx_Harmonics, Gy_Harmonics, Gz_Harmonics  # i need these for other tests
     # test csv
-    Gx_Harmonics, Gy_Harmonics, Gz_Harmonics = ut.get_gradient_spherical_harmonics(test_data_dir / 'G_x_harmonics.csv',
-                                                                          test_data_dir / 'G_y_harmonics.csv',
-                                                                          test_data_dir / 'G_z_harmonics.csv')
-    Gx_Harmonics2 = pd.read_csv((test_data_dir / 'G_x_harmonics.csv').resolve(), index_col=0).squeeze("columns")
-    Gy_Harmonics2 = pd.read_csv((test_data_dir / 'G_y_harmonics.csv').resolve(), index_col=0).squeeze("columns")
-    Gz_Harmonics2 = pd.read_csv((test_data_dir / 'G_z_harmonics.csv').resolve(), index_col=0).squeeze("columns")
+    Gx_Harmonics, Gy_Harmonics, Gz_Harmonics = ut.get_gradient_spherical_harmonics(test_data_dir / 'G_x_Harmonics.csv',
+                                                                          test_data_dir / 'G_y_Harmonics.csv',
+                                                                          test_data_dir / 'G_z_Harmonics.csv')
+    Gx_Harmonics2 = pd.read_csv((test_data_dir / 'G_x_Harmonics.csv').resolve(), index_col=0).squeeze("columns")
+    Gy_Harmonics2 = pd.read_csv((test_data_dir / 'G_y_Harmonics.csv').resolve(), index_col=0).squeeze("columns")
+    Gz_Harmonics2 = pd.read_csv((test_data_dir / 'G_z_Harmonics.csv').resolve(), index_col=0).squeeze("columns")
 
     assert np.allclose(Gx_Harmonics, Gx_Harmonics2)
     assert np.allclose(Gy_Harmonics, Gy_Harmonics2)
@@ -122,7 +122,9 @@ def test_reconstruct_Bz():
     """
     tests stability wrt to previous code
     """
-
+    Gx_Harmonics, Gy_Harmonics, Gz_Harmonics = ut.get_gradient_spherical_harmonics(test_data_dir / 'G_x_Harmonics.csv',
+                                                                          test_data_dir / 'G_y_Harmonics.csv',
+                                                                          test_data_dir / 'G_z_Harmonics.csv')
     Bz_uT = ut.reconstruct_Bz(Gx_Harmonics, test_coordinates_spherical,
                       quantity='uT', r_outer=None)
     Bz_T = ut.reconstruct_Bz(Gy_Harmonics, test_coordinates_spherical,
