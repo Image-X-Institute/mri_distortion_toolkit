@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+<head>
+<meta charset='UTF-8'><meta name='viewport' content='width=device-width initial-scale=1'>
+<title>MR_report:</title>
+</head>
+<link rel="stylesheet" type="text/css" rel="noopener" target="_blank" href={{ html_theme_loc }}>
+<body><h1 id='mr-qa-report'>MR QA report {{ report_name }}</h1>
+
+{% if acquisition_data -%}
+    <h2 id='acquisition_data'>Acquisition Data</h2>
+      <table>
+      {% for key in acquisition_data %}
+         <TR>
+            <TD class="c1">{{key}}</TD>
+            <TD class="c2">{{acquisition_data[key]}}</TD>
+         </TR>
+   {% endfor %}
+      </table>
+{% else -%}
+   <!--None-->
+{%endif %}
+<h2 id='tests'>Tests from: {{ TestSuiteName }}</h2>
+<table>
+<TD class="c1"><strong>Test Name</strong></TD>
+<TD class="c2"><strong>Result</strong></TD>
+{% for item in test_collection %}
+<TR>
+   <TD class="c1">{{item}}</TD>
+   <TD class="c2">{{test_collection[item]}}</TD>
+</TR>
+{% endfor %}
+</table>
+
+   <div></iframe>
+      <h2 id='distortion versus r'><span>Distortion versus r</span></h2><iframe width="85%," height="650,"
+         src={{ dist_v_r_source }}  style="border:none;"></iframe>
+   </div>
+   <div></iframe>
+      <h2 id='3d-cut-planes'><span>3D cut planes</span></h2><iframe width="85%," height="700,"
+         src={{ cutplanes_source }} style="border:none;"></iframe>
+   </div>
+
+{% if dsv_surf_source -%}
+    <div>
+      <div align="left"></iframe>
+         <h2 id='B0 surface'><span>B0 surface</span></h2><iframe width="50%," height="700,"
+            src={{ dsv_surf_source }} l style="border:none;" </iframe>
+      </div>
+      <div align="right"></iframe>
+         <iframe width="400," height="700," src= {{ B0_table_source }}
+            style="border:none;" </iframe>
+      </div>
+   </div>d-cut-planes'><span>3D cut planes</span></h2><iframe width="85%," height="700," src={{ cutplanes_source }} style="border:none;"></iframe></div>
+{% endif %}
+
+</body>
+</html>
