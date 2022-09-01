@@ -43,12 +43,12 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Worked Examples</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Code Documentation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#marker-analysis">Marker Analysis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#field-calculation">Field Calculation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-mri_distortion_toolkit.MarkerAnalysis">Marker Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-mri_distortion_toolkit.FieldCalculation">Field Calculation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#harmonic-analysis">Harmonic Analysis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#reports">Reports</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#utilities">utilities</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#calculate-harmonics">calculate_harmonics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-mri_distortion_toolkit.Reports">Reports</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-mri_distortion_toolkit.utilities">utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-mri_distortion_toolkit.calculate_harmonics">calculate_harmonics</a></li>
 </ul>
 </li>
 </ul>
@@ -79,23 +79,685 @@
              
   <section id="code-documentation">
 <h1>Code Documentation<a class="headerlink" href="#code-documentation" title="Permalink to this heading"></a></h1>
-<section id="marker-analysis">
-<h2>Marker Analysis<a class="headerlink" href="#marker-analysis" title="Permalink to this heading"></a></h2>
+<section id="module-mri_distortion_toolkit.MarkerAnalysis">
+<span id="marker-analysis"></span><h2>Marker Analysis<a class="headerlink" href="#module-mri_distortion_toolkit.MarkerAnalysis" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="mri_distortion_toolkit.MarkerAnalysis.MarkerVolume">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.MarkerAnalysis.</span></span><span class="sig-name descname"><span class="pre">MarkerVolume</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ImExtension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dcm'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_min</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterative_segmentation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_markers_expected</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fat_shift_direction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gaussian_image_filter_sd</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">correct_fat_water_shift</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">marker_size_lower_tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">marker_size_upper_tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.MarkerAnalysis.MarkerVolume" title="Permalink to this definition"></a></dt>
+<dd><p>This class excepts either a path to a folder of dicom files or a numpy array of marker positions.
+In the former case, it will attempt to automatically extract the marker positions. In the latter, it will just
+use the input marker positions. Once the instance is created, it contains a number of handy plots and functions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_data_path</strong> (<em>path</em><em>, </em><em>string</em><em>, </em><em>np.ndarray</em>) – Either a path to a folder of dicoms, or a numpy array with three columns corresponding to the
+[x,y,z] marker positions</p></li>
+<li><p><strong>ImExtension</strong> (<em>str</em><em>, </em><em>optional</em>) – change to whatever extension your dicom files, most commonly either dcm or IMA</p></li>
+<li><p><strong>r_min</strong> (<em>float</em><em> ,</em><em>optional</em>) – any markers at radii less than this will be discounted.</p></li>
+<li><p><strong>r_max</strong> (<em>float</em><em>, </em><em>optional</em>) – any markers at radii greater than this will be discounted.</p></li>
+<li><p><strong>iterative_segmentation</strong> (<em>bool</em><em>, </em><em>optional</em>) – If set to true, a slower iterative method will be used to find the threshold value
+used to segment the markers. Otherwise, otsu’s method is used.</p></li>
+<li><p><strong>threshold</strong> (<em>float</em><em>, </em><em>optional</em>) – Manually set the threshold value. If this is left as None otsu’s method is used.
+This will replace the iterative segmentation method regardless of flag.</p></li>
+<li><p><strong>n_markers_expected</strong> (<em>int</em><em>, </em><em>optional</em>) – if you know how many markers you expect, you can enter the value here. The code will
+then warn you if it finds a different number.</p></li>
+<li><p><strong>gaussian_image_filter_sd</strong> (<em>float</em><em>, </em><em>optional</em>) – size of filter to blur input data with. Higher values are better at removing
+noise prior to thresholding, but may also blur out small/low signal markers!</p></li>
+<li><p><strong>correct_fat_water_shift</strong> (<em>bool</em><em>, </em><em>optional</em>) – if True, will attempt to automatically correct marker positions for calculated
+fat water shift</p></li>
+<li><p><strong>marker_size_lower_tol</strong> (<em>float</em><em>, </em><em>optional</em>) – lower acceptance window for a marker compared to the median size of markers.
+e.g. markermarker_size_tol=0.5 will result in markers being accepted within when
+(1-marker_size_lower_tol)*median_marker_size &lt;= marker_size &lt;= (1+markermarker_size_tol)*marker_size_upper_tol</p></li>
+<li><p><strong>marker_size_upper_tol</strong> (<em>float</em><em>, </em><em>optional</em>) – upper acceptance window for a marker compared to the median size of markers.</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>optional</em>) – if True, prints a lot of info about the marker extraction process to the screen. mostly useful
+during debugging</p></li>
+<li><p><strong>fat_shift_direction</strong> (<em>int</em><em>, </em><em>optional</em>) – We aren’t sure yet if we can confidently predict the direction that the fat water shift
+will be in. if you set correct_fat_water_shift=True, you can change the direction it shifts in here. it should
+take a value of -1, or 1. pull requests making this easier to use very welcome!</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="mri_distortion_toolkit.MarkerAnalysis.MarkerVolume.export_to_slicer">
+<span class="sig-name descname"><span class="pre">export_to_slicer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">save_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'slicer_centroids'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.MarkerAnalysis.MarkerVolume.export_to_slicer" title="Permalink to this definition"></a></dt>
+<dd><p>export a json file that can be read in by slicer, allowing a good way to visualise marker segmentation
+performance. This file will be saved at the same spot as input data if dicom was input, otherwise it will be
+saved to save_path.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mri_distortion_toolkit.MarkerAnalysis.MarkerVolume.perturb_marker_positions">
+<span class="sig-name descname"><span class="pre">perturb_marker_positions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">random_perturbation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">systemic_perturbation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.MarkerAnalysis.MarkerVolume.perturb_marker_positions" title="Permalink to this definition"></a></dt>
+<dd><p>add random noise to the marker positions. Useful to perform sensitivity analysis. operates in place.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>random_perturbation</strong> (<em>float</em>) – upper and lower limits of random_perturbation to each marker coordinates. uniform
+distribution is used</p></li>
+<li><p><strong>systemic_perturbation</strong> (<em>float</em><em>, </em><em>optional</em>) – constant offset added to all markers</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mri_distortion_toolkit.MarkerAnalysis.MarkerVolume.plot_3D_markers">
+<span class="sig-name descname"><span class="pre">plot_3D_markers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'3D</span> <span class="pre">marker</span> <span class="pre">positions'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.MarkerAnalysis.MarkerVolume.plot_3D_markers" title="Permalink to this definition"></a></dt>
+<dd><p>Just a quick plot of the marker positions; very useful sanity check!</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mri_distortion_toolkit.MarkerAnalysis.MarkerVolume.save_dicom_data">
+<span class="sig-name descname"><span class="pre">save_dicom_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">save_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dicom_data'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.MarkerAnalysis.MarkerVolume.save_dicom_data" title="Permalink to this definition"></a></dt>
+<dd><p>save the dicom data as json.  This file will be saved at the same
+spot as input data if dicom was input, otherwise it will be saved
+to save_path.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mri_distortion_toolkit.MarkerAnalysis.MatchedMarkerVolumes">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.MarkerAnalysis.</span></span><span class="sig-name descname"><span class="pre">MatchedMarkerVolumes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">GroundTruthData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">DistortedData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reverse_gradient_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">WarpSearchData</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">AutomatchMarkers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">AllowDoubleMatching</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sorting_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'radial'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_refernce_markers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.MarkerAnalysis.MatchedMarkerVolumes" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>GroundTruthData</strong> (<em>MarkerVolume object</em><em>, or </em><em>path to dicom folder</em><em>, or </em><em>numpy array</em>) – </p></li>
+<li><p><strong>DistortedData</strong> (<em>MarkerVolume object</em><em>, or </em><em>path to dicom folder</em><em>, or </em><em>numpy array</em>) – </p></li>
+<li><p><strong>reverse_gradient_data</strong> (<em>None</em><em>, or </em><em>MarkerVolume object</em><em>, or </em><em>path to dicom folder</em><em>, or </em><em>numpy array</em>) – </p></li>
+<li><p><strong>WarpSearchData</strong> (<em>boolean</em>) – if True, position of found markers is used to update expected positions for ground truth.
+Recomended is True if there is substantial distortion present.</p></li>
+<li><p><strong>AutomatchMarkers</strong> (<em>boolean</em>) – if True, will automatically match the distorted data to the ground truth using a search
+algorith. If False, will simply use input data in the order it is entered. This is useful if you have sets
+of markers that were independently matched through some other process.</p></li>
+<li><p><strong>AllowDoubleMatching</strong> (<em>bool</em><em>, </em><em>optional</em>) – when False, each ground truth marker is only allowed to match with one distorted
+marker. However, sometimes this can result in a chain reaction where one marker gets mismatched then every
+other marker gets mismatched too. In these cases you can set this parameter to True, and any double matched
+markers will simply be deleted.</p></li>
+<li><p><strong>sorting_method</strong> (<em>str</em><em>, </em><em>optional</em>) – ‘radial’ or ‘nearest’. This is only important if WarpSearchData is True; in that case,
+we are building a motion model on-the-fly based on previously seen markers, so the order we see them can be
+important. For data on a sphere, you may have more success by setting this to ‘nearest’, but this is a bit
+of an untested feature</p></li>
+<li><p><strong>n_refernce_markers</strong> (<em>int</em><em>, </em><em>optional</em>) – the n inner_most Reference markers are used to align the ground truth to the MR volume
+before  matching. this can correct for setup errors. Note that we always move the reference. the best way
+for this to not matter either way is to not have any set up error!</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="mri_distortion_toolkit.MarkerAnalysis.MatchedMarkerVolumes.plot_3D_markers">
+<span class="sig-name descname"><span class="pre">plot_3D_markers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">add_arrows</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'3D</span> <span class="pre">marker</span> <span class="pre">positions'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.MarkerAnalysis.MatchedMarkerVolumes.plot_3D_markers" title="Permalink to this definition"></a></dt>
+<dd><p>Works very similarly to the MarkerVolume version, but plots both sets of markers and adds arrows</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>add_arrows</strong> (<em>bool</em><em>, </em><em>optional</em>) – if True, arrows drawn between matches</p></li>
+<li><p><strong>title</strong> (<em>str</em><em>, </em><em>optional</em>) – plot title</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mri_distortion_toolkit.MarkerAnalysis.MatchedMarkerVolumes.plot_compressed_markers">
+<span class="sig-name descname"><span class="pre">plot_compressed_markers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_min</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_arrows</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.MarkerAnalysis.MatchedMarkerVolumes.plot_compressed_markers" title="Permalink to this definition"></a></dt>
+<dd><p>compresses the 3D markers in the z plane, allowing a 2D visualisation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>z_max</strong> (<em>float</em><em>, </em><em>optional</em>) – maximum z coordiante of markers to includes</p></li>
+<li><p><strong>z_min</strong> (<em>float</em><em>, </em><em>optional</em>) – minimum z coordiante of markers to includes</p></li>
+<li><p><strong>add_arrows</strong> (<em>bool</em><em>, </em><em>optional</em>) – if True, arrows drawn between matches</p></li>
+<li><p><strong>title</strong> (<em>str</em><em>, </em><em>optional</em>) – plot title</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
-<section id="field-calculation">
-<h2>Field Calculation<a class="headerlink" href="#field-calculation" title="Permalink to this heading"></a></h2>
+<section id="module-mri_distortion_toolkit.FieldCalculation">
+<span id="field-calculation"></span><h2>Field Calculation<a class="headerlink" href="#module-mri_distortion_toolkit.FieldCalculation" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="mri_distortion_toolkit.FieldCalculation.ConvertMatchedMarkersToBz">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.FieldCalculation.</span></span><span class="sig-name descname"><span class="pre">ConvertMatchedMarkersToBz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">MatchedCentroids</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dicom_data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.FieldCalculation.ConvertMatchedMarkersToBz" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>MatchedCentroids</strong> – a pandas data frame containing columns [‘x_gt’, ‘y_gt’, ‘z_gt’, ‘x_gnl’, ‘y_gnl’, ‘z_gnl’].
+If you want to calculate B0, is should also have [‘x_B0’, ‘y_B0’, ‘z_B0’]. Such a dataframe is normally created
+within the MatchedMarkerVolumes class.</p></li>
+<li><p><strong>dicom_data</strong> (<em>dictionary</em><em> or </em><em>path</em>) – <p>either a dictionary or a path to a .json file. The minimume required parameters are below.
+dicom_data is calculated automatically when MR data is used to create a MarkerVolume, and can be exported
+to json using:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">marker_volume</span><span class="o">.</span><span class="n">save_dicom_data</span><span class="p">()</span><span class="o">.</span>
+</pre></div>
+</div>
+<p>dicom_data example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">dicom_data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;FOV&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">400</span><span class="p">,</span> <span class="mi">400</span><span class="p">,</span> <span class="mi">400</span><span class="p">],</span>
+<span class="s1">&#39;bandwidth&#39;</span><span class="p">:</span> <span class="mi">203</span><span class="p">,</span>
+<span class="s1">&#39;gama&#39;</span><span class="p">:</span> <span class="mf">42.6</span><span class="p">,</span>
+<span class="s1">&#39;image_size&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">256</span><span class="p">,</span> <span class="mi">256</span><span class="p">,</span> <span class="mi">256</span><span class="p">]}</span>
+</pre></div>
+</div>
+</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 <section id="harmonic-analysis">
 <h2>Harmonic Analysis<a class="headerlink" href="#harmonic-analysis" title="Permalink to this heading"></a></h2>
 </section>
-<section id="reports">
-<h2>Reports<a class="headerlink" href="#reports" title="Permalink to this heading"></a></h2>
+<section id="module-mri_distortion_toolkit.Reports">
+<span id="reports"></span><h2>Reports<a class="headerlink" href="#module-mri_distortion_toolkit.Reports" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="mri_distortion_toolkit.Reports.DefaultTestSuite">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.Reports.</span></span><span class="sig-name descname"><span class="pre">DefaultTestSuite</span></span><a class="headerlink" href="#mri_distortion_toolkit.Reports.DefaultTestSuite" title="Permalink to this definition"></a></dt>
+<dd><p>these are the tests which are run if no others are specified</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mri_distortion_toolkit.Reports.DefaultTestSuite.test_distortion_less_than_2mm_within_r_100">
+<span class="sig-name descname"><span class="pre">test_distortion_less_than_2mm_within_r_100</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.Reports.DefaultTestSuite.test_distortion_less_than_2mm_within_r_100" title="Permalink to this definition"></a></dt>
+<dd><p>distortion test to be run by MRI_QA_Reporter</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mri_distortion_toolkit.Reports.DefaultTestSuite.test_distortion_less_than_4mm_within_r_150">
+<span class="sig-name descname"><span class="pre">test_distortion_less_than_4mm_within_r_150</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.Reports.DefaultTestSuite.test_distortion_less_than_4mm_within_r_150" title="Permalink to this definition"></a></dt>
+<dd><p>distortion test to be run by MRI_QA_Reporter</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mri_distortion_toolkit.Reports.Elekta_Distortion_tests">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.Reports.</span></span><span class="sig-name descname"><span class="pre">Elekta_Distortion_tests</span></span><a class="headerlink" href="#mri_distortion_toolkit.Reports.Elekta_Distortion_tests" title="Permalink to this definition"></a></dt>
+<dd><p>Geometric tests for Elekta system as described here:
+<a class="reference external" href="https://aapm.onlinelibrary.wiley.com/doi/epdf/10.1002/mp.14764">https://aapm.onlinelibrary.wiley.com/doi/epdf/10.1002/mp.14764</a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mri_distortion_toolkit.Reports.Elekta_Distortion_tests.test_distortion_less_than_1_mm_within_r_100_mm">
+<span class="sig-name descname"><span class="pre">test_distortion_less_than_1_mm_within_r_100_mm</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.Reports.Elekta_Distortion_tests.test_distortion_less_than_1_mm_within_r_100_mm" title="Permalink to this definition"></a></dt>
+<dd><p>distortion test to be run by MRI_QA_Reporter</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mri_distortion_toolkit.Reports.Elekta_Distortion_tests.test_distortion_less_than_2_mm_within_r_150_mm">
+<span class="sig-name descname"><span class="pre">test_distortion_less_than_2_mm_within_r_150_mm</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.Reports.Elekta_Distortion_tests.test_distortion_less_than_2_mm_within_r_150_mm" title="Permalink to this definition"></a></dt>
+<dd><p>distortion test to be run by MRI_QA_Reporter</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mri_distortion_toolkit.Reports.Elekta_Distortion_tests.test_distortion_less_than_4_mm_within_r_200_mm">
+<span class="sig-name descname"><span class="pre">test_distortion_less_than_4_mm_within_r_200_mm</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.Reports.Elekta_Distortion_tests.test_distortion_less_than_4_mm_within_r_200_mm" title="Permalink to this definition"></a></dt>
+<dd><p>distortion test to be run by MRI_QA_Reporter</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mri_distortion_toolkit.Reports.MRI_QA_Reporter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.Reports.</span></span><span class="sig-name descname"><span class="pre">MRI_QA_Reporter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">MatchedMarkerVolume=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gradient_harmonics=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B0_harmonics=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recon_coords_cartesian=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tests_to_run=&lt;class</span> <span class="pre">'mri_distortion_toolkit.Reports.DefaultTestSuite'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dicom_data=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_outer=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_plots=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">style='dark'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.Reports.MRI_QA_Reporter" title="Permalink to this definition"></a></dt>
+<dd><p>generate a report based on either some matched data, or harmonics. In the latter case, report data is reconstructed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>MatchedMarkerVolume</strong> (<em>pandas.DataFrame</em><em>, </em><em>optional</em>) – pandas dataframe containing  [‘x_gt’, ‘y_gt’, ‘z_gt’, ‘x_gnl’, ‘y_gnl’, ‘z_gnl’]
+You must enter one of MatchedMarkerVolume or gradient_harmonics</p></li>
+<li><p><strong>gradient_harmonics</strong> (<em>list</em><em>, </em><em>optional</em>) – list of either three pandas series or three paths to csv files
+from SphericalHarmonicFit.
+List elements should correspond to [G_x_harmonics, G_y_harmonics, G_z_harmonics].
+You must enter one of MatchedMarkerVolume or gradient_harmonics</p></li>
+<li><p><strong>B0_harmonics</strong> (<em>pandas.Series</em><em> or </em><em>path</em><em>, </em><em>optional</em>) – pandas series from SphericalHarmonicFit or path to saved csv file. If entered, is used
+to report and plot B0 homogeneity</p></li>
+<li><p><strong>recon_coords</strong> (<em>pandas.DataFrame</em><em>, </em><em>optional</em>) – The coordinates you want to calculate the fields at. a pandas Dataframe which can contain
+whatever you want, but MUST contain columns called: x, y, z. If left as None a default is generated.</p></li>
+<li><p><strong>tests_to_run</strong> (<em>class</em><em>, </em><em>optional</em>) – a class containing any tests to run. The class in this instance serves only as a name
+space. All methods inside the class starting with ‘test’ are identified as tests. The test methods will
+have access to everything inside this class.</p></li>
+<li><p><strong>dicom_data</strong> (<em>dict</em><em> or </em><em>path to json</em><em>, </em><em>optional</em>) – either a dictionary or path to a saved json file of the dicom_data object generated by
+MarkerVolume. This data is required for harmonic reconstruction. For MatchedMarkerVolume it is not required,
+but it does contain useful information about the acquisition so still a good idea to use it.</p></li>
+<li><p><strong>r_outer</strong> (<em>float</em><em>, </em><em>optional</em>) – for the harmonic approach, r_outer is used to determine where the data is reconstructed. It is
+also used to control the limits in which data is plotted</p></li>
+<li><p><strong>show_plots</strong> (<em>bool</em><em>, </em><em>optional</em>) – if True, all plots will be shown in your browser. Otherwise they are only saved</p></li>
+<li><p><strong>style</strong> (<em>str</em>) – control the report style. At the moment can only be ‘light’ or ‘dark’</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="mri_distortion_toolkit.Reports.MRI_QA_Reporter.write_html_report">
+<span class="sig-name descname"><span class="pre">write_html_report</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_folder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.Reports.MRI_QA_Reporter.write_html_report" title="Permalink to this definition"></a></dt>
+<dd><p>Generates a html report encompassing available acquisition information, test results, and intercative
+plotly figures</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>output_folder</strong> (<em>Path</em><em> or </em><em>string</em><em>, </em><em>optional</em>) – folder to write report. Defaults to ~/Documents/MR_QA_Reports</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mri_distortion_toolkit.Reports.TG284_Tests">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.Reports.</span></span><span class="sig-name descname"><span class="pre">TG284_Tests</span></span><a class="headerlink" href="#mri_distortion_toolkit.Reports.TG284_Tests" title="Permalink to this definition"></a></dt>
+<dd><p>tests defined here
+<a class="reference external" href="https://aapm.onlinelibrary.wiley.com/doi/full/10.1002/mp.14695">https://aapm.onlinelibrary.wiley.com/doi/full/10.1002/mp.14695</a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mri_distortion_toolkit.Reports.TG284_Tests.test_distortion_less_than_1mm_within_r_100">
+<span class="sig-name descname"><span class="pre">test_distortion_less_than_1mm_within_r_100</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.Reports.TG284_Tests.test_distortion_less_than_1mm_within_r_100" title="Permalink to this definition"></a></dt>
+<dd><p>distortion test to be run by MRI_QA_Reporter</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mri_distortion_toolkit.Reports.TG284_Tests.test_distortion_less_than_2mm_within_r_200">
+<span class="sig-name descname"><span class="pre">test_distortion_less_than_2mm_within_r_200</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.Reports.TG284_Tests.test_distortion_less_than_2mm_within_r_200" title="Permalink to this definition"></a></dt>
+<dd><p>distortion test to be run by MRI_QA_Reporter</p>
+</dd></dl>
+
+</dd></dl>
+
 </section>
-<section id="utilities">
-<h2>utilities<a class="headerlink" href="#utilities" title="Permalink to this heading"></a></h2>
+<section id="module-mri_distortion_toolkit.utilities">
+<span id="utilities"></span><h2>utilities<a class="headerlink" href="#module-mri_distortion_toolkit.utilities" title="Permalink to this heading"></a></h2>
+<p>General purpose reusable functions</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="mri_distortion_toolkit.utilities.bcolors">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.utilities.</span></span><span class="sig-name descname"><span class="pre">bcolors</span></span><a class="headerlink" href="#mri_distortion_toolkit.utilities.bcolors" title="Permalink to this definition"></a></dt>
+<dd><p>This is just here to enable me to print pretty colors to the linux terminal</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mri_distortion_toolkit.utilities.build_dicom_affine">
+<span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.utilities.</span></span><span class="sig-name descname"><span class="pre">build_dicom_affine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Dicomfiles</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.utilities.build_dicom_affine" title="Permalink to this definition"></a></dt>
+<dd><p>Build the dicom affine matrix.
+The reference I used to create the affine is <a class="reference external" href="https://nipy.org/nibabel/dicom/dicom_orientation.html">NIbabel</a>
+(we are using the r/c defined under ‘DICOM affines again’)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>Dicomfiles</strong> (<em>list</em>) – list of pydicom.dataset.FileDataset instances (created using pydicom.read_file)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>CoordinateMatrix, a 4x4 matrix which transforms the image based coordinates (i,j,k) to world coordinates (x,y,z)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mri_distortion_toolkit.utilities.compare_recon_report_with_ground_truth_report">
+<span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.utilities.</span></span><span class="sig-name descname"><span class="pre">compare_recon_report_with_ground_truth_report</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ground_truth_report</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recon_report</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.utilities.compare_recon_report_with_ground_truth_report" title="Permalink to this definition"></a></dt>
+<dd><p>This is to compare the distortion data contained within two Reports.MRI_QA_recon_reporter
+objects. The original purpose was to compare a recon_report generated from direct data, and one
+generated via harmonics, although in principle it can take any two reports.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ground_truth_report</strong> – Reports.MRI_QA_recon_reporter instance</p></li>
+<li><p><strong>recon_report</strong> – Reports.MRI_QA_recon_reporter instance</p></li>
+<li><p><strong>tolerance</strong> – tolerance in mm</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mri_distortion_toolkit.utilities.convert_cartesian_to_spherical">
+<span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.utilities.</span></span><span class="sig-name descname"><span class="pre">convert_cartesian_to_spherical</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">InputCoords</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.utilities.convert_cartesian_to_spherical" title="Permalink to this definition"></a></dt>
+<dd><p>Converts cartesian coordinates [x,y,z] to spherical coordinates [r, azimuth, elevation].
+If r, azimuth, or elevation already exist as column names they are overwritten.
+The convention used here matches the convention
+<a class="reference external" href="https://www.mathworks.com/help/matlab/ref/cart2sph.html">matlab uses</a>, except that we add pi to the azimuth and
+pi/2 to the elevation such that</p>
+<ul class="simple">
+<li><p>0 &lt;= azimuth &lt;= 2*pi</p></li>
+<li><p>0 &lt;= elevation &lt;= pi</p></li>
+</ul>
+<p>There was once a very good reason for doing this; I can’t remember what it was anymore but I like to stick
+to tradition.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>InputCoords</strong> – a data frame containing (at least) columns x, y, z.</p>
+</dd>
+<dt class="field-even">Returns InputCoords</dt>
+<dd class="field-even"><p>same data frame with additional columns [r, azimuth, elevation]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mri_distortion_toolkit.utilities.convert_spherical_harmonics">
+<span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.utilities.</span></span><span class="sig-name descname"><span class="pre">convert_spherical_harmonics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">harmonics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'full'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'none'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.utilities.convert_spherical_harmonics" title="Permalink to this definition"></a></dt>
+<dd><p>function to convert between different harmonic formalisms.
+At the moment only works between ‘fully normalised’ and ‘unnormalised’ but we could add more later if
+we need to.
+example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">g_x_harmonics_no_norm</span> <span class="o">=</span> <span class="n">convert_spherical_harmonics</span><span class="p">(</span><span class="n">g_x_harmonics</span><span class="p">,</span> <span class="n">input_format</span><span class="o">=</span><span class="s1">&#39;full&#39;</span><span class="p">,</span> <span class="n">output_format</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>harmonics</strong> – a pandas series or numpy array of size (n_order+1)^2, where the harmonics are ordered as
+A00, A10, A11, B11, A20, A21, B21, A22, B22…etc.</p></li>
+<li><p><strong>input_format</strong> – format of input harmonic normalisation; ‘none’ or ‘full’</p></li>
+<li><p><strong>output_format</strong> – format of output harmonic normalisation; ‘none’ or ‘full’</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>converted harmonics as a pandas series</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mri_distortion_toolkit.utilities.convert_spherical_to_cartesian">
+<span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.utilities.</span></span><span class="sig-name descname"><span class="pre">convert_spherical_to_cartesian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">InputCoords</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.utilities.convert_spherical_to_cartesian" title="Permalink to this definition"></a></dt>
+<dd><p>Converts spherical coordinates [r, azimuth, elevation] to cartesian coordinates [x,y,z].
+if the cartesian columns ‘x’, ‘y’, ‘z’ already exist, they will be overwritten</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>InputCoords</strong> – a data frame containing columns r, azimuth, elevation</p>
+</dd>
+<dt class="field-even">Returns InputCoords</dt>
+<dd class="field-even"><p>same data frame with additional columns [x,y,z]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mri_distortion_toolkit.utilities.dicom_to_numpy">
+<span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.utilities.</span></span><span class="sig-name descname"><span class="pre">dicom_to_numpy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path_to_dicoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">FilesToReadIn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_extension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dcm'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_XYZ</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zero_pad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enforce_increasing_coords</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.utilities.dicom_to_numpy" title="Permalink to this definition"></a></dt>
+<dd><p>This function does two things:</p>
+<ol class="arabic simple">
+<li><p>Loads all the dicom files in path_to_dicoms in a numpy array. data is ordered according to [row, column, slice]</p></li>
+<li><p>Builds the matrix that transforms the [r,c,s] indices into [x,y,z] coordinates</p></li>
+</ol>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path_to_dicoms</strong> (<em>pathlib.Path</em><em> or </em><em>string</em>) – folder where all dicoms images are stored</p></li>
+<li><p><strong>FilesToReadIn</strong> (<em>list</em><em>, </em><em>optional</em>) – By default, this function will read in all files of file type file_extension. If you only want
+to read in a subset of files, you can specify them with FilesToReadIn</p></li>
+<li><p><strong>file_extension</strong> (<em>string</em>) – extension of dicom files, e.g. ‘dcm’ or ‘IMA’</p></li>
+<li><p><strong>return_XYZ</strong> (<em>bool</em><em>, </em><em>optional</em>) – if True, will build and return three matrics containing the X, Y, and Z coords at each i,j,k
+pixel.</p></li>
+<li><p><strong>zero_pad</strong> (<em>int</em><em>, </em><em>optional</em>) – this many zeros will be placed around the returned volume and the coordinates updated accordingly.
+main use case was for distortion correction. Note that all returned objects will be self consistently affected
+by this parameter</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>ImageArray: a numpy array of voxels</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>dicom_affine: a matrix that transforms the [r,c,s] indices into [x,y,z] coordinates</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(X, Y, Z): Coordinate arrays the same size as ImageArray. Optional</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mri_distortion_toolkit.utilities.enumerate_subfolders">
+<span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.utilities.</span></span><span class="sig-name descname"><span class="pre">enumerate_subfolders</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_loc</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.utilities.enumerate_subfolders" title="Permalink to this definition"></a></dt>
+<dd><p>A simple function that prints all the subfolders in data_loc as a dict, e.g.</p>
+<dl class="simple">
+<dt>{‘1’: ‘folder1’,</dt><dd><p>‘2’: ‘folder2’} etc</p>
+</dd>
+</dl>
+<p>I find this is a useful to create a dict object that I copy to the start of my analysis scripts</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mri_distortion_toolkit.utilities.generate_legendre_basis">
+<span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.utilities.</span></span><span class="sig-name descname"><span class="pre">generate_legendre_basis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">InputCoords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_order</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.utilities.generate_legendre_basis" title="Permalink to this definition"></a></dt>
+<dd><p>Produce spherical base at all coordinate values.
+This utilises the ‘fully normalised’ convention described here &lt;<a class="reference external" href="https://au.mathworks.com/help/matlab/ref/legendre.html">https://au.mathworks.com/help/matlab/ref/legendre.html</a>&gt;`_
+Note that we scale all r values by 1000, which is to help ensure numerical stability. This is based on the assumption
+that this input data is in mm. The code will throw a warning if this does not appear to the case.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>InputCoords</strong> (<em>Dataframe</em>) – a data frame which can contain whatever you want, but MUST contain columns called
+elevation, azimuth, and r</p></li>
+<li><p><strong>n_order</strong> (<em>int</em>) – order of harmonic fit</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns legendre_basis</dt>
+<dd class="field-even"><p>a pandas data frame of size [Ncoords, (n_order +1)**2)]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mri_distortion_toolkit.utilities.get_all_files">
+<span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.utilities.</span></span><span class="sig-name descname"><span class="pre">get_all_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">PathToData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_extension</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.utilities.get_all_files" title="Permalink to this definition"></a></dt>
+<dd><p>quick script to just collect all the files in the Analysis path</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>PathToData</strong> (<em>pathlib.Path</em><em> or </em><em>string</em>) – folder where the files are</p></li>
+<li><p><strong>file_extension</strong> (<em>str</em>) – extension of files to return, e.g. ‘dcm’</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns Files</dt>
+<dd class="field-even"><p>list of all found files</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mri_distortion_toolkit.utilities.get_dicom_data">
+<span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.utilities.</span></span><span class="sig-name descname"><span class="pre">get_dicom_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dicom_data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.utilities.get_dicom_data" title="Permalink to this definition"></a></dt>
+<dd><p>figures out whether dicom data is a dict or a path to a json file
+if the latter, reads into  a dict and returns</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mri_distortion_toolkit.utilities.get_gradient_spherical_harmonics">
+<span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.utilities.</span></span><span class="sig-name descname"><span class="pre">get_gradient_spherical_harmonics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Gx_Harmonics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Gy_Harmonics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Gz_Harmonics</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.utilities.get_gradient_spherical_harmonics" title="Permalink to this definition"></a></dt>
+<dd><p>return the gradient spherical harmonics as as pandas series. this function is simply a clean way to handle
+the different ways users can specify harmonics to other componets of this code</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Harmonics</strong> – </p></li>
+<li><p><strong>Gx_Harmonics</strong> – either a pandas series or a path to a csv. If it is already a series we do nothing, but handle
+this option for cleaner code elsewhere. Gy_Harmonics and Gz_Harmonics are the same</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Gx_Harmonics, Gy_Harmonics, Gz_Harmonics as Pandase series</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mri_distortion_toolkit.utilities.plot_MarkerVolume_overlay">
+<span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.utilities.</span></span><span class="sig-name descname"><span class="pre">plot_MarkerVolume_overlay</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">MarkerVolumeList</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.utilities.plot_MarkerVolume_overlay" title="Permalink to this definition"></a></dt>
+<dd><p>Plot overlaid 3D scatter plots of the marker positions in each MarkerVolume</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>MarkerVolumeList</strong> – list of MarkerVolume instances</p></li>
+<li><p><strong>legend</strong> – legend to display on plot</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mri_distortion_toolkit.utilities.plot_compressed_MarkerVolumes">
+<span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.utilities.</span></span><span class="sig-name descname"><span class="pre">plot_compressed_MarkerVolumes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">MarkerVolumeList</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_min</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.utilities.plot_compressed_MarkerVolumes" title="Permalink to this definition"></a></dt>
+<dd><p>plot overlay of compressed marker volumes (z coord is ignored)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>MarkerVolumeList</strong> (<em>list</em>) – list of MarkerVolume instances</p></li>
+<li><p><strong>z_max</strong> (<em>float</em><em>, </em><em>optional</em>) – max z data to include</p></li>
+<li><p><strong>z_min</strong> (<em>float</em><em>, </em><em>optional</em>) – min z data to include</p></li>
+<li><p><strong>title</strong> (<em>str</em><em>, </em><em>optional</em>) – title of plot</p></li>
+<li><p><strong>legend</strong> (<em>list</em><em>, </em><em>optional</em>) – legend of plot</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mri_distortion_toolkit.utilities.plot_distortion_xyz_hist">
+<span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.utilities.</span></span><span class="sig-name descname"><span class="pre">plot_distortion_xyz_hist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">MatchedMarkerVolume</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.utilities.plot_distortion_xyz_hist" title="Permalink to this definition"></a></dt>
+<dd><p>plot overlaid x, y, z distortion for an input instance of
+[MatchedMarkerVolume](<a class="reference external" href="https://acrf-image-x-institute.github.io/MRI_DistortionQA/code_docs.html#MRI_DistortionQA.MarkerAnalysis.MatchedMarkerVolumes">https://acrf-image-x-institute.github.io/MRI_DistortionQA/code_docs.html#MRI_DistortionQA.MarkerAnalysis.MatchedMarkerVolumes</a>)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>MatchedMarkerVolume</strong> – an instance of MatchedMarkerVolumes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mri_distortion_toolkit.utilities.plot_matched_volume_hist">
+<span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.utilities.</span></span><span class="sig-name descname"><span class="pre">plot_matched_volume_hist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">VolumeList</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.utilities.plot_matched_volume_hist" title="Permalink to this definition"></a></dt>
+<dd><p>create a histogram of total distortion for all input volumes</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>VolumeList</strong> (<em>list</em>) – a list of [matched marker volumes](<a class="reference external" href="https://acrf-image-x-institute.github.io/MRI_DistortionQA/code_docs.html#MRI_DistortionQA.MarkerAnalysis.MatchedMarkerVolumes">https://acrf-image-x-institute.github.io/MRI_DistortionQA/code_docs.html#MRI_DistortionQA.MarkerAnalysis.MatchedMarkerVolumes</a>)</p></li>
+<li><p><strong>legend</strong> (<em>list</em><em>, </em><em>optional</em>) – legend to print</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mri_distortion_toolkit.utilities.printProgressBar">
+<span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.utilities.</span></span><span class="sig-name descname"><span class="pre">printProgressBar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iteration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">total</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'█'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.utilities.printProgressBar" title="Permalink to this definition"></a></dt>
+<dd><blockquote>
+<div><p>[credit here](<a class="reference external" href="https://gist.github.com/greenstick/b23e475d2bfdc3a82e34eaa1f6781ee4">https://gist.github.com/greenstick/b23e475d2bfdc3a82e34eaa1f6781ee4</a>)</p>
+<p>Call in a loop to create terminal progress bar</p>
+<blockquote>
+<div><p>iteration   - Required  :
+total       - Required  :
+prefix      - Optional  :
+suffix      - Optional  :
+decimals    - Optional  :
+length      - Optional  :
+fill        - Optional  :
+printEnd    - Optional  : end character (e.g. “</p>
+</div></blockquote>
+</div></blockquote>
+<p>“, ”
+“) (Str)</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">param iteration</dt>
+<dd class="field-odd"><p>current iteration (Int)</p>
+</dd>
+<dt class="field-even">param total</dt>
+<dd class="field-even"><p>total iterations (Int)</p>
+</dd>
+<dt class="field-odd">param prefix</dt>
+<dd class="field-odd"><p>prefix string (Str)</p>
+</dd>
+<dt class="field-even">param suffix</dt>
+<dd class="field-even"><p>suffix string (Str)</p>
+</dd>
+<dt class="field-odd">param decimals</dt>
+<dd class="field-odd"><p>positive number of decimals in percent complete (Int)</p>
+</dd>
+<dt class="field-even">param length</dt>
+<dd class="field-even"><p>character length of bar (Int)</p>
+</dd>
+<dt class="field-odd">param fill</dt>
+<dd class="field-odd"><p>bar fill character (Str)</p>
+</dd>
+<dt class="field-even">return</dt>
+<dd class="field-even"><p>progress_string: the string to print</p>
+</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mri_distortion_toolkit.utilities.print_dict">
+<span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.utilities.</span></span><span class="sig-name descname"><span class="pre">print_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.utilities.print_dict" title="Permalink to this definition"></a></dt>
+<dd><p>just provides a nicer display of the input dict than the default print function,
+got sick of writing the same code over and over…</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mri_distortion_toolkit.utilities.reconstruct_Bz">
+<span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.utilities.</span></span><span class="sig-name descname"><span class="pre">reconstruct_Bz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">harmonics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quantity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'uT'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_outer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.utilities.reconstruct_Bz" title="Permalink to this definition"></a></dt>
+<dd><p>Reconstruct Bz at an arbitrary set of coordinates.
+n_order of reconstruction is derived from the shape of harmonics</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>harmonics</strong> – a pandas series of size (n_order+1)^2, such as that defined within
+FieldAnalysis.SphericalHarmonicFit</p></li>
+<li><p><strong>coords</strong> – a pandas Dataframe which can contain whatever you want, but MUST contain columns called:
+elevation, azimuth, and r</p></li>
+<li><p><strong>quantity</strong> – <ul>
+<li><p>‘T’: return raw field in T</p></li>
+<li><p>’uT’: return field in uT, with A00 set to 0.</p></li>
+</ul>
+</p></li>
+<li><p><strong>r_outer</strong> (<em>float</em><em> or </em><em>None</em>) – optional parameter; if you try to reconstruct points with r &gt; r_outer a warning is thrown</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns Bz_recon</dt>
+<dd class="field-even"><p>Pandase series with the value of Bz at each element in coords</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mri_distortion_toolkit.utilities.sort_dicom_slices">
+<span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.utilities.</span></span><span class="sig-name descname"><span class="pre">sort_dicom_slices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dicom_datasets</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.utilities.sort_dicom_slices" title="Permalink to this definition"></a></dt>
+<dd><p>sort slices by instance number
+:param dicom_datasets: list of pydicom files
+:return: sorted list of pydicom files</p>
+</dd></dl>
+
 </section>
-<section id="calculate-harmonics">
-<h2>calculate_harmonics<a class="headerlink" href="#calculate-harmonics" title="Permalink to this heading"></a></h2>
+<section id="module-mri_distortion_toolkit.calculate_harmonics">
+<span id="calculate-harmonics"></span><h2>calculate_harmonics<a class="headerlink" href="#module-mri_distortion_toolkit.calculate_harmonics" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="mri_distortion_toolkit.calculate_harmonics.calculate_harmonics">
+<span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.calculate_harmonics.</span></span><span class="sig-name descname"><span class="pre">calculate_harmonics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">MagneticFields</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">norm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.calculate_harmonics.calculate_harmonics" title="Permalink to this definition"></a></dt>
+<dd><p>This function is essentially a wrapper of convenience. Given a set of B fields and dicom_data,
+it will calculate and return the Gx, Gy, and Gz harmonics.
+Note that the gradient harmonics will be normalised to a gradient strengt of 1 mT/m</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>MagneticFields</strong> (<em>pandas dataframe</em>) – a pandas dataframe with columns [‘x’, ‘y’, ‘z’, ‘B_Gx’, ‘B_Gy’, ‘B_Gz’, ‘B0’]. B0 is optional.
+x, y, z are in mm and the fields are in any unit - the harmonics will reflect the units</p></li>
+<li><p><strong>dicom_data</strong> (<em>dict</em>) – a dict containing required dicom data, such as that generated within the MarkerVolume class</p></li>
+<li><p><strong>n_order</strong> (<em>int</em><em>, </em><em>optional</em>) – order of harmonic fit</p></li>
+<li><p><strong>norm</strong> – Can pass a list of four valuues, the four returned harmonic lists will be normalised accordingly.
+e.g. norm = [2,2,2,2] will divide all harmonics by 2. This is useful so you can normalise the fields to some
+value</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>G_x_Harmonics, G_y_Harmonics, G_z_Harmonics, B0_Harmonics</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 </section>
 
