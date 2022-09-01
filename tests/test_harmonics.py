@@ -59,7 +59,7 @@ def test_harmonic_conversion():
     """
     test that we can read in harmonics, convert them forward and back and the remain the same
     """
-    g_x_harmonics = pd.read_csv(test_data_dir / 'G_x_harmonics.csv', index_col=0).squeeze("columns")
+    g_x_harmonics = pd.read_csv(test_data_dir / 'G_x_Harmonics.csv', index_col=0).squeeze("columns")
     g_x_harmonics_no_norm = convert_spherical_harmonics(g_x_harmonics, input_format='full', output_format='none')
     g_x_harmonics_norm = convert_spherical_harmonics(g_x_harmonics_no_norm, input_format='none', output_format='full')
     assert np.allclose(g_x_harmonics, g_x_harmonics_norm)

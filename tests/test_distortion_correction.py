@@ -17,14 +17,14 @@ def test_execution():
     """
     execute it over some test data
     """
-    assert (test_data_dir / 'MR_dicom').is_dir()
-    assert (test_data_dir / 'G_x_harmonics.csv').resolve().is_file()
+    assert (this_dir / 'test_data' / 'MR_dicom').resolve().is_dir()
+    assert (this_dir / 'test_data' / 'G_x_Harmonics.csv').resolve().is_file()
     dis_volume = MarkerVolume(test_data_dir / 'MR_dicom')
     # correct input images
     GDC = KspaceDistortionCorrector(ImageDirectory=(test_data_dir / 'MR_dicom').resolve(),
-                                    gradient_harmonics=[(test_data_dir / 'G_x_harmonics.csv').resolve(),
-                                                        (test_data_dir / 'G_y_harmonics.csv').resolve(),
-                                                        (test_data_dir / 'G_z_harmonics.csv').resolve()],
+                                    gradient_harmonics=[(test_data_dir / 'G_x_Harmonics.csv').resolve(),
+                                                        (test_data_dir / 'G_y_Harmonics.csv').resolve(),
+                                                        (test_data_dir / 'G_z_Harmonics.csv').resolve()],
                                     ImExtension='dcm',
                                     dicom_data=dis_volume.dicom_data,
                                     correct_through_plane=False)
@@ -35,7 +35,7 @@ def test_read_in_of_corrected_data():
     """
     test we can read in the corrected data, and test for stability of detected distortion
     """
-    corrected_data = test_data_dir / 'MR_dicom' / 'corrected_dcm'
+    corrected_data = test_data_dir / 'MR_dicom' / 'Corrected_dcm'
     if not corrected_data.is_dir():
         # shouldnt happen but to be safe
         test_execution()
