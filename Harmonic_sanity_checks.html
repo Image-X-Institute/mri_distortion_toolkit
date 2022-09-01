@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Harmonic sanity checks &mdash; MRI_DistortionQA  documentation</title>
+  <title>Harmonic sanity checks &mdash; mri_distortion_toolkit  documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -28,7 +28,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> MRI_DistortionQA
+            <a href="index.html" class="icon icon-home"> mri_distortion_toolkit
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -50,7 +50,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">MRI_DistortionQA</a>
+          <a href="index.html">mri_distortion_toolkit</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -433,10 +433,10 @@
 <section id="python-script">
 <h2>python script<a class="headerlink" href="#python-script" title="Permalink to this heading"></a></h2>
 <p>in case I ever want this again:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MRI_DistortionQA.MarkerAnalysis</span> <span class="kn">import</span> <span class="n">MarkerVolume</span><span class="p">,</span> <span class="n">MatchedMarkerVolumes</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">mri_distortion_toolkit.MarkerAnalysis</span> <span class="kn">import</span> <span class="n">MarkerVolume</span><span class="p">,</span> <span class="n">MatchedMarkerVolumes</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">MRI_DistortionQA.FieldCalculation</span> <span class="kn">import</span> <span class="n">ConvertMatchedMarkersToBz</span>
-<span class="kn">from</span> <span class="nn">MRI_DistortionQA.FieldAnalysis</span> <span class="kn">import</span> <span class="n">SphericalHarmonicFit</span>
+<span class="kn">from</span> <span class="nn">mri_distortion_toolkit.FieldCalculation</span> <span class="kn">import</span> <span class="n">ConvertMatchedMarkersToBz</span>
+<span class="kn">from</span> <span class="nn">mri_distortion_toolkit.Harmonics</span> <span class="kn">import</span> <span class="n">SphericalHarmonicFit</span>
 
 <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">data is here</span>
@@ -451,7 +451,7 @@
              <span class="s1">&#39;6&#39;</span><span class="p">:</span> <span class="s1">&#39;06 gre_cor_RL_330&#39;</span><span class="p">,</span>
              <span class="s1">&#39;7&#39;</span><span class="p">:</span> <span class="s1">&#39;07 gre_cor_RL_330&#39;</span><span class="p">,</span>
              <span class="s1">&#39;8&#39;</span><span class="p">:</span> <span class="s1">&#39;08 gre_trans_AP_330_F_reset&#39;</span><span class="p">,</span>
-             <span class="s1">&#39;9&#39;</span><span class="p">:</span>  <span class="s1">&#39;09 gre_trans_AP_330&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;9&#39;</span><span class="p">:</span> <span class="s1">&#39;09 gre_trans_AP_330&#39;</span><span class="p">,</span>
              <span class="s1">&#39;10&#39;</span><span class="p">:</span> <span class="s1">&#39;10 gre_trans_AP_330&#39;</span><span class="p">,</span>
              <span class="s1">&#39;11&#39;</span><span class="p">:</span> <span class="s1">&#39;11 gre_trans_PA&#39;</span><span class="p">,</span>
              <span class="s1">&#39;12&#39;</span><span class="p">:</span> <span class="s1">&#39;12 gre_sag_HF&#39;</span><span class="p">,</span>
@@ -494,7 +494,7 @@
                            <span class="n">n_markers_expected</span><span class="o">=</span><span class="mi">336</span><span class="p">,</span> <span class="n">cutoff_point</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">r_max</span><span class="o">=</span><span class="mi">165</span><span class="p">,</span>
                            <span class="n">correct_fat_water_shift</span><span class="o">=</span><span class="n">correct_FW</span><span class="p">,</span> <span class="n">fat_shift_direction</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
-<span class="n">B0_Harmonics_HF</span><span class="p">,</span> <span class="n">G_x_Harmonics_HF</span><span class="p">,</span> <span class="n">G_y_Harmonics_HF</span><span class="p">,</span> <span class="n">G_z_Harmonics_HF</span> <span class="o">=</span>\
+<span class="n">B0_Harmonics_HF</span><span class="p">,</span> <span class="n">G_x_Harmonics_HF</span><span class="p">,</span> <span class="n">G_y_Harmonics_HF</span><span class="p">,</span> <span class="n">G_z_Harmonics_HF</span> <span class="o">=</span>
     <span class="n">calculate_harmonics</span><span class="p">(</span><span class="n">back_volume</span><span class="p">,</span> <span class="n">forward_volume</span><span class="p">)</span>
 </pre></div>
 </div>

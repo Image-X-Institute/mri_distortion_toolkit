@@ -1,7 +1,7 @@
 interrogate badge
 
 ```bash
-interrogate -c setup.cfg MRI_DistortionQA/ -vv --generate-badge ../MRI_DistortionQA/ -o docsrc/__resources/interrogate.svg
+interrogate -c setup.cfg mri_distortion_toolkit/ -vv --generate-badge ../mri_distortion_toolkit/ -o docsrc/__resources/interrogate.svg
 ```
 
 coverage badge

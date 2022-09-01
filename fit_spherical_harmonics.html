@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Spherical Harmonics &mdash; MRI_DistortionQA  documentation</title>
+  <title>Spherical Harmonics &mdash; mri_distortion_toolkit  documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -30,7 +30,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> MRI_DistortionQA
+            <a href="index.html" class="icon icon-home"> mri_distortion_toolkit
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -65,7 +65,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">MRI_DistortionQA</a>
+          <a href="index.html">mri_distortion_toolkit</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -88,11 +88,11 @@
 <h1>Spherical Harmonics<a class="headerlink" href="#spherical-harmonics" title="Permalink to this heading"></a></h1>
 <p>Spherical harmonics can be used to characterise any magnetic field in a source free region. Practically, this means that if you can fit spherical harmonics to a limited number of data points, you can reconstruct the underlying magnetic field anywhere. This is particualrly useful for distortion correction algorithsm, but as we will see later can also be used to to generate data rich reports.
 A basic code to calculate spherical harmonics from the field data we have just calculated is below:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MRI_DistortionQA.MarkerAnalysis</span> <span class="kn">import</span> <span class="n">MarkerVolume</span>
-<span class="kn">from</span> <span class="nn">MRI_DistortionQA</span> <span class="kn">import</span> <span class="n">calculate_harmonics</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">mri_distortion_toolkit.MarkerAnalysis</span> <span class="kn">import</span> <span class="n">MarkerVolume</span>
+<span class="kn">from</span> <span class="nn">mri_distortion_toolkit</span> <span class="kn">import</span> <span class="n">calculate_harmonics</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">MRI_DistortionQA.utilities</span> <span class="kn">import</span> <span class="n">get_dicom_data</span>
+<span class="kn">from</span> <span class="nn">mri_distortion_toolkit.utilities</span> <span class="kn">import</span> <span class="n">get_dicom_data</span>
 
 
 <span class="n">FieldData</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;_example_data/Bfields.csv&#39;</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="s2">&quot;columns&quot;</span><span class="p">)</span>

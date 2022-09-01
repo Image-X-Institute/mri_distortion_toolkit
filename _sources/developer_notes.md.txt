@@ -5,7 +5,7 @@
 from root directory:
 
 ```bash
- interrogate -c setup.cfg -v MRI_DistortionQA/ --generate-badge  docsrc/__resources/interrogate.svg
+ interrogate -c setup.cfg -v mri_distortion_toolkit/ --generate-badge  docsrc/__resources/interrogate.svg
 ```
 
 to run tests, from root directory:

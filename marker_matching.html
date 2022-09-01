@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Marker Matching &mdash; MRI_DistortionQA  documentation</title>
+  <title>Marker Matching &mdash; mri_distortion_toolkit  documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -30,7 +30,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> MRI_DistortionQA
+            <a href="index.html" class="icon icon-home"> mri_distortion_toolkit
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -69,7 +69,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">MRI_DistortionQA</a>
+          <a href="index.html">mri_distortion_toolkit</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -101,8 +101,8 @@
 <p>The <a class="reference external" href="https://acrf-image-x-institute.github.io/MRI_DistortionQA/marker_extraction.html">previous tutorial</a> demonstrated the various ways that MarkerVolumes can be created. In this section, we will demonstrate how these volumes can  be automatically matched.</p>
 <p>Create a new python file called ‘marker_matching.py’ and copy the below contents into it:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">MRI_DistortionQA.MarkerAnalysis</span> <span class="kn">import</span> <span class="n">MarkerVolume</span>
-<span class="kn">from</span> <span class="nn">MRI_DistortionQA.MarkerAnalysis</span> <span class="kn">import</span> <span class="n">MatchedMarkerVolumes</span>
+<span class="kn">from</span> <span class="nn">mri_distortion_toolkit.MarkerAnalysis</span> <span class="kn">import</span> <span class="n">MarkerVolume</span>
+<span class="kn">from</span> <span class="nn">mri_distortion_toolkit.MarkerAnalysis</span> <span class="kn">import</span> <span class="n">MatchedMarkerVolumes</span>
 
 <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">download example data and unzip:</span>
