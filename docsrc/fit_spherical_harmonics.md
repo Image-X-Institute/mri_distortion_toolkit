@@ -4,11 +4,11 @@ Spherical harmonics can be used to characterise any magnetic field in a source f
 A basic code to calculate spherical harmonics from the field data we have just calculated is below:
 
 ```python
-from MRI_DistortionQA.MarkerAnalysis import MarkerVolume
-from MRI_DistortionQA import calculate_harmonics
+from mri_distortion_toolkit.MarkerAnalysis import MarkerVolume
+from mri_distortion_toolkit import calculate_harmonics
 from pathlib import Path
 import pandas as pd
-from MRI_DistortionQA.utilities import get_dicom_data
+from mri_distortion_toolkit.utilities import get_dicom_data
 
 
 FieldData = pd.read_csv('_example_data/Bfields.csv', index_col=0).squeeze("columns")

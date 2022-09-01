@@ -7,7 +7,7 @@ Once we have the marker positions created from each field, we can convert these 
  coverage-badge -f -o docsrc/__resources/coverage.svgbash
 
 ```python
-from MRI_DistortionQA.FieldCalculation import ConvertMatchedMarkersToBz
+from mri_distortion_toolkit.FieldCalculation import ConvertMatchedMarkersToBz
 import pandas as pd
 from pathlib import Path
 

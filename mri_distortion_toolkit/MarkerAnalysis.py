@@ -42,9 +42,9 @@ class MarkerVolume:
     :param iterative_segmentation: If set to true, a slower iterative method will be used to find the threshold value
         used to segment the markers. Otherwise, otsu's method is used.
     :type iterative_segmentation: bool, optional
-    :param cutoff_point: Manually set the threshold value. If this is left as None otsu's method is used.
+    :param threshold: Manually set the threshold value. If this is left as None otsu's method is used.
         This will replace the iterative segmentation method regardless of flag.
-    :type cutoff_point: float, optional
+    :type threshold: float, optional
     :param n_markers_expected: if you know how many markers you expect, you can enter the value here. The code will
         then warn you if it finds a different number.
     :type n_markers_expected: int, optional
@@ -70,7 +70,7 @@ class MarkerVolume:
     """
 
     def __init__(self, input_data, ImExtension='dcm', r_min=None, r_max=None, iterative_segmentation=False,
-                 cutoff_point=None, n_markers_expected=None, fat_shift_direction=None, verbose=False,
+                 threshold=None, n_markers_expected=None, fat_shift_direction=None, verbose=False,
                  gaussian_image_filter_sd=1, correct_fat_water_shift=False, marker_size_lower_tol=0.9,
                  marker_size_upper_tol=1):
 
@@ -81,7 +81,7 @@ class MarkerVolume:
         self._n_markers_expected = n_markers_expected
         self._r_min = r_min
         self._r_max = r_max
-        self._cutoffpoint = cutoff_point
+        self._cutoffpoint = threshold
         self._iterative_segmentation = iterative_segmentation
         self._chemical_shift_vector = None
         self._gaussian_image_filter_sd = gaussian_image_filter_sd
@@ -92,9 +92,8 @@ class MarkerVolume:
             self.input_data_path = Path(input_data)
             if self.input_data_path.is_dir():
                 # dicom input
-
                 self.InputVolume, self.dicom_affine, (self.X, self.Y, self.Z) = \
-                    dicom_to_numpy(self.input_data_path, file_extension='dcm', return_XYZ=True)
+                    dicom_to_numpy(self.input_data_path, file_extension=self._file_extension, return_XYZ=True)
                 self._calculate_MR_acquisition_data()
 
                 # Segmenting markers
@@ -120,7 +119,7 @@ class MarkerVolume:
                     with open(os.path.join(self.input_data_path.parent, 'dicom_data.json')) as f:
                         self.dicom_data = json.load(f)
                 except:
-                    logger.warning(f'No dicom data found at {self.input_data_path.parent}.')
+                    logger.warning(f'MR data file dicom_data.json not found at {self.input_data_path.parent}. Continuing')
             else:
                 raise FileNotFoundError(f'could not find any data at {self.input_data_path}')
         elif isinstance(input_data, np.ndarray):
@@ -232,6 +231,7 @@ class MarkerVolume:
             # extract the frequency, phase, and slice directions (B0 effects occur in freq and slice)
             directions = ['x', 'y', 'z']
             phase_encode_direction = None
+            freq_encode_direction = None
             if self.dicom_data['InPlanePhaseEncodingDirection'] == 'ROW':
                 phase_cosines = example_dicom_file.ImageOrientationPatient[:3]
                 row_cosines = example_dicom_file.ImageOrientationPatient[3:]
@@ -246,7 +246,7 @@ class MarkerVolume:
             if phase_encode_direction is None:
                 logger.warning('failed to extract phase encoding direction from dicom data, continuing')
             if freq_encode_direction is None:
-                logger.warning('failed to extract phase encoding direction from dicom data, continuing')
+                logger.warning('failed to extract frequency encoding direction from dicom data, continuing')
             self.dicom_data['phase_encode_direction'] = phase_encode_direction
             self.dicom_data['freq_encode_direction'] = freq_encode_direction
             # get slice direction
@@ -304,8 +304,10 @@ class MarkerVolume:
 
         # finds a range of thresholds that give a number of segments near to the number of expected markers
         histogram_division = 100
-        candidate_thresholds = []  # Thresholds that have fewer markers than expected, use when no valid thresholds
-        valid_thresholds = []  # Thresholds that should give the corrected number of markers
+
+        candidate_thresholds = []       # Thresholds that have fewer markers than expected, use when no valid thresholds
+        candidate_n_points = []
+        valid_thresholds = []           # Thresholds that should give the corrected number of markers
 
         # divide the range into segments and calculate how many volumes result from each segment
         background_value = np.median(np.round(blurred_volume))
@@ -316,27 +318,24 @@ class MarkerVolume:
         for i in range(1, histogram_division - 1):
 
             n_segments = 0
-
             cutoff = background_value + i * histogram_segment
             threshold_volume = blurred_volume > cutoff
-
             labels = label(threshold_volume, background=0)
             unique_labels = np.unique(labels)[1:]  # first label is background so skip
-
             # Check number of segments falls within valid range:
-            if len(unique_labels) < self._n_markers_expected or len(unique_labels) > self._n_markers_expected * 1.1:
+            tol = 0.1
+            if len(unique_labels) < self._n_markers_expected*(1-tol) or len(unique_labels) > self._n_markers_expected * (1+tol):
                 continue  # Too few or too many segments
             else:
                 # This threshold is possibly valid
                 candidate_thresholds.append(cutoff)
-
                 # Remove small volumes and check if still valid
                 for label_level in unique_labels:
                     RegionInd = labels == label_level
                     if np.count_nonzero(RegionInd) > 2:
                         n_segments += 1
-
-                if n_segments > self._n_markers_expected:
+                candidate_n_points.append(n_segments)
+                if n_segments >= self._n_markers_expected:
                     valid_thresholds.append(cutoff)
                     if self.verbose:
                         print('Threshold: ' + str(format(cutoff, '.2f')) + ', ' + str(n_segments) + ' segments.')
@@ -351,8 +350,10 @@ class MarkerVolume:
         if len(valid_thresholds) > 0:
             return np.mean(valid_thresholds)
         elif len(candidate_thresholds) > 0:
-            logger.warning('No valid thresholds were found. Using closest possible value.')
-            return np.mean(candidate_thresholds)
+            ind = np.argmin(abs(np.subtract(self._n_markers_expected, candidate_n_points)))
+            best_threshold = candidate_thresholds[ind]
+            logger.warning(f'No valid thresholds were found. Using closest possible value of {best_threshold}')
+            return best_threshold
         else:
             logger.warning('No valid thresholds were found. Try lowering gaussian blur level.')
             return None
@@ -369,9 +370,6 @@ class MarkerVolume:
             # If cutoff point has been manually entered, go straight to thresholding
             self._iterative_segmentation = False
         if self._iterative_segmentation is True:
-            # de noise with gaussian blurring. iterative segmentation works better with less blur so a 0.75 fudge
-            # factor has been added
-            BlurredVolume = gaussian(VolumeToThreshold, sigma=self._gaussian_image_filter_sd * 0.75)
             self._cutoffpoint = self._find_iterative_cutoff(BlurredVolume)
         if self._cutoffpoint is None:
             self._cutoffpoint = threshold_otsu(BlurredVolume)
@@ -380,88 +378,101 @@ class MarkerVolume:
 
         return ThresholdVolume, BlurredVolume
 
+    def _get_marker_max_min_volume(self):
+        """
+        figures out the range of voxels that a marker should have
+        """
+        self._n_voxels = []  # going to keep track of this so we can remove any very small regions if needed
+
+        for label_level in self.unique_labels:  # first label is background so skip
+            # extract x,y,z of each connected region
+            RegionInd = self._labels == label_level
+            self._n_voxels.append(np.count_nonzero(RegionInd))
+        # Set up min and max marker volumes
+        self._n_voxels_median = np.median(np.array(self._n_voxels))
+        self._voxel_min = (1 - self._marker_size_lower_tol) * self._n_voxels_median
+        self._voxel_max = (1 + self._marker_size_upper_tol) * self._n_voxels_median
+
+        # Modify based on number of markers
+        if self._n_markers_expected is not None:
+            self._n_voxels_copy = np.array(self._n_voxels)
+            voxel_difference = np.absolute(np.array(self._n_voxels) - self._n_voxels_median)
+            # Loop that deletes the marker size with the largest difference from median until the expected # of markers
+            while len(self._n_voxels_copy) > self._n_markers_expected:
+                self._n_voxels_copy = np.delete(self._n_voxels_copy, np.argmax(voxel_difference))
+                voxel_difference = np.delete(voxel_difference, np.argmax(voxel_difference))
+            # Set min and max based on the remaining list
+            if np.min(self._n_voxels_copy) > self._voxel_min:
+                self._voxel_min = np.min(self._n_voxels_copy)
+            if np.max(self._n_voxels_copy) < self._voxel_max:
+                self._voxel_max = np.max(self._n_voxels_copy)
+
+        # 3 voxels is the absolute floor
+        if self._voxel_min < 3:
+            self._voxel_min = 3
+
+    def _remove_load(self):
+        '''
+        if it seems very likely that the only thing that has been segmented is the load
+        remove it and try again. We may want to enable this in situations where any large object is detected...
+        '''
+
+        for label_level in self.unique_labels:
+            RegionInd = self._labels == label_level
+            self.InputVolume[RegionInd] = 0
+        self._cutoffpoint = None
+        self.ThresholdVolume, self.BlurredVolume = self._threshold_volume(self.InputVolume)
+        self._labels = label(self.ThresholdVolume, background=0)
+        self.unique_labels = np.unique(self._labels)[1:]  # first label is background so skip
+
+    def _print_thresholding_information(self):
+        print('Threshold value: ' + str(self._cutoffpoint))
+        print('Median marker volume: ' + str(self._n_voxels_median))
+        print('Expected marker volume: ' + str(self._voxel_min) + ' to ' + str(self._voxel_max))
+        print(f'Regions to check: {self.unique_labels.shape}')
+
+    def _print_thresholding_summary(self, n_found_markers, n_skipped_markers):
+        print('----------')
+        print(f'Total regions: {len(self.unique_labels)}')
+        print(f'Total markers found:   {n_found_markers}')
+        print(f'Total skipped:         {n_skipped_markers}')
+
     def _find_contour_centroids(self):
         """
         This code loops through all the found regions, extracts the cartesian coordiantes, and takes the
         intensity-weighted average as the centroid.
-        It will also exlcude volumes that are bigger/ smaller than the median using the params
+        It excludes volumes that are bigger/ smaller than the median using the params
         marker_size_upper_tol and marker_size_lower_tol
         """
         self._labels = label(self.ThresholdVolume, background=0)
         self.unique_labels = np.unique(self._labels)[1:]  # first label is background so skip
         if self.unique_labels.shape[0] < 3:
-            '''
-            in this case, it seems very likely that the only thing that has been segmented is the load
-            remove it and try again. We may want to enable this in situations where any large object is detected...
-            '''
             logger.warning('automatic thresholding didnt work, trying to remove load and try again...')
-            for label_level in self.unique_labels:
-                RegionInd = self._labels == label_level
-                self.InputVolume[RegionInd] = 0
-            self._cutoffpoint = None
-            self.ThresholdVolume, self.BlurredVolume = self._threshold_volume(self.InputVolume)
-            self._labels = label(self.ThresholdVolume, background=0)
-            self.unique_labels = np.unique(self._labels)[1:]  # first label is background so skip
-
-        n_voxels = []  # going to keep track of this so we can remove any very small regions if needed
-
-        for label_level in self.unique_labels:  # first label is background so skip
-            # extract x,y,z of each connected region
-            RegionInd = self._labels == label_level
-            n_voxels.append(np.count_nonzero(RegionInd))
-
-        # Set up min and max marker volumes
-        n_voxels_median = np.median(np.array(n_voxels))
-        voxel_min = (1 - self._marker_size_lower_tol) * n_voxels_median
-        voxel_max = (1 + self._marker_size_upper_tol) * n_voxels_median
-
-        # Modify based on number of markers
-        if self._n_markers_expected is not None:
-            n_voxels_copy = np.array(n_voxels)
-            voxel_difference = np.absolute(np.array(n_voxels) - n_voxels_median)
-            # Loop that deletes the marker size with the largest difference from median until the expected # of markers
-            while len(n_voxels_copy) > self._n_markers_expected:
-                n_voxels_copy = np.delete(n_voxels_copy, np.argmax(voxel_difference))
-                voxel_difference = np.delete(voxel_difference, np.argmax(voxel_difference))
-            # Set min and max based on the remaining list
-            if np.min(n_voxels_copy) > voxel_min:
-                voxel_min = np.min(n_voxels_copy)
-            if np.max(n_voxels_copy) < voxel_max:
-                voxel_max = np.max(n_voxels_copy)
-
-        # 3 voxels is the absolute floor
-        if voxel_min < 2:
-            voxel_min = 2.1
+            self._remove_load()
+        self._get_marker_max_min_volume()
 
         if self.verbose:
-            print('Threshold value: ' + str(self._cutoffpoint))
-            print('Median marker volume: ' + str(n_voxels_median))
-            print('Expected marker volume: ' + str(voxel_min) + ' to ' + str(voxel_max))
-            print(f'Regions to check: {self.unique_labels.shape}')
+            self._print_thresholding_information()
 
         x_centroids = []
         y_centroids = []
         z_centroids = []
         skipped = 0
 
+        # extract x,y,z of each connected region
         for i, label_level in enumerate(self.unique_labels):
-            # extract x,y,z of each connected region
             RegionInd = np.equal(self._labels, label_level)
             voxels = np.count_nonzero(RegionInd)
-
-            if voxels < voxel_min or voxels > voxel_max:
+            if voxels < self._voxel_min or voxels > self._voxel_max:
                 skipped += 1
                 if self.verbose:
                     print('Region ' + str(i + 1) + ': Skipped, v = ' + str(voxels))
                 continue  # skip outliers
 
             region_sum = np.sum(self.InputVolume[RegionInd])
-            weighted_x = np.sum(
-                np.multiply(self.X[RegionInd], self.InputVolume[RegionInd]))
-            weighted_y = np.sum(
-                np.multiply(self.Y[RegionInd], self.InputVolume[RegionInd]))
-            weighted_z = np.sum(
-                np.multiply(self.Z[RegionInd], self.InputVolume[RegionInd]))
+            weighted_x = np.sum(np.multiply(self.X[RegionInd], self.InputVolume[RegionInd]))
+            weighted_y = np.sum(np.multiply(self.Y[RegionInd], self.InputVolume[RegionInd]))
+            weighted_z = np.sum(np.multiply(self.Z[RegionInd], self.InputVolume[RegionInd]))
             x_centroids.append(weighted_x / region_sum)
             y_centroids.append(weighted_y / region_sum)
             z_centroids.append(weighted_z / region_sum)
@@ -469,10 +480,7 @@ class MarkerVolume:
                 print('Region ' + str(i + 1) + ': Marker, v = ' + str(voxels))
 
         if self.verbose:
-            print('----------')
-            print('Total regions: ' + str(len(self.unique_labels)))
-            print('Total markers found: ' + str(len(x_centroids)))
-            print('Total skipped: ' + str(skipped))
+            self._print_thresholding_summary(len(x_centroids), skipped)
 
         return np.array([x_centroids, y_centroids, z_centroids]).T
 
@@ -581,8 +589,8 @@ class MatchedMarkerVolumes:
     :type GroundTruthData: MarkerVolume object, or path to dicom folder, or numpy array
     :param DistortedData:
     :type DistortedData: MarkerVolume object, or path to dicom folder, or numpy array
-    :param ReverseGradientData:
-    :type ReverseGradientData: None, or MarkerVolume object, or path to dicom folder, or numpy array
+    :param reverse_gradient_data:
+    :type reverse_gradient_data: None, or MarkerVolume object, or path to dicom folder, or numpy array
     :param WarpSearchData: if True, position of found markers is used to update expected positions for ground truth.
         Recomended is True if there is substantial distortion present.
     :type WarpSearchData: boolean
@@ -600,14 +608,14 @@ class MatchedMarkerVolumes:
         important. For data on a sphere, you may have more success by setting this to 'nearest', but this is a bit
         of an untested feature
     :type sorting_method: str, optional
-    :param ReferenceMarkers: the n inner_most Reference markers are used to align the ground truth to the MR volume
+    :param n_refernce_markers: the n inner_most Reference markers are used to align the ground truth to the MR volume
         before  matching. this can correct for setup errors. Note that we always move the reference. the best way
         for this to not matter either way is to not have any set up error!
-    :type ReferenceMarkers: int, optional
+    :type n_refernce_markers: int, optional
     """
 
-    def __init__(self, GroundTruthData, DistortedData, ReverseGradientData=None, WarpSearchData=True,
-                 AutomatchMarkers=True, AllowDoubleMatching=False, sorting_method='radial', ReferenceMarkers=0):
+    def __init__(self, GroundTruthData, DistortedData, reverse_gradient_data=None, WarpSearchData=True,
+                 AutomatchMarkers=True, AllowDoubleMatching=False, sorting_method='radial', n_refernce_markers=0):
 
         # warping parameters:
         self.WarpSearchData = WarpSearchData
@@ -616,16 +624,16 @@ class MatchedMarkerVolumes:
         self.sorting_method = sorting_method
         self.AllowDoubleMatching = AllowDoubleMatching
 
-        self._n_reference_markers = ReferenceMarkers
+        self._n_reference_markers = n_refernce_markers
 
         # marker data:
         self.ground_truth_centroids = GroundTruthData.MarkerCentroids
         self.distorted_centroids = DistortedData.MarkerCentroids
 
-        if ReverseGradientData is None:
+        if reverse_gradient_data is None:
             self.distorted_centroidsRev = None
         else:
-            self.distorted_centroidsRev = ReverseGradientData.MarkerCentroids
+            self.distorted_centroidsRev = reverse_gradient_data.MarkerCentroids
 
         self._check_input_data()
         # run analysis:

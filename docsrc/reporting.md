@@ -13,7 +13,7 @@ An example of the types of reports you can generate is [here](https://acrf-image
 Create a new file called 'reporting.py'. Copy the below code into it.
 
 ```python
-from MRI_DistortionQA.Reports import MRI_QA_Reporter
+from mri_distortion_toolkit.Reports import MRI_QA_Reporter
 import pandas as pd
 from pathlib import Path
 
@@ -40,7 +40,7 @@ This phantom was actually designed to get a good measurement of data on the surf
 the code for harmonic reconstruction is below:
 
 ```python
-from MRI_DistortionQA.Reports import MRI_QA_Reporter
+from mri_distortion_toolkit.Reports import MRI_QA_Reporter
 import pandas as pd
 from pathlib import Path
 
@@ -74,7 +74,7 @@ You will notice that some tests have been run (and failed) from 'DefaultTestSuit
 Code demonstration the creation of a custom test suite is below:
 
 ```python
-from MRI_DistortionQA.Reports import MRI_QA_Reporter
+from mri_distortion_toolkit.Reports import MRI_QA_Reporter
 import pandas as pd
 from pathlib import Path
 

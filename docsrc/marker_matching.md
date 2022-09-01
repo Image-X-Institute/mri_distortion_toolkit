@@ -14,8 +14,8 @@ Create a new python file called 'marker_matching.py' and copy the below contents
 
 ````python
 from pathlib import Path
-from MRI_DistortionQA.MarkerAnalysis import MarkerVolume
-from MRI_DistortionQA.MarkerAnalysis import MatchedMarkerVolumes
+from mri_distortion_toolkit.MarkerAnalysis import MarkerVolume
+from mri_distortion_toolkit.MarkerAnalysis import MatchedMarkerVolumes
 
 '''
 download example data and unzip:
