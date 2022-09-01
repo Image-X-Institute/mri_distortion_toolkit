@@ -123,7 +123,6 @@ def test_reconstruct_Bz():
     tests stability wrt to previous code
     """
 
-
     Bz_uT = ut.reconstruct_Bz(Gx_Harmonics, test_coordinates_spherical,
                       quantity='uT', r_outer=None)
     Bz_T = ut.reconstruct_Bz(Gy_Harmonics, test_coordinates_spherical,

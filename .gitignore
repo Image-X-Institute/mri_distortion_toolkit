@@ -13,3 +13,5 @@ MRI_DistortionQA.egg-info*
 dist
 .pytest_cache
 venv
+tests/2D_distortion_correction
+tests/3D_distortion_correction
