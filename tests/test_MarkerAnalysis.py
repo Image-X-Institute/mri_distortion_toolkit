@@ -7,8 +7,8 @@ import pandas as pd
 
 this_dir = Path(__file__).parent
 sys.path.insert(0, str(this_dir.parent))
-from MRI_DistortionQA.MarkerAnalysis import MarkerVolume, MatchedMarkerVolumes
-from MRI_DistortionQA.utilities import get_dicom_data
+from mri_distortion_toolkit.MarkerAnalysis import MarkerVolume, MatchedMarkerVolumes
+from mri_distortion_toolkit.utilities import get_dicom_data
 
 
 def test_mr_dicom_data_read_in():
@@ -27,7 +27,7 @@ def test_mr_dicom_data_read_in():
 
     assert volume.dicom_data is not None
     # test manual cutoff works:
-    volume2 = MarkerVolume((this_dir / 'test_data' / 'MR_dicom').resolve(), cutoff_point=volume._cutoffpoint)
+    volume2 = MarkerVolume((this_dir / 'test_data' / 'MR_dicom').resolve(), threshold=volume._cutoffpoint)
     assert volume.MarkerCentroids.shape == volume2.MarkerCentroids.shape
     assert volume.dicom_data['freq_encode_direction'] == 'x'
 

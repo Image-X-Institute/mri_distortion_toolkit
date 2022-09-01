@@ -18,7 +18,7 @@ sys.path.insert(0, os.path.abspath('..'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'MRI_DistortionQA'
+project = 'mri_distortion_toolkit'
 copyright = '2021, Brendan Whelan(s)'
 author = 'Brendan Whelan(s)'
 

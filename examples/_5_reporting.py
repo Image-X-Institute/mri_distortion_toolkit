@@ -1,6 +1,6 @@
-from MRI_DistortionQA.Reports import MRI_QA_Reporter
-from MRI_DistortionQA.Reports import DefaultTestSuite
-from MRI_DistortionQA.utilities import get_dicom_data
+from mri_distortion_toolkit.Reports import MRI_QA_Reporter
+from mri_distortion_toolkit.Reports import DefaultTestSuite
+from mri_distortion_toolkit.utilities import get_dicom_data
 import pandas as pd
 from pathlib import Path
 

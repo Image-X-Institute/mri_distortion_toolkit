@@ -17,9 +17,7 @@ def test_examples_run():
     from examples import _3_field_calculation
     from examples import _4_fit_harmonics
     from examples import _5_reporting
-    from examples import _6_all_together_now
 
-    assert np.allclose(_5_reporting.report._MatchedMarkerVolume.abs_dis, _6_all_together_now.report._MatchedMarkerVolume.abs_dis)
     assert np.mean(_5_reporting.report._MatchedMarkerVolume.abs_dis) < 10  # was 8.73, could change a bit with changes to other algorithms
     assert np.max(_5_reporting.report._MatchedMarkerVolume.abs_dis) < 100  # was 71
 

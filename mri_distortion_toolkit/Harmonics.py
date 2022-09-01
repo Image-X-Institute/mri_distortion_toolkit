@@ -22,6 +22,22 @@ class SphericalHarmonicFit:
     """
     Uses single value decomposition to fit spherical harmonics to InputData.
 
+    Let the legendre basis be called L, the Harmonics be H and the magnetic field B.
+    L will have size [n_coords, n_harmonics], Harmonics has size [n_harmonics, 1] and B has size [n_coords, 1]
+
+    Our proposition is that there exists some set of harmonics such that
+
+    .. math:: L.H = B
+
+    We can find H by inverting L:
+
+    .. math::
+
+        L^{-1}.L.H = L^{-1}.B \\
+        H = L^{-1}.B
+
+    This task is performed using numpys pseudo_inverse functionality to invert L
+
     :param InputData: A pandas dataframe with columns x, y, z, Bz. Data should be in mm and T
     :type InputData: Pandas.DataFrame
     :param r_outer: radius of sphere of interest. If AssessHarmonicPk_Pk=True, data is reconstucted on r_outer. if
@@ -68,23 +84,25 @@ class SphericalHarmonicFit:
         self._generate_harmonic_names()
         self.legendre_basis = generate_legendre_basis(self.input_Bz_data, self.n_order)
         self._svd_fit()
-        # optional methods:
-        if self.QuantifyFit:
-            self._quantify_fit()
 
-        if self.AssessHarmonicPk_Pk:
-            self._assess_harmonic_pk_pk()
-        
         if not self.scale == 1:
             logger.warning(f'scaling harmonics by {self.scale}')
             self.harmonics = self.harmonics*scale
-        
+        if self.QuantifyFit:
+            self._quantify_fit()
+        if self.AssessHarmonicPk_Pk:
+            self._assess_harmonic_pk_pk()
+
     def _check_data_input(self):
         """
         - Make sure the input data actually covers a sphere. If it doesn't, it normally means something has or will go wrong
             so a warning is triggered.
         - Make sure that input data is in mm, which is an implicit assumption
         """
+
+        if not isinstance(self.n_order, int):
+            logger.warning(f'n_order should be integer; round {self.n_order} to {int(self.n_order)}')
+            self.n_order = int(self.n_order)
 
         if self.input_Bz_data.r.mean() < 10:
             logger.warning('it appears that your input data is in m, not mm - please use mm!')
@@ -128,24 +146,6 @@ class SphericalHarmonicFit:
     def _svd_fit(self):
         """
         calculate harmonics using single value decomposition of legendre_basis
-
-        Formalism:
-
-        Let the legendre basis be called L, the Harmonics be H and the B field B.
-        L will have size [n_coords, n_harmonics], Harmonics has size [n_harmonics, 1] and B has size [n_coords, 1]
-
-        Our proposition is that there exists some set of harmonics such that
-
-        .. math:: L.H = B
-
-        We can find H by inverting L:
-
-        .. math::
-
-            L^{-1}.L.H = L^{-1}.B \\
-            H = L^{-1}.B
-
-        However, direct matrix inversion is tricky. We therefore use single value decomposition to calculate the pseudo inverse
         """
 
         inverseLegendre = np.linalg.pinv(self.legendre_basis)
@@ -169,20 +169,26 @@ class SphericalHarmonicFit:
             logger.warning('you are reconstructing a lot of points and it might be a bit slow.'
                            'I should write a down sampling routine here...')
 
-        Bz_recon = self.legendre_basis @ self.harmonics
+        Bz_recon = self.legendre_basis @ (self.harmonics/self.scale)
         Residual = np.subtract(self.input_Bz_data.Bz, Bz_recon)
+        self._residual_pk_pk = float(abs(Residual.max() - Residual.min())*1e6)
 
-        initial_pk_pk = float(abs(Bz_recon.max() - Bz_recon.min()) * 1e6)
-        recon_pk_pk = float(abs(self.input_Bz_data.Bz.max() - self.input_Bz_data.Bz.min()) * 1e6)
-        self._residual_pk_pk = float(abs(Residual.max() - Residual.min()) * 1e6)
+        initial_pk_pk = float(abs(self.input_Bz_data.Bz.max() - self.input_Bz_data.Bz.min()) * 1e6)
+        recon_pk_pk = float(abs(Bz_recon.max() - Bz_recon.min()) * 1e6)
+        residual_percentage = abs(self._residual_pk_pk) * 100 / initial_pk_pk
 
-        print(f'Initial pk-pk:       {initial_pk_pk: 1.3f} \u03BCT')
-        print(f'Reconstructed pk-pk: {recon_pk_pk: 1.3f} \u03BCT')
-        print(f'Residual pk-pk:      {self._residual_pk_pk: 1.3f} \u03BCT')
+        try:
+            print(f'Initial pk-pk:       {initial_pk_pk: 1.3e} \u03BCT')
+            print(f'Reconstructed pk-pk: {recon_pk_pk: 1.3e} \u03BCT')
+            print(f'Residual pk-pk:      {self._residual_pk_pk: 1.3e} \u03BCT ({residual_percentage: 1.1f}%)')
+        except UnicodeError:
+            print(f'Initial pk-pk:       {initial_pk_pk: 1.3e} uT')
+            print(f'Reconstructed pk-pk: {recon_pk_pk: 1.3e} uT')
+            print(f'Residual pk-pk:      {self._residual_pk_pk: 1.3e} uT ({residual_percentage: 1.1f}%)')
 
-        residual_percentage = abs(self._residual_pk_pk)*100/initial_pk_pk
-        if residual_percentage > 5:
-            logger.warning('residual_pk_pk is greater than 5%. This may indicate that the order is not high enough,'
+
+        if residual_percentage > 2:
+            logger.warning('residual_pk_pk is greater than 2 %. This may indicate that the order is not high enough,'
                            'or that the data is non physical (but it heavily depends on your use case!')
 
     def _assess_harmonic_pk_pk(self):
@@ -201,7 +207,7 @@ class SphericalHarmonicFit:
             legendre_basis_to_use = self.legendre_basis
 
         BasisRange = legendre_basis_to_use.apply(lambda x: abs(np.max(x) - np.min(x)))
-        self.HarmonicsPk_Pk = self.harmonics * BasisRange * 1e6
+        self.HarmonicsPk_Pk = (self.harmonics/self.scale) * BasisRange * 1e6
 
     # Public Methods
 
@@ -256,12 +262,10 @@ class SphericalHarmonicFit:
         x = np.linspace(-self.r_outer, self.r_outer, int((2*self.r_outer)/resolution)) * conversion_factor
         y = np.linspace(-self.r_outer, self.r_outer, int((2*self.r_outer)/resolution)) * conversion_factor
         z = 0
-        extent = [-self.r_outer - resolution, self.r_outer + resolution, -self.r_outer - resolution,
-                  self.r_outer + resolution]  # same for all plots
         [x_recon, y_recon, z_recon] = np.meshgrid(x, y, z, indexing='ij')
         recon_coords = pd.DataFrame({'x': x_recon.flatten(), 'y': y_recon.flatten(), 'z': z_recon.flatten()})
         recon_coords = convert_cartesian_to_spherical(recon_coords)
-        Bz_recon = reconstruct_Bz(harmonics=self.harmonics, coords=recon_coords, quantity=quantity)
+        Bz_recon = reconstruct_Bz(harmonics=self.harmonics/self.scale, coords=recon_coords, quantity=quantity)
         Bz_recon = Bz_recon.to_numpy().reshape(np.squeeze(x_recon).shape)
         XYimage = axs1.imshow(Bz_recon.T, extent=extent, vmin=vmin, vmax=vmax)
         axs1.set_xlabel('x [mm]')
@@ -278,7 +282,7 @@ class SphericalHarmonicFit:
         [x_recon, y_recon, z_recon] = np.meshgrid(x, y, z, indexing='ij')
         recon_coords = pd.DataFrame({'x': x_recon.flatten(), 'y': y_recon.flatten(), 'z': z_recon.flatten()})
         recon_coords = convert_cartesian_to_spherical(recon_coords)
-        Bz_recon = reconstruct_Bz(harmonics=self.harmonics, coords=recon_coords, quantity=quantity)
+        Bz_recon = reconstruct_Bz(harmonics=self.harmonics/self.scale, coords=recon_coords, quantity=quantity)
         Bz_recon = Bz_recon.to_numpy().reshape(np.squeeze(y_recon).shape)
         ZXimage = axs2.imshow(Bz_recon.T, extent=extent, vmin=vmin, vmax=vmax)
         axs2.set_xlabel('x [mm]')
@@ -295,7 +299,7 @@ class SphericalHarmonicFit:
         [x_recon, y_recon, z_recon] = np.meshgrid(x, y, z, indexing='ij')
         recon_coords = pd.DataFrame({'x': x_recon.flatten(), 'y': y_recon.flatten(), 'z': z_recon.flatten()})
         recon_coords = convert_cartesian_to_spherical(recon_coords)
-        Bz_recon = reconstruct_Bz(harmonics=self.harmonics, coords=recon_coords, quantity=quantity)
+        Bz_recon = reconstruct_Bz(harmonics=self.harmonics/self.scale, coords=recon_coords, quantity=quantity)
         Bz_recon = Bz_recon.to_numpy().reshape(np.squeeze(z_recon).shape)
         ZYimage = axs3.imshow(Bz_recon.T, extent=extent, vmin=vmin, vmax=vmax)
         axs3.set_xlabel('y [mm]')
@@ -320,7 +324,7 @@ class SphericalHarmonicFit:
         plt.tight_layout()
         plt.show()
 
-    def print_key_harmonics(self, cut_off=.1):
+    def print_key_harmonics(self, cut_off=.01):
         """
         print the harmonics with value > cut_off to the terminal in pk-pk.
 
@@ -334,9 +338,12 @@ class SphericalHarmonicFit:
 
         CutOffInd = abs(self.HarmonicsPk_Pk) < cut_off * abs(self.HarmonicsPk_Pk).max()
         KeyHarmonics = self.HarmonicsPk_Pk.drop(self.HarmonicsPk_Pk[CutOffInd].index)
-
+        pd.set_option('display.float_format', lambda x: '%1.4ef' % x)
         print(f'\nOnly displaying values >= {cut_off*100: 1.0f}% of the peak harmonic.')
-        print('Values are in pk=pk [\u03BCT]')
+        try:
+            print('Values are in pk=pk [\u03BCT]')
+        except UnicodeError:
+            print('Values are in pk=pk uT]')
         print(f'{bcolors.OKBLUE}{KeyHarmonics.to_string()}{bcolors.ENDC}')
 
 
