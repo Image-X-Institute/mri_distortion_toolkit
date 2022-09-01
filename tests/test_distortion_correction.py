@@ -35,13 +35,13 @@ def test_read_in_of_corrected_data():
     """
     test we can read in the corrected data, and test for stability of detected distortion
     """
-    corrected_data = test_data_dir / 'MR_dicom' / 'corrected_dcm'
+    corrected_data = test_data_dir / 'MR_dicom' / 'Corrected_dcm'
     if not corrected_data.is_dir():
         # shouldnt happen but to be safe
         test_execution()
     dis_volume = MarkerVolume(corrected_data)
 
     corrected_vol = MarkerVolume(corrected_data)
-    distorted_vol = MarkerVolume(test_data_dir / 'MR_Dicom')
+    distorted_vol = MarkerVolume(test_data_dir / 'MR_dicom')
     matched_vol = MatchedMarkerVolumes(corrected_vol, distorted_vol)
     assert np.isclose(np.mean(matched_vol.MatchedCentroids.match_distance), 3.560997540275499)
