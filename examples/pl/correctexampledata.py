@@ -46,21 +46,22 @@ uncorrected_match = matched_volume = MatchedMarkerVolumes(gt_volume, uncorrected
 # # GDC.save_all_images_as_dicom()
 
 # Correct images (image domain example)
-GDC = ImageDomainDistortionCorrector(ImageDirectory=data_loc / '05 gre_trans_PA_330' / 'Original',
+IDC = ImageDomainDistortionCorrector(ImageDirectory=data_loc / '05 gre_trans_PA_330' / 'Original',
                                      Gx_Harmonics='G_x_Harmonics.csv',
                                      Gy_Harmonics='G_y_Harmonics.csv',
                                      Gz_Harmonics='G_z_Harmonics.csv',
                                      ImExtension='dcm',
                                      dicom_data=uncorrected_volume.dicom_data,
-                                     correct_through_plane=True)
-GDC.correct_all_images()
+                                     correct_through_plane=False)
+IDC.correct_all_images()
+IDC.save_all_images()
 
-# Segment corrected
-corrected_volume = MarkerVolume(data_loc / '05 gre_trans_PA_330' / 'Original' / 'Corrected_dcm',
-                                n_markers_expected=335, iterative_segmentation=True, r_max=165,
-                                gaussian_image_filter_sd=0.7, verbose=True)
-corrected_volume.plot_3D_markers(title='Corrected')
-
-corrected_match = matched_volume = MatchedMarkerVolumes(gt_volume, corrected_volume, n_refernce_markers=11)
-corrected_match.plot_3D_markers()
-plot_distortion_xyz_hist(corrected_match)
+# # Segment corrected
+# corrected_volume = MarkerVolume(data_loc / '05 gre_trans_PA_330' / 'Original' / 'Corrected_dcm',
+#                                 n_markers_expected=335, iterative_segmentation=True, r_max=165,
+#                                 gaussian_image_filter_sd=0.7, verbose=True)
+# corrected_volume.plot_3D_markers(title='Corrected')
+#
+# corrected_match = matched_volume = MatchedMarkerVolumes(gt_volume, corrected_volume, n_refernce_markers=11)
+# corrected_match.plot_3D_markers()
+# plot_distortion_xyz_hist(corrected_match)

@@ -488,13 +488,48 @@ class ImageDomainDistortionCorrector(DistortionCorrector):
         # plt.show()
 
         self._image_shape = np.array(np.squeeze(self._X_slice).shape)
+
+        _output_image = np.zeros(self._image_shape)
+
         coords_cartesian = np.array([self._X_slice.flatten(), self._Y_slice.flatten(), self._Z_slice.flatten()])
         coords_cartesian = pd.DataFrame(coords_cartesian.T, columns=['x', 'y', 'z'])
         self.coords = convert_cartesian_to_spherical(coords_cartesian)
         self._calculate_encoding_fields()
 
-        Gx_vector = self.Gx_encode.values.reshape(self._image_shape)
-        Gy_vector = self.Gy_encode.values.reshape(self._image_shape)
-        Gz_vector = self.Gz_encode.values.reshape(self._image_shape)
+        Gx_vector = (self.Gx_encode.values.reshape(self._image_shape) - self._X_slice) / 2.5
+        Gy_vector = (self.Gy_encode.values.reshape(self._image_shape) - self._Y_slice) / 2.5
+        # Gz_vector = self.Gz_encode.values.reshape(self._image_shape) / self._dicom_data['pixel_spacing'][2]
 
-        print('ok')
+        for yindex, yy in enumerate(_output_image):
+            for xindex, xx in enumerate(yy):
+
+                xvector = xindex + round(Gx_vector[xindex][yindex])
+                yvector = yindex + round(Gy_vector[xindex][yindex])
+
+                if xvector >= 0 and yvector >= 0 and xvector < 128 and yvector < 128:
+                    _output_image[xindex, yindex] = self._image_to_correct[xvector, yvector]
+
+        # plt.imshow(_output_image)
+        # plt.show()
+
+        self.outputImage = _output_image
+
+    def _convert_magnetic_field_to_distortion(self):
+        """
+        converts reconstructed gradient fields into geometric distortion.
+        Essentially this process is doing the opposite of FieldCalculation.ConvertMatchedMarkersToBz
+        """
+        self._MatchedMarkerVolume = pd.DataFrame()
+        bandwidth = np.array(self._dicom_data['bandwidth'])
+        image_size = np.array(self._dicom_data['image_size'])
+        gama = np.array(self._dicom_data['gama'])
+        FOV = np.array(self._dicom_data['FOV'])
+
+        gradient_strength = bandwidth * image_size / (gama * 1e6 * FOV * 1e-3)  # unit(T / m)
+        # ^ this is a vector [gx, gy, gz]
+        self._MatchedMarkerVolume = \
+            self._MatchedMarkerVolume.assign(x_gnl=self.Gx_Bfield / (gradient_strength[0] * 1e-3))
+        self._MatchedMarkerVolume = \
+            self._MatchedMarkerVolume.assign(y_gnl=self.Gy_Bfield / (gradient_strength[1] * 1e-3))
+        self._MatchedMarkerVolume = \
+            self._MatchedMarkerVolume.assign(z_gnl=self.Gz_Bfield / (gradient_strength[2] * 1e-3))
