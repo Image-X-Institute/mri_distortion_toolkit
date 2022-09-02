@@ -242,7 +242,7 @@ class KspaceDistortionCorrector:
         x1 = lsqr(A, fk1, iter_lim=maxit, x0=StartingImage)
         self.outputImage = abs(np.reshape(x1[0], [self._Rows, self._Cols]))
 
-    def _plot_encoding_fields(self, vmin=None, vmax=None):
+    def _plot_encoding_fields(self, vmin=None, vmax=None):  # pragma: no cover
         """
         debug code; make sure the gradient fields look correct
         """
@@ -286,7 +286,7 @@ class KspaceDistortionCorrector:
         plt.tight_layout()
         plt.show()
 
-    def _plot_indices(self):
+    def _plot_indices(self):  # pragma: no cover
         """
         handy debug plot routine to plot linear/distorted indices
         :return:
@@ -302,7 +302,7 @@ class KspaceDistortionCorrector:
         axs[1, 1].plot(self.tk)
         axs[1, 1].set_title('tk')
 
-    def _plot_coords(self):
+    def _plot_coords(self):  # pragma: no cover
 
         fig, axs = plt.subplots(1, 3)
         axs[0].plot(self._X_slice.flatten())
@@ -310,7 +310,7 @@ class KspaceDistortionCorrector:
         axs[2].plot(self._Z_slice.flatten())
         plt.show()
 
-    def _plot_images(self):
+    def _plot_images(self):  # pragma: no cover
         """
         debugging method to show input, output, and diff images
         :return:

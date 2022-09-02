@@ -27,8 +27,9 @@ def test_execution():
                                                         (test_data_dir / 'G_z_Harmonics.csv').resolve()],
                                     ImExtension='dcm',
                                     dicom_data=dis_volume.dicom_data,
-                                    correct_through_plane=False)
+                                    correct_through_plane=True)
     GDC.correct_all_images()
+    GDC.save_all_images()
     GDC.save_all_images_as_dicom()
 
 def test_read_in_of_corrected_data():
@@ -44,4 +45,4 @@ def test_read_in_of_corrected_data():
     corrected_vol = MarkerVolume(corrected_data)
     distorted_vol = MarkerVolume(test_data_dir / 'MR_dicom')
     matched_vol = MatchedMarkerVolumes(corrected_vol, distorted_vol)
-    assert np.isclose(np.mean(matched_vol.MatchedCentroids.match_distance), 3.560997540275499)
+    assert np.isclose(np.mean(matched_vol.MatchedCentroids.match_distance), 5.112045830147335)
