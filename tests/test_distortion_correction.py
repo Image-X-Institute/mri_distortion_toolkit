@@ -27,8 +27,9 @@ def test_execution():
                                                         (test_data_dir / 'G_z_Harmonics.csv').resolve()],
                                     ImExtension='dcm',
                                     dicom_data=dis_volume.dicom_data,
-                                    correct_through_plane=False)
+                                    correct_through_plane=True)
     GDC.correct_all_images()
+    GDC.save_all_images()
     GDC.save_all_images_as_dicom()
 
 def test_read_in_of_corrected_data():
