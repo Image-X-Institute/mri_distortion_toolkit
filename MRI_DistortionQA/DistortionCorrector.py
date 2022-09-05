@@ -9,7 +9,7 @@ from scipy.fft import fft2
 from scipy.fft import fftshift
 from scipy.sparse.linalg import lsqr
 from scipy.sparse.linalg import LinearOperator
-from scipy.interpolate import interp2d
+from scipy.interpolate import RectBivariateSpline
 import pandas as pd
 from pathlib import Path
 from .utilities import get_all_files, convert_cartesian_to_spherical, generate_legendre_basis, dicom_to_numpy
@@ -122,6 +122,7 @@ class DistortionCorrector:
         if (np.round(self._ImageOrientationPatient) == [0, 1, 0, 0, 0, -1]).all():
             xn_dis = self.Gz_encode / (self._PixelSpacing[2])
             self.xj = xn_dis * 2 * np.pi
+            self.xn_dis_pixel = np.reshape(xn_dis - xn_lin, self._image_to_correct.shape)
             yn_dis = self.Gy_encode / (self._PixelSpacing[1])
             self.yj = yn_dis * 2 * np.pi
         elif (np.round(self._ImageOrientationPatient) == [1, 0, 0, 0, 0, -1]).all():
@@ -139,21 +140,26 @@ class DistortionCorrector:
             self.xj = pd.Series(xn_lin * 2 * np.pi)
             yn_dis = self.Gx_encode / (self._PixelSpacing[0])
             self.yj = pd.Series(yn_dis * 2 * np.pi)
+            xn_dis = pd.Series(np.copy(xn_lin))
         elif np.round(self._ImageOrientationPatient == [3, 3, 3, 3, 3, 3]).all():
             # this is for through plane correction where the real images are [1, 0, 0, 0, 0, -1]
             self.xj = pd.Series(xn_lin * 2 * np.pi)
             yn_dis = self.Gy_encode / (self._PixelSpacing[1])
             self.yj = yn_dis * 2 * np.pi
+            xn_dis = pd.Series(np.copy(xn_lin))
         elif (np.round(self._ImageOrientationPatient) == [1, 1, 1, 1, 1, 1]).all():
             # this is for through plane correction where the real images are [1, 0, 0, 0, 1, 0]
             self.xj = pd.Series(xn_lin * 2 * np.pi)
             yn_dis = -1 * self.Gz_encode / (self._PixelSpacing[2])
             self.yj = yn_dis * 2 * np.pi
+            xn_dis = pd.Series(np.copy(xn_lin))
         else:
             raise NotImplementedError('this slice orientation is not handled yet sorry')
 
         self.xj = self.xj.to_numpy()
         self.yj = self.yj.to_numpy()
+        self.xn_dis_pixel = np.reshape((xn_dis - xn_lin).values, self._image_to_correct.shape)
+        self.yn_dis_pixel = np.reshape((yn_dis - yn_lin).values, self._image_to_correct.shape)
 
     def _plot_encoding_fields(self, vmin=None, vmax=None):
         """
@@ -322,9 +328,9 @@ class DistortionCorrector:
 
         self._unpad_image_arrays()
 
-    def save_all_images(self):
-        if not os.path.isdir(self.ImageDirectory / 'Corrected'):
-            os.mkdir(self.ImageDirectory / 'Corrected')
+    def save_all_images(self, foldername='Corrected'):
+        if not os.path.isdir(self.ImageDirectory / foldername):
+            os.mkdir(self.ImageDirectory / foldername)
         loop_axis = 2
 
         zipped_data = zip(np.rollaxis(self.ImageArray, loop_axis),
@@ -352,7 +358,7 @@ class DistortionCorrector:
             # fig.colorbar(im2, ax=axs[1])
 
             plt.tight_layout()
-            plt.savefig(self.ImageDirectory / 'Corrected' / (str(i) + '.png'), format='png')
+            plt.savefig(self.ImageDirectory / foldername / (str(i) + '.png'), format='png')
             plt.close(fig)
             i += 1
 
@@ -484,52 +490,25 @@ class ImageDomainDistortionCorrector(DistortionCorrector):
         Under some circumstances some steps could be recycled for subsequent slices
         """
 
-        # plt.imshow(self._image_to_correct)
-        # plt.show()
-
         self._image_shape = np.array(np.squeeze(self._X_slice).shape)
-
-        _output_image = np.zeros(self._image_shape)
 
         coords_cartesian = np.array([self._X_slice.flatten(), self._Y_slice.flatten(), self._Z_slice.flatten()])
         coords_cartesian = pd.DataFrame(coords_cartesian.T, columns=['x', 'y', 'z'])
         self.coords = convert_cartesian_to_spherical(coords_cartesian)
         self._calculate_encoding_fields()
+        self._calculate_encoding_indices()
 
-        Gx_vector = (self.Gx_encode.values.reshape(self._image_shape) - self._X_slice) / 2.5
-        Gy_vector = (self.Gy_encode.values.reshape(self._image_shape) - self._Y_slice) / 2.5
-        # Gz_vector = self.Gz_encode.values.reshape(self._image_shape) / self._dicom_data['pixel_spacing'][2]
+        x_n = np.arange(0, self._image_shape[0], 1)
+        y_n = np.arange(0, self._image_shape[1], 1)
+        pixel_interp = RectBivariateSpline(x_n, y_n, self._image_to_correct)
 
-        for yindex, yy in enumerate(_output_image):
-            for xindex, xx in enumerate(yy):
+        xx, yy = np.meshgrid(x_n, y_n)
+        xvector = (self.xn_dis_pixel + yy).flatten()
+        yvector = (self.yn_dis_pixel + xx).flatten()
 
-                xvector = xindex + round(Gx_vector[xindex][yindex])
-                yvector = yindex + round(Gy_vector[xindex][yindex])
+        _output_image = pixel_interp.ev(xvector, yvector)
 
-                if xvector >= 0 and yvector >= 0 and xvector < 128 and yvector < 128:
-                    _output_image[xindex, yindex] = self._image_to_correct[xvector, yvector]
+        _output_image = np.where((xvector < 0) | (yvector < 0) | (xvector > self._image_shape[0]) |
+                                 (yvector > self._image_shape[1]), 0, _output_image)
 
-        # plt.imshow(_output_image)
-        # plt.show()
-
-        self.outputImage = _output_image
-
-    def _convert_magnetic_field_to_distortion(self):
-        """
-        converts reconstructed gradient fields into geometric distortion.
-        Essentially this process is doing the opposite of FieldCalculation.ConvertMatchedMarkersToBz
-        """
-        self._MatchedMarkerVolume = pd.DataFrame()
-        bandwidth = np.array(self._dicom_data['bandwidth'])
-        image_size = np.array(self._dicom_data['image_size'])
-        gama = np.array(self._dicom_data['gama'])
-        FOV = np.array(self._dicom_data['FOV'])
-
-        gradient_strength = bandwidth * image_size / (gama * 1e6 * FOV * 1e-3)  # unit(T / m)
-        # ^ this is a vector [gx, gy, gz]
-        self._MatchedMarkerVolume = \
-            self._MatchedMarkerVolume.assign(x_gnl=self.Gx_Bfield / (gradient_strength[0] * 1e-3))
-        self._MatchedMarkerVolume = \
-            self._MatchedMarkerVolume.assign(y_gnl=self.Gy_Bfield / (gradient_strength[1] * 1e-3))
-        self._MatchedMarkerVolume = \
-            self._MatchedMarkerVolume.assign(z_gnl=self.Gz_Bfield / (gradient_strength[2] * 1e-3))
+        self.outputImage = _output_image.reshape(self._image_shape)
