@@ -1,6 +1,5 @@
 # mri_distortion_toolkit  
-
-[![codecov](https://codecov.io/gh/ACRF-Image-X-Institute/MRI_DistortionQA/branch/main/graph/badge.svg?token=3MCT7S6KVK)](https://codecov.io/gh/ACRF-Image-X-Institute/MRI_DistortionQA) ![](docsrc/__resources/interrogate.svg)  ![tests](https://github.com/ACRF-Image-X-Institute/MRI_DistortionQA/actions/workflows/run_tests.yml/badge.svg) ![docs](https://github.com/ACRF-Image-X-Institute/MRI_DistortionQA/actions/workflows/build_docs.yml/badge.svg)
+[![codecov](https://codecov.io/gh/ACRF-Image-X-Institute/mri_distortion_toolkit/branch/main/graph/badge.svg?token=3MCT7S6KVK)](https://codecov.io/gh/ACRF-Image-X-Institute/mri_distortion_toolkit) ![](docsrc/__resources/interrogate.svg)  ![tests](https://github.com/ACRF-Image-X-Institute/MRI_DistortionQA/actions/workflows/run_tests.yml/badge.svg) ![docs](https://github.com/ACRF-Image-X-Institute/MRI_DistortionQA/actions/workflows/build_docs.yml/badge.svg)
 
 This code enables characterization, reporting, and correction of geometric distortion in Magnetic Resonance Imaging.
 
