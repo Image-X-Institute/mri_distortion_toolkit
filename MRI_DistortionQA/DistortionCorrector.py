@@ -502,9 +502,9 @@ class ImageDomainDistortionCorrector(DistortionCorrector):
         y_n = np.arange(0, self._image_shape[1], 1)
         pixel_interp = RectBivariateSpline(x_n, y_n, self._image_to_correct)
 
-        xx, yy = np.meshgrid(x_n, y_n)
-        xvector = (self.xn_dis_pixel + yy).flatten()
-        yvector = (self.yn_dis_pixel + xx).flatten()
+        yy, xx = np.meshgrid(y_n, x_n)
+        xvector = (self.xn_dis_pixel + xx).flatten()
+        yvector = (self.yn_dis_pixel + yy).flatten()
 
         _output_image = pixel_interp.ev(xvector, yvector)
 
