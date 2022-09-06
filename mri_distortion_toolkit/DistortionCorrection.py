@@ -358,11 +358,20 @@ class DistortionCorrectorBase:
 
         self._unpad_image_arrays()
 
-    def save_all_images(self, save_loc='Corrected'):
-        if not os.path.isdir(self.ImageDirectory / save_loc):
-            os.mkdir(self.ImageDirectory / save_loc)
-        loop_axis = 2
+    def save_all_images(self, save_loc=None):
+        """
+        save corrected data as png
 
+        :param save_loc: path to save data at.
+        :type save_loc: string or path
+        """
+        if save_loc is None:
+            save_loc = self.ImageDirectory / 'corrected'
+        save_loc = Path(save_loc)
+        if not (self.ImageDirectory / save_loc).is_dir():
+            save_loc.mkdir()
+
+        loop_axis = 2
         zipped_data = zip(np.rollaxis(self.ImageArray, loop_axis),
                           np.rollaxis(self._image_array_corrected, loop_axis))
         i = 0
@@ -388,13 +397,22 @@ class DistortionCorrectorBase:
             # fig.colorbar(im2, ax=axs[1])
 
             plt.tight_layout()
-            plt.savefig(self.ImageDirectory / save_loc / (str(i) + '.png'), format='png')
+            plt.savefig(save_loc / (str(i) + '.png'), format='png')
             plt.close(fig)
             i += 1
 
-    def save_all_images_as_dicom(self, save_loc='Corrected_dcm'):
+    def save_all_images_as_dicom(self, save_loc=None):
+        """
+        save corrected data as dicom
 
-        if not (self.ImageDirectory / save_loc).is_dir():
+        :param save_loc: path to save data at.
+        :type save_loc: string or path
+        """
+
+        if save_loc is None:
+            save_loc = self.ImageDirectory / 'corrected'
+        save_loc = Path(save_loc)
+        if not save_loc.is_dir():
             save_loc.mkdir()
         loop_axis = 2
         zipped_data = zip(np.rollaxis(self.ImageArray, loop_axis),
@@ -404,9 +422,8 @@ class DistortionCorrectorBase:
             current_slice = pydicom.read_file(self.ImageDirectory / self._all_dicom_files[i])
             temp_dcm = current_slice.copy()
             temp_dcm.PixelData = np.uint16(corrected_image).tobytes()
-            temp_dcm.save_as(self.ImageDirectory / save_loc / (str(i) + '.dcm'))
+            temp_dcm.save_as(save_loc / (str(i) + '.dcm'))
             i += 1
-
 
 class KspaceDistortionCorrector(DistortionCorrectorBase):
     """

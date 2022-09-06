@@ -30,6 +30,7 @@ def test_k_space_corrector():
     GDC.save_all_images()
     GDC.save_all_images_as_dicom()
 
+
 def test_image_domain_corrector():
     """
     execute it over some test data
