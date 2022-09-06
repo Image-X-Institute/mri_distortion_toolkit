@@ -1,4 +1,5 @@
 from mri_distortion_toolkit.DistortionCorrection import KspaceDistortionCorrector
+from mri_distortion_toolkit.DistortionCorrection import ImageDomainDistortionCorrector
 from mri_distortion_toolkit.MarkerAnalysis import MarkerVolume
 from pathlib import Path
 
@@ -10,7 +11,7 @@ distorted_data_loc = Path(r'C:\Users\Brendan\Downloads\MRI_distortion_QA_sample_
 dis_volume = MarkerVolume(distorted_data_loc)
 
 
-GDC = KspaceDistortionCorrector(ImageDirectory=distorted_data_loc.resolve(),
+GDC = ImageDomainDistortionCorrector(ImageDirectory=distorted_data_loc.resolve(),
                                 gradient_harmonics=[Path('_example_data/G_x_Harmonics.csv').resolve(),
                                                     Path('_example_data/G_y_Harmonics.csv').resolve(),
                                                     Path('_example_data/G_z_Harmonics.csv').resolve()],
