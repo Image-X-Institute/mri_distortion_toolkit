@@ -1,5 +1,6 @@
 import os
 import logging
+import sys
 import warnings
 import pydicom
 import matplotlib.pyplot as plt
@@ -9,24 +10,26 @@ from scipy.fft import fft2
 from scipy.fft import fftshift
 from scipy.sparse.linalg import lsqr
 from scipy.sparse.linalg import LinearOperator
+from scipy.interpolate import RectBivariateSpline
 import pandas as pd
 from pathlib import Path
 from .utilities import get_all_files, convert_cartesian_to_spherical, generate_legendre_basis, dicom_to_numpy
 from .utilities import get_gradient_spherical_harmonics
 from .utilities import printProgressBar
 from time import perf_counter
+from abc import abstractmethod
 
 logging.basicConfig(format='[%(filename)s: line %(lineno)d] %(message)s', level=logging.WARNING)
 logger = logging.getLogger(__name__)
 
 
-class KspaceDistortionCorrector:
+class DistortionCorrectorBase:
     """
     This algorithm is based on `this work`_<https://onlinelibrary.wiley.com/doi/epdf/10.1002/mrm.25487>
     """
 
     def __init__(self, ImageDirectory, NufftLibrary='finufft', gradient_harmonics=None,
-                 ImExtension='.dcm', dicom_data=None, correct_through_plane=True):
+                 ImExtension='.dcm', dicom_data=None, correct_through_plane=True, pad =20):
         """
         :param ImageDirectory:
         :param NufftLibrary:
@@ -37,8 +40,13 @@ class KspaceDistortionCorrector:
         :param dicom_data:
         :param correct_through_plane:
         """
+
+        if 'DistortionCorrectorBase' in str(self.__class__):
+            raise TypeError('DistortionCorrectorBase should not be called directly; it only exists for other correctors'
+                         'to inherit. Quitting')
+
         self.correct_through_plane = correct_through_plane
-        self._n_zero_pad = 20  # n_pixels to add around each edge of volume. set to 0 for no zero padding
+        self._n_zero_pad = pad  # n_pixels to add around each edge of volume. set to 0 for no zero padding
         self._dicom_data = dicom_data
         self._Gx_Harmonics, self._Gy_Harmonics, self._Gz_Harmonics = \
             get_gradient_spherical_harmonics(gradient_harmonics[0], gradient_harmonics[1], gradient_harmonics[2])
@@ -72,6 +80,14 @@ class KspaceDistortionCorrector:
         self.NUFFTlibrary = NufftLibrary  # pynufft, finufft, or torchnufft
         self._check_input_data()
 
+    @abstractmethod
+    def _correct_image(self):
+        """
+        This is the method to correct a 2D slice of data; each inheriting corrector must supply its own _correct_image
+        method.
+        """
+        pass
+
     def _get_rows_and_cols(self):
         """
         just extract the number of rows and columns from a dicom header - we need it for zero padding later.
@@ -88,21 +104,6 @@ class KspaceDistortionCorrector:
         """
         assert self._Gx_Harmonics.shape == self._Gy_Harmonics.shape == self._Gz_Harmonics.shape
         assert self._n_zero_pad >= 0
-
-    def _correct_image(self):
-        """
-        List of steps required for each independant input slice.
-        Under some circumstances some steps could be recycled for subsequent slices
-        """
-
-        self._image_shape = np.array(np.squeeze(self._X_slice).shape)
-        coords_cartesian = np.array([self._X_slice.flatten(), self._Y_slice.flatten(), self._Z_slice.flatten()])
-        coords_cartesian = pd.DataFrame(coords_cartesian.T, columns=['x', 'y', 'z'])
-        self.coords = convert_cartesian_to_spherical(coords_cartesian)
-        self._calculate_encoding_fields()
-        self._generate_Kspace_data()
-        self._calculate_encoding_indices()
-        self._perform_least_squares_optimisation()
 
     def _unpad_image_arrays(self):
         """
@@ -151,6 +152,7 @@ class KspaceDistortionCorrector:
         if (np.round(self._ImageOrientationPatient) == [0, 1, 0, 0, 0, -1]).all():
             xn_dis = self.Gz_encode / (self._PixelSpacing[2])
             self.xj = xn_dis * 2 * np.pi
+            self.xn_dis_pixel = np.reshape(xn_dis - xn_lin, self._image_to_correct.shape)
             yn_dis = self.Gy_encode / (self._PixelSpacing[1])
             self.yj = yn_dis * 2 * np.pi
         elif (np.round(self._ImageOrientationPatient) == [1, 0, 0, 0, 0, -1]).all():
@@ -168,79 +170,26 @@ class KspaceDistortionCorrector:
             self.xj = pd.Series(xn_lin * 2 * np.pi)
             yn_dis = self.Gx_encode / (self._PixelSpacing[0])
             self.yj = pd.Series(yn_dis * 2 * np.pi)
+            xn_dis = pd.Series(np.copy(xn_lin))
         elif np.round(self._ImageOrientationPatient == [3, 3, 3, 3, 3, 3]).all():
             # this is for through plane correction where the real images are [1, 0, 0, 0, 0, -1]
             self.xj = pd.Series(xn_lin * 2 * np.pi)
             yn_dis = self.Gy_encode / (self._PixelSpacing[1])
             self.yj = yn_dis * 2 * np.pi
+            xn_dis = pd.Series(np.copy(xn_lin))
         elif (np.round(self._ImageOrientationPatient) == [1, 1, 1, 1, 1, 1]).all():
             # this is for through plane correction where the real images are [1, 0, 0, 0, 1, 0]
             self.xj = pd.Series(xn_lin * 2 * np.pi)
             yn_dis = -1*self.Gz_encode / (self._PixelSpacing[2])
             self.yj = yn_dis * 2 * np.pi
+            xn_dis = pd.Series(np.copy(xn_lin))
         else:
             raise NotImplementedError('this slice orientation is not handled yet sorry')
 
         self.xj = self.xj.to_numpy()
         self.yj = self.yj.to_numpy()
-
-    def _fiNufft_Ax(self, x):
-        """
-        flatron instiute nufft
-        Returns A*x
-        equivalent to the 'notranpose' option in shanshans code
-        self.xj and yj are non uniform nonuniform source points. they are essentially the encoding signals.
-        self.sk and tk are uniform target points
-        # """
-
-        if x.dtype is not np.dtype('complex128'):
-            x = x.astype('complex128')
-        # y = nufft2d3(self.xj, self.yj, x, self.sk, self.tk, eps=1e-06, isign=-1)
-        y = self.Nufft_Ax_Plan.execute(x, None)
-        return y.flatten()
-
-    def _fiNufft_Atb(self, x):
-        """
-        flatron instiute nufft
-        This is to define the Nufft as a scipy.sparse.linalg.LinearOperator which can be used by the lsqr algorithm
-        see here for explanation:
-        https://stackoverflow.com/questions/48621407/python-equivalent-of-matlabs-lsqr-with-first-argument-a-function
-        Returns A'*x
-        equivalent to the 'tranpose' option in shanshans code
-        """
-        # y = nufft2d3(self.sk, self.tk, x, self.xj, self.yj, eps=1e-06, isign=1)
-        y = self.Nufft_Atb_Plan.execute(x, None)
-        return y.flatten()
-
-    def _perform_least_squares_optimisation(self):
-        """
-        From
-        `Integrated Image Reconstruction and Gradient Nonlinearity Correction <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4390402/pdf/nihms629785.pdf>`_
-        "A common strategy for reconstructing both fully- and undersampled MRI data is  penalized regression,
-        which seeks to **produce the image** most likely to have produced the set of noisy measurements while potentially
-        also satisfying some other expected properties (e.g., sparsity) (17). Since noise in MRI is Gaussian
-        distributed, penalized least squares regression of the following general form is often employed.
-        So:
-        - the image is what we want to get back.
-        - The noisy measurements are self.k_space
-        - We use the NUFFT to compute the image most likely to have produced k_space, given the encoding fields that we computed.
-        """
-        fk1 = np.reshape(self.k_space, [self._Rows * self._Cols])
-
-        StartingImage = None  # x0 for lsqr. can be overwritten for each option below.
-
-        if self.NUFFTlibrary == 'finufft':
-            self.Nufft_Ax_Plan = Plan(3, 2, 1, 1e-06, -1)
-            self.Nufft_Ax_Plan.setpts(self.xj, self.yj, None, self.sk, self.tk)
-            self.Nufft_Atb_Plan = Plan(3, 2, 1, 1e-06, 1)
-            self.Nufft_Atb_Plan.setpts(self.sk, self.tk, None, self.xj, self.yj)
-            A = LinearOperator((fk1.shape[0], fk1.shape[0]), matvec=self._fiNufft_Ax, rmatvec=self._fiNufft_Atb)
-            StartingImage = self._image_to_correct.flatten().astype(complex)
-
-
-        maxit = 20
-        x1 = lsqr(A, fk1, iter_lim=maxit, x0=StartingImage)
-        self.outputImage = abs(np.reshape(x1[0], [self._Rows, self._Cols]))
+        self.xn_dis_pixel = np.reshape((xn_dis - xn_lin).values, self._image_to_correct.shape)
+        self.yn_dis_pixel = np.reshape((yn_dis - yn_lin).values, self._image_to_correct.shape)
 
     def _plot_encoding_fields(self, vmin=None, vmax=None):  # pragma: no cover
         """
@@ -409,11 +358,20 @@ class KspaceDistortionCorrector:
 
         self._unpad_image_arrays()
 
-    def save_all_images(self):
-        if not os.path.isdir(self.ImageDirectory / 'Corrected'):
-            os.mkdir(self.ImageDirectory / 'Corrected')
-        loop_axis = 2
+    def save_all_images(self, save_loc=None):
+        """
+        save corrected data as png
 
+        :param save_loc: path to save data at.
+        :type save_loc: string or path
+        """
+        if save_loc is None:
+            save_loc = self.ImageDirectory / 'corrected'
+        save_loc = Path(save_loc)
+        if not (self.ImageDirectory / save_loc).is_dir():
+            save_loc.mkdir()
+
+        loop_axis = 2
         zipped_data = zip(np.rollaxis(self.ImageArray, loop_axis),
                           np.rollaxis(self._image_array_corrected, loop_axis))
         i = 0
@@ -439,13 +397,20 @@ class KspaceDistortionCorrector:
             # fig.colorbar(im2, ax=axs[1])
 
             plt.tight_layout()
-            plt.savefig(self.ImageDirectory / 'Corrected' / (str(i) + '.png'), format='png')
+            plt.savefig(save_loc / (str(i) + '.png'), format='png')
             plt.close(fig)
             i += 1
 
     def save_all_images_as_dicom(self, save_loc=None):
+        """
+        save corrected data as dicom
+
+        :param save_loc: path to save data at.
+        :type save_loc: string or path
+        """
+
         if save_loc is None:
-            save_loc = self.ImageDirectory / 'Corrected_dcm'
+            save_loc = self.ImageDirectory / 'corrected_dcm'
         save_loc = Path(save_loc)
         if not save_loc.is_dir():
             save_loc.mkdir()
@@ -459,3 +424,132 @@ class KspaceDistortionCorrector:
             temp_dcm.PixelData = np.uint16(corrected_image).tobytes()
             temp_dcm.save_as(save_loc / (str(i) + '.dcm'))
             i += 1
+
+class KspaceDistortionCorrector(DistortionCorrectorBase):
+    """
+    :param NufftLibrary:
+    """
+
+    def __init__(self,NufftLibrary='finufft', **kwds):
+
+        super().__init__(**kwds)
+
+        # Select nufft algorithm to use:
+        if not NufftLibrary in ['pynufft', 'finufft', 'torchnufft']:
+            raise NotImplementedError(f'Unknown NUFFTlibrary entered: {NufftLibrary}.'
+                                      f'\nAllowed options are: pynufft, finufft, torchnufft')
+        self.NUFFTlibrary = NufftLibrary  # pynufft, finufft, or torchnufft
+        self._check_input_data()
+
+    def _generate_Kspace_data(self):
+        """
+        Get the k space of the current slice data.
+        :return:
+        """
+        self.k_space = fftshift(fft2(fftshift(self._image_to_correct)))
+
+    def _correct_image(self):
+        """
+        List of steps required for each independant input slice.
+        Under some circumstances some steps could be recycled for subsequent slices
+        """
+
+        self._image_shape = np.array(np.squeeze(self._X_slice).shape)
+        coords_cartesian = np.array([self._X_slice.flatten(), self._Y_slice.flatten(), self._Z_slice.flatten()])
+        coords_cartesian = pd.DataFrame(coords_cartesian.T, columns=['x', 'y', 'z'])
+        self.coords = convert_cartesian_to_spherical(coords_cartesian)
+        self._calculate_encoding_fields()
+        self._generate_Kspace_data()
+        self._calculate_encoding_indices()
+        self._perform_least_squares_optimisation()
+
+    def _fiNufft_Ax(self, x):
+        """
+        flatron instiute nufft
+        Returns A*x
+        equivalent to the 'notranpose' option in shanshans code
+        self.xj and yj are non uniform nonuniform source points. they are essentially the encoding signals.
+        self.sk and tk are uniform target points
+        # """
+
+        if x.dtype is not np.dtype('complex128'):
+            x = x.astype('complex128')
+        # y = nufft2d3(self.xj, self.yj, x, self.sk, self.tk, eps=1e-06, isign=-1)
+        y = self.Nufft_Ax_Plan.execute(x, None)
+        return y.flatten()
+
+    def _fiNufft_Atb(self, x):
+        """
+        flatron instiute nufft
+        This is to define the Nufft as a scipy.sparse.linalg.LinearOperator which can be used by the lsqr algorithm
+        see here for explanation:
+        https://stackoverflow.com/questions/48621407/python-equivalent-of-matlabs-lsqr-with-first-argument-a-function
+        Returns A'*x
+        equivalent to the 'tranpose' option in shanshans code
+        """
+        # y = nufft2d3(self.sk, self.tk, x, self.xj, self.yj, eps=1e-06, isign=1)
+        y = self.Nufft_Atb_Plan.execute(x, None)
+        return y.flatten()
+
+    def _perform_least_squares_optimisation(self):
+        """
+        From
+        `Integrated Image Reconstruction and Gradient Nonlinearity Correction <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4390402/pdf/nihms629785.pdf>`_
+        "A common strategy for reconstructing both fully- and undersampled MRI data is  penalized regression,
+        which seeks to **produce the image** most likely to have produced the set of noisy measurements while potentially
+        also satisfying some other expected properties (e.g., sparsity) (17). Since noise in MRI is Gaussian
+        distributed, penalized least squares regression of the following general form is often employed.
+        So:
+        - the image is what we want to get back.
+        - The noisy measurements are self.k_space
+        - We use the NUFFT to compute the image most likely to have produced k_space, given the encoding fields that we computed.
+        """
+        fk1 = np.reshape(self.k_space, [self._Rows * self._Cols])
+
+        StartingImage = None  # x0 for lsqr. can be overwritten for each option below.
+
+        if self.NUFFTlibrary == 'finufft':
+            self.Nufft_Ax_Plan = Plan(3, 2, 1, 1e-06, -1)
+            self.Nufft_Ax_Plan.setpts(self.xj, self.yj, None, self.sk, self.tk)
+            self.Nufft_Atb_Plan = Plan(3, 2, 1, 1e-06, 1)
+            self.Nufft_Atb_Plan.setpts(self.sk, self.tk, None, self.xj, self.yj)
+            A = LinearOperator((fk1.shape[0], fk1.shape[0]), matvec=self._fiNufft_Ax, rmatvec=self._fiNufft_Atb)
+            StartingImage = self._image_to_correct.flatten().astype(complex)
+
+        maxit = 20
+        x1 = lsqr(A, fk1, iter_lim=maxit, x0=StartingImage)
+        self.outputImage = abs(np.reshape(x1[0], [self._Rows, self._Cols]))
+
+
+class ImageDomainDistortionCorrector(DistortionCorrectorBase):
+    """
+    """
+
+    def _correct_image(self):
+        """
+        List of steps required for each independant input slice.
+        Under some circumstances some steps could be recycled for subsequent slices
+        """
+
+        self._image_shape = np.array(np.squeeze(self._X_slice).shape)
+
+        coords_cartesian = np.array([self._X_slice.flatten(), self._Y_slice.flatten(), self._Z_slice.flatten()])
+        coords_cartesian = pd.DataFrame(coords_cartesian.T, columns=['x', 'y', 'z'])
+        self.coords = convert_cartesian_to_spherical(coords_cartesian)
+        self._calculate_encoding_fields()
+        self._calculate_encoding_indices()
+
+        x_n = np.arange(0, self._image_shape[0], 1)
+        y_n = np.arange(0, self._image_shape[1], 1)
+        pixel_interp = RectBivariateSpline(x_n, y_n, self._image_to_correct)
+
+        yy, xx = np.meshgrid(y_n, x_n)
+        xvector = (self.xn_dis_pixel + xx).flatten()
+        yvector = (self.yn_dis_pixel + yy).flatten()
+
+        _output_image = pixel_interp.ev(xvector, yvector)
+
+        _output_image = np.where((xvector < 0) | (yvector < 0) | (xvector > self._image_shape[0]) |
+                                 (yvector > self._image_shape[1]), 0, _output_image)
+
+        self.outputImage = _output_image.reshape(self._image_shape)
