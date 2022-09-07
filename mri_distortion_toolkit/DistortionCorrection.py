@@ -280,6 +280,7 @@ class DistortionCorrectorBase:
         This will loop through and correct all IMA files in the input directory
         :return:
         """
+        start_time = perf_counter()
         if self.correct_through_plane:
             n_images_to_correct = self._n_dicom_files + (self.ImageArray.shape[1] - 2 * self._n_zero_pad)
         else:
@@ -354,9 +355,9 @@ class DistortionCorrectorBase:
                 print(f"Elapsed time {t_stop - t_start}")
 
                 j += 1
-
-
         self._unpad_image_arrays()
+        print(f'total correction time: {perf_counter() - start_time: 1.1f} s')
+
 
     def save_all_images(self, save_loc=None):
         """
