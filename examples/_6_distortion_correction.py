@@ -7,7 +7,7 @@ from pathlib import Path
 download example data and unzip:
 https://cloudstor.aarnet.edu.au/plus/s/Wm9vndV47u941JU
 '''
-distorted_data_loc = Path(r'C:\Users\Brendan\Downloads\MRI_distortion_QA_sample_data\MRI_distortion_QA_sample_data\MR\04 gre_trans_AP_330')
+distorted_data_loc = Path(r'/home/brendan/Downloads/MRI_distortion_QA_sample_data/MR/04 gre_trans_AP_330')
 dis_volume = MarkerVolume(distorted_data_loc)
 
 
@@ -17,7 +17,7 @@ GDC = ImageDomainDistortionCorrector(ImageDirectory=distorted_data_loc.resolve()
                                                     Path('_example_data/G_z_Harmonics.csv').resolve()],
                                 ImExtension='dcm',
                                 dicom_data=dis_volume.dicom_data,
-                                correct_through_plane=False)
+                                correct_through_plane=True)
 
 GDC.correct_all_images()
 GDC.save_all_images()  # saves as png so you can quickly inspect results

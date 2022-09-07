@@ -281,6 +281,8 @@ class DistortionCorrectorBase:
         This will loop through and correct all IMA files in the input directory
         :return:
         """
+        start_time = perf_counter()
+        update_every_n_slices = 10
         if self.correct_through_plane:
             n_images_to_correct = self._n_dicom_files + (self.ImageArray.shape[1] - 2 * self._n_zero_pad)
         else:
@@ -301,18 +303,14 @@ class DistortionCorrectorBase:
                 i += 1
                 continue
 
-            t_start = perf_counter()
-            print(f'2D correction: {i-self._n_zero_pad} of {self._n_dicom_files}')
-
-            print(printProgressBar(i-self._n_zero_pad, n_images_to_correct))
+            if i % update_every_n_slices == 0:
+                print(printProgressBar(i-self._n_zero_pad, n_images_to_correct))
             self._image_to_correct = array_slice
             self._X_slice = X
             self._Y_slice = Y
             self._Z_slice = Z
             self._correct_image()
             self._image_array_corrected[:, :, i] = self.outputImage
-            t_stop = perf_counter()
-            print(f"Elapsed time {t_stop - t_start}")
             i += 1
 
         if self.correct_through_plane:
@@ -341,9 +339,9 @@ class DistortionCorrectorBase:
                     # skip these files, they have no meaning anyway and we can't (easily) write them to dicom
                     j += 1
                     continue
-                t_start = perf_counter()
-                print(f'Through Plane correction: {j - self._n_zero_pad} of {self.ImageArray.shape[loop_axis] - (self._n_zero_pad)}')
-                print(printProgressBar(i+j-(self._n_zero_pad*4), n_images_to_correct))
+
+                if j % update_every_n_slices == 0:
+                    print(printProgressBar(i+j-(self._n_zero_pad*4), n_images_to_correct))
                 self._image_to_correct = array_slice
                 self._X_slice = X
                 self._Y_slice = Y
@@ -351,13 +349,12 @@ class DistortionCorrectorBase:
                 self._correct_image()
                 self._image_array_corrected[:, j, :] = self.outputImage
 
-                t_stop = perf_counter()
-                print(f"Elapsed time {t_stop - t_start}")
-
                 j += 1
-
-
+        execution_time = perf_counter() - start_time
+        print(f'\ntotal time: {execution_time: 1.1f}s')
+        print(f'mean time per slice = {execution_time / n_images_to_correct: 1.1}s')
         self._unpad_image_arrays()
+
 
     def save_all_images(self, save_loc=None):
         """
