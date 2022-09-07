@@ -5,6 +5,7 @@ import warnings
 import pydicom
 import matplotlib.pyplot as plt
 from finufft import Plan
+from finufft import nufft2d1, nufft2d2
 import numpy as np
 from scipy.fft import fft2
 from scipy.fft import fftshift
@@ -186,8 +187,8 @@ class DistortionCorrectorBase:
         else:
             raise NotImplementedError('this slice orientation is not handled yet sorry')
 
-        self.xj = self.xj.to_numpy()
-        self.yj = self.yj.to_numpy()
+        self.xj = self.xj.to_numpy() / x_lin_size
+        self.yj = self.yj.to_numpy() / y_lin_size
         self.xn_dis_pixel = np.reshape((xn_dis - xn_lin).values, self._image_to_correct.shape)
         self.yn_dis_pixel = np.reshape((yn_dis - yn_lin).values, self._image_to_correct.shape)
 
@@ -425,6 +426,7 @@ class DistortionCorrectorBase:
             temp_dcm.save_as(save_loc / (str(i) + '.dcm'))
             i += 1
 
+
 class KspaceDistortionCorrector(DistortionCorrectorBase):
     """
     :param NufftLibrary:
@@ -474,9 +476,9 @@ class KspaceDistortionCorrector(DistortionCorrectorBase):
 
         if x.dtype is not np.dtype('complex128'):
             x = x.astype('complex128')
-        # y = nufft2d3(self.xj, self.yj, x, self.sk, self.tk, eps=1e-06, isign=-1)
-        y = self.Nufft_Ax_Plan.execute(x, None)
-        return y.flatten()
+        # y = nufft2d2(self.xj, self.yj, x, self._image_to_correct.shape, isign=-1, eps=1e-06)
+        y = nufft2d2(self.xj, self.yj, x.reshape(self._image_to_correct.shape), isign=-1)
+        return y
 
     def _fiNufft_Atb(self, x):
         """
@@ -487,8 +489,7 @@ class KspaceDistortionCorrector(DistortionCorrectorBase):
         Returns A'*x
         equivalent to the 'tranpose' option in shanshans code
         """
-        # y = nufft2d3(self.sk, self.tk, x, self.xj, self.yj, eps=1e-06, isign=1)
-        y = self.Nufft_Atb_Plan.execute(x, None)
+        y = nufft2d1(self.xj, self.yj, x, self._image_to_correct.shape, isign=1, eps=1e-06)
         return y.flatten()
 
     def _perform_least_squares_optimisation(self):
@@ -509,10 +510,6 @@ class KspaceDistortionCorrector(DistortionCorrectorBase):
         StartingImage = None  # x0 for lsqr. can be overwritten for each option below.
 
         if self.NUFFTlibrary == 'finufft':
-            self.Nufft_Ax_Plan = Plan(3, 2, 1, 1e-06, -1)
-            self.Nufft_Ax_Plan.setpts(self.xj, self.yj, None, self.sk, self.tk)
-            self.Nufft_Atb_Plan = Plan(3, 2, 1, 1e-06, 1)
-            self.Nufft_Atb_Plan.setpts(self.sk, self.tk, None, self.xj, self.yj)
             A = LinearOperator((fk1.shape[0], fk1.shape[0]), matvec=self._fiNufft_Ax, rmatvec=self._fiNufft_Atb)
             StartingImage = self._image_to_correct.flatten().astype(complex)
 

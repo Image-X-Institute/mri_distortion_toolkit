@@ -14,6 +14,7 @@ import pandas as pd
 from scipy.spatial.distance import cdist
 from scipy.spatial import transform
 from datetime import datetime
+from warnings import warn
 
 ch = logging.StreamHandler()
 formatter = logging.Formatter('[%(filename)s: line %(lineno)d %(levelname)8s] %(message)s')
@@ -623,6 +624,9 @@ class MatchedMarkerVolumes:
         self._motion_estimate_update_rate = 1  # 1 = every found marker, which is potentially more accurate but slower.
         self.sorting_method = sorting_method
         self.AllowDoubleMatching = AllowDoubleMatching
+        # match check parameters:
+        self._mean_match_tolerance = 20  # warning raised if mean larger than this
+        self._max_match_tolerance = 30  # warning raised if max larger than this
 
         self._n_reference_markers = n_refernce_markers
 
@@ -637,16 +641,13 @@ class MatchedMarkerVolumes:
 
         self._check_input_data()
         # run analysis:
-
-        # for testing
-        # self._add_setup_error(mm_deg=10)
-
         if self._n_reference_markers > 0:
             self._align_reference()
 
         if self.AutomatchMarkers:
             self.distorted_centroids = self._sort_distorted_centroids(self.distorted_centroids)
             self._CentroidMatch = self._match_distorted_markers_to_ground_truth(self.distorted_centroids)
+            self._check_match()
             if self.distorted_centroidsRev is not None:
                 self.distorted_centroidsRev = self._sort_distorted_centroids(self.distorted_centroidsRev)
                 self._CentroidMatchRev = self._match_distorted_markers_to_ground_truth(self.distorted_centroidsRev)
@@ -854,6 +855,26 @@ class MatchedMarkerVolumes:
         MatchedCentroids['match_distance'] = distances
 
         return MatchedCentroids
+
+    def _check_match(self):
+        """
+        just a simple test to detect where bad matches have been made
+        could add more sophisticated things in here if needed
+        :return:
+        """
+
+        _throw_warning = False
+        if self._CentroidMatch.match_distance.mean() > self._mean_match_tolerance:
+            _throw_warning = True
+        if self._CentroidMatch.match_distance.max() > self._max_match_tolerance:
+            _throw_warning = True
+
+        if _throw_warning:
+            warn(f'\n\nThe marker match may have failed.\n\nThe mean detected distortion is {self._CentroidMatch.match_distance.mean(): 1.1f} mm'
+                 f'and the max is {self._CentroidMatch.match_distance.max(): 1.1f}.'
+                 f'\nYou can continue by pressing any key, but you should visualize the data using the plot_3D_markers'
+                 f' method')
+            input("Press any key to continue...")
 
     def _handle_double_matched_markers(self):
         """
