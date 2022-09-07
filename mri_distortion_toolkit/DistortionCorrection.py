@@ -410,7 +410,7 @@ class DistortionCorrectorBase:
         """
 
         if save_loc is None:
-            save_loc = self.ImageDirectory / 'corrected'
+            save_loc = self.ImageDirectory / 'corrected_dcm'
         save_loc = Path(save_loc)
         if not save_loc.is_dir():
             save_loc.mkdir()
