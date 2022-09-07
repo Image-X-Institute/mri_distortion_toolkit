@@ -53,7 +53,7 @@ def test_read_in_of_corrected_data():
     """
     test we can read in the corrected data, and test for stability of detected distortion
     """
-    corrected_data = test_data_dir / 'MR_dicom' / 'Corrected_dcm'
+    corrected_data = test_data_dir / 'MR_dicom' / 'corrected_dcm'
     if not corrected_data.is_dir():
         # shouldnt happen but to be safe
         test_k_space_corrector()
