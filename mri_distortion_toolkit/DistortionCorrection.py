@@ -138,7 +138,6 @@ class DistortionCorrectorBase:
         volume_to_zero[negative_ind] = 0
         return volume_to_zero
 
-
     def _generate_Kspace_data(self):
         """
         Get the k space of the current slice data.
@@ -198,8 +197,8 @@ class DistortionCorrectorBase:
         else:
             raise NotImplementedError('this slice orientation is not handled yet sorry')
 
-        self.xj = self.xj.to_numpy() / x_lin_size
-        self.yj = self.yj.to_numpy() / y_lin_size
+        self.xj = self.xj.to_numpy()
+        self.yj = self.yj.to_numpy()
         self.xn_dis_pixel = np.reshape((xn_dis - xn_lin).values, self._image_to_correct.shape)
         self.yn_dis_pixel = np.reshape((yn_dis - yn_lin).values, self._image_to_correct.shape)
 
@@ -482,12 +481,11 @@ class KspaceDistortionCorrector(DistortionCorrectorBase):
         self.xj and yj are non uniform nonuniform source points. they are essentially the encoding signals.
         self.sk and tk are uniform target points
         # """
-
         if x.dtype is not np.dtype('complex128'):
             x = x.astype('complex128')
-        # y = nufft2d2(self.xj, self.yj, x, self._image_to_correct.shape, isign=-1, eps=1e-06)
-        y = nufft2d2(self.xj, self.yj, x.reshape(self._image_to_correct.shape), isign=-1)
-        return y
+        # y = nufft2d3(self.xj, self.yj, x, self.sk, self.tk, eps=1e-06, isign=-1)
+        y = self.Nufft_Ax_Plan.execute(x, None)
+        return y.flatten()
 
     def _fiNufft_Atb(self, x):
         """
@@ -498,7 +496,7 @@ class KspaceDistortionCorrector(DistortionCorrectorBase):
         Returns A'*x
         equivalent to the 'tranpose' option in shanshans code
         """
-        y = nufft2d1(self.xj, self.yj, x, self._image_to_correct.shape, isign=1, eps=1e-06)
+        y = self.Nufft_Atb_Plan.execute(x, None)
         return y.flatten()
 
     def _perform_least_squares_optimisation(self):
@@ -515,10 +513,13 @@ class KspaceDistortionCorrector(DistortionCorrectorBase):
         - We use the NUFFT to compute the image most likely to have produced k_space, given the encoding fields that we computed.
         """
         fk1 = np.reshape(self.k_space, [self._Rows * self._Cols])
-
         StartingImage = None  # x0 for lsqr. can be overwritten for each option below.
 
         if self.NUFFTlibrary == 'finufft':
+            self.Nufft_Ax_Plan = Plan(3, 2, 1, 1e-06, -1)
+            self.Nufft_Ax_Plan.setpts(self.xj, self.yj, None, self.sk, self.tk)
+            self.Nufft_Atb_Plan = Plan(3, 2, 1, 1e-06, 1)
+            self.Nufft_Atb_Plan.setpts(self.sk, self.tk, None, self.xj, self.yj)
             A = LinearOperator((fk1.shape[0], fk1.shape[0]), matvec=self._fiNufft_Ax, rmatvec=self._fiNufft_Atb)
             StartingImage = self._image_to_correct.flatten().astype(complex)
 

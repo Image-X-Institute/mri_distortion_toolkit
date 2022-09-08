@@ -11,7 +11,7 @@ import numpy as np
 
 test_data_dir = (this_dir / 'test_data').resolve()
 
-def test_k_space_corrector():
+def test_k_space_corrector_runs():
     """
     execute it over some test data
     """
@@ -28,10 +28,10 @@ def test_k_space_corrector():
                                     correct_through_plane=True)
     GDC.correct_all_images()
     GDC.save_all_images()
-    GDC.save_all_images_as_dicom()
+    GDC.save_all_images_as_dicom(save_loc=this_dir / 'test_data' / 'MR_dicom' / 'k_space_corrected_dcm')
 
 
-def test_image_domain_corrector():
+def test_image_domain_corrector_runs():
     """
     execute it over some test data
     """
@@ -47,19 +47,34 @@ def test_image_domain_corrector():
                                     dicom_data=dis_volume.dicom_data,
                                     correct_through_plane=True)
     GDC.correct_all_images()
+    GDC.save_all_images_as_dicom(save_loc=this_dir / 'test_data' / 'MR_dicom' / 'im_domain_corrected_dcm')
 
 
-def test_read_in_of_corrected_data():
+def test_k_space_corrected_data():
     """
     test we can read in the corrected data, and test for stability of detected distortion
     """
-    corrected_data = test_data_dir / 'MR_dicom' / 'corrected_dcm'
+    corrected_data = test_data_dir / 'MR_dicom' / 'k_space_corrected_dcm'
     if not corrected_data.is_dir():
         # shouldnt happen but to be safe
-        test_k_space_corrector()
-    dis_volume = MarkerVolume(corrected_data)
-
+        test_k_space_corrector_runs()
     corrected_vol = MarkerVolume(corrected_data)
     distorted_vol = MarkerVolume(test_data_dir / 'MR_dicom')
     matched_vol = MatchedMarkerVolumes(corrected_vol, distorted_vol)
     assert np.isclose(np.mean(matched_vol.MatchedCentroids.match_distance), 5.112045830147335)
+
+
+def test_image_domain_corrected_data():
+    """
+    test we can read in the corrected data, and test for stability of detected distortion
+    """
+    corrected_data = test_data_dir / 'MR_dicom' / 'im_domain_corrected_dcm'
+    if not corrected_data.is_dir():
+        # shouldnt happen but to be safe
+        test_image_domain_corrector_runs()
+    corrected_vol = MarkerVolume(corrected_data)
+    distorted_vol = MarkerVolume(test_data_dir / 'MR_dicom')
+    matched_vol = MatchedMarkerVolumes(corrected_vol, distorted_vol)
+    print(np.mean(matched_vol.MatchedCentroids.match_distance))
+    assert np.isclose(np.mean(matched_vol.MatchedCentroids.match_distance), 3.8618605536426776)
+
