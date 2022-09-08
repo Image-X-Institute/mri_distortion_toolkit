@@ -128,6 +128,17 @@ class DistortionCorrectorBase:
         self.Gy_encode = (legendre_basis @ self._Gy_Harmonics)
         self.Gz_encode = (legendre_basis @ self._Gz_Harmonics)
 
+    def _zero_volume(self, volume_to_zero):
+        """
+        takes an input volume and replaces all values <0 with 0.
+        required for the image domain corrector which tends to produce -ve pixels
+        """
+        negative_ind = volume_to_zero < 0
+        logger.warning(f'{np.count_nonzero(negative_ind)} negative pixels detected; setting these to zero and continuing')
+        volume_to_zero[negative_ind] = 0
+        return volume_to_zero
+
+
     def _generate_Kspace_data(self):
         """
         Get the k space of the current slice data.
@@ -355,7 +366,6 @@ class DistortionCorrectorBase:
         print(f'mean time per slice = {execution_time / n_images_to_correct: 1.1}s')
         self._unpad_image_arrays()
 
-
     def save_all_images(self, save_loc=None):
         """
         save corrected data as png
@@ -363,6 +373,7 @@ class DistortionCorrectorBase:
         :param save_loc: path to save data at.
         :type save_loc: string or path
         """
+        plt.ioff()
         if save_loc is None:
             save_loc = self.ImageDirectory / 'corrected'
         save_loc = Path(save_loc)
@@ -406,7 +417,8 @@ class DistortionCorrectorBase:
         :param save_loc: path to save data at.
         :type save_loc: string or path
         """
-
+        if self._image_array_corrected.min() < 0:
+            self._image_array_corrected = self._zero_volume(self._image_array_corrected)
         if save_loc is None:
             save_loc = self.ImageDirectory / 'corrected_dcm'
         save_loc = Path(save_loc)
@@ -517,6 +529,7 @@ class KspaceDistortionCorrector(DistortionCorrectorBase):
 
 class ImageDomainDistortionCorrector(DistortionCorrectorBase):
     """
+
     """
 
     def _correct_image(self):
@@ -547,3 +560,4 @@ class ImageDomainDistortionCorrector(DistortionCorrectorBase):
                                  (yvector > self._image_shape[1]), 0, _output_image)
 
         self.outputImage = _output_image.reshape(self._image_shape)
+
