@@ -47,6 +47,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#module-mri_distortion_toolkit.FieldCalculation">Field Calculation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#harmonic-analysis">Harmonic Analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-mri_distortion_toolkit.Reports">Reports</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-mri_distortion_toolkit.DistortionCorrection">distortion_correction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-mri_distortion_toolkit.utilities">utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-mri_distortion_toolkit.calculate_harmonics">calculate_harmonics</a></li>
 </ul>
@@ -357,6 +358,59 @@ plotly figures</p>
 <dd><p>distortion test to be run by MRI_QA_Reporter</p>
 </dd></dl>
 
+</dd></dl>
+
+</section>
+<section id="module-mri_distortion_toolkit.DistortionCorrection">
+<span id="distortion-correction"></span><h2>distortion_correction<a class="headerlink" href="#module-mri_distortion_toolkit.DistortionCorrection" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="mri_distortion_toolkit.DistortionCorrection.DistortionCorrectorBase">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.DistortionCorrection.</span></span><span class="sig-name descname"><span class="pre">DistortionCorrectorBase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ImageDirectory</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">NufftLibrary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'finufft'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gradient_harmonics</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ImExtension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.dcm'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dicom_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">correct_through_plane</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.DistortionCorrection.DistortionCorrectorBase" title="Permalink to this definition"></a></dt>
+<dd><p>This algorithm is based on <a href="#id1"><span class="problematic" id="id2">`</span></a>this work`_&lt;<a class="reference external" href="https://onlinelibrary.wiley.com/doi/epdf/10.1002/mrm.25487">https://onlinelibrary.wiley.com/doi/epdf/10.1002/mrm.25487</a>&gt;</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mri_distortion_toolkit.DistortionCorrection.DistortionCorrectorBase.correct_all_images">
+<span class="sig-name descname"><span class="pre">correct_all_images</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.DistortionCorrection.DistortionCorrectorBase.correct_all_images" title="Permalink to this definition"></a></dt>
+<dd><p>This will loop through and correct all IMA files in the input directory
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mri_distortion_toolkit.DistortionCorrection.DistortionCorrectorBase.save_all_images">
+<span class="sig-name descname"><span class="pre">save_all_images</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">save_loc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.DistortionCorrection.DistortionCorrectorBase.save_all_images" title="Permalink to this definition"></a></dt>
+<dd><p>save corrected data as png</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>save_loc</strong> (<em>string</em><em> or </em><em>path</em>) – path to save data at.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mri_distortion_toolkit.DistortionCorrection.DistortionCorrectorBase.save_all_images_as_dicom">
+<span class="sig-name descname"><span class="pre">save_all_images_as_dicom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">save_loc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.DistortionCorrection.DistortionCorrectorBase.save_all_images_as_dicom" title="Permalink to this definition"></a></dt>
+<dd><p>save corrected data as dicom</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>save_loc</strong> (<em>string</em><em> or </em><em>path</em>) – path to save data at.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mri_distortion_toolkit.DistortionCorrection.ImageDomainDistortionCorrector">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.DistortionCorrection.</span></span><span class="sig-name descname"><span class="pre">ImageDomainDistortionCorrector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ImageDirectory</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">NufftLibrary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'finufft'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gradient_harmonics</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ImExtension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.dcm'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dicom_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">correct_through_plane</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.DistortionCorrection.ImageDomainDistortionCorrector" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mri_distortion_toolkit.DistortionCorrection.KspaceDistortionCorrector">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.DistortionCorrection.</span></span><span class="sig-name descname"><span class="pre">KspaceDistortionCorrector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">NufftLibrary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'finufft'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.DistortionCorrection.KspaceDistortionCorrector" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>NufftLibrary</strong> – </p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
