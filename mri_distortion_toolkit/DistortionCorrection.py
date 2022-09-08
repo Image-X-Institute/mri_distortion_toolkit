@@ -163,7 +163,6 @@ class DistortionCorrectorBase:
         if (np.round(self._ImageOrientationPatient) == [0, 1, 0, 0, 0, -1]).all():
             xn_dis = self.Gz_encode / (self._PixelSpacing[2])
             self.xj = xn_dis * 2 * np.pi
-            self.xn_dis_pixel = np.reshape(xn_dis - xn_lin, self._image_to_correct.shape)
             yn_dis = self.Gy_encode / (self._PixelSpacing[1])
             self.yj = yn_dis * 2 * np.pi
         elif (np.round(self._ImageOrientationPatient) == [1, 0, 0, 0, 0, -1]).all():
