@@ -485,9 +485,10 @@ class KspaceDistortionCorrector(DistortionCorrectorBase):
 
         if x.dtype is not np.dtype('complex128'):
             x = x.astype('complex128')
-        # y = nufft2d2(self.xj, self.yj, x, self._image_to_correct.shape, isign=-1, eps=1e-06)
-        y = nufft2d2(self.xj, self.yj, x.reshape(self._image_to_correct.shape), isign=-1)
-        return y
+        # y = nufft2d3(self.xj, self.yj, x, self.sk, self.tk, eps=1e-06, isign=-1)
+        x = x.reshape(self._image_to_correct.shape)
+        y = self.Nufft_Ax_Plan.execute(x, None)
+        return y.flatten()
 
     def _fiNufft_Atb(self, x):
         """
@@ -498,7 +499,8 @@ class KspaceDistortionCorrector(DistortionCorrectorBase):
         Returns A'*x
         equivalent to the 'tranpose' option in shanshans code
         """
-        y = nufft2d1(self.xj, self.yj, x, self._image_to_correct.shape, isign=1, eps=1e-06)
+        # y = nufft2d3(self.sk, self.tk, x, self.xj, self.yj, eps=1e-06, isign=1)
+        y = self.Nufft_Atb_Plan.execute(x, None)
         return y.flatten()
 
     def _perform_least_squares_optimisation(self):
@@ -519,6 +521,10 @@ class KspaceDistortionCorrector(DistortionCorrectorBase):
         StartingImage = None  # x0 for lsqr. can be overwritten for each option below.
 
         if self.NUFFTlibrary == 'finufft':
+            self.Nufft_Ax_Plan = Plan(2,  self._image_to_correct.shape, 1, 1e-06, -1)
+            self.Nufft_Ax_Plan.setpts(self.xj, self.yj)
+            self.Nufft_Atb_Plan = Plan(1, self._image_to_correct.shape, 1, 1e-06, 1)
+            self.Nufft_Atb_Plan.setpts(self.xj, self.yj)
             A = LinearOperator((fk1.shape[0], fk1.shape[0]), matvec=self._fiNufft_Ax, rmatvec=self._fiNufft_Atb)
             StartingImage = self._image_to_correct.flatten().astype(complex)
 
