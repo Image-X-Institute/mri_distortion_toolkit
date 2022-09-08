@@ -30,7 +30,7 @@ class DistortionCorrectorBase:
     """
 
     def __init__(self, ImageDirectory, NufftLibrary='finufft', gradient_harmonics=None,
-                 ImExtension='.dcm', dicom_data=None, correct_through_plane=True, pad =20):
+                 ImExtension='.dcm', dicom_data=None, correct_through_plane=True, pad=0):
         """
         :param ImageDirectory:
         :param NufftLibrary:
@@ -440,9 +440,9 @@ class KspaceDistortionCorrector(DistortionCorrectorBase):
     :param NufftLibrary:
     """
 
-    def __init__(self,NufftLibrary='finufft', **kwds):
+    def __init__(self,NufftLibrary='finufft', pad=10, **kwds):
 
-        super().__init__(**kwds)
+        super().__init__(pad=pad, **kwds)
 
         # Select nufft algorithm to use:
         if not NufftLibrary in ['pynufft', 'finufft', 'torchnufft']:
