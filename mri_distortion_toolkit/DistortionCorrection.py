@@ -19,6 +19,7 @@ from .utilities import get_gradient_spherical_harmonics
 from .utilities import printProgressBar
 from time import perf_counter
 from abc import abstractmethod
+import multiprocessing as mp
 
 logging.basicConfig(format='[%(filename)s: line %(lineno)d] %(message)s', level=logging.WARNING)
 logger = logging.getLogger(__name__)
@@ -365,6 +366,40 @@ class DistortionCorrectorBase:
         print(f'mean time per slice = {execution_time / n_images_to_correct: 1.1}s')
         self._unpad_image_arrays()
 
+    def correct_all_images_parallel(self):
+        """
+        This will loop through and correct all IMA files in the input directory
+        :return:
+        """
+        start_time = perf_counter()
+        update_every_n_slices = 10
+        if self.correct_through_plane:
+            n_images_to_correct = self._n_dicom_files + (self.ImageArray.shape[1] - 2 * self._n_zero_pad)
+        else:
+            n_images_to_correct = self._n_dicom_files
+        loop_axis = 2  # ImageArray always has slice last
+        # nb: the below code allows us to wrap all the data into one 'itterable'; it also changes the view
+        # such that we are looping over the slice direction
+        zipped_data = zip(np.rollaxis(self.ImageArray, loop_axis),
+                          np.rollaxis(self._X, loop_axis),
+                          np.rollaxis(self._Y, loop_axis),
+                          np.rollaxis(self._Z, loop_axis))
+
+        i = 0
+        self._image_array_corrected = np.zeros(self.ImageArray.shape)
+        processes = []
+        manager = mp.Manager()
+        return_dict = manager.dict()
+        for array_slice, X, Y, Z in zipped_data:
+            p = mp.Process(target=self._correct_image_mp, args=(array_slice, X, Y, Z))
+            processes.append(p)
+        [x.start() for x in processes]
+        print('hello')
+
+        execution_time = perf_counter() - start_time
+        print(f'\ntotal time: {execution_time: 1.1f}s')
+        print(f'mean time per slice = {execution_time / n_images_to_correct: 1.1}s')
+
     def save_all_images(self, save_loc=None):
         """
         save corrected data as png
@@ -472,6 +507,25 @@ class KspaceDistortionCorrector(DistortionCorrectorBase):
         self._generate_Kspace_data()
         self._calculate_encoding_indices()
         self._perform_least_squares_optimisation()
+
+    def _correct_image_mp(self, image, X_slice, Y_slice, Z_slice):
+        """
+        List of steps required for each independant input slice.
+        Under some circumstances some steps could be recycled for subsequent slices
+        """
+
+        self._image_to_correct = image
+        self._image_shape = image.shape
+        coords_cartesian = np.array([X_slice.flatten(), Y_slice.flatten(), Z_slice.flatten()])
+        coords_cartesian = pd.DataFrame(coords_cartesian.T, columns=['x', 'y', 'z'])
+        self.coords = convert_cartesian_to_spherical(coords_cartesian)
+        self._calculate_encoding_fields()
+        self._generate_Kspace_data()
+        self._calculate_encoding_indices()
+        self._perform_least_squares_optimisation()
+
+
+
 
     def _fiNufft_Ax(self, x):
         """
