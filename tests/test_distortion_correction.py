@@ -61,7 +61,7 @@ def test_k_space_corrected_data():
     corrected_vol = MarkerVolume(corrected_data)
     distorted_vol = MarkerVolume(test_data_dir / 'MR_dicom')
     matched_vol = MatchedMarkerVolumes(corrected_vol, distorted_vol)
-    assert np.isclose(np.mean(matched_vol.MatchedCentroids.match_distance), 5.112045830147335)
+    assert np.isclose(np.mean(matched_vol.MatchedCentroids.match_distance), 5.112045830147335, rtol=1.0e-2, atol=1.0e-2)
 
 
 def test_image_domain_corrected_data():
@@ -76,5 +76,5 @@ def test_image_domain_corrected_data():
     distorted_vol = MarkerVolume(test_data_dir / 'MR_dicom')
     matched_vol = MatchedMarkerVolumes(corrected_vol, distorted_vol)
     print(np.mean(matched_vol.MatchedCentroids.match_distance))
-    assert np.isclose(np.mean(matched_vol.MatchedCentroids.match_distance), 3.8618605536426776)
+    assert np.isclose(np.mean(matched_vol.MatchedCentroids.match_distance), 3.8618605536426776, rtol=1.0e-2, atol=1.0e-2)
 
