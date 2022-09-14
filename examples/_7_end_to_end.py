@@ -51,7 +51,7 @@ GDC.save_all_images()
 GDC.save_all_images_as_dicom()
 # Now we have the corrected images, we can compare the original and the corrected to the GT:
 
-corrected_volume = MarkerVolume(distorted_data_loc / 'Corrected_dcm',
+corrected_volume = MarkerVolume(distorted_data_loc / 'corrected_dcm',
                                 n_markers_expected=336,
                                 iterative_segmentation=True, r_max=160)
 remove_ind = np.logical_and(corrected_volume.MarkerCentroids.r >= 70, corrected_volume.MarkerCentroids.r <= 140)

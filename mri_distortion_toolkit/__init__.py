@@ -4,5 +4,5 @@ Please see here for detailed documentation
 https://acrf-image-x-institute.github.io/MRI_DistortionQA/index.html
 """
 
-__version__ = '0.9.0'
+__version__ = '0.10.1'
 from .calculate_harmonics import calculate_harmonics

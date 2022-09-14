@@ -5,6 +5,7 @@ import warnings
 import pydicom
 import matplotlib.pyplot as plt
 from finufft import Plan
+from finufft import nufft2d1, nufft2d2
 import numpy as np
 from scipy.fft import fft2
 from scipy.fft import fftshift
@@ -29,7 +30,7 @@ class DistortionCorrectorBase:
     """
 
     def __init__(self, ImageDirectory, NufftLibrary='finufft', gradient_harmonics=None,
-                 ImExtension='.dcm', dicom_data=None, correct_through_plane=True, pad =20):
+                 ImExtension='.dcm', dicom_data=None, correct_through_plane=True, pad=0):
         """
         :param ImageDirectory:
         :param NufftLibrary:
@@ -127,6 +128,16 @@ class DistortionCorrectorBase:
         self.Gy_encode = (legendre_basis @ self._Gy_Harmonics)
         self.Gz_encode = (legendre_basis @ self._Gz_Harmonics)
 
+    def _zero_volume(self, volume_to_zero):
+        """
+        takes an input volume and replaces all values <0 with 0.
+        required for the image domain corrector which tends to produce -ve pixels
+        """
+        negative_ind = volume_to_zero < 0
+        logger.warning(f'{np.count_nonzero(negative_ind)} negative pixels detected; setting these to zero and continuing')
+        volume_to_zero[negative_ind] = 0
+        return volume_to_zero
+
     def _generate_Kspace_data(self):
         """
         Get the k space of the current slice data.
@@ -152,7 +163,6 @@ class DistortionCorrectorBase:
         if (np.round(self._ImageOrientationPatient) == [0, 1, 0, 0, 0, -1]).all():
             xn_dis = self.Gz_encode / (self._PixelSpacing[2])
             self.xj = xn_dis * 2 * np.pi
-            self.xn_dis_pixel = np.reshape(xn_dis - xn_lin, self._image_to_correct.shape)
             yn_dis = self.Gy_encode / (self._PixelSpacing[1])
             self.yj = yn_dis * 2 * np.pi
         elif (np.round(self._ImageOrientationPatient) == [1, 0, 0, 0, 0, -1]).all():
@@ -281,6 +291,8 @@ class DistortionCorrectorBase:
         :return:
         """
         start_time = perf_counter()
+
+        update_every_n_slices = 10
         if self.correct_through_plane:
             n_images_to_correct = self._n_dicom_files + (self.ImageArray.shape[1] - 2 * self._n_zero_pad)
         else:
@@ -301,18 +313,14 @@ class DistortionCorrectorBase:
                 i += 1
                 continue
 
-            t_start = perf_counter()
-            print(f'2D correction: {i-self._n_zero_pad} of {self._n_dicom_files}')
-
-            print(printProgressBar(i-self._n_zero_pad, n_images_to_correct))
+            if i % update_every_n_slices == 0:
+                print(printProgressBar(i-self._n_zero_pad, n_images_to_correct))
             self._image_to_correct = array_slice
             self._X_slice = X
             self._Y_slice = Y
             self._Z_slice = Z
             self._correct_image()
             self._image_array_corrected[:, :, i] = self.outputImage
-            t_stop = perf_counter()
-            print(f"Elapsed time {t_stop - t_start}")
             i += 1
 
         if self.correct_through_plane:
@@ -341,9 +349,9 @@ class DistortionCorrectorBase:
                     # skip these files, they have no meaning anyway and we can't (easily) write them to dicom
                     j += 1
                     continue
-                t_start = perf_counter()
-                print(f'Through Plane correction: {j - self._n_zero_pad} of {self.ImageArray.shape[loop_axis] - (self._n_zero_pad)}')
-                print(printProgressBar(i+j-(self._n_zero_pad*4), n_images_to_correct))
+
+                if j % update_every_n_slices == 0:
+                    print(printProgressBar(i+j-(self._n_zero_pad*4), n_images_to_correct))
                 self._image_to_correct = array_slice
                 self._X_slice = X
                 self._Y_slice = Y
@@ -351,10 +359,11 @@ class DistortionCorrectorBase:
                 self._correct_image()
                 self._image_array_corrected[:, j, :] = self.outputImage
 
-                t_stop = perf_counter()
-                print(f"Elapsed time {t_stop - t_start}")
-
                 j += 1
+
+        execution_time = perf_counter() - start_time
+        print(f'\ntotal time: {execution_time: 1.1f}s')
+        print(f'mean time per slice = {execution_time / n_images_to_correct: 1.1}s')
         self._unpad_image_arrays()
         print(f'total correction time: {perf_counter() - start_time: 1.1f} s')
 
@@ -366,6 +375,7 @@ class DistortionCorrectorBase:
         :param save_loc: path to save data at.
         :type save_loc: string or path
         """
+        plt.ioff()
         if save_loc is None:
             save_loc = self.ImageDirectory / 'corrected'
         save_loc = Path(save_loc)
@@ -409,7 +419,8 @@ class DistortionCorrectorBase:
         :param save_loc: path to save data at.
         :type save_loc: string or path
         """
-
+        if self._image_array_corrected.min() < 0:
+            self._image_array_corrected = self._zero_volume(self._image_array_corrected)
         if save_loc is None:
             save_loc = self.ImageDirectory / 'corrected_dcm'
         save_loc = Path(save_loc)
@@ -426,14 +437,15 @@ class DistortionCorrectorBase:
             temp_dcm.save_as(save_loc / (str(i) + '.dcm'))
             i += 1
 
+
 class KspaceDistortionCorrector(DistortionCorrectorBase):
     """
     :param NufftLibrary:
     """
 
-    def __init__(self,NufftLibrary='finufft', **kwds):
+    def __init__(self,NufftLibrary='finufft', pad=10, **kwds):
 
-        super().__init__(**kwds)
+        super().__init__(pad=pad, **kwds)
 
         # Select nufft algorithm to use:
         if not NufftLibrary in ['pynufft', 'finufft', 'torchnufft']:
@@ -472,7 +484,6 @@ class KspaceDistortionCorrector(DistortionCorrectorBase):
         self.xj and yj are non uniform nonuniform source points. they are essentially the encoding signals.
         self.sk and tk are uniform target points
         # """
-
         if x.dtype is not np.dtype('complex128'):
             x = x.astype('complex128')
         # y = nufft2d3(self.xj, self.yj, x, self.sk, self.tk, eps=1e-06, isign=-1)
@@ -488,7 +499,6 @@ class KspaceDistortionCorrector(DistortionCorrectorBase):
         Returns A'*x
         equivalent to the 'tranpose' option in shanshans code
         """
-        # y = nufft2d3(self.sk, self.tk, x, self.xj, self.yj, eps=1e-06, isign=1)
         y = self.Nufft_Atb_Plan.execute(x, None)
         return y.flatten()
 
@@ -506,7 +516,6 @@ class KspaceDistortionCorrector(DistortionCorrectorBase):
         - We use the NUFFT to compute the image most likely to have produced k_space, given the encoding fields that we computed.
         """
         fk1 = np.reshape(self.k_space, [self._Rows * self._Cols])
-
         StartingImage = None  # x0 for lsqr. can be overwritten for each option below.
 
         if self.NUFFTlibrary == 'finufft':
@@ -524,6 +533,7 @@ class KspaceDistortionCorrector(DistortionCorrectorBase):
 
 class ImageDomainDistortionCorrector(DistortionCorrectorBase):
     """
+
     """
 
     def _correct_image(self):
@@ -554,3 +564,4 @@ class ImageDomainDistortionCorrector(DistortionCorrectorBase):
                                  (yvector > self._image_shape[1]), 0, _output_image)
 
         self.outputImage = _output_image.reshape(self._image_shape)
+

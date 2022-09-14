@@ -25,6 +25,12 @@ Reports
 
 .. automodule:: mri_distortion_toolkit.Reports
     :members:
+    
+distortion_correction
+---------------------
+
+.. automodule:: mri_distortion_toolkit.DistortionCorrection
+    :members:
 
 utilities
 ---------
@@ -37,4 +43,7 @@ calculate_harmonics
 
 .. automodule:: mri_distortion_toolkit.calculate_harmonics
     :members:
+    
+    
+
 
