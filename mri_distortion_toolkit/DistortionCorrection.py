@@ -367,7 +367,6 @@ class DistortionCorrectorBase:
         self._unpad_image_arrays()
         print(f'total correction time: {perf_counter() - start_time: 1.1f} s')
 
-
     def save_all_images(self, save_loc=None):
         """
         save corrected data as png

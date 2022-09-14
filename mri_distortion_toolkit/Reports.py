@@ -424,11 +424,9 @@ class MRI_QA_Reporter:
             u=plot_data['x_dis'],
             v=plot_data['y_dis'],
             w=plot_data['z_dis'],
-
             colorbar=dict(title= 'mm'),
-
             sizemode="absolute",
-            sizeref=40))
+            sizeref=10))
 
 
         self._fig_3D_planes.update_layout(scene=dict(aspectratio=dict(x=1, y=1, z=0.8),
@@ -606,5 +604,4 @@ class MRI_QA_Reporter:
         with open(report_name, 'w') as f:
             f.write(report_string)
 
-        print('The report has been compiled and can be found in the MR_QA_Reports folder') #let the user know where to find the finished report
-
+        print(f'The report has been compiled and can be found at {self.output_folder}')
