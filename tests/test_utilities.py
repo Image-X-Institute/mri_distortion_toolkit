@@ -36,7 +36,7 @@ def test_dicom_read_in():
     assert np.all([os.path.splitext(el)[1] == '.dcm' for el in dicom_files])
     CompletePathFiles = [str(Path(dicom_directory) / file) for file in dicom_files]
     dicom_slices = [pydicom.read_file(f) for f in CompletePathFiles]
-    sorted_dicom_files = ut.sort_dicom_slices(dicom_slices)
+    sorted_dicom_files = ut.sort_dicom_slices(dicom_slices)[0]
     expected_order = ['MR000040.dcm', 'MR000041.dcm', 'MR000042.dcm', 'MR000043.dcm', 'MR000044.dcm', 'MR000045.dcm',
                       'MR000046.dcm', 'MR000047.dcm', 'MR000048.dcm', 'MR000049.dcm', 'MR000050.dcm']
     actual_order = [os.path.split(el.filename)[1] for el in sorted_dicom_files]
