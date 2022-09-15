@@ -291,6 +291,7 @@ class DistortionCorrectorBase:
         :return:
         """
         start_time = perf_counter()
+
         update_every_n_slices = 10
         if self.correct_through_plane:
             n_images_to_correct = self._n_dicom_files + (self.ImageArray.shape[1] - 2 * self._n_zero_pad)
@@ -359,10 +360,12 @@ class DistortionCorrectorBase:
                 self._image_array_corrected[:, j, :] = self.outputImage
 
                 j += 1
+
         execution_time = perf_counter() - start_time
         print(f'\ntotal time: {execution_time: 1.1f}s')
         print(f'mean time per slice = {execution_time / n_images_to_correct: 1.1}s')
         self._unpad_image_arrays()
+        print(f'total correction time: {perf_counter() - start_time: 1.1f} s')
 
     def save_all_images(self, save_loc=None):
         """
