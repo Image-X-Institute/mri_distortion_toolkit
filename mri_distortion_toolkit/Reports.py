@@ -606,5 +606,4 @@ class MRI_QA_Reporter:
         with open(report_name, 'w') as f:
             f.write(report_string)
 
-        print('The report has been compiled and can be found in the MR_QA_Reports folder') #let the user know where to find the finished report
-
+        print(f'The report has been compiled and can be found at {self.output_folder}')
