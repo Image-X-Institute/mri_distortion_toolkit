@@ -1095,3 +1095,7 @@ class MatchedMarkerVolumes:
 
         plot_data = get_markers_as_function_of_z()
         plot_markers_inner(plot_data)
+
+    def report(self):
+        print(f'Median distortion: {self.MatchedCentroids.match_distance.median(): 1.1f} mm, '
+              f'Max distortion: {self.MatchedCentroids.match_distance.max(): 1.1f} mm')
