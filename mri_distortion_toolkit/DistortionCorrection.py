@@ -15,6 +15,7 @@ from scipy.interpolate import RectBivariateSpline
 import pandas as pd
 from pathlib import Path
 from .utilities import get_all_files, convert_cartesian_to_spherical, generate_legendre_basis, dicom_to_numpy
+from .utilities import sort_dicom_slices
 from .utilities import get_gradient_spherical_harmonics
 from .utilities import printProgressBar
 from time import perf_counter
@@ -57,9 +58,10 @@ class DistortionCorrectorBase:
 
         self.ImageDirectory = Path(ImageDirectory)
         self._all_dicom_files = get_all_files(self.ImageDirectory, ImExtension)
-        self._all_dicom_files = np.sort(self._all_dicom_files)
-        warnings.warn('making assumption that sorting by dicom name is same as series number')
-        # self._all_dicom_files = sort_dicom_slices(self._all_dicom_files)
+        CompletePathFiles = [self.ImageDirectory / file for file in self._all_dicom_files]
+        dicom_slices = [pydicom.read_file(f) for f in CompletePathFiles]
+        sort_ind = sort_dicom_slices(dicom_slices)[1]
+        self._all_dicom_files = list(np.array(self._all_dicom_files)[sort_ind])
         self._n_dicom_files = len(self._all_dicom_files)
 
 
@@ -366,7 +368,6 @@ class DistortionCorrectorBase:
         print(f'mean time per slice = {execution_time / n_images_to_correct: 1.1}s')
         self._unpad_image_arrays()
         print(f'total correction time: {perf_counter() - start_time: 1.1f} s')
-
 
     def save_all_images(self, save_loc=None):
         """
