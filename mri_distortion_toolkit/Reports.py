@@ -182,7 +182,7 @@ class MRI_QA_Reporter:
             return
         self._jinja_dict['acquisition_data'] = {}
         _fields_of_interest = ['acquisition_date', 'magnetic_field_strength', 'bandwidth', 'pixel_spacing',
-                               'freq_encode_direction', 'manufacturer', 'imaging_frequency']
+                               'freq_encode_direction', 'manufacturer','sequence_name', 'imaging_frequency']
         for key in self.dicom_data:
             if key in _fields_of_interest:
                 new_key = key.replace('_', ' ')
@@ -426,7 +426,7 @@ class MRI_QA_Reporter:
             w=plot_data['z_dis'],
             colorbar=dict(title= 'mm'),
             sizemode="absolute",
-            sizeref=10))
+            sizeref=1))
 
 
         self._fig_3D_planes.update_layout(scene=dict(aspectratio=dict(x=1, y=1, z=0.8),

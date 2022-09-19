@@ -9,10 +9,10 @@ import numpy as np
 download example data and unzip:
 https://cloudstor.aarnet.edu.au/plus/s/Wm9vndV47u941JU
 '''
-distorted_data_loc = Path(r'C:\Users\bwhe3635\Downloads\MRI_distortion_QA_sample_data\MRI_distortion_QA_sample_data\MR\04 gre_trans_AP_330')
+distorted_data_loc = Path(r'C:\Users\Brendan\Downloads\MRI_distortion_QA_sample_data\MRI_distortion_QA_sample_data\MR\04 gre_trans_AP_330')
 dis_volume = MarkerVolume(distorted_data_loc)
 
-GDC = KspaceDistortionCorrector(ImageDirectory=distorted_data_loc.resolve(),
+GDC = ImageDomainDistortionCorrector(ImageDirectory=distorted_data_loc.resolve(),
                                 gradient_harmonics=[Path('_example_data/G_x_Harmonics.csv').resolve(),
                                                     Path('_example_data/G_y_Harmonics.csv').resolve(),
                                                     Path('_example_data/G_z_Harmonics.csv').resolve()],

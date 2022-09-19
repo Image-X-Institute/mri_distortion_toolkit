@@ -10,7 +10,7 @@ from mri_distortion_toolkit.MarkerAnalysis import MatchedMarkerVolumes
 from mri_distortion_toolkit.FieldCalculation import ConvertMatchedMarkersToBz
 from mri_distortion_toolkit import calculate_harmonics
 from mri_distortion_toolkit.utilities import plot_distortion_xyz_hist
-from mri_distortion_toolkit.DistortionCorrection import KspaceDistortionCorrector
+from mri_distortion_toolkit.DistortionCorrection import KspaceDistortionCorrector, ImageDomainDistortionCorrector
 from mri_distortion_toolkit.utilities import plot_matched_volume_hist
 from mri_distortion_toolkit.Reports import MRI_QA_Reporter
 this_file_loc = Path(__file__).parent.resolve()
@@ -39,13 +39,13 @@ G_x_Harmonics, G_y_Harmonics, G_z_Harmonics, B0_Harmonics = calculate_harmonics(
                                                                                 n_order=8,
                                                                                 norm=normalisation_factor)
 # correct input images
-GDC = KspaceDistortionCorrector(ImageDirectory=distorted_data_loc.resolve(),
+GDC = ImageDomainDistortionCorrector(ImageDirectory=distorted_data_loc.resolve(),
                                 gradient_harmonics=[G_x_Harmonics.harmonics,
                                                     G_y_Harmonics.harmonics,
                                                     G_z_Harmonics.harmonics],
                                 ImExtension='dcm',
                                 dicom_data=dis_volume.dicom_data,
-                                correct_through_plane=False)
+                                correct_through_plane=True)
 GDC.correct_all_images()
 GDC.save_all_images()
 GDC.save_all_images_as_dicom()

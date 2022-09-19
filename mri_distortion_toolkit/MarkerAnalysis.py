@@ -95,7 +95,7 @@ class MarkerVolume:
                 # dicom input
                 self.InputVolume, self.dicom_affine, (self.X, self.Y, self.Z) = \
                     dicom_to_numpy(self.input_data_path, file_extension=self._file_extension, return_XYZ=True)
-                self._calculate_MR_acquisition_data()
+                self._get_MR_acquisition_data()
 
                 # Segmenting markers
                 self._filter_volume_by_r()
@@ -179,7 +179,7 @@ class MarkerVolume:
             keep_ind = abs(self.MarkerCentroids.r) > self._r_min
             self.MarkerCentroids = self.MarkerCentroids[keep_ind].reset_index(drop=True)
 
-    def _calculate_MR_acquisition_data(self):
+    def _get_MR_acquisition_data(self):
         """
         If we have MR images, extract the information from thall_dicom_files = get_all_files(self.input_data_path)e
         dicom header that is needed to convert marker positions to magnetic fields downstream.
@@ -224,7 +224,7 @@ class MarkerVolume:
                 logger.error(e)
                 logger.error('failed to extract datetime, probably didnt understand date format, continuing...')
             self.dicom_data['manufacturer'] = example_dicom_file.Manufacturer
-
+            self.dicom_data['sequence_name'] = example_dicom_file.SequenceName
             # the above works on siemens scanner, not sure if it will prove consistent on others
             fat_water_delta_f = example_dicom_file.MagneticFieldStrength * 42.57747851 * 3.5
             self.dicom_data['chem_shift_magnitude'] = (example_dicom_file.PixelBandwidth / fat_water_delta_f) / 2
@@ -870,7 +870,7 @@ class MatchedMarkerVolumes:
             _throw_warning = True
 
         if _throw_warning:
-            warn(f'\n\nThe marker match may have failed.\n\nThe mean detected distortion is {self._CentroidMatch.match_distance.mean(): 1.1f} mm'
+            warn(f'\n\nThe marker match may have failed.\n\nThe mean detected distortion is {self._CentroidMatch.match_distance.mean(): 1.1f} mm '
                  f'and the max is {self._CentroidMatch.match_distance.max(): 1.1f}.'
                  f'\nYou can continue by pressing any key, but you should visualize the data using the plot_3D_markers'
                  f' method')
@@ -1095,3 +1095,8 @@ class MatchedMarkerVolumes:
 
         plot_data = get_markers_as_function_of_z()
         plot_markers_inner(plot_data)
+
+    def report(self):
+        print(f'mean distortion: {self.MatchedCentroids.match_distance.mean(): 1.1f} mm, '
+              f'std: {np.std(self.MatchedCentroids.match_distance)}'
+              f'Max distortion: {self.MatchedCentroids.match_distance.max(): 1.1f} mm')

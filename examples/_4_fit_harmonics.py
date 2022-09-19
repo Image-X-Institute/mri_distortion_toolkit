@@ -15,11 +15,12 @@ gradient_strength = np.array(dicom_data['gradient_strength'])
 normalisation_factor = [1 / gradient_strength[0], 1 / gradient_strength[1], 1 / gradient_strength[2],
                         1]  # this normalised gradient harmonics to 1mT/m
 G_x_Harmonics, G_y_Harmonics, G_z_Harmonics, B0_Harmonics = calculate_harmonics(FieldData,
-                                                                                n_order=8,
+                                                                                n_order=5,
                                                                                 norm=normalisation_factor)
 
 # save for downstream analysis:
 G_x_Harmonics.harmonics.to_csv(data_loc / 'G_x_Harmonics.csv')
 G_y_Harmonics.harmonics.to_csv(data_loc / 'G_y_Harmonics.csv')
 G_z_Harmonics.harmonics.to_csv(data_loc / 'G_z_Harmonics.csv')
-B0_Harmonics.harmonics.to_csv(data_loc / 'B0_Harmonics.csv')
+if B0_Harmonics:  # None evaluates as False
+    B0_Harmonics.harmonics.to_csv(data_loc / 'B0_Harmonics.csv')
