@@ -426,7 +426,7 @@ class MRI_QA_Reporter:
             w=plot_data['z_dis'],
             colorbar=dict(title= 'mm'),
             sizemode="absolute",
-            sizeref=10))
+            sizeref=1))
 
 
         self._fig_3D_planes.update_layout(scene=dict(aspectratio=dict(x=1, y=1, z=0.8),

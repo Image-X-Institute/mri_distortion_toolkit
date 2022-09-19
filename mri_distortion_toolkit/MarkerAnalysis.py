@@ -870,7 +870,7 @@ class MatchedMarkerVolumes:
             _throw_warning = True
 
         if _throw_warning:
-            warn(f'\n\nThe marker match may have failed.\n\nThe mean detected distortion is {self._CentroidMatch.match_distance.mean(): 1.1f} mm'
+            warn(f'\n\nThe marker match may have failed.\n\nThe mean detected distortion is {self._CentroidMatch.match_distance.mean(): 1.1f} mm '
                  f'and the max is {self._CentroidMatch.match_distance.max(): 1.1f}.'
                  f'\nYou can continue by pressing any key, but you should visualize the data using the plot_3D_markers'
                  f' method')
@@ -1097,5 +1097,6 @@ class MatchedMarkerVolumes:
         plot_markers_inner(plot_data)
 
     def report(self):
-        print(f'Median distortion: {self.MatchedCentroids.match_distance.median(): 1.1f} mm, '
+        print(f'mean distortion: {self.MatchedCentroids.match_distance.mean(): 1.1f} mm, '
+              f'std: {np.std(self.MatchedCentroids.match_distance)}'
               f'Max distortion: {self.MatchedCentroids.match_distance.max(): 1.1f} mm')

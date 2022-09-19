@@ -22,4 +22,5 @@ G_x_Harmonics, G_y_Harmonics, G_z_Harmonics, B0_Harmonics = calculate_harmonics(
 G_x_Harmonics.harmonics.to_csv(data_loc / 'G_x_Harmonics.csv')
 G_y_Harmonics.harmonics.to_csv(data_loc / 'G_y_Harmonics.csv')
 G_z_Harmonics.harmonics.to_csv(data_loc / 'G_z_Harmonics.csv')
-B0_Harmonics.harmonics.to_csv(data_loc / 'B0_Harmonics.csv')
+if B0_Harmonics:  # None evaluates as False
+    B0_Harmonics.harmonics.to_csv(data_loc / 'B0_Harmonics.csv')

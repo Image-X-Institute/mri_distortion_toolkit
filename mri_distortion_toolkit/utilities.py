@@ -82,7 +82,7 @@ def build_dicom_affine(Dicomfiles):
         SliceLoc = np.array(SliceLoc)
         image_position_patient_list = np.array(image_position_patient_list)
         if not np.allclose(np.diff(SliceLoc), np.diff(SliceLoc)[0], atol=.1, rtol=.1):
-            logger.error(f'it appears there may be missing or inconsistently spaced slices. Continuing')
+            logger.error(f'it appears there are missing or inconsistently spaced slices. Continuing')
         k = (image_position_patient_list[-1] - image_position_patient_list[0])/(image_position_patient_list.shape[0]-1)
         CoordinateMatrix[0:3, 2] = k
 
