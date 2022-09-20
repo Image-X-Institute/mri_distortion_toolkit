@@ -1,4 +1,6 @@
 import pathlib
+import time
+
 from .utilities import get_all_files, dicom_to_numpy
 import pydicom
 from pathlib import Path
@@ -99,9 +101,12 @@ class MarkerVolume:
 
                 # Segmenting markers
                 self._filter_volume_by_r()
+                start_time = time.perf_counter()
                 self.ThresholdVolume, self.BlurredVolume = self._threshold_volume(self.InputVolume)
                 centroids = self._find_contour_centroids()
                 self.MarkerCentroids = pd.DataFrame(centroids, columns=['x', 'y', 'z'])
+                end_time = time.perf_counter()
+                print(f'total segmentation time: {end_time - start_time: 1.1f} s')
 
                 # Correct for oil water shift
                 if self._correct_fat_water_shift:
@@ -189,8 +194,15 @@ class MarkerVolume:
         - we package this as a simple dict that can be easily saved as json
         """
         all_dicom_files = get_all_files(self.input_data_path, file_extension=self._file_extension)
-        # use first one, its as good as any other:
-        example_dicom_file = pydicom.read_file(self.input_data_path / all_dicom_files[0])
+        # use first one that has pixel data:
+        j=0
+        while True:
+            example_dicom_file = pydicom.read_file(self.input_data_path / all_dicom_files[j])
+            try:
+                test = example_dicom_file.pixel_array
+                break
+            except AttributeError:
+                j += 1
 
         if example_dicom_file.Modality == 'MR':
             if not example_dicom_file.Manufacturer == 'SIEMENS':
@@ -224,7 +236,14 @@ class MarkerVolume:
                 logger.error(e)
                 logger.error('failed to extract datetime, probably didnt understand date format, continuing...')
             self.dicom_data['manufacturer'] = example_dicom_file.Manufacturer
-            self.dicom_data['sequence_name'] = example_dicom_file.SequenceName
+            try:
+                self.dicom_data['sequence_name'] = example_dicom_file.SequenceName
+            except AttributeError:
+                pass
+            try:
+                self.dicom_data['sequence_name'] = example_dicom_file.ScanningSequence
+            except AttributeError:
+                pass
             # the above works on siemens scanner, not sure if it will prove consistent on others
             fat_water_delta_f = example_dicom_file.MagneticFieldStrength * 42.57747851 * 3.5
             self.dicom_data['chem_shift_magnitude'] = (example_dicom_file.PixelBandwidth / fat_water_delta_f) / 2
@@ -873,7 +892,8 @@ class MatchedMarkerVolumes:
             warn(f'\n\nThe marker match may have failed.\n\nThe mean detected distortion is {self._CentroidMatch.match_distance.mean(): 1.1f} mm '
                  f'and the max is {self._CentroidMatch.match_distance.max(): 1.1f}.'
                  f'\nYou can continue by pressing any key, but you should visualize the data using the plot_3D_markers'
-                 f' method')
+                 f' method. If the match has failed, a simple remedy can be to trim the input data at the MarkerVolume'
+                 f'\n stage...')
             input("Press any key to continue...")
 
     def _handle_double_matched_markers(self):
