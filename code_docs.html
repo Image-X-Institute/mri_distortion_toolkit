@@ -779,10 +779,19 @@ elevation, azimuth, and r</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="mri_distortion_toolkit.utilities.sort_dicom_slices">
-<span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.utilities.</span></span><span class="sig-name descname"><span class="pre">sort_dicom_slices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dicom_datasets</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.utilities.sort_dicom_slices" title="Permalink to this definition"></a></dt>
-<dd><p>sort slices by instance number
-:param dicom_datasets: list of pydicom files
-:return: sorted list of pydicom files</p>
+<span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.utilities.</span></span><span class="sig-name descname"><span class="pre">sort_dicom_slices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dicom_datasets</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_non_image_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.utilities.sort_dicom_slices" title="Permalink to this definition"></a></dt>
+<dd><p>sort slices by instance number</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dicom_datasets</strong> – list of pydicom files</p></li>
+<li><p><strong>filter_non_image_data</strong> (<em>boolean</em><em>, </em><em>optional</em>) – if True, any dicom file not containing a pixel_data attribute is removed</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>sorted list of pydicom files</p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
