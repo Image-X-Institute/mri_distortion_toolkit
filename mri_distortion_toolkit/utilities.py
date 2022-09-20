@@ -14,7 +14,7 @@ import pandas as pd
 from matplotlib import pyplot as plt
 import pydicom
 import json
-
+from itertools import compress
 
 ch = logging.StreamHandler()
 formatter = logging.Formatter('[%(filename)s: line %(lineno)d %(levelname)8s] %(message)s')
@@ -157,6 +157,7 @@ def dicom_to_numpy(path_to_dicoms, FilesToReadIn=None, file_extension='dcm', ret
         CompletePathFiles = [str(Path(path_to_dicoms) / FilesToReadIn)]
 
     dicom_slices = [pydicom.read_file(f) for f in CompletePathFiles]
+
     dicom_slices = sort_dicom_slices(dicom_slices)[0]
     dicom_affine = build_dicom_affine(dicom_slices)
     dicom_affine[0:3, 3] = dicom_affine[0:3, 3] + (-1*zero_pad*dicom_affine[0:3, 0:3].sum(axis=1))  # update start point for zero padding
@@ -207,12 +208,18 @@ def dicom_to_numpy(path_to_dicoms, FilesToReadIn=None, file_extension='dcm', ret
         return ImageArray, dicom_affine
 
 
-def sort_dicom_slices(dicom_datasets):
+def sort_dicom_slices(dicom_datasets, filter_non_image_data=True):
     """
     sort slices by instance number
+
     :param dicom_datasets: list of pydicom files
     :return: sorted list of pydicom files
+    :param filter_non_image_data: if True, any dicom file not containing a pixel_data attribute is removed
+    :type filter_non_image_data: boolean, optional
     """
+    if filter_non_image_data:
+        contains_pixel_data_ind = [hasattr(dicom, 'pixel_array') for dicom in dicom_datasets]
+        dicom_datasets = list(compress(dicom_datasets, contains_pixel_data_ind))
     instance_number = [el.InstanceNumber for el in dicom_datasets]
     sort_ind = np.argsort(instance_number)
     return list(np.array(dicom_datasets)[sort_ind]), sort_ind
