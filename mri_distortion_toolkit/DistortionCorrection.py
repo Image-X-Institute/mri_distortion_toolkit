@@ -73,6 +73,7 @@ class DistortionCorrectorBase:
                                                      zero_pad=self._n_zero_pad,
                                                      enforce_increasing_coords=False)
         self._get_rows_and_cols()
+        self._get_iso_offset()
         self.n_order = int(np.sqrt(self._Gx_Harmonics.size) - 1)
         self.Images = get_all_files(self.ImageDirectory, ImExtension)
         self.r_DSV = 150  # only for drawing on the plot
@@ -97,9 +98,22 @@ class DistortionCorrectorBase:
         I suspect I should be able to derive this from the dicom affine, but this way seems more foolproof
         """
         demo_header = pydicom.read_file(self.ImageDirectory / self._all_dicom_files[0])
-        self._Rows, self._Cols = self.ImageArray.shape[0:2]
+        self._Rows, self._Cols, self._Slices = self.ImageArray.shape
         self._ImageOrientationPatient = demo_header.ImageOrientationPatient
         self._PixelSpacing = self._dicom_data['pixel_spacing']
+
+    def _get_iso_offset(self):
+        """
+        calculate the offset between the center of the volume and scanner isocenter.
+        This offset is used in _calculate_encoding_indices
+        """
+        self._image_position_patient_start = [self._X[0,0,0], self._Y[0,0,0], self._Z[0,0,0]]
+        assert np.allclose(self._image_position_patient_start,self._dicom_affine[0:3, 3])
+        self._image_position_patient_end = [self._X[-1, -1, -1], self._Y[-1, -1, -1], self._Z[-1, -1, -1]]
+        self._iso_offset = -1*np.add(self._image_position_patient_end, self._image_position_patient_start)/2
+        pixel_spacing = self._dicom_affine[0:3,0:3].sum(1)
+        self._iso_offset_pixels = np.divide(self._iso_offset, pixel_spacing)
+
 
     def _check_input_data(self):
         """
@@ -163,36 +177,36 @@ class DistortionCorrectorBase:
         self.tk = yn_lin / y_lin_size
 
         if (np.round(self._ImageOrientationPatient) == [0, 1, 0, 0, 0, -1]).all():
-            xn_dis = self.Gz_encode / (self._PixelSpacing[2])
+            xn_dis = self.Gz_encode / (self._PixelSpacing[2]) + self._iso_offset_pixels[2]
             self.xj = xn_dis * 2 * np.pi
-            yn_dis = self.Gy_encode / (self._PixelSpacing[1])
+            yn_dis = self.Gy_encode / (self._PixelSpacing[1]) + self._iso_offset_pixels[1]
             self.yj = yn_dis * 2 * np.pi
         elif (np.round(self._ImageOrientationPatient) == [1, 0, 0, 0, 0, -1]).all():
-            xn_dis = self.Gz_encode / (self._PixelSpacing[2])
+            xn_dis = (self.Gz_encode / (self._PixelSpacing[2])) + self._iso_offset_pixels[2]
             self.xj = xn_dis * 2 * np.pi
-            yn_dis = self.Gx_encode / (self._PixelSpacing[0])
+            yn_dis = self.Gx_encode / (self._PixelSpacing[0]) + self._iso_offset_pixels[0]
             self.yj = yn_dis * 2 * np.pi
         elif (np.round(self._ImageOrientationPatient) == [1, 0, 0, 0, 1, 0]).all():
-            xn_dis = self.Gy_encode / (self._PixelSpacing[1])
+            xn_dis = self.Gy_encode / (self._PixelSpacing[1]) + self._iso_offset_pixels[1]
             self.xj = xn_dis * 2 * np.pi
-            yn_dis = self.Gx_encode / (self._PixelSpacing[0])
+            yn_dis = self.Gx_encode / (self._PixelSpacing[0]) + self._iso_offset_pixels[0]
             self.yj = yn_dis * 2 * np.pi
         elif np.round(self._ImageOrientationPatient == [2, 2, 2, 2, 2, 2]).all():
             # this is for through plane correction where the real images are [0, 1, 0, 0, 0, -1]
             self.xj = pd.Series(xn_lin * 2 * np.pi)
-            yn_dis = self.Gx_encode / (self._PixelSpacing[0])
+            yn_dis = self.Gx_encode / (self._PixelSpacing[0]) + self._iso_offset_pixels[0]
             self.yj = pd.Series(yn_dis * 2 * np.pi)
             xn_dis = pd.Series(np.copy(xn_lin))
         elif np.round(self._ImageOrientationPatient == [3, 3, 3, 3, 3, 3]).all():
             # this is for through plane correction where the real images are [1, 0, 0, 0, 0, -1]
             self.xj = pd.Series(xn_lin * 2 * np.pi)
-            yn_dis = self.Gy_encode / (self._PixelSpacing[1])
+            yn_dis = self.Gy_encode / (self._PixelSpacing[1]) + self._iso_offset_pixels[1]
             self.yj = yn_dis * 2 * np.pi
             xn_dis = pd.Series(np.copy(xn_lin))
         elif (np.round(self._ImageOrientationPatient) == [1, 1, 1, 1, 1, 1]).all():
             # this is for through plane correction where the real images are [1, 0, 0, 0, 1, 0]
             self.xj = pd.Series(xn_lin * 2 * np.pi)
-            yn_dis = -1*self.Gz_encode / (self._PixelSpacing[2])
+            yn_dis = -1*self.Gz_encode / (self._PixelSpacing[2]) + self._iso_offset_pixels[2]
             self.yj = yn_dis * 2 * np.pi
             xn_dis = pd.Series(np.copy(xn_lin))
         else:
@@ -412,6 +426,7 @@ class DistortionCorrectorBase:
             plt.savefig(save_loc / (str(i) + '.png'), format='png')
             plt.close(fig)
             i += 1
+        print('images export to png')
 
     def save_all_images_as_dicom(self, save_loc=None):
         """
@@ -437,6 +452,7 @@ class DistortionCorrectorBase:
             temp_dcm.PixelData = np.uint16(corrected_image).tobytes()
             temp_dcm.save_as(save_loc / (str(i) + '.dcm'))
             i += 1
+        print('images exported to dicom')
 
 
 class KspaceDistortionCorrector(DistortionCorrectorBase):

@@ -86,7 +86,6 @@ class SphericalHarmonicFit:
         self._svd_fit()
 
         if not self.scale == 1:
-            logger.warning(f'scaling harmonics by {self.scale}')
             self.harmonics = self.harmonics*scale
         if self.QuantifyFit:
             self._quantify_fit()
