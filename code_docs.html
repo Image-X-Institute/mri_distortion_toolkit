@@ -16,6 +16,7 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
         <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
         <script>mermaid.initialize({startOnLoad:true});</script>
     <script src="_static/js/theme.js"></script>
@@ -43,13 +44,87 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Worked Examples</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Code Documentation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#module-mri_distortion_toolkit.MarkerAnalysis">Marker Analysis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-mri_distortion_toolkit.FieldCalculation">Field Calculation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-mri_distortion_toolkit.MarkerAnalysis">Marker Analysis</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.MarkerAnalysis.MarkerVolume"><code class="docutils literal notranslate"><span class="pre">MarkerVolume</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#mri_distortion_toolkit.MarkerAnalysis.MarkerVolume.export_to_slicer"><code class="docutils literal notranslate"><span class="pre">MarkerVolume.export_to_slicer()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mri_distortion_toolkit.MarkerAnalysis.MarkerVolume.perturb_marker_positions"><code class="docutils literal notranslate"><span class="pre">MarkerVolume.perturb_marker_positions()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mri_distortion_toolkit.MarkerAnalysis.MarkerVolume.plot_3D_markers"><code class="docutils literal notranslate"><span class="pre">MarkerVolume.plot_3D_markers()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mri_distortion_toolkit.MarkerAnalysis.MarkerVolume.save_dicom_data"><code class="docutils literal notranslate"><span class="pre">MarkerVolume.save_dicom_data()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.MarkerAnalysis.MatchedMarkerVolumes"><code class="docutils literal notranslate"><span class="pre">MatchedMarkerVolumes</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#mri_distortion_toolkit.MarkerAnalysis.MatchedMarkerVolumes.plot_3D_markers"><code class="docutils literal notranslate"><span class="pre">MatchedMarkerVolumes.plot_3D_markers()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mri_distortion_toolkit.MarkerAnalysis.MatchedMarkerVolumes.plot_compressed_markers"><code class="docutils literal notranslate"><span class="pre">MatchedMarkerVolumes.plot_compressed_markers()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-mri_distortion_toolkit.FieldCalculation">Field Calculation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.FieldCalculation.ConvertMatchedMarkersToBz"><code class="docutils literal notranslate"><span class="pre">ConvertMatchedMarkersToBz</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#harmonic-analysis">Harmonic Analysis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-mri_distortion_toolkit.Reports">Reports</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-mri_distortion_toolkit.DistortionCorrection">distortion_correction</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-mri_distortion_toolkit.utilities">utilities</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-mri_distortion_toolkit.calculate_harmonics">calculate_harmonics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-mri_distortion_toolkit.Reports">Reports</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.Reports.DefaultTestSuite"><code class="docutils literal notranslate"><span class="pre">DefaultTestSuite</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#mri_distortion_toolkit.Reports.DefaultTestSuite.test_distortion_less_than_2mm_within_r_100"><code class="docutils literal notranslate"><span class="pre">DefaultTestSuite.test_distortion_less_than_2mm_within_r_100()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mri_distortion_toolkit.Reports.DefaultTestSuite.test_distortion_less_than_4mm_within_r_150"><code class="docutils literal notranslate"><span class="pre">DefaultTestSuite.test_distortion_less_than_4mm_within_r_150()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.Reports.Elekta_Distortion_tests"><code class="docutils literal notranslate"><span class="pre">Elekta_Distortion_tests</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#mri_distortion_toolkit.Reports.Elekta_Distortion_tests.test_distortion_less_than_1_mm_within_r_100_mm"><code class="docutils literal notranslate"><span class="pre">Elekta_Distortion_tests.test_distortion_less_than_1_mm_within_r_100_mm()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mri_distortion_toolkit.Reports.Elekta_Distortion_tests.test_distortion_less_than_2_mm_within_r_150_mm"><code class="docutils literal notranslate"><span class="pre">Elekta_Distortion_tests.test_distortion_less_than_2_mm_within_r_150_mm()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mri_distortion_toolkit.Reports.Elekta_Distortion_tests.test_distortion_less_than_4_mm_within_r_200_mm"><code class="docutils literal notranslate"><span class="pre">Elekta_Distortion_tests.test_distortion_less_than_4_mm_within_r_200_mm()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.Reports.MRI_QA_Reporter"><code class="docutils literal notranslate"><span class="pre">MRI_QA_Reporter</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#mri_distortion_toolkit.Reports.MRI_QA_Reporter.write_html_report"><code class="docutils literal notranslate"><span class="pre">MRI_QA_Reporter.write_html_report()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.Reports.TG284_Tests"><code class="docutils literal notranslate"><span class="pre">TG284_Tests</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#mri_distortion_toolkit.Reports.TG284_Tests.test_distortion_less_than_1mm_within_r_100"><code class="docutils literal notranslate"><span class="pre">TG284_Tests.test_distortion_less_than_1mm_within_r_100()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mri_distortion_toolkit.Reports.TG284_Tests.test_distortion_less_than_2mm_within_r_200"><code class="docutils literal notranslate"><span class="pre">TG284_Tests.test_distortion_less_than_2mm_within_r_200()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-mri_distortion_toolkit.DistortionCorrection">distortion_correction</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.DistortionCorrection.DistortionCorrectorBase"><code class="docutils literal notranslate"><span class="pre">DistortionCorrectorBase</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#mri_distortion_toolkit.DistortionCorrection.DistortionCorrectorBase.correct_all_images"><code class="docutils literal notranslate"><span class="pre">DistortionCorrectorBase.correct_all_images()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mri_distortion_toolkit.DistortionCorrection.DistortionCorrectorBase.save_all_images"><code class="docutils literal notranslate"><span class="pre">DistortionCorrectorBase.save_all_images()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mri_distortion_toolkit.DistortionCorrection.DistortionCorrectorBase.save_all_images_as_dicom"><code class="docutils literal notranslate"><span class="pre">DistortionCorrectorBase.save_all_images_as_dicom()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.DistortionCorrection.ImageDomainDistortionCorrector"><code class="docutils literal notranslate"><span class="pre">ImageDomainDistortionCorrector</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.DistortionCorrection.KspaceDistortionCorrector"><code class="docutils literal notranslate"><span class="pre">KspaceDistortionCorrector</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#utilities">utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.utilities.bcolors"><code class="docutils literal notranslate"><span class="pre">bcolors</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.utilities.build_dicom_affine"><code class="docutils literal notranslate"><span class="pre">build_dicom_affine()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.utilities.compare_recon_report_with_ground_truth_report"><code class="docutils literal notranslate"><span class="pre">compare_recon_report_with_ground_truth_report()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.utilities.convert_cartesian_to_spherical"><code class="docutils literal notranslate"><span class="pre">convert_cartesian_to_spherical()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.utilities.convert_spherical_harmonics"><code class="docutils literal notranslate"><span class="pre">convert_spherical_harmonics()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.utilities.convert_spherical_to_cartesian"><code class="docutils literal notranslate"><span class="pre">convert_spherical_to_cartesian()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.utilities.dicom_to_numpy"><code class="docutils literal notranslate"><span class="pre">dicom_to_numpy()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.utilities.enumerate_subfolders"><code class="docutils literal notranslate"><span class="pre">enumerate_subfolders()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.utilities.generate_legendre_basis"><code class="docutils literal notranslate"><span class="pre">generate_legendre_basis()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.utilities.get_all_files"><code class="docutils literal notranslate"><span class="pre">get_all_files()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.utilities.get_dicom_data"><code class="docutils literal notranslate"><span class="pre">get_dicom_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.utilities.get_gradient_spherical_harmonics"><code class="docutils literal notranslate"><span class="pre">get_gradient_spherical_harmonics()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.utilities.plot_MarkerVolume_overlay"><code class="docutils literal notranslate"><span class="pre">plot_MarkerVolume_overlay()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.utilities.plot_compressed_MarkerVolumes"><code class="docutils literal notranslate"><span class="pre">plot_compressed_MarkerVolumes()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.utilities.plot_distortion_xyz_hist"><code class="docutils literal notranslate"><span class="pre">plot_distortion_xyz_hist()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.utilities.plot_matched_volume_hist"><code class="docutils literal notranslate"><span class="pre">plot_matched_volume_hist()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.utilities.printProgressBar"><code class="docutils literal notranslate"><span class="pre">printProgressBar()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.utilities.print_dict"><code class="docutils literal notranslate"><span class="pre">print_dict()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.utilities.reconstruct_Bz"><code class="docutils literal notranslate"><span class="pre">reconstruct_Bz()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.utilities.sort_dicom_slices"><code class="docutils literal notranslate"><span class="pre">sort_dicom_slices()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-mri_distortion_toolkit.calculate_harmonics">calculate_harmonics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.calculate_harmonics.calculate_harmonics"><code class="docutils literal notranslate"><span class="pre">calculate_harmonics()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -414,10 +489,10 @@ plotly figures</p>
 </dd></dl>
 
 </section>
-<section id="module-mri_distortion_toolkit.utilities">
-<span id="utilities"></span><h2>utilities<a class="headerlink" href="#module-mri_distortion_toolkit.utilities" title="Permalink to this heading"></a></h2>
+<section id="utilities">
+<h2>utilities<a class="headerlink" href="#utilities" title="Permalink to this heading"></a></h2>
 <p>General purpose reusable functions</p>
-<dl class="py class">
+<span class="target" id="module-mri_distortion_toolkit.utilities"></span><dl class="py class">
 <dt class="sig sig-object py" id="mri_distortion_toolkit.utilities.bcolors">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.utilities.</span></span><span class="sig-name descname"><span class="pre">bcolors</span></span><a class="headerlink" href="#mri_distortion_toolkit.utilities.bcolors" title="Permalink to this definition"></a></dt>
 <dd><p>This is just here to enable me to print pretty colors to the linux terminal</p>
