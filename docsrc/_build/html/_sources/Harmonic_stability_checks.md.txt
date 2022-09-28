@@ -46,18 +46,19 @@ probably won't keep this here long term but for now:
 
 ````python
 import numpy as np
-from MRI_DistortionQA.MarkerAnalysis import MarkerVolume, MatchedMarkerVolumes
+from mri_distortion_toolkit.MarkerAnalysis import MarkerVolume, MatchedMarkerVolumes
 from pathlib import Path
-from MRI_DistortionQA.FieldCalculation import ConvertMatchedMarkersToBz
-from MRI_DistortionQA.FieldAnalysis import SphericalHarmonicFit
+from mri_distortion_toolkit.FieldCalculation import ConvertMatchedMarkersToBz
+from mri_distortion_toolkit.Harmonics import SphericalHarmonicFit
 from copy import deepcopy
 from matplotlib import pyplot as plt
 
 
 def calculate_harmonics(ground_truth_volume, forward_volume, back_volume=None, n_order=8):
     # match the markers
-    matched_markers = MatchedMarkerVolumes(ground_truth_volume, forward_volume, sorting_method='radial', ReferenceMarkers=11,
-                                              WarpSearchData=True, ReverseGradientData=back_volume)
+    matched_markers = MatchedMarkerVolumes(ground_truth_volume, forward_volume, sorting_method='radial',
+                                           ReferenceMarkers=11,
+                                           WarpSearchData=True, ReverseGradientData=back_volume)
     matched_markers.MatchedCentroids.to_csv('MatchedMarkerVolume.csv')
 
     # calculate B fields
@@ -93,8 +94,8 @@ def calculate_harmonics(ground_truth_volume, forward_volume, back_volume=None, n
 
     return B0_Harmonics, G_x_Harmonics, G_y_Harmonics, G_z_Harmonics
 
-def normalise_array_columnwise(array_to_normalise):
 
+def normalise_array_columnwise(array_to_normalise):
     for i, column in enumerate(array_to_normalise.T):
         column = (column - column[0]) * 100 / column[0]
         array_to_normalise[:, i] = column
@@ -114,7 +115,7 @@ all_scans = {'1': '01 localiser_gre',
              '6': '06 gre_cor_RL_330',
              '7': '07 gre_cor_RL_330',
              '8': '08 gre_trans_AP_330_F_reset',
-             '9':  '09 gre_trans_AP_330',
+             '9': '09 gre_trans_AP_330',
              '10': '10 gre_trans_AP_330',
              '11': '11 gre_trans_PA',
              '12': '12 gre_sag_HF',
@@ -131,7 +132,6 @@ ct_volume = MarkerVolume('CT.mrk.json')
 forward_volume = MarkerVolume(data_loc / all_scans['14'] / 'Original', gaussian_image_filter_sd=1,
                               n_markers_expected=336, cutoff_point=50, verbose=False, r_max=165,
                               correct_fat_water_shift=correct_FW, fat_shift_direction=-1)
-
 
 Dominant = []
 Second = []
@@ -177,7 +177,6 @@ axs[1, 0].legend(['Gx: A_3_1', 'Gy: B_3_1', 'G_z: A_3_0'])
 axs[1, 0].set_xlabel('perturbation [mm]')
 axs[1, 0].set_ylabel('Harmonic value [AU]')
 
-
 axs[1, 1].plot(perturbations, Third)
 axs[1, 1].set_title('Third most dominant harmonic')
 axs[1, 1].legend(['Gx: A_5_1', 'Gy: B_5_1', 'G_z: A_5_0'])
@@ -186,8 +185,9 @@ axs[1, 1].set_ylabel('Harmonic value [AU]')
 plt.tight_layout()
 
 # OK, now let's make two report, one with the unperturbed harmonics and one with the perturbed harmonics and compare
-from MRI_DistortionQA.Reports import MRI_QA_Reporter
-from MRI_DistortionQA.utilities import compare_recon_report_with_ground_truth_report
+from mri_distortion_toolkit.Reports import MRI_QA_Reporter
+from mri_distortion_toolkit.utilities import compare_recon_report_with_ground_truth_report
+
 unperturbed_report = MRI_QA_Reporter(gradient_harmonics=[G_x_Harmonics_gt.harmonics,
                                                          G_y_Harmonics_gt.harmonics,
                                                          G_z_Harmonics_gt.harmonics],

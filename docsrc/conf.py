@@ -40,14 +40,14 @@ extensions = [
     'sphinx_markdown_tables',
     'sphinxcontrib.mermaid',
     'myst_parser',
-    'sphinxemoji']
+    'sphinxemoji.sphinxemoji']
 
 source_suffix = {
     '.rst': 'restructuredtext',
     '.md': 'markdown',
 }
 
-autodoc_mock_imports = ["utilities"]
+autodoc_mock_imports = ["utilities", 'FreeCAD', 'Draft', 'Part']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

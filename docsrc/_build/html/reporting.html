@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Reporting &mdash; MRI_DistortionQA  documentation</title>
+  <title>Reporting &mdash; mri_distortion_toolkit  documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -14,13 +14,14 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
         <script>mermaid.initialize({startOnLoad:true});</script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Code Documentation" href="code_docs.html" />
+    <link rel="next" title="MRI_DistortionPhantom" href="phantom_notes.html" />
     <link rel="prev" title="Spherical Harmonics" href="fit_spherical_harmonics.html" /> 
 </head>
 
@@ -29,7 +30,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> MRI_DistortionQA
+            <a href="index.html" class="icon icon-home"> mri_distortion_toolkit
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -42,7 +43,7 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="examples.html">Worked Examples</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="Preamble.html">Preamble</a></li>
+<li class="toctree-l2"><a class="reference internal" href="phantom_design.html">Phantom Design</a></li>
 <li class="toctree-l2"><a class="reference internal" href="marker_extraction.html">Marker Extraction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="marker_matching.html">Marker Matching</a></li>
 <li class="toctree-l2"><a class="reference internal" href="field_calculation.html">Field Calculation</a></li>
@@ -55,6 +56,8 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="phantom_notes.html">MRI_DistortionPhantom</a></li>
+<li class="toctree-l1"><a class="reference internal" href="phantom_notes.html#indices-and-tables">Indices and tables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="code_docs.html">Code Documentation</a></li>
 </ul>
 
@@ -64,7 +67,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">MRI_DistortionQA</a>
+          <a href="index.html">mri_distortion_toolkit</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -84,42 +87,42 @@
            <div itemprop="articleBody">
              
   <section id="reporting">
-<h1>Reporting<a class="headerlink" href="#reporting" title="Permalink to this headline"></a></h1>
+<h1>Reporting<a class="headerlink" href="#reporting" title="Permalink to this heading"></a></h1>
 <p>OK, the final step of our journey!</p>
 <p>This section demonstrates how you can automatically generate interactive html reports from the data we have generated. There are two ways for you to do this, both of which will be demonstrated:
-An example of the types of reports you can generate is <span class="xref myst">here</span>.</p>
+An example of the types of reports you can generate is <a class="reference external" href="https://acrf-image-x-institute.github.io/MRI_DistortionQA/_static/MR_QA_report_20_05_2022.html">here</a>.</p>
 <ol class="arabic simple">
 <li><p>Pass the reporting code a data frame containg ground truth and distorted marker positions</p></li>
 <li><p>Pass the reporting code spherical harmonics</p></li>
 </ol>
 <section id="case-1-passing-data-directly">
-<h2>Case 1: passing data directly<a class="headerlink" href="#case-1-passing-data-directly" title="Permalink to this headline"></a></h2>
+<h2>Case 1: passing data directly<a class="headerlink" href="#case-1-passing-data-directly" title="Permalink to this heading"></a></h2>
 <p>Create a new file called ‘reporting.py’. Copy the below code into it.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MRI_DistortionQA.Reports</span> <span class="kn">import</span> <span class="n">MRI_QA_Reporter</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">mri_distortion_toolkit.Reports</span> <span class="kn">import</span> <span class="n">MRI_QA_Reporter</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 
 <span class="c1"># Direct data case: pass matched marker volume to MRI_QA_Reporter</span>
 <span class="c1"># ---------------------------------------------------------------</span>
 <span class="n">data_loc</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;C:\Users\Brendan\Downloads\MRI_distortion_QA_sample_data\MRI_distortion_QA_sample_data&#39;</span><span class="p">)</span>
-<span class="n">dicom_data_loc</span> <span class="o">=</span> <span class="n">data_loc</span> <span class="o">/</span> <span class="s1">&#39;MR&#39;</span> <span class="o">/</span> <span class="s1">&#39;04 gre_trans_AP_330&#39;</span> <span class="o">/</span> <span class="s1">&#39;dicom_data.json&#39;</span>  <span class="c1"># previosly saved from a MarkerVolume using</span>
+<span class="n">dicom_data_loc</span> <span class="o">=</span> <span class="n">data_loc</span> <span class="o">/</span> <span class="s1">&#39;MR&#39;</span> <span class="o">/</span> <span class="s1">&#39;04 gre_trans_AP_330&#39;</span> <span class="o">/</span> <span class="s1">&#39;dicom_data.json&#39;</span>  <span class="c1"># previosly saved from a MarkerVolume</span>
 <span class="n">Matched_Markers</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;Matched_Markers.csv&#39;</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="s2">&quot;columns&quot;</span><span class="p">)</span>
 
 <span class="n">report</span> <span class="o">=</span> <span class="n">MRI_QA_Reporter</span><span class="p">(</span><span class="n">MatchedMarkerVolume</span><span class="o">=</span><span class="n">Matched_Markers</span><span class="p">,</span> <span class="n">r_outer</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">dicom_data</span><span class="o">=</span><span class="n">dicom_data_loc</span><span class="p">)</span>
 <span class="n">report</span><span class="o">.</span><span class="n">write_html_report</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>This code will generate a report at {your_home_directory} / ‘Documents’ / ‘MRI_QA_reports’.</p>
+<p>This code will generate a report at <code class="docutils literal notranslate"><span class="pre">{your_home_directory}</span> <span class="pre">/</span> <span class="pre">'Documents'</span> <span class="pre">/</span> <span class="pre">'MRI_QA_reports'</span></code>.</p>
 <p>To be honest, this report looks pretty bad - this is because with this phantom, there are very limited data points, so most of the plotting routines don’t really work. If you have a more conventional phantom with lots of datapoints, this should work  a lot better.</p>
 <p>This phantom was actually designed to get a good measurement of data on the surface of a sphere for the purpose of fitting spherical harmonics; therefore, let’s move on and use the data we have more appropriately!!</p>
 <blockquote>
-<div><p>:warning: I have occasionally seen firefox fail to display these reports. I haven’t figured out what, but if there is an error “The address wasn’t understood” try a different browser.</p>
+<div><p><strong>warning</strong> I have occasionally seen firefox fail to display these reports. I haven’t figured out what, but if there is an error “The address wasn’t understood” try a different browser.</p>
 </div></blockquote>
 </section>
 <section id="case-2-harmonic-reconstruction">
-<h2>Case 2: harmonic reconstruction<a class="headerlink" href="#case-2-harmonic-reconstruction" title="Permalink to this headline"></a></h2>
+<h2>Case 2: harmonic reconstruction<a class="headerlink" href="#case-2-harmonic-reconstruction" title="Permalink to this heading"></a></h2>
 <p>the code for harmonic reconstruction is below:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MRI_DistortionQA.Reports</span> <span class="kn">import</span> <span class="n">MRI_QA_Reporter</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">mri_distortion_toolkit.Reports</span> <span class="kn">import</span> <span class="n">MRI_QA_Reporter</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 
@@ -128,14 +131,15 @@ An example of the types of reports you can generate is <span class="xref myst">h
 <span class="n">G_x_harmonics</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;G_x_harmonics.csv&#39;</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="s2">&quot;columns&quot;</span><span class="p">)</span>
 <span class="n">G_y_harmonics</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;G_y_harmonics.csv&#39;</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="s2">&quot;columns&quot;</span><span class="p">)</span>
 <span class="n">G_z_harmonics</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;G_z_harmonics.csv&#39;</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="s2">&quot;columns&quot;</span><span class="p">)</span>
+<span class="n">data_loc</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;C:\Users\Brendan\Downloads\MRI_distortion_QA_sample_data\MRI_distortion_QA_sample_data&#39;</span><span class="p">)</span>
+<span class="n">dicom_data_loc</span> <span class="o">=</span> <span class="n">data_loc</span> <span class="o">/</span> <span class="s1">&#39;MR&#39;</span> <span class="o">/</span> <span class="s1">&#39;04 gre_trans_AP_330&#39;</span> <span class="o">/</span> <span class="s1">&#39;dicom_data.json&#39;</span>  <span class="c1"># previosly saved from a MarkerVolume</span>
 
 <span class="n">report</span> <span class="o">=</span> <span class="n">MRI_QA_Reporter</span><span class="p">(</span><span class="n">gradient_harmonics</span><span class="o">=</span><span class="p">[</span><span class="n">G_x_harmonics</span><span class="p">,</span> <span class="n">G_y_harmonics</span><span class="p">,</span> <span class="n">G_z_harmonics</span><span class="p">],</span>
                          <span class="n">r_outer</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">dicom_data</span><span class="o">=</span><span class="n">dicom_data_loc</span><span class="p">)</span>
 <span class="n">report</span><span class="o">.</span><span class="n">write_html_report</span><span class="p">()</span>
-
 </pre></div>
 </div>
-<p>You will now have a new report sitting {your_home_directory} / ‘Documents’ / ‘MRI_QA_reports’.  This one should <a class="reference external" href="https://acrf-image-x-institute.github.io/MRI_DistortionQA/_static/MR_QA_report_12_05_2022.html">look a lot better</a>!!</p>
+<p>You will now have a new report sitting {your_home_directory} / ‘Documents’ / ‘MRI_QA_reports’.  This one should <a class="reference external" href="https://acrf-image-x-institute.github.io/MRI_DistortionQA/_static/MR_QA_report_20_05_2022.html">look a lot better</a>!!</p>
 <p>If you complete the B0 estimate parts of the previous tutorials, and have a ‘B0_harmonics.csv’ file sitting in your working directory, you can also add this to the call to include a plot of B0 homogeneity:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">report</span> <span class="o">=</span> <span class="n">MRI_QA_Reporter</span><span class="p">(</span><span class="n">gradient_harmonics</span><span class="o">=</span><span class="p">[</span><span class="n">G_x_harmonics</span><span class="p">,</span> <span class="n">G_y_harmonics</span><span class="p">,</span> <span class="n">G_z_harmonics</span><span class="p">],</span>
                          <span class="n">r_outer</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">dicom_data</span><span class="o">=</span><span class="n">dicom_data_loc</span><span class="p">,</span> <span class="n">B0_harmonics</span><span class="o">=</span><span class="s1">&#39;B0_harmonics.csv&#39;</span><span class="p">)</span>
@@ -144,10 +148,10 @@ An example of the types of reports you can generate is <span class="xref myst">h
 </div>
 </section>
 <section id="adding-custom-tests">
-<h2>Adding custom tests<a class="headerlink" href="#adding-custom-tests" title="Permalink to this headline"></a></h2>
+<h2>Adding custom tests<a class="headerlink" href="#adding-custom-tests" title="Permalink to this heading"></a></h2>
 <p>You will notice that some tests have been run (and failed) from ‘DefaultTestSuite’. What is that and how do you add your own tests?</p>
 <p>Code demonstration the creation of a custom test suite is below:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MRI_DistortionQA.Reports</span> <span class="kn">import</span> <span class="n">MRI_QA_Reporter</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">mri_distortion_toolkit.Reports</span> <span class="kn">import</span> <span class="n">MRI_QA_Reporter</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 
@@ -195,7 +199,7 @@ An example of the types of reports you can generate is <span class="xref myst">h
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="fit_spherical_harmonics.html" class="btn btn-neutral float-left" title="Spherical Harmonics" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="code_docs.html" class="btn btn-neutral float-right" title="Code Documentation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="phantom_notes.html" class="btn btn-neutral float-right" title="MRI_DistortionPhantom" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

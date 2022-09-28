@@ -5,7 +5,7 @@ Worked Examples
    :maxdepth: 3
    :caption: Contents:
 
-   /Preamble.md
+   /phantom_design.md
    /marker_extraction.md
    /marker_matching.md
    /field_calculation.md
