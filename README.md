@@ -11,6 +11,7 @@ The workflow steps are below, but all steps have well defined input/output so yo
 
 flowchart LR
 subgraph AA[Phantom Design]
+click AA "https://acrf-image-x-institute.github.io/mri_distortion_toolkit/phantom_notes.html"
 end
     A[Marker <br>Extraction]--->B[Marker <br>Matching]
     B[Marker <br>Matching]--->C[Field <br> Calculation] & E[Automated <br>reporting]
