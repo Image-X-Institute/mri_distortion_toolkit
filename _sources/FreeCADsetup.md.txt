@@ -15,5 +15,5 @@ FreeCAD of course has its [own documentation](https://wiki.freecad.org/Getting_s
 
 ## Generating your first phantom design
 
-Please see [here]() for some example scripts.
+Please see [here](https://acrf-image-x-institute.github.io/mri_distortion_toolkit/phantom_design.html) for some example scripts.
 
