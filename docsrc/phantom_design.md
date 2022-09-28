@@ -154,15 +154,3 @@ else:
     np.savetxt(r'evolution_phantom_marker_positions.txt', marker_positions)
 
 ```
-
-
-
-## ToDo
-
-- [x] add cross link to Free Cad Docs
-- [x] add link to Slice parameters
-- [ ] add link to example
-- [ ] add link to parameters
-- [ ] add link from freeCAD setup back to this page
-- [x] link readme to docs (and update where these links go)
-- [ ] update refs to phantom docs
