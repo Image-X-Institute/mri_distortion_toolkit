@@ -164,3 +164,4 @@ else:
 - [ ] add link to example
 - [ ] add link to parameters
 - [ ] add link from freeCAD setup back to this page
+- [ ] link readme to docs (and update where these links go)

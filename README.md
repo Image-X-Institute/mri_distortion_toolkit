@@ -8,13 +8,16 @@ For the measurement of such distortions, see [here](https://github.com/ACRF-Imag
 The workflow steps are below, but all steps have well defined input/output so you can use any part of this code independently from the other parts. For a tutorial on each step, click on the diagram below. For an example of our automated reporting template see [here](https://acrf-image-x-institute.github.io/mri_distortion_toolkit/_static/MR_QA_report_20_05_2022.html)
 
 ```mermaid
+
 flowchart LR
+subgraph AA[Phantom Design]
+end
     A[Marker <br>Extraction]--->B[Marker <br>Matching]
     B[Marker <br>Matching]--->C[Field <br> Calculation] & E[Automated <br>reporting]
     C[Field <br> Calculation]-->D[Spherical Harmonic <br>Analysis]
     D[Spherical Harmonic <br>Analysis]-->E[Automated <br>reporting];
     D[Spherical Harmonic <br>Analysis]-->F[Distortion Correction]
-
+	
     click A "https://acrf-image-x-institute.github.io/mri_distortion_toolkit/code_docs.html#MRI_DistortionQA.MarkerAnalysis.MarkerVolume"
     click B "https://acrf-image-x-institute.github.io/mri_distortion_toolkit/code_docs.html#MRI_DistortionQA.MarkerAnalysis.MatchedMarkerVolumes"
     click C "https://acrf-image-x-institute.github.io/mri_distortion_toolkit/code_docs.html#MRI_DistortionQA.FieldCalculation.ConvertMatchedMarkersToBz"
