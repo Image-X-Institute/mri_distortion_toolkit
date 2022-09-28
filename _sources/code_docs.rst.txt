@@ -1,6 +1,12 @@
 Code Documentation
 ==================
 
+Phantom Designer
+----------------
+
+.. automodule::  mri_distortion_toolkit.PhantomDesigner
+   :members:
+
 Marker Analysis
 ---------------
 
@@ -17,7 +23,7 @@ Field Calculation
 Harmonic Analysis
 -----------------
 
-.. automodule:: mri_distortion_toolkit.FieldAnalysis
+.. automodule:: mri_distortion_toolkit.Harmonics
     :members:
 
 Reports

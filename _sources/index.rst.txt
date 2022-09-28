@@ -10,6 +10,9 @@ MRI Distortion QA
 .. mermaid::
 
   flowchart LR;
+      subgraph
+      AA[Phantom Builder]
+      end
       A[Marker <br>Extraction]--->B[Marker <br>Matching]
       B[Marker <br>Matching]--->C[Field <br> Calculation] & E[Automated <br>reporting]
       C[Field <br> Calculation]-->D[Spherical Harmonic <br>Analysis]
@@ -26,6 +29,7 @@ MRI Distortion QA
    :caption: Contents:
 
    examples
+   phantom_notes
    code_docs
 
 Indices and tables

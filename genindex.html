@@ -41,6 +41,8 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Worked Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="phantom_notes.html">MRI_DistortionPhantom</a></li>
+<li class="toctree-l1"><a class="reference internal" href="phantom_notes.html#indices-and-tables">Indices and tables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="code_docs.html">Code Documentation</a></li>
 </ul>
 
@@ -71,7 +73,8 @@
 <h1 id="index">Index</h1>
 
 <div class="genindex-jumpbox">
- <a href="#B"><strong>B</strong></a>
+ <a href="#A"><strong>A</strong></a>
+ | <a href="#B"><strong>B</strong></a>
  | <a href="#C"><strong>C</strong></a>
  | <a href="#D"><strong>D</strong></a>
  | <a href="#E"><strong>E</strong></a>
@@ -86,6 +89,14 @@
  | <a href="#W"><strong>W</strong></a>
  
 </div>
+<h2 id="A">A</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="code_docs.html#mri_distortion_toolkit.PhantomDesigner.PhantomSlice.add_full_scale_drawing">add_full_scale_drawing() (mri_distortion_toolkit.PhantomDesigner.PhantomSlice method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
 <h2 id="B">B</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -125,11 +136,17 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="code_docs.html#mri_distortion_toolkit.Reports.DefaultTestSuite">DefaultTestSuite (class in mri_distortion_toolkit.Reports)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="code_docs.html#mri_distortion_toolkit.utilities.dicom_to_numpy">dicom_to_numpy() (in module mri_distortion_toolkit.utilities)</a>
 </li>
       <li><a href="code_docs.html#mri_distortion_toolkit.DistortionCorrection.DistortionCorrectorBase">DistortionCorrectorBase (class in mri_distortion_toolkit.DistortionCorrection)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="code_docs.html#mri_distortion_toolkit.PhantomDesigner.PhantomSlice.draw_DSV">draw_DSV() (mri_distortion_toolkit.PhantomDesigner.PhantomSlice method)</a>
+</li>
+      <li><a href="code_docs.html#mri_distortion_toolkit.PhantomDesigner.PhantomSlice.draw_Load">draw_Load() (mri_distortion_toolkit.PhantomDesigner.PhantomSlice method)</a>
+</li>
+      <li><a href="code_docs.html#mri_distortion_toolkit.PhantomDesigner.PhantomSlice.draw_slice">draw_slice() (mri_distortion_toolkit.PhantomDesigner.PhantomSlice method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -197,7 +214,11 @@
 </li>
         <li><a href="code_docs.html#module-mri_distortion_toolkit.FieldCalculation">mri_distortion_toolkit.FieldCalculation</a>
 </li>
+        <li><a href="code_docs.html#module-mri_distortion_toolkit.Harmonics">mri_distortion_toolkit.Harmonics</a>
+</li>
         <li><a href="code_docs.html#module-mri_distortion_toolkit.MarkerAnalysis">mri_distortion_toolkit.MarkerAnalysis</a>
+</li>
+        <li><a href="code_docs.html#module-mri_distortion_toolkit.PhantomDesigner">mri_distortion_toolkit.PhantomDesigner</a>
 </li>
         <li><a href="code_docs.html#module-mri_distortion_toolkit.Reports">mri_distortion_toolkit.Reports</a>
 </li>
@@ -211,8 +232,6 @@
         <li><a href="code_docs.html#module-mri_distortion_toolkit.calculate_harmonics">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     mri_distortion_toolkit.DistortionCorrection
 
@@ -220,6 +239,8 @@
         <li><a href="code_docs.html#module-mri_distortion_toolkit.DistortionCorrection">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     mri_distortion_toolkit.FieldCalculation
 
@@ -228,10 +249,24 @@
 </li>
       </ul></li>
       <li>
+    mri_distortion_toolkit.Harmonics
+
+      <ul>
+        <li><a href="code_docs.html#module-mri_distortion_toolkit.Harmonics">module</a>
+</li>
+      </ul></li>
+      <li>
     mri_distortion_toolkit.MarkerAnalysis
 
       <ul>
         <li><a href="code_docs.html#module-mri_distortion_toolkit.MarkerAnalysis">module</a>
+</li>
+      </ul></li>
+      <li>
+    mri_distortion_toolkit.PhantomDesigner
+
+      <ul>
+        <li><a href="code_docs.html#module-mri_distortion_toolkit.PhantomDesigner">module</a>
 </li>
       </ul></li>
       <li>
@@ -258,6 +293,8 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="code_docs.html#mri_distortion_toolkit.MarkerAnalysis.MarkerVolume.perturb_marker_positions">perturb_marker_positions() (mri_distortion_toolkit.MarkerAnalysis.MarkerVolume method)</a>
 </li>
+      <li><a href="code_docs.html#mri_distortion_toolkit.PhantomDesigner.PhantomSlice">PhantomSlice (class in mri_distortion_toolkit.PhantomDesigner)</a>
+</li>
       <li><a href="code_docs.html#mri_distortion_toolkit.MarkerAnalysis.MarkerVolume.plot_3D_markers">plot_3D_markers() (mri_distortion_toolkit.MarkerAnalysis.MarkerVolume method)</a>
 
       <ul>
@@ -268,15 +305,21 @@
 </li>
       <li><a href="code_docs.html#mri_distortion_toolkit.utilities.plot_compressed_MarkerVolumes">plot_compressed_MarkerVolumes() (in module mri_distortion_toolkit.utilities)</a>
 </li>
+      <li><a href="code_docs.html#mri_distortion_toolkit.Harmonics.SphericalHarmonicFit.plot_cut_planes">plot_cut_planes() (mri_distortion_toolkit.Harmonics.SphericalHarmonicFit method)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="code_docs.html#mri_distortion_toolkit.utilities.plot_distortion_xyz_hist">plot_distortion_xyz_hist() (in module mri_distortion_toolkit.utilities)</a>
+</li>
+      <li><a href="code_docs.html#mri_distortion_toolkit.Harmonics.SphericalHarmonicFit.plot_harmonics_pk_pk">plot_harmonics_pk_pk() (mri_distortion_toolkit.Harmonics.SphericalHarmonicFit method)</a>
 </li>
       <li><a href="code_docs.html#mri_distortion_toolkit.utilities.plot_MarkerVolume_overlay">plot_MarkerVolume_overlay() (in module mri_distortion_toolkit.utilities)</a>
 </li>
       <li><a href="code_docs.html#mri_distortion_toolkit.utilities.plot_matched_volume_hist">plot_matched_volume_hist() (in module mri_distortion_toolkit.utilities)</a>
 </li>
       <li><a href="code_docs.html#mri_distortion_toolkit.utilities.print_dict">print_dict() (in module mri_distortion_toolkit.utilities)</a>
+</li>
+      <li><a href="code_docs.html#mri_distortion_toolkit.Harmonics.SphericalHarmonicFit.print_key_harmonics">print_key_harmonics() (mri_distortion_toolkit.Harmonics.SphericalHarmonicFit method)</a>
 </li>
       <li><a href="code_docs.html#mri_distortion_toolkit.utilities.printProgressBar">printProgressBar() (in module mri_distortion_toolkit.utilities)</a>
 </li>
@@ -303,6 +346,8 @@
       <li><a href="code_docs.html#mri_distortion_toolkit.MarkerAnalysis.MarkerVolume.save_dicom_data">save_dicom_data() (mri_distortion_toolkit.MarkerAnalysis.MarkerVolume method)</a>
 </li>
       <li><a href="code_docs.html#mri_distortion_toolkit.utilities.sort_dicom_slices">sort_dicom_slices() (in module mri_distortion_toolkit.utilities)</a>
+</li>
+      <li><a href="code_docs.html#mri_distortion_toolkit.Harmonics.SphericalHarmonicFit">SphericalHarmonicFit (class in mri_distortion_toolkit.Harmonics)</a>
 </li>
   </ul></td>
 </tr></table>
