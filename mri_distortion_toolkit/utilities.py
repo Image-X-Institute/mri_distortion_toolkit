@@ -91,18 +91,7 @@ def build_dicom_affine(Dicomfiles):
 
 def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, length = 100, fill = '█'):
     """
-    [credit here](https://gist.github.com/greenstick/b23e475d2bfdc3a82e34eaa1f6781ee4)
-
-    Call in a loop to create terminal progress bar
-
-        iteration   - Required  :
-        total       - Required  :
-        prefix      - Optional  :
-        suffix      - Optional  :
-        decimals    - Optional  :
-        length      - Optional  :
-        fill        - Optional  :
-        printEnd    - Optional  : end character (e.g. "\r", "\r\n") (Str)
+    Call in a loop to create terminal progress bar. `credit here <https://gist.github.com/greenstick/b23e475d2bfdc3a82e34eaa1f6781ee4>`_
 
     :param iteration: current iteration (Int)
     :param total: total iterations (Int)

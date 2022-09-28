@@ -27,20 +27,32 @@ logger = logging.getLogger(__name__)
 
 class DistortionCorrectorBase:
     """
-    This algorithm is based on `this work`_<https://onlinelibrary.wiley.com/doi/epdf/10.1002/mrm.25487>
+    This is the base class which other distortion correction methods can inherit from, and includes the core required
+    behavior.
+
+    :param ImageDirectory: Directory containing images to correct. Note that all images matching ImExtension will be
+        read in; therefore only one series should be inside ImageDirectory (we dont check this!)
+    :type ImageDirectory: pathlib.Path or str
+    :param gradient_harmonics: a list of three harmonics, which should either be csv files exported from an instance of
+        SphericalHarmonicFit, or SphericalHarmonicFit.harmonics
+    :type gradient_harmonics: list
+    :param ImExtension: extension of files to read in in ImageDirectory, e.g. 'dcm', or 'IMA'
+    :type ImExtension: str, optional
+    :param dicom_data: A json file exported from an instance of MarkerVolume.dicom_data, or MarkerVolume.dicom_data. This
+        contains the information required to construct the distorted indices, which cannot be read from a single header.
+    :type dicom_data: json or dict
+    :param correct_through_plane: if True, through plane (3D) correction is carried out, which is roughly twice as slow
+        as 2D only
+    :type correct_through_plane: bool. optional
+    :param pad: pixels to 0 pad image volume. This can be useful in the k-space domain
+    :type pad: int, optional
     """
 
-    def __init__(self, ImageDirectory, NufftLibrary='finufft', gradient_harmonics=None,
-                 ImExtension='.dcm', dicom_data=None, correct_through_plane=True, pad=0):
+
+    def __init__(self, ImageDirectory, gradient_harmonics, dicom_data,
+                 ImExtension='.dcm', correct_through_plane=True, pad=0):
         """
-        :param ImageDirectory:
-        :param NufftLibrary:
-        :param Gx_Harmonics:
-        :param Gy_Harmonics:
-        :param Gz_Harmonics:
-        :param ImExtension:
-        :param dicom_data:
-        :param correct_through_plane:
+        init method
         """
 
         if 'DistortionCorrectorBase' in str(self.__class__):
@@ -303,7 +315,9 @@ class DistortionCorrectorBase:
 
     def correct_all_images(self):
         """
-        This will loop through and correct all IMA files in the input directory
+        This loops through the image array, and calls _correct_image on each slice.
+        If correct_through_plane is True, this process occurs twice, with the 'slice direction' being changed
+        in the second loop.
         :return:
         """
         start_time = perf_counter()
@@ -457,7 +471,8 @@ class DistortionCorrectorBase:
 
 class KspaceDistortionCorrector(DistortionCorrectorBase):
     """
-    :param NufftLibrary:
+    This performs correction using a least squares based approach in the k-space domain,
+    and is based on `this work <https://onlinelibrary.wiley.com/doi/epdf/10.1002/mrm.25487>`_
     """
 
     def __init__(self,NufftLibrary='finufft', pad=10, **kwds):
@@ -550,7 +565,8 @@ class KspaceDistortionCorrector(DistortionCorrectorBase):
 
 class ImageDomainDistortionCorrector(DistortionCorrectorBase):
     """
-
+    This performs image correction in the image domain by constructing a spline between the linear and distorted
+    indices.
     """
 
     def _correct_image(self):

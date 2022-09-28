@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MRI Distortion QA &mdash; MRI_DistortionQA  documentation</title>
+  <title>MRI Distortion QA &mdash; mri_distortion_toolkit  documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -14,6 +14,7 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
         <script>mermaid.initialize({startOnLoad:true});</script>
@@ -28,7 +29,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="#" class="icon icon-home"> MRI_DistortionQA
+            <a href="#" class="icon icon-home"> mri_distortion_toolkit
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -41,6 +42,8 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Worked Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="phantom_notes.html">MRI_DistortionPhantom</a></li>
+<li class="toctree-l1"><a class="reference internal" href="phantom_notes.html#indices-and-tables">Indices and tables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="code_docs.html">Code Documentation</a></li>
 </ul>
 
@@ -50,7 +53,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="#">MRI_DistortionQA</a>
+          <a href="#">mri_distortion_toolkit</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -69,10 +72,13 @@
            <div itemprop="articleBody">
              
   <section id="mri-distortion-qa">
-<h1>MRI Distortion QA<a class="headerlink" href="#mri-distortion-qa" title="Permalink to this headline"></a></h1>
+<h1>MRI Distortion QA<a class="headerlink" href="#mri-distortion-qa" title="Permalink to this heading"></a></h1>
 <p><a class="reference external" href="https://github.com/ACRF-Image-X-Institute/MRI_DistortionQA">This code</a> enables characterization and reporting of geometric distortion in Magnetic Resonance Imaging. The basic end-to-end workflow is below, but all steps have well defined input/output so you can use any part of this code independently from the other parts. For a tutorial on each step, click on the diagram below.</p>
 <div class="mermaid">
             flowchart LR;
+    subgraph
+    AA[Phantom Builder]
+    end
     A[Marker &lt;br&gt;Extraction]---&gt;B[Marker &lt;br&gt;Matching]
     B[Marker &lt;br&gt;Matching]---&gt;C[Field &lt;br&gt; Calculation] &amp; E[Automated &lt;br&gt;reporting]
     C[Field &lt;br&gt; Calculation]--&gt;D[Spherical Harmonic &lt;br&gt;Analysis]
@@ -86,7 +92,7 @@
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Worked Examples</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="Preamble.html">Preamble</a></li>
+<li class="toctree-l2"><a class="reference internal" href="phantom_design.html">Phantom Design</a></li>
 <li class="toctree-l2"><a class="reference internal" href="marker_extraction.html">Marker Extraction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="marker_matching.html">Marker Matching</a></li>
 <li class="toctree-l2"><a class="reference internal" href="field_calculation.html">Field Calculation</a></li>
@@ -94,20 +100,29 @@
 <li class="toctree-l2"><a class="reference internal" href="reporting.html">Reporting</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="phantom_notes.html">MRI_DistortionPhantom</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="FreeCADsetup.html">Getting Started</a></li>
+<li class="toctree-l2"><a class="reference internal" href="phantom_construction.html">Phantom Construction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="phantom_imaging.html">Phantom Imaging</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="phantom_notes.html#indices-and-tables">Indices and tables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="code_docs.html">Code Documentation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="code_docs.html#module-MRI_DistortionQA.MarkerAnalysis">MarkerAnalysis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="code_docs.html#module-MRI_DistortionQA.FieldCalculation">FieldCalculation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="code_docs.html#module-MRI_DistortionQA.FieldAnalysis">FieldAnalysis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="code_docs.html#module-MRI_DistortionQA.Reports">Reports</a></li>
-<li class="toctree-l2"><a class="reference internal" href="code_docs.html#module-MRI_DistortionQA.utilities">utilities</a></li>
-<li class="toctree-l2"><a class="reference internal" href="code_docs.html#module-MRI_DistortionQA.calculate_harmonics">calculate_harmonics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_docs.html#module-mri_distortion_toolkit.PhantomDesigner">Phantom Designer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_docs.html#module-mri_distortion_toolkit.MarkerAnalysis">Marker Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_docs.html#module-mri_distortion_toolkit.FieldCalculation">Field Calculation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_docs.html#module-mri_distortion_toolkit.Harmonics">Harmonic Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_docs.html#module-mri_distortion_toolkit.Reports">Reports</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_docs.html#module-mri_distortion_toolkit.DistortionCorrection">distortion_correction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_docs.html#module-mri_distortion_toolkit.utilities">utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_docs.html#module-mri_distortion_toolkit.calculate_harmonics">calculate_harmonics</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </section>
 <section id="indices-and-tables">
-<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline"></a></h1>
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this heading"></a></h1>
 <ul class="simple">
 <li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
 <li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>

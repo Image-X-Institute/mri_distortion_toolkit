@@ -1,40 +1,55 @@
 Code Documentation
 ==================
 
-MarkerAnalysis
---------------
+Phantom Designer
+----------------
 
-.. automodule:: MRI_DistortionQA.MarkerAnalysis
+.. automodule::  mri_distortion_toolkit.PhantomDesigner
+   :members:
+
+Marker Analysis
+---------------
+
+.. automodule::  mri_distortion_toolkit.MarkerAnalysis
    :members:
 
 
-FieldCalculation
-----------------
+Field Calculation
+-----------------
 
-.. automodule:: MRI_DistortionQA.FieldCalculation
+.. automodule:: mri_distortion_toolkit.FieldCalculation
     :members:
 
-FieldAnalysis
--------------
+Harmonic Analysis
+-----------------
 
-.. automodule:: MRI_DistortionQA.FieldAnalysis
+.. automodule:: mri_distortion_toolkit.Harmonics
     :members:
 
 Reports
 -------
 
-.. automodule:: MRI_DistortionQA.Reports
+.. automodule:: mri_distortion_toolkit.Reports
+    :members:
+    
+distortion_correction
+---------------------
+
+.. automodule:: mri_distortion_toolkit.DistortionCorrection
     :members:
 
 utilities
 ---------
 
-.. automodule:: MRI_DistortionQA.utilities
+.. automodule:: mri_distortion_toolkit.utilities
     :members:
 
 calculate_harmonics
 -------------------
 
-.. automodule:: MRI_DistortionQA.calculate_harmonics
+.. automodule:: mri_distortion_toolkit.calculate_harmonics
     :members:
+    
+    
+
 

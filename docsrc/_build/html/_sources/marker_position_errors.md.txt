@@ -1,4 +1,4 @@
-## Marker position stability
+# Marker position stability
 
 Errors in marker position can be a serious issue. This data set can help us get a grip on this, because we have several images of the phantom taken with different slice direction is likely to have the largest errors in marker extraction because the slice thickness is larger than the voxel size in-slice. For this data, the slice thickness is 4.0 mm and the pixel size in slice is 2.6 mm. 
 

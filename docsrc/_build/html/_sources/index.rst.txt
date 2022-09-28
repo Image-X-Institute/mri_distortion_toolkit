@@ -10,6 +10,9 @@ MRI Distortion QA
 .. mermaid::
 
   flowchart LR;
+      subgraph
+      AA[Phantom Builder]
+      end
       A[Marker <br>Extraction]--->B[Marker <br>Matching]
       B[Marker <br>Matching]--->C[Field <br> Calculation] & E[Automated <br>reporting]
       C[Field <br> Calculation]-->D[Spherical Harmonic <br>Analysis]
@@ -21,13 +24,12 @@ MRI Distortion QA
       click E "https://acrf-image-x-institute.github.io/MRI_DistortionQA/reporting.html"
 
 
-
-
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
    examples
+   phantom_notes
    code_docs
 
 Indices and tables
