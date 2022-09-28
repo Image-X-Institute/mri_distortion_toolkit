@@ -18,12 +18,12 @@ end
     D[Spherical Harmonic <br>Analysis]-->E[Automated <br>reporting];
     D[Spherical Harmonic <br>Analysis]-->F[Distortion Correction]
 	
-    click A "https://acrf-image-x-institute.github.io/mri_distortion_toolkit/code_docs.html#MRI_DistortionQA.MarkerAnalysis.MarkerVolume"
-    click B "https://acrf-image-x-institute.github.io/mri_distortion_toolkit/code_docs.html#MRI_DistortionQA.MarkerAnalysis.MatchedMarkerVolumes"
-    click C "https://acrf-image-x-institute.github.io/mri_distortion_toolkit/code_docs.html#MRI_DistortionQA.FieldCalculation.ConvertMatchedMarkersToBz"
-    click D "https://acrf-image-x-institute.github.io/mri_distortion_toolkit/code_docs.html#MRI_DistortionQA.FieldAnalysis.SphericalHarmonicFit"
-    click E "https://acrf-image-x-institute.github.io/mri_distortion_toolkit/code_docs.html#MRI_DistortionQA.Reports.MRI_QA_Reporter"
-
+	click AA "https://acrf-image-x-institute.github.io/mri_distortion_toolkit/phantom_design.html"
+    click A "https://acrf-image-x-institute.github.io/mri_distortion_toolkit/marker_extraction.html"
+    click B "https://acrf-image-x-institute.github.io/mri_distortion_toolkit/marker_matching.html"
+    click C "https://acrf-image-x-institute.github.io/mri_distortion_toolkit/field_calculation.html"
+    click D "https://acrf-image-x-institute.github.io/mri_distortion_toolkit/fit_spherical_harmonics.html"
+    click E "https://acrf-image-x-institute.github.io/mri_distortion_toolkit/reporting.html"
 ```
 
 ## Setup/Build/Install
