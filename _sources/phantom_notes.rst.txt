@@ -25,9 +25,3 @@ Compared to other MRI distortion phantoms, this is:
    /phantom_construction.md
    /phantom_imaging.md
 
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
