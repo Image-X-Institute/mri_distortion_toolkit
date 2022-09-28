@@ -89,11 +89,6 @@ class DistortionCorrectorBase:
         self.n_order = int(np.sqrt(self._Gx_Harmonics.size) - 1)
         self.Images = get_all_files(self.ImageDirectory, ImExtension)
         self.r_DSV = 150  # only for drawing on the plot
-        # Select nufft algorithm to use:
-        if not NufftLibrary in ['pynufft', 'finufft', 'torchnufft']:
-            raise NotImplementedError(f'Unknown NUFFTlibrary entered: {NufftLibrary}.'
-                         f'\nAllowed options are: pynufft, finufft, torchnufft')
-        self.NUFFTlibrary = NufftLibrary  # pynufft, finufft, or torchnufft
         self._check_input_data()
 
     @abstractmethod
@@ -475,15 +470,10 @@ class KspaceDistortionCorrector(DistortionCorrectorBase):
     and is based on `this work <https://onlinelibrary.wiley.com/doi/epdf/10.1002/mrm.25487>`_
     """
 
-    def __init__(self,NufftLibrary='finufft', pad=10, **kwds):
+    def __init__(self, pad=10, **kwds):
 
         super().__init__(pad=pad, **kwds)
-
-        # Select nufft algorithm to use:
-        if not NufftLibrary in ['pynufft', 'finufft', 'torchnufft']:
-            raise NotImplementedError(f'Unknown NUFFTlibrary entered: {NufftLibrary}.'
-                                      f'\nAllowed options are: pynufft, finufft, torchnufft')
-        self.NUFFTlibrary = NufftLibrary  # pynufft, finufft, or torchnufft
+        self.NUFFTlibrary = 'finufft'  # pynufft, finufft, or torchnufft
         self._check_input_data()
 
     def _generate_Kspace_data(self):
