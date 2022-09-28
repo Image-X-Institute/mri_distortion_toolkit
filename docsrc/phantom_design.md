@@ -1,8 +1,8 @@
 # Phantom Design
 
-You can use the phantom design module to create phantom designs, which will be automatically build in [FreeCAD](https://www.freecadweb.org/). Please see [here])() for instructions on installing and setting up FreeCAD.
+You can use the phantom design module to create phantom designs, which will be automatically build in [FreeCAD](https://www.freecadweb.org/). Please see [here](https://acrf-image-x-institute.github.io/mri_distortion_toolkit/FreeCADsetup.html#setting-up-freecad) for instructions on installing and setting up FreeCAD. Detailed notes on phantom [construction](https://acrf-image-x-institute.github.io/mri_distortion_toolkit/phantom_construction.html) and [imaging](https://acrf-image-x-institute.github.io/mri_distortion_toolkit/phantom_imaging.html) are also provided; the purpose of this section is to provide some examples of generating phantom designs.
 
-The Phantom design module is based around the concept of a `Slice`. You can stack multiple slices to build full phantom. The following script demonstrates the creation of a simple Slice with the [default parameters]():
+The Phantom design module is based around the concept of a `Slice`. You can stack multiple slices to build full phantom. The following script demonstrates the creation of a simple Slice with the [default parameters](https://acrf-image-x-institute.github.io/mri_distortion_toolkit/code_docs.html#module-mri_distortion_toolkit.PhantomDesigner):
 
 ```python
 from mri_distortion_toolkit import PhantomDesigner
@@ -17,9 +17,9 @@ if running_in_free_cad:
     Slice.draw_slice()
 ```
 
-Note that this to create any CAD, this script has to be executed as a FreeCAD macro. Otherwise, it simply create a python object that holds the geometric parameters.
+Note that this to create any CAD, this script has to be [executed as a FreeCAD macro](https://acrf-image-x-institute.github.io/mri_distortion_toolkit/FreeCADsetup.html). Otherwise, it simply create a python object that holds the geometric parameters.
 
-You have almost complete freedom to alter the slice shape and size, and also change where the marker positions are. For some inspiration, see [here](). Obviously to build a useful 3D phantom, you will need to stack multiple slices on top of each other. A simple example of building a multi slice phantom (again with mostly default [parameters]()) is below:
+You have almost complete freedom to alter the slice shape and size, and also change where the marker positions are. Obviously to build a useful 3D phantom, you will need to stack multiple slices on top of each other. A simple example of building a multi slice phantom (again with mostly default [parameters](https://acrf-image-x-institute.github.io/mri_distortion_toolkit/code_docs.html#module-mri_distortion_toolkit.PhantomDesigner)) is below:
 
 ```python
 from pathlib import Path
@@ -159,9 +159,10 @@ else:
 
 ## ToDo
 
-- [ ] add cross link to Free Cad Docs
-- [ ] add link to Slice parameters
+- [x] add cross link to Free Cad Docs
+- [x] add link to Slice parameters
 - [ ] add link to example
 - [ ] add link to parameters
 - [ ] add link from freeCAD setup back to this page
-- [ ] link readme to docs (and update where these links go)
+- [x] link readme to docs (and update where these links go)
+- [ ] update refs to phantom docs
