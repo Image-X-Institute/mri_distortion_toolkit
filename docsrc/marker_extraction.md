@@ -2,7 +2,7 @@
 
 ## Basic examples
 
-Say that you have [built](https://acrf-image-x-institute.github.io/MRI_DistortionPhantom/phantom_construction.html) and [imaged](https://acrf-image-x-institute.github.io/MRI_DistortionPhantom/phantom_imaging.html) a marker-based distortion phantom. To use this data within this library, you first have to extract the position of the markers and create a 'MarkerVolume'. This example shows you how do that.
+Say that you have [built](https://acrf-image-x-institute.github.io/mri_distortion_toolkit/phantom_construction.html) and [imaged](https://acrf-image-x-institute.github.io/mri_distortion_toolkit/phantom_imaging.html) a marker-based distortion phantom. To use this data within this library, you first have to extract the position of the markers and create a 'MarkerVolume'. This example shows you how do that.
 
 
 > |:warning:| For this part you will need some data. **Example data is provided [here](https://cloudstor.aarnet.edu.au/plus/s/Wm9vndV47u941JU)**. Download and unzip this data somewhere and take note of the path. The source code this example is based on is [here](https://github.com/ACRF-Image-X-Institute/MRI_DistortionQA/tree/main/examples).
@@ -134,11 +134,11 @@ See [here](https://slicer.readthedocs.io/en/latest/user_guide/modules/markups.ht
 
 ## Handling Fat-water shift 
 
-If you are using a phantom with oil filled markers, your images may be subject to [fat-water shift](https://acrf-image-x-institute.github.io/MRI_DistortionPhantom/phantom_imaging.html#fat-water-chemical-shift).
+If you are using a phantom with oil filled markers, your images may be subject to [fat-water shift](https://acrf-image-x-institute.github.io/mri_distortion_toolkit/phantom_imaging.html#fat-water-chemical-shift).
 
 The best way to check this is to take a forward/reverse gradient pair of images, and compare the markers in the middle of the DSV. Since B0 homogeneity is very good here, if the markers are offset from each other it is due to fat/water shift.
 
-You can read about the different options for handling this effect [here](https://acrf-image-x-institute.github.io/MRI_DistortionPhantom/phantom_imaging.html#fat-water-chemical-shift); but one option is to correct for this in software. If you want to do that, the code would look this:
+You can read about the different options for handling this effect [here](https://acrf-image-x-institute.github.io/mri_distortion_toolkit/phantom_imaging.html#fat-water-chemical-shift); but one option is to correct for this in software. If you want to do that, the code would look this:
 
 ```python
 from mri_distortion_toolkit.MarkerAnalysis import MarkerVolume
