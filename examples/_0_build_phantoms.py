@@ -19,7 +19,7 @@ This script was set up to demonstrate some of the different phantom designs that
 It is intended that you execute it as a macro from inside FreeCAD
 """
 different_designs =['elipsoid_cartesian', 'rectangle_polar', 'circle_spiral']
-design_to_build = different_designs[1]  # change this to change slice design
+design_to_build = different_designs[0]  # change this to change slice design
 SliceZPositions = 0
 
 if design_to_build == 'elipsoid_cartesian':
