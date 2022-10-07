@@ -20,7 +20,7 @@ class PhantomSlice:
     All dimensions in mm
     All inputs are optional; calling without defining will just use default value.
 
-    :param slice_shape: Shape of base slice. Currently can only be 'rectangle' but others could be added.
+    :param slice_shape: Shape of base slice. Currently can only be 'rectangle' or 'ellipse' but others could be added
     :type slice_shape: string
     :param slice_thickness: Thickness of slice in Z
     :type slice_thickness: float
