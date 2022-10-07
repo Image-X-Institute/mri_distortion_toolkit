@@ -42,5 +42,5 @@ Detailed documentation is [here](https://acrf-image-x-institute.github.io/mri_di
 
 - *docsrc* markdown/rst source documentation
 - *tests* test cases
-- *MRI_DistortionQA* source code
+- *MRI_DistortionQA* source code 
 - *examples* source code for the [worked examples](https://acrf-image-x-institute.github.io/mri_distortion_toolkit/examples.html)
