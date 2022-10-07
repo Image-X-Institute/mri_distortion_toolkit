@@ -2,10 +2,27 @@
 
 You can use the phantom design module to create phantom designs, which will be automatically build in [FreeCAD](https://www.freecadweb.org/). Please see [here](https://acrf-image-x-institute.github.io/mri_distortion_toolkit/FreeCADsetup.html#setting-up-freecad) for instructions on installing and setting up FreeCAD. Detailed notes on phantom [construction](https://acrf-image-x-institute.github.io/mri_distortion_toolkit/phantom_construction.html) and [imaging](https://acrf-image-x-institute.github.io/mri_distortion_toolkit/phantom_imaging.html) are also provided; the purpose of this section is to provide some examples of generating phantom designs.
 
+> :warning: To build phantoms within FreeCAD, you need to explicitly append the python path to include this code. This is because FreeCAD does not by default know where to locate this code:
+> ```python
+> path_to_source = Path(r'Path/this/package/is/installed')
+> sys.path.insert(0,path_to_source)
+> ```
+> if you aren't sure where this package is installed, you can figure it out like this:
+> ```python
+> import mri_distortion_toolkit
+> print(mri_distortion_toolkit.__path__[0])
+> ```
+
 The Phantom design module is based around the concept of a `Slice`. You can stack multiple slices to build full phantom. The following script demonstrates the creation of a simple Slice with the [default parameters](https://acrf-image-x-institute.github.io/mri_distortion_toolkit/code_docs.html#module-mri_distortion_toolkit.PhantomDesigner):
 
 ```python
 from mri_distortion_toolkit import PhantomDesigner
+from pathlib import Path
+import sys
+
+path_to_source = Path(__file__).parent.parent
+sys.path.insert(0, str(path_to_source))
+
 try:
     import FreeCAD
     running_in_free_cad = True
@@ -22,18 +39,18 @@ Note that this to create any CAD, this script has to be [executed as a FreeCAD m
 You have almost complete freedom to alter the slice shape and size, and also change where the marker positions are. Obviously to build a useful 3D phantom, you will need to stack multiple slices on top of each other. A simple example of building a multi slice phantom (again with mostly default [parameters](https://acrf-image-x-institute.github.io/mri_distortion_toolkit/code_docs.html#module-mri_distortion_toolkit.PhantomDesigner)) is below:
 
 ```python
+from mri_distortion_toolkit import PhantomDesigner
 from pathlib import Path
-import importlib
-import numpy as np
 import sys
+
 path_to_source = Path(__file__).parent.parent
 sys.path.insert(0, str(path_to_source))
-from mri_distortion_toolkit import PhantomDesigner
+
 try:
     import FreeCAD
-    run_in_free_cad = True
+    running_in_free_cad = True
 except ImportError:
-    run_in_free_cad = False
+    running_in_free_cad = False
 importlib.reload(PhantomDesigner)
 
 Nslices = 11 # make this an odd number to make sure you have a slize at z=0
