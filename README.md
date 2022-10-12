@@ -3,9 +3,7 @@
 
 This code enables characterization, reporting, and correction of geometric distortion in Magnetic Resonance Imaging.
 
-For the measurement of such distortions, see [here](https://github.com/ACRF-Image-X-Institute/MRI_DistortionPhantom). 
-
-The workflow steps are below, but all steps have well defined input/output so you can use any part of this code independently from the other parts. For a tutorial on each step, click on the diagram below. For an example of our automated reporting template see [here](https://acrf-image-x-institute.github.io/mri_distortion_toolkit/_static/MR_QA_report_20_05_2022.html)
+The workflow steps are below. All steps have well defined input/output so you can use any part of this code independently from the other parts. For an example of our automated reporting template see [here](https://acrf-image-x-institute.github.io/mri_distortion_toolkit/_static/MR_QA_report_20_05_2022.html)
 
 ```mermaid
 
@@ -32,7 +30,6 @@ end
 ```bash
 pip install mri_distortion_toolkit
 ```
-
 
 ## Usage
 
