@@ -15,10 +15,10 @@ If you use oil capsules as the markers in your phantom, there is an important ef
 
 In general, the best way to check whether you have removed the fat-water shift is to compare markers near the **center** of a phantom that were taken with a forward/reverse read out gradient (instructions for a siemens scanner below). Since B0 homogeneity should be good at the center of the phantom, if the central markers are not well aligned then it is because fat-water shift.
 
-![](_resources/FrequencyReset.jpg)
+![](__resources/FrequencyReset.jpg)
 **Figure: for a siemens scanner, the center frequency can be reset for a given load by going options>>adjustments then clicking go until the measurement converges (may take a few tries). Then click apply to apply the new frequency.**
 
-![](_resources/FatWaterDemo.JPG)
+![](__resources/FatWaterDemo.JPG)
 **Figure: In the original image, no fat water correction has been made. As a result, the markers in the center of the image are offset from each other in the frequency direction. In the second image, this effect has been corrected for in software. In the third image, this effect has been corrected for by adjust the center frequency of the scanner.**
 
 ## Separation of B0/ Gradient distortion effects
@@ -46,7 +46,7 @@ If this all makes your head hurt as much as it does mine, you have two options:
 1. If you don't care about B0 (e.g. you are sure it is small enough that you don't need to worry about it), then use a large imaging bandwidth in conjunction with a spin echo sequence. Both of these will minimize your sensitivity to B0 inhomogeneity such that you can ignore B0 effects.
 2. We have provide analysis software (**coming soon**!) ADD LINK that automates these steps for you. 
 
-![](_resources/PhaseDirection.jpg)
+![](__resources/PhaseDirection.jpg)
 **Figure: this is the screen where you can reverse the phase encoding direction in the Siemens software. In the siemens software, reversing the phase encoding direction also reverses the read out (frequency) direction.**
 
 

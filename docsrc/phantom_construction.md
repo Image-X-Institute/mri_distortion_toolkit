@@ -19,11 +19,11 @@ To export each drawing, simply select it, click file, export, then export as pdf
 
 From here, you can either print out each pdf if you intend to construct a phantom manually, or send this directly to the manufacturer. In our experience, this pdf drawing along with a phone call were all manufacturers needed.
 
-![](_resources/full_scale_drawing1.PNG)
+![](__resources/full_scale_drawing1.PNG)
 
 **Figure: using the full_scale_drawing** adds multiple drawings into the Model tree. Each of these must be manually exported (for now. we will add an auto method in future)
 
-![](_resources/TechDraw_prefs.PNG)
+![](__resources/TechDraw_prefs.PNG)
 
 **Figure: we suggest enabling the 'Print Center Marks' option, which doesn't show up in FreeCAD but will print a crosshair in each circle when you export to pdf. This is especially important if you intend to manually drill the holes**
 
@@ -47,11 +47,11 @@ To join the slices together, we used [threaded nylon guide rods](https://www.uni
 
 For our first phantom, we used a drill press on  [blue foam](https://dctech.com.au/products/styrofoam-rtm-x/). An image of this is below. This was quite sucessful, but rather painful to construct a phantom with many holes drilled. There are also obvious limitations to the accuracy of hole placement. We also found that unless you have a high quality drill press, the foam is quite prone to crumbling. 
 
-![](_resources/FirstPrototype.png)
+![](__resources/FirstPrototype.png)
 
 **Figure: Action shot of our first slice prototype in action!**
 
-![](_resources/FirstPrototypeProper.png)
+![](__resources/FirstPrototypeProper.png)
 
 **Figure: all slices from a drill press based phantom**
 
@@ -59,6 +59,6 @@ For our first phantom, we used a drill press on  [blue foam](https://dctech.com.
 
 The drill press version was excellent for development, but long term we wanted something more accurate and less labor intensive. For our second prototype, we utilized laser cut foam. There are many vendors capable of this manufacturing technique; we worked with [evolution gear](https://www.evolutiongear.com.au/custom-foam-cutting/). 
 
-![](_resources/LaserCutSlice.PNG)
+![](__resources/LaserCutSlice.PNG)
 
 **Figure: slice from a laser cut foam provider**
