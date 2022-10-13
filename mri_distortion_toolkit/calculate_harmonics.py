@@ -5,16 +5,13 @@ def calculate_harmonics(MagneticFields, n_order=8, norm=None):
     """
     This function is essentially a wrapper of convenience. Given a set of B fields and dicom_data,
     it will calculate and return the Gx, Gy, and Gz harmonics.
-    Note that the gradient harmonics will be normalised to a gradient strengt of 1 mT/m
 
     :param MagneticFields: a pandas dataframe with columns ['x', 'y', 'z', 'B_Gx', 'B_Gy', 'B_Gz', 'B0']. B0 is optional.
         x, y, z are in mm and the fields are in any unit - the harmonics will reflect the units
     :type MagneticFields: pandas dataframe
-    :param dicom_data: a dict containing required dicom data, such as that generated within the MarkerVolume class
-    :type dicom_data: dict
     :param n_order: order of harmonic fit
     :type n_order: int, optional
-    :param norm: Can pass a list of four valuues, the four returned harmonic lists will be normalised accordingly.
+    :param norm: Can pass a list of four values, the four returned harmonic lists will be normalised accordingly.
         e.g. norm = [2,2,2,2] will divide all harmonics by 2. This is useful so you can normalise the fields to some
         value
     :return: G_x_Harmonics, G_y_Harmonics, G_z_Harmonics, B0_Harmonics
