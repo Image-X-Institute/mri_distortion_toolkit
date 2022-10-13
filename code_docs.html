@@ -881,15 +881,12 @@ if the latter, reads into  a dict and returns</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="mri_distortion_toolkit.utilities.get_gradient_spherical_harmonics">
 <span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.utilities.</span></span><span class="sig-name descname"><span class="pre">get_gradient_spherical_harmonics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Gx_Harmonics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Gy_Harmonics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Gz_Harmonics</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.utilities.get_gradient_spherical_harmonics" title="Permalink to this definition"></a></dt>
-<dd><p>return the gradient spherical harmonics as as pandas series. this function is simply a clean way to handle
+<dd><p>return the gradient spherical harmonics as pandas series. this function is simply a clean way to handle
 the different ways users can specify harmonics to other componets of this code</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>Harmonics</strong> – </p></li>
-<li><p><strong>Gx_Harmonics</strong> – either a pandas series or a path to a csv. If it is already a series we do nothing, but handle
-this option for cleaner code elsewhere. Gy_Harmonics and Gz_Harmonics are the same</p></li>
-</ul>
+<dd class="field-odd"><p><strong>Gx_Harmonics</strong> – either a pandas series or a path to a csv. If it is already a series we do nothing, but handle
+this option for cleaner code elsewhere. Gy_Harmonics and Gz_Harmonics are the same.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Gx_Harmonics, Gy_Harmonics, Gz_Harmonics as Pandase series</p>

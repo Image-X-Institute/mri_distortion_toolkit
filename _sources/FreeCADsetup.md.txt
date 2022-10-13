@@ -9,7 +9,7 @@ FreeCAD of course has its [own documentation](https://wiki.freecad.org/Getting_s
 3. In “View” “panels” enable both the python console and the report view. This isn't required, but in my opinion tends to make life easier!
 4. After these steps, you should have something that looks like the image below, and are ready to generate your first phantom!
 
-![](_resources/FreeCADsetup.jpg)
+![](__resources/FreeCADsetup.jpg)
 
 
 
