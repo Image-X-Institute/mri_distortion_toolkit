@@ -16,6 +16,7 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
         <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
         <script>mermaid.initialize({startOnLoad:true});</script>
     <script src="_static/js/theme.js"></script>
@@ -43,7 +44,6 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Worked Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="phantom_notes.html">MRI_DistortionPhantom</a></li>
-<li class="toctree-l1"><a class="reference internal" href="phantom_notes.html#indices-and-tables">Indices and tables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="code_docs.html">Code Documentation</a></li>
 </ul>
 
@@ -73,21 +73,23 @@
              
   <section id="mri-distortion-qa">
 <h1>MRI Distortion QA<a class="headerlink" href="#mri-distortion-qa" title="Permalink to this heading"></a></h1>
-<p><a class="reference external" href="https://github.com/ACRF-Image-X-Institute/MRI_DistortionQA">This code</a> enables characterization and reporting of geometric distortion in Magnetic Resonance Imaging. The basic end-to-end workflow is below, but all steps have well defined input/output so you can use any part of this code independently from the other parts. For a tutorial on each step, click on the diagram below.</p>
+<p><a class="reference external" href="https://github.com/ACRF-Image-X-Institute/mri_distortion_toolkit">This code</a> enables characterization and reporting of geometric distortion in Magnetic Resonance Imaging. The basic end-to-end workflow is below, but all steps have well defined input/output so you can use any part of this code independently from the other parts. For a tutorial on each step, click on the diagram below.</p>
 <div class="mermaid">
-            flowchart LR;
-    subgraph
-    AA[Phantom Builder]
-    end
+            flowchart LR
+subgraph AA[Phantom Design]
+end
     A[Marker &lt;br&gt;Extraction]---&gt;B[Marker &lt;br&gt;Matching]
     B[Marker &lt;br&gt;Matching]---&gt;C[Field &lt;br&gt; Calculation] &amp; E[Automated &lt;br&gt;reporting]
     C[Field &lt;br&gt; Calculation]--&gt;D[Spherical Harmonic &lt;br&gt;Analysis]
     D[Spherical Harmonic &lt;br&gt;Analysis]--&gt;E[Automated &lt;br&gt;reporting];
-    click A &quot;https://acrf-image-x-institute.github.io/MRI_DistortionQA/marker_extraction.html&quot;
-    click B &quot;https://acrf-image-x-institute.github.io/MRI_DistortionQA/marker_matching.html&quot;
-    click C &quot;https://acrf-image-x-institute.github.io/MRI_DistortionQA/field_calculation.html&quot;
-    click D &quot;https://acrf-image-x-institute.github.io/MRI_DistortionQA/fit_spherical_harmonics.html&quot;
-    click E &quot;https://acrf-image-x-institute.github.io/MRI_DistortionQA/reporting.html&quot;
+    D[Spherical Harmonic &lt;br&gt;Analysis]--&gt;F[Distortion Correction]
+
+    click AA &quot;https://acrf-image-x-institute.github.io/mri_distortion_toolkit/phantom_notes.html&quot;
+    click A &quot;https://acrf-image-x-institute.github.io/mri_distortion_toolkit/marker_extraction.html&quot;
+    click B &quot;https://acrf-image-x-institute.github.io/mri_distortion_toolkit/marker_matching.html&quot;
+    click C &quot;https://acrf-image-x-institute.github.io/mri_distortion_toolkit/field_calculation.html&quot;
+    click D &quot;https://acrf-image-x-institute.github.io/mri_distortion_toolkit/fit_spherical_harmonics.html&quot;
+    click E &quot;https://acrf-image-x-institute.github.io/mri_distortion_toolkit/reporting.html&quot;
         </div><div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
@@ -106,7 +108,6 @@
 <li class="toctree-l2"><a class="reference internal" href="phantom_imaging.html">Phantom Imaging</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="phantom_notes.html#indices-and-tables">Indices and tables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="code_docs.html">Code Documentation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="code_docs.html#module-mri_distortion_toolkit.PhantomDesigner">Phantom Designer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="code_docs.html#module-mri_distortion_toolkit.MarkerAnalysis">Marker Analysis</a></li>

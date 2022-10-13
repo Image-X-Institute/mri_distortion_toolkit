@@ -406,13 +406,11 @@ def convert_spherical_harmonics(harmonics, input_format='full', output_format='n
 
 def get_gradient_spherical_harmonics(Gx_Harmonics, Gy_Harmonics, Gz_Harmonics):
     """
-    return the gradient spherical harmonics as as pandas series. this function is simply a clean way to handle
+    return the gradient spherical harmonics as pandas series. this function is simply a clean way to handle
     the different ways users can specify harmonics to other componets of this code
 
-    :param Harmonics:
-
     :param Gx_Harmonics: either a pandas series or a path to a csv. If it is already a series we do nothing, but handle
-        this option for cleaner code elsewhere. Gy_Harmonics and Gz_Harmonics are the same
+        this option for cleaner code elsewhere. Gy_Harmonics and Gz_Harmonics are the same.
     :returns: Gx_Harmonics, Gy_Harmonics, Gz_Harmonics as Pandase series
     """
 
@@ -424,7 +422,6 @@ def get_gradient_spherical_harmonics(Gx_Harmonics, Gy_Harmonics, Gz_Harmonics):
         raise AttributeError('could not read in Gx harmonics...please input either a series or a '
                      'path to a saved csv file')
 
-
     if isinstance(Gy_Harmonics, pd.Series):
         Gy_Harmonics = Gy_Harmonics
     elif isinstance(Gy_Harmonics, (str,Path)):
@@ -432,7 +429,6 @@ def get_gradient_spherical_harmonics(Gx_Harmonics, Gy_Harmonics, Gz_Harmonics):
     else:
         raise AttributeError('could not read in Gy harmonics...please input either a series or a '
                      'path to a saved csv file')
-
 
     if isinstance(Gz_Harmonics, pd.Series):
         Gz_Harmonics = Gz_Harmonics

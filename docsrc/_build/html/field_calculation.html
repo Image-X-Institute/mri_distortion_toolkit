@@ -16,6 +16,7 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
         <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
         <script>mermaid.initialize({startOnLoad:true});</script>
     <script src="_static/js/theme.js"></script>
@@ -52,7 +53,6 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="phantom_notes.html">MRI_DistortionPhantom</a></li>
-<li class="toctree-l1"><a class="reference internal" href="phantom_notes.html#indices-and-tables">Indices and tables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="code_docs.html">Code Documentation</a></li>
 </ul>
 
@@ -84,7 +84,6 @@
   <section id="field-calculation">
 <h1>Field Calculation<a class="headerlink" href="#field-calculation" title="Permalink to this heading"></a></h1>
 <p>Once we have the marker positions created from each field, we can convert these positions into magnetic fields for each of the gradient coils (and, if you used the reverse gradient technique, and estimate of B0). This example shows how to do this.</p>
-<p>coverage-badge -f -o docsrc/__resources/coverage.svgbash</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">mri_distortion_toolkit.FieldCalculation</span> <span class="kn">import</span> <span class="n">ConvertMatchedMarkersToBz</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>

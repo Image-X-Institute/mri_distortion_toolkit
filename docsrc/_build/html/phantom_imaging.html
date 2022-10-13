@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Phantom Imaging &mdash; mri_distortion_toolkit  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+        <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+        <script>mermaid.initialize({startOnLoad:true});</script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Code Documentation" href="code_docs.html" />
+    <link rel="prev" title="Phantom Construction" href="phantom_construction.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> mri_distortion_toolkit
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Worked Examples</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="phantom_notes.html">MRI_DistortionPhantom</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="FreeCADsetup.html">Getting Started</a></li>
+<li class="toctree-l2"><a class="reference internal" href="phantom_construction.html">Phantom Construction</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Phantom Imaging</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#fat-water-chemical-shift">Fat-Water chemical shift</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#separation-of-b0-gradient-distortion-effects">Separation of B0/ Gradient distortion effects</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="code_docs.html">Code Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">mri_distortion_toolkit</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="phantom_notes.html">MRI_DistortionPhantom</a> &raquo;</li>
+      <li>Phantom Imaging</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/phantom_imaging.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="phantom-imaging">
+<h1>Phantom Imaging<a class="headerlink" href="#phantom-imaging" title="Permalink to this heading"></a></h1>
+<p>Below are some things to think about when imaging the phantom. \</p>
+<p>All our development work has been on a siemens scanner running VB 19A. Therefore, although the principles outlined below are scanner independent, the specific instructions are siemens specific. If you can update these instructions for other vendors, please do so!</p>
+<section id="fat-water-chemical-shift">
+<h2>Fat-Water chemical shift<a class="headerlink" href="#fat-water-chemical-shift" title="Permalink to this heading"></a></h2>
+<p>If you use oil capsules as the markers in your phantom, there is an important effect you must be aware of: <a class="reference external" href="https://mriquestions.com/f-w-chemical-shift.html">Fat-Water chemical shift</a>. This means if your scanner has a center frequency calibrated for water (which it almost certainly does), the oil based capsules will be offset in the readout direction. There are a number of things you can do to avoid this:</p>
+<ol class="arabic simple">
+<li><p><strong>Set the scanner center frequency to oil instead of wate</strong>r. Most scanners should have some method to reset the central frequency based on a given load. Specific instructions are scanner specific; an example from our siemens scanner is shown below.  The phantom itself may not provide sufficient load to carry out this procedure; in this case you could simply use a bottle of oil. If you successfully reset the central frequency, you will remove any offsets due to fat-water shift. The central frequency is encoded in the dicom header, so you can always retrospectively check what was used.</p></li>
+<li><p><strong>Use a large bandwidth</strong>: Since fundamentally this is a B0 distortion, the same mitigation used for B0 can be used. If you use a large enough bandwidth, the fat-water shift will be almost eliminated. However, this will also result in a drop in SNR, so the tradeoff must be made carefully.</p></li>
+<li><p><strong>Correct in software</strong>: the fat-water shift is a known effect; its magnitude at a given field strength can easily be calculated. Therefore, it is in possible to <a class="reference external" href="https://acrf-image-x-institute.github.io/MRI_DistortionQA/code_docs.html#module-MRI_DistortionQA.MarkerAnalysis">correct for it in software</a>.</p></li>
+<li><p><strong>Use water based markers:</strong> In many ways this is the ideal solution, except for one thing: we haven’t been able to find any water based markers yet!</p></li>
+</ol>
+<p>In general, the best way to check whether you have removed the fat-water shift is to compare markers near the <strong>center</strong> of a phantom that were taken with a forward/reverse read out gradient (instructions for a siemens scanner below). Since B0 homogeneity should be good at the center of the phantom, if the central markers are not well aligned then it is because fat-water shift.</p>
+<p><img alt="" src="_images/FrequencyReset.jpg" />
+<strong>Figure: for a siemens scanner, the center frequency can be reset for a given load by going options&gt;&gt;adjustments then clicking go until the measurement converges (may take a few tries). Then click apply to apply the new frequency.</strong></p>
+<p><img alt="" src="_images/FatWaterDemo.JPG" />
+<strong>Figure: In the original image, no fat water correction has been made. As a result, the markers in the center of the image are offset from each other in the frequency direction. In the second image, this effect has been corrected for in software. In the third image, this effect has been corrected for by adjust the center frequency of the scanner.</strong></p>
+</section>
+<section id="separation-of-b0-gradient-distortion-effects">
+<h2>Separation of B0/ Gradient distortion effects<a class="headerlink" href="#separation-of-b0-gradient-distortion-effects" title="Permalink to this heading"></a></h2>
+<p>There are two ‘system based’ sources of distortion in MRI: the gradient coils, and B0 inhomogeneity (there are also patient specific effects, which we ignore here.)</p>
+<ul class="simple">
+<li><p>Gradient distortion appears in every direction, and is essentially independent of imaging sequence.</p></li>
+<li><p>For standard sequences, B0 distortion appears only in the <strong>readout</strong> (frequency encode) direction, and is <a class="reference external" href="https://pubmed.ncbi.nlm.nih.gov/19810464/">highly sequence dependent</a> .</p></li>
+</ul>
+<p>For a given sequence, these effects can be separated as follows:</p>
+<ol class="arabic simple">
+<li><p>Take the first phantom image</p></li>
+<li><p>Reverse the phase encoding direction. See image below for example in a siemens scanner.</p></li>
+<li><p>The gradient distortion is the same in both images, while the direction of B0 distortion is reversed. Therefore, the gradient distortion is the average position of each marker between the two images.</p></li>
+</ol>
+<p>To put this into a very simple example: consider just one marker and one dimension. This marker has a ground truth position (for instance measured with CT) of x_gt; gradient non-linearity causes it instead to appear at x_gnl. If we take two scans with opposite encoding directions x_forward and x_backward, we observe this marker at x_scan1 and x_scan2. We can separate the gradient and B0 effects as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">x_gnl</span> <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">x_scan1</span><span class="p">,</span> <span class="n">x_scan2</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="n">x_scan1</span><span class="p">,</span> <span class="n">x_scan2</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
+<span class="n">x_b0</span> <span class="o">=</span> <span class="n">x_gt</span> <span class="o">-</span> <span class="n">x_gnl</span>
+</pre></div>
+</div>
+<p>At this point, we have a good estimate of the perturbation caused by gradient non-linearity in x which will be sequence independent, and a good estimate of the perturbation caused by B0, which will be sequence dependent. We would then have to repeat this process for encoding directions y and z to get a good estimate of each gradient field.</p>
+<p>If this all makes your head hurt as much as it does mine, you have two options:</p>
+<ol class="arabic simple">
+<li><p>If you don’t care about B0 (e.g. you are sure it is small enough that you don’t need to worry about it), then use a large imaging bandwidth in conjunction with a spin echo sequence. Both of these will minimize your sensitivity to B0 inhomogeneity such that you can ignore B0 effects.</p></li>
+<li><p>We have provide analysis software (<strong>coming soon</strong>!) ADD LINK that automates these steps for you.</p></li>
+</ol>
+<p><img alt="" src="_images/PhaseDirection.jpg" />
+<strong>Figure: this is the screen where you can reverse the phase encoding direction in the Siemens software. In the siemens software, reversing the phase encoding direction also reverses the read out (frequency) direction.</strong></p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="phantom_construction.html" class="btn btn-neutral float-left" title="Phantom Construction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="code_docs.html" class="btn btn-neutral float-right" title="Code Documentation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Brendan Whelan(s).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

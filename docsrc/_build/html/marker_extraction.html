@@ -16,6 +16,7 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
         <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
         <script>mermaid.initialize({startOnLoad:true});</script>
     <script src="_static/js/theme.js"></script>
@@ -62,7 +63,6 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="phantom_notes.html">MRI_DistortionPhantom</a></li>
-<li class="toctree-l1"><a class="reference internal" href="phantom_notes.html#indices-and-tables">Indices and tables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="code_docs.html">Code Documentation</a></li>
 </ul>
 
@@ -95,7 +95,7 @@
 <h1>Marker Extraction<a class="headerlink" href="#marker-extraction" title="Permalink to this heading"></a></h1>
 <section id="basic-examples">
 <h2>Basic examples<a class="headerlink" href="#basic-examples" title="Permalink to this heading"></a></h2>
-<p>Say that you have <a class="reference external" href="https://acrf-image-x-institute.github.io/MRI_DistortionPhantom/phantom_construction.html">built</a> and <a class="reference external" href="https://acrf-image-x-institute.github.io/MRI_DistortionPhantom/phantom_imaging.html">imaged</a> a marker-based distortion phantom. To use this data within this library, you first have to extract the position of the markers and create a ‘MarkerVolume’. This example shows you how do that.</p>
+<p>Say that you have <a class="reference external" href="https://acrf-image-x-institute.github.io/mri_distortion_toolkit/phantom_construction.html">built</a> and <a class="reference external" href="https://acrf-image-x-institute.github.io/mri_distortion_toolkit/phantom_imaging.html">imaged</a> a marker-based distortion phantom. To use this data within this library, you first have to extract the position of the markers and create a ‘MarkerVolume’. This example shows you how do that.</p>
 <blockquote>
 <div><p>|:warning:| For this part you will need some data. <strong>Example data is provided <a class="reference external" href="https://cloudstor.aarnet.edu.au/plus/s/Wm9vndV47u941JU">here</a></strong>. Download and unzip this data somewhere and take note of the path. The source code this example is based on is <a class="reference external" href="https://github.com/ACRF-Image-X-Institute/MRI_DistortionQA/tree/main/examples">here</a>.</p>
 </div></blockquote>
@@ -162,7 +162,7 @@
 <section id="do-we-guarantee-that-we-will-find-your-markers">
 <h2>Do we guarantee that we will find your markers?<a class="headerlink" href="#do-we-guarantee-that-we-will-find-your-markers" title="Permalink to this heading"></a></h2>
 <p>Short answer: No!</p>
-<p>Although the automatic extraction works quite well in most cases, because there are so many variables in MR, we have no knowledge of the signal-to-noise, contrast-to-noise, contrast type, voxel size, etc. that you may be using. This means that it is very difficult to automatically know what <a class="reference external" href="https://acrf-image-x-institute.github.io/MRI_DistortionQA/code_docs.html">settings</a> to use for marker extraction. In some low SNR cases, no matter what settings you use automatic extraction is difficult, but in most cases you should be able to find a reliable combination of settings for a given scan and scanner.</p>
+<p>Although the automatic extraction works quite well in most cases, because there are so many variables in MR, we have no knowledge of the signal-to-noise, contrast-to-noise, contrast type, voxel size, etc. that you may be using. This means that it is very difficult to automatically know what <a class="reference external" href="https://acrf-image-x-institute.github.io/mri_distortion_toolkit/code_docs.html#mri_distortion_toolkit.MarkerAnalysis.MarkerVolume">settings</a> to use for marker extraction. In some low SNR cases, no matter what settings you use automatic extraction is difficult, but in most cases you should be able to find a reliable combination of settings for a given scan and scanner.</p>
 </section>
 <section id="is-that-a-major-issue">
 <h2>Is that a major issue?<a class="headerlink" href="#is-that-a-major-issue" title="Permalink to this heading"></a></h2>
@@ -213,9 +213,9 @@
 </section>
 <section id="handling-fat-water-shift">
 <h2>Handling Fat-water shift<a class="headerlink" href="#handling-fat-water-shift" title="Permalink to this heading"></a></h2>
-<p>If you are using a phantom with oil filled markers, your images may be subject to <a class="reference external" href="https://acrf-image-x-institute.github.io/MRI_DistortionPhantom/phantom_imaging.html#fat-water-chemical-shift">fat-water shift</a>.</p>
+<p>If you are using a phantom with oil filled markers, your images may be subject to <a class="reference external" href="https://acrf-image-x-institute.github.io/mri_distortion_toolkit/phantom_imaging.html#fat-water-chemical-shift">fat-water shift</a>.</p>
 <p>The best way to check this is to take a forward/reverse gradient pair of images, and compare the markers in the middle of the DSV. Since B0 homogeneity is very good here, if the markers are offset from each other it is due to fat/water shift.</p>
-<p>You can read about the different options for handling this effect <a class="reference external" href="https://acrf-image-x-institute.github.io/MRI_DistortionPhantom/phantom_imaging.html#fat-water-chemical-shift">here</a>; but one option is to correct for this in software. If you want to do that, the code would look this:</p>
+<p>You can read about the different options for handling this effect <a class="reference external" href="https://acrf-image-x-institute.github.io/mri_distortion_toolkit/phantom_imaging.html#fat-water-chemical-shift">here</a>; but one option is to correct for this in software. If you want to do that, the code would look this:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">mri_distortion_toolkit.MarkerAnalysis</span> <span class="kn">import</span> <span class="n">MarkerVolume</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">mri_distortion_toolkit.utilities</span> <span class="kn">import</span> <span class="n">plot_MarkerVolume_overlay</span>

@@ -11,11 +11,21 @@ Compared to other MRI distortion phantoms, this is:
 - Water free: light weight and leak free
 - Designed for cheap and easy construction
 
-.. figure:: _resources/PhantomAnimation.gif
+.. figure:: __resources/PhantomAnimation.gif
     :align: center
     :alt: FreeCAD setup
-	:scale: 100%
+    :scale: 100%
     :figclass: align-center
+
+    An example of a multi slice phantom
+
+.. figure:: __resources/combined_screen_grab.png
+    :align: center
+    :alt: FreeCAD setup
+    :scale: 100%
+    :figclass: align-center
+
+    Examples of the some of the slice geometries which can easily be constructed
 
 .. toctree::
    :maxdepth: 2

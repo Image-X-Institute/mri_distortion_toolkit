@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MRI_DistortionPhantom &mdash; mri_distortion_toolkit  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+        <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+        <script>mermaid.initialize({startOnLoad:true});</script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Getting Started" href="FreeCADsetup.html" />
+    <link rel="prev" title="Reporting" href="reporting.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> mri_distortion_toolkit
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Worked Examples</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">MRI_DistortionPhantom</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="FreeCADsetup.html">Getting Started</a></li>
+<li class="toctree-l2"><a class="reference internal" href="phantom_construction.html">Phantom Construction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="phantom_imaging.html">Phantom Imaging</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="code_docs.html">Code Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">mri_distortion_toolkit</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>MRI_DistortionPhantom</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/phantom_notes.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="mri-distortionphantom">
+<h1>MRI_DistortionPhantom<a class="headerlink" href="#mri-distortionphantom" title="Permalink to this heading"></a></h1>
+<p>Geometric distortion in Magnetic Resonance Imaging (MRI) is a serious problem. The purpose of this code is to provide code such that users can automatically build a simple and cheap MRI distortion phantom to characterise MRI distortion.</p>
+<p>Compared to other MRI distortion phantoms, this is:</p>
+<ul class="simple">
+<li><p>Free and open source</p></li>
+<li><p>Completely user customizable</p></li>
+<li><p>Water free: light weight and leak free</p></li>
+<li><p>Designed for cheap and easy construction</p></li>
+</ul>
+<figure class="align-center" id="id1">
+<a class="reference internal image-reference" href="_images/PhantomAnimation.gif"><img alt="FreeCAD setup" src="_images/PhantomAnimation.gif" style="width: 400.0px; height: 289.0px;" /></a>
+<figcaption>
+<p><span class="caption-text">An example of a multi slice phantom</span><a class="headerlink" href="#id1" title="Permalink to this image"></a></p>
+</figcaption>
+</figure>
+<figure class="align-center" id="id2">
+<a class="reference internal image-reference" href="_images/combined_screen_grab.png"><img alt="FreeCAD setup" src="_images/combined_screen_grab.png" style="width: 2853.0px; height: 997.0px;" /></a>
+<figcaption>
+<p><span class="caption-text">Examples of the some of the slice geometries which can easily be constructed</span><a class="headerlink" href="#id2" title="Permalink to this image"></a></p>
+</figcaption>
+</figure>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="FreeCADsetup.html">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="FreeCADsetup.html#setting-up-freecad">Setting up FreeCAD</a></li>
+<li class="toctree-l2"><a class="reference internal" href="FreeCADsetup.html#generating-your-first-phantom-design">Generating your first phantom design</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="phantom_construction.html">Phantom Construction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="phantom_construction.html#specifying-geometry-for-manufacture">Specifying geometry for manufacture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="phantom_construction.html#markers">Markers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="phantom_construction.html#background-material">Background material</a></li>
+<li class="toctree-l2"><a class="reference internal" href="phantom_construction.html#joining-the-slices-together">Joining the slices together</a></li>
+<li class="toctree-l2"><a class="reference internal" href="phantom_construction.html#before-your-first-prototype-general-tips">Before your first prototype: general tips</a></li>
+<li class="toctree-l2"><a class="reference internal" href="phantom_construction.html#first-prototype-drill-press">First prototype: Drill press</a></li>
+<li class="toctree-l2"><a class="reference internal" href="phantom_construction.html#second-protoype-laser-cut-foam">Second protoype: Laser cut foam</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="phantom_imaging.html">Phantom Imaging</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="phantom_imaging.html#fat-water-chemical-shift">Fat-Water chemical shift</a></li>
+<li class="toctree-l2"><a class="reference internal" href="phantom_imaging.html#separation-of-b0-gradient-distortion-effects">Separation of B0/ Gradient distortion effects</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="reporting.html" class="btn btn-neutral float-left" title="Reporting" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="FreeCADsetup.html" class="btn btn-neutral float-right" title="Getting Started" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Brendan Whelan(s).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

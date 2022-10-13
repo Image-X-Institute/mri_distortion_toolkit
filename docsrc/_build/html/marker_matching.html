@@ -16,6 +16,7 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
         <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
         <script>mermaid.initialize({startOnLoad:true});</script>
     <script src="_static/js/theme.js"></script>
@@ -61,7 +62,6 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="phantom_notes.html">MRI_DistortionPhantom</a></li>
-<li class="toctree-l1"><a class="reference internal" href="phantom_notes.html#indices-and-tables">Indices and tables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="code_docs.html">Code Documentation</a></li>
 </ul>
 
@@ -100,7 +100,7 @@
 <li><p>Distorted marker location</p></li>
 <li><p>Knowledge of which distorted marker location corresponds to which ground truth marker location</p></li>
 </ol>
-<p>The <a class="reference external" href="https://acrf-image-x-institute.github.io/MRI_DistortionQA/marker_extraction.html">previous tutorial</a> demonstrated the various ways that MarkerVolumes can be created. In this section, we will demonstrate how these volumes can  be automatically matched.</p>
+<p>The <a class="reference external" href="https://acrf-image-x-institute.github.io/mri_distortion_toolkit/marker_extraction.html">previous tutorial</a> demonstrated the various ways that MarkerVolumes can be created. In this section, we will demonstrate how these volumes can  be automatically matched.</p>
 <p>Create a new python file called ‘marker_matching.py’ and copy the below contents into it:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">mri_distortion_toolkit.MarkerAnalysis</span> <span class="kn">import</span> <span class="n">MarkerVolume</span>
@@ -138,8 +138,8 @@
 <h2>Next steps<a class="headerlink" href="#next-steps" title="Permalink to this heading"></a></h2>
 <p>The next steps depend on what you are trying to achieve:</p>
 <ul class="simple">
-<li><p>If all you want to do is have a way to characterize distortion, the MatchedMarkerVolumes object essentially contains all the information you need, and you can move on to the <a class="reference external" href="https://acrf-image-x-institute.github.io/MRI_DistortionQA/reporting.html">Reports</a> modules</p></li>
-<li><p>If you want to calculate the fields and then characterize these fields in terms of spherical harmonics, your next step is <a class="reference external" href="https://acrf-image-x-institute.github.io/MRI_DistortionQA/field_calculation.html">field calculation</a></p></li>
+<li><p>If all you want to do is have a way to characterize distortion, the MatchedMarkerVolumes object essentially contains all the information you need, and you can move on to the <a class="reference external" href="https://acrf-image-x-institute.github.io/mri_distortion_toolkit/reporting.html">Reports</a> modules</p></li>
+<li><p>If you want to calculate the fields and then characterize these fields in terms of spherical harmonics, your next step is <a class="reference external" href="https://acrf-image-x-institute.github.io/mri_distortion_toolkit/field_calculation.html">field calculation</a></p></li>
 <li><p>You can also read on in this section for some more detailed examples of using MatchedMarkerVolumes, or you can come back to this later</p></li>
 </ul>
 </section>
@@ -155,12 +155,12 @@
 </pre></div>
 </div>
 <p><img alt="" src="_images/marker_match_failure.png" /></p>
-<p><strong>Not so good!! But a useful example for you of how things might look when the matching process fails.</strong></p>
+<p><strong>Not so good!! But a useful example for you of how things might look when the matching process fails. Note that when the code detects such cases, it will prompt you before continuing</strong></p>
 </section>
 <section id="what-should-i-do-when-the-matching-process-fails">
 <h2>What should I do when the matching process fails?<a class="headerlink" href="#what-should-i-do-when-the-matching-process-fails" title="Permalink to this heading"></a></h2>
-<p>Firstly, you can look over the <a class="reference external" href="https://acrf-image-x-institute.github.io/MRI_DistortionQA/code_docs.html#MRI_DistortionQA.MarkerAnalysis.MatchedMarkerVolumes">code docs</a> to see what options are available.</p>
-<p>But in general; this can be a hard problem to solve and in cases of extreme situation, I guess our algorithm will fail. So the short answer is <a class="reference external" href="https://github.com/ACRF-Image-X-Institute/MRI_DistortionQA/issues">log an issue</a> and then start working on a pull request ;-)</p>
+<p>Firstly, you can look over the <a class="reference external" href="https://acrf-image-x-institute.github.io/mri_distortion_toolkit/code_docs.html#mri_distortion_toolkit.MarkerAnalysis.MatchedMarkerVolumes">code docs</a> to see what options are available.</p>
+<p>But in general; this can be a hard problem to solve and in cases of extreme situation, I guess our algorithm will fail. So the short answer is <a class="reference external" href="https://github.com/ACRF-Image-X-Institute/mri_distortion_toolkit">log an issue</a> and then start working on a pull request ;-)</p>
 </section>
 <section id="incorporating-reverse-gradient-data">
 <h2>Incorporating reverse gradient data<a class="headerlink" href="#incorporating-reverse-gradient-data" title="Permalink to this heading"></a></h2>
@@ -169,7 +169,7 @@
 <li><p>Gradient distortion appears in every direction, and is essentially independent of imaging sequence.</p></li>
 <li><p>For standard sequences, B0 distortion appears only in the <strong>readout</strong> (frequency encode) direction, and is <a class="reference external" href="https://pubmed.ncbi.nlm.nih.gov/19810464/">highly sequence dependent</a> .</p></li>
 </ul>
-<p>These two effects can be seperated out using what is called ‘the reverse gradient technique’; for further explaition see <a class="reference external" href="https://pubmed.ncbi.nlm.nih.gov/19810464/">here</a> and <a class="reference external" href="https://aapm.onlinelibrary.wiley.com/doi/full/10.1002/mp.14695">here</a>. Instructions for taking such images on a siemens scanner are provided <a class="reference external" href="https://acrf-image-x-institute.github.io/MRI_DistortionPhantom/phantom_imaging.html">here</a>; this document is about how to analyse such images with this software.</p>
+<p>These two effects can be seperated out using what is called ‘the reverse gradient technique’; for further explaition see <a class="reference external" href="https://pubmed.ncbi.nlm.nih.gov/19810464/">here</a> and <a class="reference external" href="https://aapm.onlinelibrary.wiley.com/doi/full/10.1002/mp.14695">here</a>. Instructions for taking such images on a siemens scanner are provided <a class="reference external" href="https://acrf-image-x-institute.github.io/mri_distortion_toolkit/phantom_imaging.html#separation-of-b0-gradient-distortion-effects">here</a>; this document is about how to analyse such images with this software.</p>
 <p>In addition to the volumes you created above, we need to create a ‘reverse gradient’ volume, then we can send them MatchedMarkerVolumes as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># distorted centroids, reversed gradient</span>
 <span class="n">distorted_volume_rev</span> <span class="o">=</span> <span class="n">MarkerVolume</span><span class="p">(</span><span class="n">data_loc</span> <span class="o">/</span> <span class="s1">&#39;MR&#39;</span> <span class="o">/</span> <span class="s1">&#39;05 gre_trans_PA_330&#39;</span> <span class="o">/</span> <span class="s1">&#39;slicer_centroids.mrk.json&#39;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -204,7 +204,7 @@
 </section>
 <section id="creating-the-markervolumes-from-dicom-versus-json">
 <h2>Creating the MarkerVolumes from dicom versus json<a class="headerlink" href="#creating-the-markervolumes-from-dicom-versus-json" title="Permalink to this heading"></a></h2>
-<p>Note that in the above code, we read the markers in from a previously exported json files. This is only for speed; you can just as easily create them all directly from dicom, as demonstrated in the <a class="reference external" href="https://acrf-image-x-institute.github.io/MRI_DistortionQA/marker_extraction.html">marker extraction example</a>.</p>
+<p>Note that in the above code, we read the markers in from a previously exported json files. This is only for speed; you can just as easily create them all directly from dicom, as demonstrated in the <a class="reference external" href="https://acrf-image-x-institute.github.io/mri_distortion_toolkit/marker_extraction.html">marker extraction example</a></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># code to create MarkerVolume from CT; one extra parameter is required:</span>
 <span class="n">ground_truth_volume</span> <span class="o">=</span> <span class="n">MarkerVolume</span><span class="p">(</span><span class="n">data_loc</span> <span class="o">/</span> <span class="s1">&#39;CT&#39;</span><span class="p">,</span> <span class="n">r_max</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
 </pre></div>
