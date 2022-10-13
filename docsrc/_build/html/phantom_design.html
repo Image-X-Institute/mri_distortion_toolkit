@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Phantom Design &mdash; mri_distortion_toolkit  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+        <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+        <script>mermaid.initialize({startOnLoad:true});</script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Marker Extraction" href="marker_extraction.html" />
+    <link rel="prev" title="Worked Examples" href="examples.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> mri_distortion_toolkit
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="examples.html">Worked Examples</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Phantom Design</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#phantom-customization">Phantom Customization</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#specifying-marker-locations">Specifying marker locations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#specifying-a-load-region">Specifying a load region</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#specifying-a-dsv">Specifying a DSV</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#specifying-guide-rods">Specifying Guide Rods</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#complete-phantom-design">Complete phantom design</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="marker_extraction.html">Marker Extraction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="marker_matching.html">Marker Matching</a></li>
+<li class="toctree-l2"><a class="reference internal" href="field_calculation.html">Field Calculation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fit_spherical_harmonics.html">Spherical Harmonics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reporting.html">Reporting</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="phantom_notes.html">MRI_DistortionPhantom</a></li>
+<li class="toctree-l1"><a class="reference internal" href="code_docs.html">Code Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">mri_distortion_toolkit</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="examples.html">Worked Examples</a> &raquo;</li>
+      <li>Phantom Design</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/phantom_design.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="phantom-design">
+<h1>Phantom Design<a class="headerlink" href="#phantom-design" title="Permalink to this heading"></a></h1>
+<p>You can use the phantom design module to create phantom designs, which will be automatically build in <a class="reference external" href="https://www.freecadweb.org/">FreeCAD</a>. Please see <a class="reference external" href="https://acrf-image-x-institute.github.io/mri_distortion_toolkit/FreeCADsetup.html#setting-up-freecad">here</a> for instructions on installing and setting up FreeCAD. Detailed notes on phantom <a class="reference external" href="https://acrf-image-x-institute.github.io/mri_distortion_toolkit/phantom_construction.html">construction</a> and <a class="reference external" href="https://acrf-image-x-institute.github.io/mri_distortion_toolkit/phantom_imaging.html">imaging</a> are also provided; the purpose of this section is to provide some examples of generating phantom designs.</p>
+<blockquote>
+<div><p>:warning: To build phantoms within FreeCAD, you need to explicitly append the python path to include this code. This is because FreeCAD does not by default know where to locate this code:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">path_to_source</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;Path/this/package/is/installed&#39;</span><span class="p">)</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">path_to_source</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>if you aren’t sure where this package is installed, you can figure it out like this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">mri_distortion_toolkit</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">mri_distortion_toolkit</span><span class="o">.</span><span class="n">__path__</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>The Phantom design module is based around the concept of a <code class="docutils literal notranslate"><span class="pre">Slice</span></code>. You can stack multiple slices to build full phantom. The following script demonstrates the creation of a simple Slice with the <a class="reference external" href="https://acrf-image-x-institute.github.io/mri_distortion_toolkit/code_docs.html#module-mri_distortion_toolkit.PhantomDesigner">default parameters</a>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">mri_distortion_toolkit</span> <span class="kn">import</span> <span class="n">PhantomDesigner</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="n">path_to_source</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">path_to_source</span><span class="p">))</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">FreeCAD</span>
+    <span class="n">running_in_free_cad</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">running_in_free_cad</span> <span class="o">=</span> <span class="kc">False</span>
+
+<span class="n">Slice</span> <span class="o">=</span> <span class="n">PhantomDesigner</span><span class="o">.</span><span class="n">PhantomSlice</span><span class="p">()</span>
+<span class="k">if</span> <span class="n">running_in_free_cad</span><span class="p">:</span>
+    <span class="n">Slice</span><span class="o">.</span><span class="n">draw_slice</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Note that this to create any CAD, this script has to be <a class="reference external" href="https://acrf-image-x-institute.github.io/mri_distortion_toolkit/FreeCADsetup.html">executed as a FreeCAD macro</a>. Otherwise, it simply create a python object that holds the geometric parameters.</p>
+<p>You have almost complete freedom to alter the slice shape and size, and also change where the marker positions are. Obviously to build a useful 3D phantom, you will need to stack multiple slices on top of each other. A simple example of building a multi slice phantom (again with mostly default <a class="reference external" href="https://acrf-image-x-institute.github.io/mri_distortion_toolkit/code_docs.html#module-mri_distortion_toolkit.PhantomDesigner">parameters</a>) is below:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">mri_distortion_toolkit</span> <span class="kn">import</span> <span class="n">PhantomDesigner</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="n">path_to_source</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">path_to_source</span><span class="p">))</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">FreeCAD</span>
+    <span class="n">running_in_free_cad</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">running_in_free_cad</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">importlib</span><span class="o">.</span><span class="n">reload</span><span class="p">(</span><span class="n">PhantomDesigner</span><span class="p">)</span>
+
+<span class="n">Nslices</span> <span class="o">=</span> <span class="mi">11</span> <span class="c1"># make this an odd number to make sure you have a slize at z=0</span>
+<span class="n">SliceZPositions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">150</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="n">Nslices</span><span class="p">)</span>
+<span class="n">SliceThickness</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">SliceZPositions</span><span class="p">)))</span>
+
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">z_pos</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">SliceZPositions</span><span class="p">):</span>
+    <span class="n">Slice</span> <span class="o">=</span> <span class="n">PhantomDesigner</span><span class="o">.</span><span class="n">PhantomSlice</span><span class="p">(</span><span class="n">slice_thickness</span><span class="o">=</span><span class="n">SliceThickness</span><span class="p">,</span> <span class="n">z_pos</span><span class="o">=</span><span class="n">z_pos</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">run_in_free_cad</span><span class="p">:</span>
+        <span class="n">Slice</span><span class="o">.</span><span class="n">draw_slice</span><span class="p">()</span>
+        <span class="n">Slice</span><span class="o">.</span><span class="n">add_full_scale_drawing</span><span class="p">()</span>
+</pre></div>
+</div>
+<section id="phantom-customization">
+<h2>Phantom Customization<a class="headerlink" href="#phantom-customization" title="Permalink to this heading"></a></h2>
+<p>The baseline model of a distortion phantom is highly customizable. You can change any of the parameters in the FoamProtoypeExample.py file. One of main reasons you may wish to do this is that different scanner have different field of views, so you may wish to make your phantom larger or smaller.
+All options for the AddPhantomSlice class are described within the <span class="xref myst">code docs</span>, but we provide some additional notes on some of the more common things you may wish to change below:</p>
+<section id="specifying-marker-locations">
+<h3>Specifying marker locations<a class="headerlink" href="#specifying-marker-locations" title="Permalink to this heading"></a></h3>
+<p>The marker locations are specified on each slice object. We provide two methods to automatically generate marker locations: <code class="docutils literal notranslate"><span class="pre">HoleCentroids=cartesian</span></code> will generate a cartesian grid of markers, while <code class="docutils literal notranslate"><span class="pre">ROI_polar</span></code>  will generate concentric rings of markers. Both wil the <code class="docutils literal notranslate"><span class="pre">hole_spacing</span></code> parameter to space out markers. If you specify a <code class="docutils literal notranslate"><span class="pre">DSV</span></code>,  the <code class="docutils literal notranslate"><span class="pre">ROI_polar</span></code> option will ensure good marker coverage over the surface of this sphere, and will provide an etch of the intersection of the DSV on each slice surface so you can tell where the DSV is on each slice.</p>
+<p>You can specify a crosshair of markers using the <code class="docutils literal notranslate"><span class="pre">ReferenceCrosshairRadius</span></code> option. This will add a crosshair of markers within <code class="docutils literal notranslate"><span class="pre">ReferenceCrosshairRadius</span></code>. This is a good idea to add to the central slice, as it makes alignment with CT/Ground truth much easier.</p>
+<p>Finally, you may not wish to use any of the existing methods for defining marker positions. In that case, you are free to simply specify them as a list: <code class="docutils literal notranslate"><span class="pre">HoleCentroids</span> <span class="pre">=</span> <span class="pre">[[x1,x2,x3],[y1,y2,y3]]</span></code></p>
+</section>
+<section id="specifying-a-load-region">
+<h3>Specifying a load region<a class="headerlink" href="#specifying-a-load-region" title="Permalink to this heading"></a></h3>
+<p>This phantom consists of a base material that does not give MRI signal, and is then packed with oil capsules, which also don’t generate much signal. This can result in the RF coil of the scanner not being properly loaded. To avoid this, it is a good idea to add some load to your phantom. You can specify a region to be cut from the center of each slice using e.g. <code class="docutils literal notranslate"><span class="pre">LoadRegion={'shape':</span> <span class="pre">'rectangle',</span> <span class="pre">'width':</span> <span class="pre">100,</span> <span class="pre">'height':</span> <span class="pre">200}</span></code> (see code docs for other options).</p>
+<p>In our experience, not much load is required: during development we simple put a container of oil capsules into a zip lock bag. The exact location of the load also shouldn’t be especially sensitive, just put it somewhere near the middle.</p>
+</section>
+<section id="specifying-a-dsv">
+<h3>Specifying a DSV<a class="headerlink" href="#specifying-a-dsv" title="Permalink to this heading"></a></h3>
+<p>Specifying a Diameter of Spherical Volume (DSV) has two effects</p>
+<ol class="arabic simple">
+<li><p>the intersection of the DSV with each slice will be etched on the surface of the slice</p></li>
+<li><p>If you specify <code class="docutils literal notranslate"><span class="pre">HoleCentroids=ROI_polar</span></code> then the code will ensure good marker coverage over the surface of the DSV sphere. This can be important if you wish to fit spherical harmonics using this data.</p></li>
+</ol>
+</section>
+<section id="specifying-guide-rods">
+<h3>Specifying Guide Rods<a class="headerlink" href="#specifying-guide-rods" title="Permalink to this heading"></a></h3>
+<p>This phantom is based on the concept of individual slices which are stacked on top of each other. A number of methods can be envisaged to hold all of these slices together, but internally we have been using nylon guide rods with great success.</p>
+<p>To specify guide rods, simply use <code class="docutils literal notranslate"><span class="pre">GuideRods={'radius':</span> <span class="pre">5,</span> <span class="pre">'position':</span> <span class="pre">30,</span> <span class="pre">'height':</span> <span class="pre">370}</span></code>. This will add four holes to the corner of your slice. Each hole will have a radius of<code class="docutils literal notranslate"> <span class="pre">radius</span></code> and be  <code class="docutils literal notranslate"><span class="pre">position</span></code> mm from the edge of the slice.</p>
+</section>
+</section>
+<section id="complete-phantom-design">
+<h2>Complete phantom design<a class="headerlink" href="#complete-phantom-design" title="Permalink to this heading"></a></h2>
+<p>Below is the complete script for the phantom we <span class="xref myst">built</span> which incorporates all these elements</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span> <span class="nn">importlib</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="n">path_to_source</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">path_to_source</span><span class="p">))</span>
+<span class="kn">from</span> <span class="nn">mri_distortion_toolkit</span> <span class="kn">import</span> <span class="n">PhantomDesigner</span>
+<span class="n">importlib</span><span class="o">.</span><span class="n">invalidate_caches</span><span class="p">()</span>  <span class="c1"># maybe is not needed</span>
+<span class="n">importlib</span><span class="o">.</span><span class="n">reload</span><span class="p">(</span><span class="n">PhantomDesigner</span><span class="p">)</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">This is the script which I used to generate a design which was sent to Evolution Gear</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="n">Nslices</span> <span class="o">=</span> <span class="mi">11</span> <span class="c1"># make this an odd number to make sure you have a slize at z=0</span>
+<span class="n">SliceZPositions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">150</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="n">Nslices</span><span class="p">)</span>
+<span class="n">SliceThickness</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">SliceZPositions</span><span class="p">)))</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">FreeCAD</span>
+    <span class="n">run_in_free_cad</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">run_in_free_cad</span> <span class="o">=</span> <span class="kc">False</span>
+
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">z_pos</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">SliceZPositions</span><span class="p">):</span>
+    <span class="c1"># setup load:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">int</span><span class="p">(</span><span class="n">z_pos</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="p">((</span><span class="n">z_pos</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">120</span><span class="p">)</span> <span class="ow">and</span> <span class="p">((</span><span class="n">z_pos</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">20</span><span class="p">):</span>
+        <span class="n">load</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;shape&#39;</span><span class="p">:</span> <span class="s1">&#39;rectangle&#39;</span><span class="p">,</span> <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mi">110</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mi">510</span><span class="p">}</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">load</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="c1"># set up crosshair</span>
+    <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">z_pos</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">referenceRadius</span> <span class="o">=</span> <span class="mi">70</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">referenceRadius</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="c1"># set up end slices:</span>
+    <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">z_pos</span><span class="p">))</span> <span class="o">==</span> <span class="mi">150</span><span class="p">:</span>
+        <span class="n">HoleStart</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">HoleStart</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="n">Slice</span> <span class="o">=</span> <span class="n">PhantomDesigner</span><span class="o">.</span><span class="n">PhantomSlice</span><span class="p">(</span><span class="n">slice_shape</span><span class="o">=</span><span class="s1">&#39;rectangle&#39;</span><span class="p">,</span>
+                                           <span class="n">slice_thickness</span><span class="o">=</span><span class="n">SliceThickness</span><span class="p">,</span> <span class="n">HVL_x</span><span class="o">=</span><span class="mi">390</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">HVL_Y</span><span class="o">=</span><span class="mi">390</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
+                                           <span class="n">hole_depth</span><span class="o">=</span><span class="mi">17</span><span class="p">,</span> <span class="n">hole_spacing</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span>
+                                           <span class="n">hole_radius</span><span class="o">=</span><span class="mf">8.5</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
+                                           <span class="n">DSV</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">z_pos</span><span class="o">=</span><span class="n">z_pos</span><span class="p">,</span>
+                                           <span class="n">LoadRegion</span><span class="o">=</span><span class="n">load</span><span class="p">,</span>
+                                           <span class="n">GuideRods</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;radius&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;position&#39;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mi">370</span><span class="p">},</span>
+                                           <span class="n">HoleCentroids</span><span class="o">=</span><span class="s1">&#39;ROI_polar&#39;</span><span class="p">,</span>
+                                           <span class="n">ReferenceCrosshairRadius</span><span class="o">=</span><span class="n">referenceRadius</span><span class="p">,</span>
+                                           <span class="n">bottom_cut</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
+                                           <span class="n">hole_start</span><span class="o">=</span><span class="n">HoleStart</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">run_in_free_cad</span><span class="p">:</span>
+        <span class="n">Slice</span><span class="o">.</span><span class="n">draw_slice</span><span class="p">()</span>
+        <span class="n">Slice</span><span class="o">.</span><span class="n">add_full_scale_drawing</span><span class="p">()</span>
+
+    <span class="n">z_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">Slice</span><span class="o">.</span><span class="n">HoleCentroids</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="n">z_pos</span>
+    <span class="n">marker_positions_temp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">Slice</span><span class="o">.</span><span class="n">HoleCentroids</span><span class="p">),</span> <span class="n">z_array</span><span class="p">])</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">marker_positions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">marker_positions</span><span class="p">,</span> <span class="n">marker_positions_temp</span><span class="p">])</span>
+    <span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
+        <span class="n">marker_positions</span> <span class="o">=</span> <span class="n">marker_positions_temp</span>
+
+<span class="k">if</span> <span class="n">run_in_free_cad</span><span class="p">:</span>
+    <span class="n">Slice</span><span class="o">.</span><span class="n">draw_DSV</span><span class="p">()</span>
+    <span class="n">Slice</span><span class="o">.</span><span class="n">draw_Guide</span><span class="p">()</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">marker_positions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">marker_positions</span><span class="p">)</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;evolution_phantom_marker_positions.txt&#39;</span><span class="p">,</span> <span class="n">marker_positions</span><span class="p">)</span>
+
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="examples.html" class="btn btn-neutral float-left" title="Worked Examples" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="marker_extraction.html" class="btn btn-neutral float-right" title="Marker Extraction" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Brendan Whelan(s).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

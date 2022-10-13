@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Spherical Harmonics &mdash; mri_distortion_toolkit  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+        <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+        <script>mermaid.initialize({startOnLoad:true});</script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Reporting" href="reporting.html" />
+    <link rel="prev" title="Field Calculation" href="field_calculation.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> mri_distortion_toolkit
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="examples.html">Worked Examples</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="phantom_design.html">Phantom Design</a></li>
+<li class="toctree-l2"><a class="reference internal" href="marker_extraction.html">Marker Extraction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="marker_matching.html">Marker Matching</a></li>
+<li class="toctree-l2"><a class="reference internal" href="field_calculation.html">Field Calculation</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Spherical Harmonics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#some-plotting-examples">some plotting examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#explaining-the-code-output">Explaining the code output:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#next-steps">Next steps</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="reporting.html">Reporting</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="phantom_notes.html">MRI_DistortionPhantom</a></li>
+<li class="toctree-l1"><a class="reference internal" href="code_docs.html">Code Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">mri_distortion_toolkit</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="examples.html">Worked Examples</a> &raquo;</li>
+      <li>Spherical Harmonics</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/fit_spherical_harmonics.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="spherical-harmonics">
+<h1>Spherical Harmonics<a class="headerlink" href="#spherical-harmonics" title="Permalink to this heading"></a></h1>
+<p>Spherical harmonics can be used to characterise any magnetic field in a source free region. Practically, this means that if you can fit spherical harmonics to a limited number of data points, you can reconstruct the underlying magnetic field anywhere. This is particualrly useful for distortion correction algorithsm, but as we will see later can also be used to to generate data rich reports.
+A basic code to calculate spherical harmonics from the field data we have just calculated is below:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">mri_distortion_toolkit.MarkerAnalysis</span> <span class="kn">import</span> <span class="n">MarkerVolume</span>
+<span class="kn">from</span> <span class="nn">mri_distortion_toolkit</span> <span class="kn">import</span> <span class="n">calculate_harmonics</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">mri_distortion_toolkit.utilities</span> <span class="kn">import</span> <span class="n">get_dicom_data</span>
+
+
+<span class="n">FieldData</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;_example_data/Bfields.csv&#39;</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="s2">&quot;columns&quot;</span><span class="p">)</span>
+<span class="n">dicom_data_loc</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s1">&#39;_example_data&#39;</span><span class="p">)</span> <span class="o">/</span> <span class="s1">&#39;MR&#39;</span> <span class="o">/</span> <span class="s1">&#39;04 gre_trans_AP_330&#39;</span> <span class="o">/</span> <span class="s1">&#39;dicom_data.json&#39;</span>  <span class="c1"># previosly saved from a MarkerVolume</span>
+<span class="n">dicom_data</span> <span class="o">=</span> <span class="n">get_dicom_data</span><span class="p">(</span><span class="n">dicom_data_loc</span><span class="p">)</span>
+<span class="n">gradient_strength</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">dicom_data</span><span class="p">[</span><span class="s1">&#39;gradient_strength&#39;</span><span class="p">])</span> <span class="o">*</span> <span class="mf">1e3</span>
+<span class="n">normalisation_factor</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="o">/</span><span class="n">gradient_strength</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="o">/</span><span class="n">gradient_strength</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">1</span><span class="o">/</span><span class="n">gradient_strength</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="mi">1</span><span class="p">]</span>  <span class="c1"># this normalised gradient harmonics to 1mT/m</span>
+
+<span class="n">G_x_Harmonics</span><span class="p">,</span> <span class="n">G_y_Harmonics</span><span class="p">,</span> <span class="n">G_z_Harmonics</span><span class="p">,</span> <span class="n">B0_Harmonics</span> <span class="o">=</span> <span class="n">calculate_harmonics</span><span class="p">(</span><span class="n">FieldData</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="n">normalisation_factor</span><span class="p">,</span> <span class="n">n_order</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+<span class="c1"># note that B0_harmonics is None as we did not provide distorted_volume_rev to calculate_harmonics</span>
+<span class="n">G_x_Harmonics</span><span class="o">.</span><span class="n">harmonics</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">data_loc</span> <span class="o">/</span> <span class="s1">&#39;G_x_Harmonics.csv&#39;</span><span class="p">)</span>
+<span class="n">G_y_Harmonics</span><span class="o">.</span><span class="n">harmonics</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">data_loc</span> <span class="o">/</span> <span class="s1">&#39;G_y_Harmonics.csv&#39;</span><span class="p">)</span>
+<span class="n">G_z_Harmonics</span><span class="o">.</span><span class="n">harmonics</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">data_loc</span> <span class="o">/</span> <span class="s1">&#39;G_z_Harmonics.csv&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<section id="some-plotting-examples">
+<h2>some plotting examples<a class="headerlink" href="#some-plotting-examples" title="Permalink to this heading"></a></h2>
+<p>Each instance of spherical harmonic fit has some handly plotting function you can use to quickly visualise the fields and harmonics: examples below.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">G_x_Harmonics</span><span class="o">.</span><span class="n">plot_cut_planes</span><span class="p">()</span>
+<span class="n">G_x_Harmonics</span><span class="o">.</span><span class="n">plot_harmonics_pk_pk</span><span class="p">(</span><span class="n">cut_off</span><span class="o">=</span><span class="mf">.01</span><span class="p">)</span>
+<span class="n">G_x_Harmonics</span><span class="o">.</span><span class="n">print_key_harmonics</span><span class="p">(</span><span class="n">cut_off</span><span class="o">=</span><span class="mf">.01</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><img alt="" src="_images/x_gradient_cut_planes.png" /></p>
+<p><strong>Reconstructed fields in each cardinal plane for the X gradient coil. Note that there is strong variantion in X (as expected) and the field is close to 0 in the ZY plane (as expected)</strong></p>
+<p><img alt="" src="_images/x_gradient_harmonics_bar.png" /></p>
+<p><strong>This figure shows the dominant harmonics for the X gradient. If you are a harmonics nerd, you will know that the A11 harmonic corresponds to a perfect X gradient field; therefore it is gratifying to see that this is by far the most strongly expressed harmonic for the X gradient!</strong></p>
+</section>
+<section id="explaining-the-code-output">
+<h2>Explaining the code output:<a class="headerlink" href="#explaining-the-code-output" title="Permalink to this heading"></a></h2>
+<p>The code probably printed the following to the screen:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">FieldAnalysis</span><span class="o">.</span><span class="n">py</span><span class="p">:</span> <span class="n">line</span> <span class="mi">86</span>  <span class="n">WARNING</span><span class="p">]</span> <span class="nb">input</span> <span class="n">sample</span> <span class="n">points</span> <span class="n">do</span> <span class="ow">not</span> <span class="n">appear</span> <span class="n">to</span> <span class="n">cover</span> <span class="n">a</span> <span class="n">full</span> <span class="n">sphere</span>
+<span class="n">Initial</span> <span class="n">pk</span><span class="o">-</span><span class="n">pk</span><span class="p">:</span>        <span class="mf">693.401</span> <span class="n">μT</span>
+<span class="n">Reconstructed</span> <span class="n">pk</span><span class="o">-</span><span class="n">pk</span><span class="p">:</span>  <span class="mf">693.795</span> <span class="n">μT</span>
+<span class="n">Residual</span> <span class="n">pk</span><span class="o">-</span><span class="n">pk</span><span class="p">:</span>       <span class="mf">2.023</span> <span class="n">μT</span>
+</pre></div>
+</div>
+<p>The warning here is telling us that the sample points do not appear to cover a full sphere. We can ignore this in situations where we are confident that we have sufficient sampling of points for the order of harmonics we are fitting.</p>
+<ul class="simple">
+<li><p>[ ] ToDo: automate this check!!</p></li>
+</ul>
+<p>The second part is telling us the peak-to-peak perturbation over the surface of r_outer (150 mm in this case). We would like to see that the reconstructed pk-pk closely matches the input, and that the residual pk-pk is low relative to the total. In this case, the reconstructed pk-pk is within 0.4 μT and the residual is &lt; 1%, so the fit is pretty good!</p>
+</section>
+<section id="next-steps">
+<h2>Next steps<a class="headerlink" href="#next-steps" title="Permalink to this heading"></a></h2>
+<p>You are ready to move onto <a class="reference external" href="https://acrf-image-x-institute.github.io/mri_distortion_toolkit/reporting.html">Reporting</a>!</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="field_calculation.html" class="btn btn-neutral float-left" title="Field Calculation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="reporting.html" class="btn btn-neutral float-right" title="Reporting" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Brendan Whelan(s).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
