@@ -15,6 +15,10 @@ logger.propagate = False
 
 class ConvertMatchedMarkersToBz:
     """
+    an object to calculate and store magnetic fields.
+    Gradient fields are in T/m
+    B0 fields are in T
+
     :param MatchedCentroids: a pandas data frame containing columns ['x_gt', 'y_gt', 'z_gt', 'x_gnl', 'y_gnl', 'z_gnl'].
         If you want to calculate B0, is should also have ['x_B0', 'y_B0', 'z_B0']. Such a dataframe is normally created
         within the MatchedMarkerVolumes class. All coordinates in mm.

@@ -18,9 +18,9 @@ data_loc = this_file_loc / '_example_data'
 
 
 # Data import
-distorted_data_loc = Path(r'C:\Users\Brendan\Downloads\MRI_distortion_QA_sample_data\MRI_distortion_QA_sample_data\MR\04 gre_trans_AP_330')
-distorted_data_loc_rev = Path(r'C:\Users\Brendan\Downloads\MRI_distortion_QA_sample_data\MRI_distortion_QA_sample_data\MR\05 gre_trans_PA_330')
-gt_data_loc = Path(r'C:\Users\Brendan\Downloads\MRI_distortion_QA_sample_data\MRI_distortion_QA_sample_data\CT\slicer_centroids.mrk.json')
+distorted_data_loc = Path(r'/home/brendan/Downloads/MRI_distortion_QA_sample_data/MR/04 gre_trans_AP_330')
+distorted_data_loc_rev = Path(r'/home/brendan/Downloads/MRI_distortion_QA_sample_data/MR/05 gre_trans_PA_330')
+gt_data_loc = Path(r'/home/brendan/Downloads/MRI_distortion_QA_sample_data/CT/slicer_centroids.mrk.json')
 
 # extract markers:
 gt_volume = MarkerVolume(gt_data_loc, r_max=300)
