@@ -50,9 +50,9 @@ def test_calculate_harmonics():
                                                                                     n_order=8)
 
     # can't be bothered saving in and reading all harmonics so just checking max:
-    assert np.allclose(G_x_Harmonics.harmonics.max(), 409.97688028675766)
-    assert np.allclose(G_y_Harmonics.harmonics.max(), 700.0613996928333)
-    assert np.allclose(G_z_Harmonics.harmonics.max(), 569.0328634698217)
+    assert np.allclose(G_x_Harmonics.harmonics.max(), .40997688028675766)
+    assert np.allclose(G_y_Harmonics.harmonics.max(), .7000613996928333)
+    assert np.allclose(G_z_Harmonics.harmonics.max(), .5690328634698217)
 
 
 def test_harmonic_conversion():
