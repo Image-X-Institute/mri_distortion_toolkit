@@ -22,7 +22,6 @@ Compared to other MRI distortion phantoms, this is:
 .. figure:: __resources/combined_screen_grab.png
     :align: center
     :alt: FreeCAD setup
-    :scale: 100%
     :figclass: align-center
 
     Examples of the some of the slice geometries which can easily be constructed
