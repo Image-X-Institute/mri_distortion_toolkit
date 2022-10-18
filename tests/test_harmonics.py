@@ -46,7 +46,7 @@ def test_calculate_harmonics():
                             1]  # this normalised gradient harmonics to 1mT/m
 
     G_x_Harmonics, G_y_Harmonics, G_z_Harmonics, B0_Harmonics = calculate_harmonics(FieldData,
-                                                                                    norm=normalisation_factor,
+                                                                                    scale=normalisation_factor,
                                                                                     n_order=8)
 
     # can't be bothered saving in and reading all harmonics so just checking max:
