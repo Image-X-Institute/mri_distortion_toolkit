@@ -20,9 +20,7 @@ Compared to other MRI distortion phantoms, this is:
     An example of a multi slice phantom
 
 .. figure:: __resources/combined_screen_grab.png
-    :align: center
-    :alt: FreeCAD setup
-    :figclass: align-center
+    :width: 600
 
     Examples of the some of the slice geometries which can easily be constructed
 
