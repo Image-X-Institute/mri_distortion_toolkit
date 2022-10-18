@@ -147,9 +147,9 @@ class DistortionCorrectorBase:
         fields that have been applied to each voxel
         """
         legendre_basis = generate_legendre_basis(self.coords, self.n_order)
-        self.Gx_encode = (legendre_basis @ self._Gx_Harmonics)
-        self.Gy_encode = (legendre_basis @ self._Gy_Harmonics)
-        self.Gz_encode = (legendre_basis @ self._Gz_Harmonics)
+        self.Gx_encode = (legendre_basis @ self._Gx_Harmonics) * 1e3
+        self.Gy_encode = (legendre_basis @ self._Gy_Harmonics) * 1e3
+        self.Gz_encode = (legendre_basis @ self._Gz_Harmonics) * 1e3
 
     def _zero_volume(self, volume_to_zero):
         """

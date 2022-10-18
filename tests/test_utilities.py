@@ -125,11 +125,14 @@ def test_reconstruct_Bz():
     Gx_Harmonics, Gy_Harmonics, Gz_Harmonics = ut.get_gradient_spherical_harmonics(test_data_dir / 'G_x_Harmonics.csv',
                                                                           test_data_dir / 'G_y_Harmonics.csv',
                                                                           test_data_dir / 'G_z_Harmonics.csv')
-    Bz_uT = ut.reconstruct_Bz(Gx_Harmonics, test_coordinates_spherical,
+    dicom_data = ut.get_dicom_data(test_data_dir / 'dicom_data.json')
+    Bz_uT = ut.reconstruct_Bz(Gx_Harmonics * dicom_data['gradient_strength'][0], test_coordinates_spherical,
                       quantity='uT', r_outer=None)
-    Bz_T = ut.reconstruct_Bz(Gy_Harmonics, test_coordinates_spherical,
+    # this should be very roughly 700
+    assert ((Bz_uT.max() - Bz_uT.min()) - 700)/700 < 0.05  # accept 5% error
+    Bz_T = ut.reconstruct_Bz(Gy_Harmonics * dicom_data['gradient_strength'][0], test_coordinates_spherical,
                       quantity='T', r_outer=150)
-
+    assert ((Bz_T.max() - Bz_T.min())*1e6 - 700) / 700 < 0.05  # accept 5% error
     Bz_uT2 = pd.read_csv((test_data_dir / 'Bz_uT_test.csv').resolve(), index_col=0).squeeze("columns")
     Bz_T2 = pd.read_csv((test_data_dir / 'Bz_T_test.csv').resolve(), index_col=0).squeeze("columns")
     assert np.allclose(Bz_uT, Bz_uT2)

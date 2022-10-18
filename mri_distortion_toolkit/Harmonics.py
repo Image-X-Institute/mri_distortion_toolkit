@@ -18,6 +18,7 @@ logger.addHandler(ch)
 logger.setLevel(logging.INFO)  # This toggles all the logging in your app
 logger.propagate = False
 
+
 class SphericalHarmonicFit:
     """
     Uses single value decomposition to fit spherical harmonics to InputData.
@@ -58,10 +59,10 @@ class SphericalHarmonicFit:
     :param TrimDataBy_r_outer: if True, any input data outside r_outer is deleted
     :type TrimDataBy_r_outer: bool, optional
     :param scale: Value to scale the harmonics by. The main intention of this parameter is to normalise gradient
-        field harmonics to gradient strength. To work with our distortion correction code, you should scale each
-        gradient by 1/gradient_strength in mT/m; e.g. if the gradient strength is 10 mT/m then scale should be 1/10
+        field harmonics to gradient strength. harmonics will be multiplied by the value of scale
     :type scale: float, optional
     """
+
     def __init__(self, input_Bz_data, r_outer=150, n_order=8, AssessHarmonicPk_Pk=True, QuantifyFit=True,
                  TrimDataBy_r_outer=False, scale=1):
 
@@ -85,8 +86,7 @@ class SphericalHarmonicFit:
         self.legendre_basis = generate_legendre_basis(self.input_Bz_data, self.n_order)
         self._svd_fit()
 
-        if not self.scale == 1:
-            self.harmonics = self.harmonics*scale
+        self.harmonics = self.harmonics * scale
         if self.QuantifyFit:
             self._quantify_fit()
         if self.AssessHarmonicPk_Pk:
@@ -137,7 +137,7 @@ class SphericalHarmonicFit:
             self._coeff_names.append(f'A_{n}_0')
             k = k + 1
             for m in range(0, n):
-                self._coeff_names.append(f'A_{n}_{m+1}')
+                self._coeff_names.append(f'A_{n}_{m + 1}')
                 k = k + 1
                 self._coeff_names.append(f'B_{n}_{m + 1}')
                 k = k + 1
@@ -149,7 +149,8 @@ class SphericalHarmonicFit:
 
         inverseLegendre = np.linalg.pinv(self.legendre_basis)
 
-        if not np.allclose(inverseLegendre @ self.legendre_basis, np.eye(inverseLegendre.shape[0], self.legendre_basis.shape[1]),
+        if not np.allclose(inverseLegendre @ self.legendre_basis,
+                           np.eye(inverseLegendre.shape[0], self.legendre_basis.shape[1]),
                            rtol=5e-3, atol=5e-4):
             # check that the inverse times itself returns an idendity matrix as it should.
             logger.error('it appears that single value decomposition has failed. This occurs for a few reasons:'
@@ -168,9 +169,9 @@ class SphericalHarmonicFit:
             logger.warning('you are reconstructing a lot of points and it might be a bit slow.'
                            'I should write a down sampling routine here...')
 
-        Bz_recon = self.legendre_basis @ (self.harmonics/self.scale)
+        Bz_recon = self.legendre_basis @ (self.harmonics / self.scale)
         Residual = np.subtract(self.input_Bz_data.Bz, Bz_recon)
-        self._residual_pk_pk = float(abs(Residual.max() - Residual.min())*1e6)
+        self._residual_pk_pk = float(abs(Residual.max() - Residual.min()) * 1e6)
 
         initial_pk_pk = float(abs(self.input_Bz_data.Bz.max() - self.input_Bz_data.Bz.min()) * 1e6)
         recon_pk_pk = float(abs(Bz_recon.max() - Bz_recon.min()) * 1e6)
@@ -185,7 +186,6 @@ class SphericalHarmonicFit:
             print(f'Reconstructed pk-pk: {recon_pk_pk: 1.3e} uT')
             print(f'Residual pk-pk:      {self._residual_pk_pk: 1.3e} uT ({residual_percentage: 1.1f}%)')
 
-
         if residual_percentage > 2:
             logger.warning('residual_pk_pk is greater than 2 %. This may indicate that the order is not high enough,'
                            'or that the data is non physical (but it heavily depends on your use case!')
@@ -197,7 +197,7 @@ class SphericalHarmonicFit:
         if len(self.legendre_basis.index) < 1e4:
             # generate some points to ensure we cover a good portion of the sphere
             r = self.r_outer
-            azimuth = np.linspace(0, 2*np.pi, 100)
+            azimuth = np.linspace(0, 2 * np.pi, 100)
             elevation = np.linspace(0, np.pi, 100)
             [r, azimuth, elevation] = np.meshgrid(r, azimuth, elevation)
             coords = pd.DataFrame({'r': r.flatten(), 'azimuth': azimuth.flatten(), 'elevation': elevation.flatten()})
@@ -206,7 +206,7 @@ class SphericalHarmonicFit:
             legendre_basis_to_use = self.legendre_basis
 
         BasisRange = legendre_basis_to_use.apply(lambda x: abs(np.max(x) - np.min(x)))
-        self.HarmonicsPk_Pk = (self.harmonics/self.scale) * BasisRange * 1e6
+        self.HarmonicsPk_Pk = (self.harmonics / self.scale) * BasisRange * 1e6
 
     # Public Methods
 
@@ -219,7 +219,7 @@ class SphericalHarmonicFit:
         :type cut_off: float, optional
         """
 
-        if not hasattr(self,'HarmonicsPk_Pk'):
+        if not hasattr(self, 'HarmonicsPk_Pk'):
             self._assess_harmonic_pk_pk()
         plt.figure(figsize=[10, 5])
         # ax = sns.barplot(self.HarmonicsPk_Pk, y='pk-pk [\u03BCT]', x=)
@@ -227,15 +227,16 @@ class SphericalHarmonicFit:
         KeyHarmonics = self.HarmonicsPk_Pk.drop(self.HarmonicsPk_Pk[CutOffInd].index)
         HarmonicsToPlot = KeyHarmonics
 
-        axs = sns.barplot(x=HarmonicsToPlot.index, y=HarmonicsToPlot.values,  palette="Blues_d")
-        axs.set_title(f'Principle Harmonics pk-pk (>{cut_off*100: 1.0f}% of max)')
+        axs = sns.barplot(x=HarmonicsToPlot.index, y=HarmonicsToPlot.values, palette="Blues_d")
+        axs.set_title(f'Principle Harmonics pk-pk (>{cut_off * 100: 1.0f}% of max)')
 
         axs.set_ylabel('pk-pk [\u03BCT]')
         for item in axs.get_xticklabels():
             item.set_rotation(45)
         plt.show()
 
-    def plot_cut_planes(self, resolution=2.5, AddColorBar=True, quantity='uT', vmin=None, vmax=None):  # pragma: no cover
+    def plot_cut_planes(self, resolution=2.5, AddColorBar=True, quantity='uT', vmin=None,
+                        vmax=None):  # pragma: no cover
         """
         Reconstruct the Bz field at the cardinal planes.
         Note this is basically the same code copied three times in  a row, one for each plane.
@@ -258,13 +259,13 @@ class SphericalHarmonicFit:
 
         conversion_factor = 1
         # XY plane
-        x = np.linspace(-self.r_outer, self.r_outer, int((2*self.r_outer)/resolution)) * conversion_factor
-        y = np.linspace(-self.r_outer, self.r_outer, int((2*self.r_outer)/resolution)) * conversion_factor
+        x = np.linspace(-self.r_outer, self.r_outer, int((2 * self.r_outer) / resolution)) * conversion_factor
+        y = np.linspace(-self.r_outer, self.r_outer, int((2 * self.r_outer) / resolution)) * conversion_factor
         z = 0
         [x_recon, y_recon, z_recon] = np.meshgrid(x, y, z, indexing='ij')
         recon_coords = pd.DataFrame({'x': x_recon.flatten(), 'y': y_recon.flatten(), 'z': z_recon.flatten()})
         recon_coords = convert_cartesian_to_spherical(recon_coords)
-        Bz_recon = reconstruct_Bz(harmonics=self.harmonics/self.scale, coords=recon_coords, quantity=quantity)
+        Bz_recon = reconstruct_Bz(harmonics=self.harmonics / self.scale, coords=recon_coords, quantity=quantity)
         Bz_recon = Bz_recon.to_numpy().reshape(np.squeeze(x_recon).shape)
         XYimage = axs1.imshow(Bz_recon.T, extent=extent, vmin=vmin, vmax=vmax)
         axs1.set_xlabel('x [mm]')
@@ -275,13 +276,13 @@ class SphericalHarmonicFit:
         axs1.add_artist(draw_circle)
 
         # ZX plane
-        x = np.linspace(-self.r_outer,self.r_outer,int((2*self.r_outer)/resolution)) * conversion_factor
+        x = np.linspace(-self.r_outer, self.r_outer, int((2 * self.r_outer) / resolution)) * conversion_factor
         y = 0
-        z = np.linspace(-self.r_outer, self.r_outer, int((2*self.r_outer)/resolution)) * conversion_factor
+        z = np.linspace(-self.r_outer, self.r_outer, int((2 * self.r_outer) / resolution)) * conversion_factor
         [x_recon, y_recon, z_recon] = np.meshgrid(x, y, z, indexing='ij')
         recon_coords = pd.DataFrame({'x': x_recon.flatten(), 'y': y_recon.flatten(), 'z': z_recon.flatten()})
         recon_coords = convert_cartesian_to_spherical(recon_coords)
-        Bz_recon = reconstruct_Bz(harmonics=self.harmonics/self.scale, coords=recon_coords, quantity=quantity)
+        Bz_recon = reconstruct_Bz(harmonics=self.harmonics / self.scale, coords=recon_coords, quantity=quantity)
         Bz_recon = Bz_recon.to_numpy().reshape(np.squeeze(y_recon).shape)
         ZXimage = axs2.imshow(Bz_recon.T, extent=extent, vmin=vmin, vmax=vmax)
         axs2.set_xlabel('x [mm]')
@@ -293,12 +294,12 @@ class SphericalHarmonicFit:
 
         # ZY plane
         x = 0
-        y = np.linspace(-self.r_outer,self.r_outer,int((2*self.r_outer)/resolution)) * conversion_factor
-        z = np.linspace(-self.r_outer,self.r_outer,int((2*self.r_outer)/resolution)) * conversion_factor
+        y = np.linspace(-self.r_outer, self.r_outer, int((2 * self.r_outer) / resolution)) * conversion_factor
+        z = np.linspace(-self.r_outer, self.r_outer, int((2 * self.r_outer) / resolution)) * conversion_factor
         [x_recon, y_recon, z_recon] = np.meshgrid(x, y, z, indexing='ij')
         recon_coords = pd.DataFrame({'x': x_recon.flatten(), 'y': y_recon.flatten(), 'z': z_recon.flatten()})
         recon_coords = convert_cartesian_to_spherical(recon_coords)
-        Bz_recon = reconstruct_Bz(harmonics=self.harmonics/self.scale, coords=recon_coords, quantity=quantity)
+        Bz_recon = reconstruct_Bz(harmonics=self.harmonics / self.scale, coords=recon_coords, quantity=quantity)
         Bz_recon = Bz_recon.to_numpy().reshape(np.squeeze(z_recon).shape)
         ZYimage = axs3.imshow(Bz_recon.T, extent=extent, vmin=vmin, vmax=vmax)
         axs3.set_xlabel('y [mm]')
@@ -334,15 +335,12 @@ class SphericalHarmonicFit:
         if not hasattr(self, 'harmonics_pk_pk'):
             self._assess_harmonic_pk_pk()
 
-
         CutOffInd = abs(self.HarmonicsPk_Pk) < cut_off * abs(self.HarmonicsPk_Pk).max()
         KeyHarmonics = self.HarmonicsPk_Pk.drop(self.HarmonicsPk_Pk[CutOffInd].index)
         pd.set_option('display.float_format', lambda x: '%1.4ef' % x)
-        print(f'\nOnly displaying values >= {cut_off*100: 1.0f}% of the peak harmonic.')
+        print(f'\nOnly displaying values >= {cut_off * 100: 1.0f}% of the peak harmonic.')
         try:
             print('Values are in pk=pk [\u03BCT]')
         except UnicodeError:
             print('Values are in pk=pk uT]')
         print(f'{bcolors.OKBLUE}{KeyHarmonics.to_string()}{bcolors.ENDC}')
-
-

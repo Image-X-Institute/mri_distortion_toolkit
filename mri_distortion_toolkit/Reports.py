@@ -305,12 +305,13 @@ class MRI_QA_Reporter:
 
         gradient_strength = bandwidth * image_size / (gama * 1e6 * FOV * 1e-3)  # unit(T / m)
         # ^ this is a vector [gx, gy, gz]
+        # factor of 1e3 is for m to mm
         self._MatchedMarkerVolume = \
-            self._MatchedMarkerVolume.assign(x_gnl=self.Gx_Bfield / (gradient_strength[0]))
+            self._MatchedMarkerVolume.assign(x_gnl=self.Gx_Bfield * 1e3 / (gradient_strength[0]))
         self._MatchedMarkerVolume = \
-            self._MatchedMarkerVolume.assign(y_gnl=self.Gy_Bfield / (gradient_strength[1]))
+            self._MatchedMarkerVolume.assign(y_gnl=self.Gy_Bfield * 1e3 / (gradient_strength[1]))
         self._MatchedMarkerVolume = \
-            self._MatchedMarkerVolume.assign(z_gnl=self.Gz_Bfield / (gradient_strength[2]))
+            self._MatchedMarkerVolume.assign(z_gnl=self.Gz_Bfield * 1e3 / (gradient_strength[2]))
 
     def _reconstruct_gradient_fields(self):
         """

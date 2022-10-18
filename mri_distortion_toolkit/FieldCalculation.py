@@ -15,9 +15,13 @@ logger.propagate = False
 
 class ConvertMatchedMarkersToBz:
     """
+    an object to calculate and store magnetic fields.
+    Gradient fields are in T/m
+    B0 fields are in T
+
     :param MatchedCentroids: a pandas data frame containing columns ['x_gt', 'y_gt', 'z_gt', 'x_gnl', 'y_gnl', 'z_gnl'].
         If you want to calculate B0, is should also have ['x_B0', 'y_B0', 'z_B0']. Such a dataframe is normally created
-        within the MatchedMarkerVolumes class.
+        within the MatchedMarkerVolumes class. All coordinates in mm.
     :param dicom_data: either a dictionary or a path to a .json file. The minimume required parameters are below.
         dicom_data is calculated automatically when MR data is used to create a MarkerVolume, and can be exported
         to json using::
@@ -98,9 +102,10 @@ class ConvertMatchedMarkersToBz:
         """
         gradient_strength = np.array(self.dicom_data['gradient_strength'])  # unit(T / m)
         # ^ this is a vector [gx, gy, gz]
-        self.MagneticFields['B_Gx'] = self.MatchedCentroids.x_gnl * gradient_strength[0]
-        self.MagneticFields['B_Gy'] = self.MatchedCentroids.y_gnl * gradient_strength[1]
-        self.MagneticFields['B_Gz'] = self.MatchedCentroids.z_gnl * gradient_strength[2]
+        mm_to_m_factor = 1e-3
+        self.MagneticFields['B_Gx'] = self.MatchedCentroids.x_gnl * gradient_strength[0] * mm_to_m_factor
+        self.MagneticFields['B_Gy'] = self.MatchedCentroids.y_gnl * gradient_strength[1] * mm_to_m_factor
+        self.MagneticFields['B_Gz'] = self.MatchedCentroids.z_gnl * gradient_strength[2] * mm_to_m_factor
 
         # if possible, add in B0 to data
         B0_fields = ['x_B0', 'y_B0', 'z_B0']
@@ -108,6 +113,6 @@ class ConvertMatchedMarkersToBz:
         if B0_calc_possible:
             self._get_B0_calc_direction()
             self.MagneticFields['B0'] = self.MatchedCentroids[[self._B0_direction_string]] * \
-                                        gradient_strength[self._B0_direction_bool][0] * 1e-3
+                                        gradient_strength[self._B0_direction_bool][0] * mm_to_m_factor
 
 
