@@ -682,7 +682,7 @@ def print_dict(dict):
     for key in dict.keys():
         print(f'{key}: {dict[key]}')
 
-def plot_harmonics_over_sphere(harmonics, radius):
+def plot_harmonics_over_sphere(harmonics, radius, title=None):
     """
     plot the reconstructed harmonics over the surface of a sphere
     I've used plotly instead of matplotlib for this as I wasnt happy with the matplotlib result.
@@ -692,6 +692,8 @@ def plot_harmonics_over_sphere(harmonics, radius):
     :type radius: float
     :return: None
     """
+    if title is None:
+        title = 'DSV surface [uT]'
     # generate coordinates:
     _density = 100
     azimuth = np.linspace(0, 2*np.pi, _density)
@@ -706,16 +708,21 @@ def plot_harmonics_over_sphere(harmonics, radius):
 
     Bz = reconstruct_Bz(harmonics, coords)
     Bz = Bz.to_numpy().reshape(R.shape)
-    fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
 
-    fig_harmonic_surface = go.Figure(data=[go.Surface(z=Z, x=X, y=Y, colorbar=dict(title='B(uT)'), surfacecolor=Bz)])
+    fig_harmonic_surface = go.Figure(data=[go.Surface(z=Z, x=X, y=Y, colorbar=dict(title='B(uT)',
+                                                                                   titlefont={'size': 20},
+                                                                                   tickfont=dict(size=40)),
+                                                                    surfacecolor=Bz)])
 
-    _plotly_theme = 'plotly_white'
-    fig_harmonic_surface.update_layout(title='DSV surface [uT]', autosize=True,
-                                        template=_plotly_theme, scene=dict(
-            xaxis_title='X Axis (mm)',
-            yaxis_title='Y Axis (mm)',
-            zaxis_title='Z Axis (mm)'),
-            width=400, height=400)
+    _available_plotly_themes = ["plotly", "plotly_white", "plotly_dark", "ggplot2",
+                                "seaborn", "simple_white", "none"]
+    _plotly_theme = 'seaborn'
+    assert _plotly_theme in _available_plotly_themes
+    fig_harmonic_surface.update_layout(title=title, autosize=True,
+                                       template=_plotly_theme,
+                                       font={'size': 20},
+                                       scene=dict(xaxis=dict(title='X [mm]', titlefont=dict(size=20)),
+                                                  yaxis=dict(title='Y [mm]', titlefont=dict(size=20)),
+                                                  zaxis=dict(title='Z [mm]', titlefont=dict(size=20))))
 
     return fig_harmonic_surface
