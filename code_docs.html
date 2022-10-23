@@ -134,6 +134,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.utilities.plot_MarkerVolume_overlay"><code class="docutils literal notranslate"><span class="pre">plot_MarkerVolume_overlay()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.utilities.plot_compressed_MarkerVolumes"><code class="docutils literal notranslate"><span class="pre">plot_compressed_MarkerVolumes()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.utilities.plot_distortion_xyz_hist"><code class="docutils literal notranslate"><span class="pre">plot_distortion_xyz_hist()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.utilities.plot_harmonics_over_sphere"><code class="docutils literal notranslate"><span class="pre">plot_harmonics_over_sphere()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.utilities.plot_matched_volume_hist"><code class="docutils literal notranslate"><span class="pre">plot_matched_volume_hist()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.utilities.printProgressBar"><code class="docutils literal notranslate"><span class="pre">printProgressBar()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.utilities.print_dict"><code class="docutils literal notranslate"><span class="pre">print_dict()</span></code></a></li>
@@ -827,11 +828,11 @@ by this parameter</p></li>
 <dl class="py function">
 <dt class="sig sig-object py" id="mri_distortion_toolkit.utilities.enumerate_subfolders">
 <span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.utilities.</span></span><span class="sig-name descname"><span class="pre">enumerate_subfolders</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_loc</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.utilities.enumerate_subfolders" title="Permalink to this definition"></a></dt>
-<dd><p>A simple function that prints all the subfolders in data_loc as a dict, e.g.</p>
-<dl class="simple">
-<dt>{‘1’: ‘folder1’,</dt><dd><p>‘2’: ‘folder2’} etc</p>
-</dd>
-</dl>
+<dd><p>A simple function that prints all the subfolders in data_loc as a dict, e.g:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;1&#39;</span><span class="p">:</span> <span class="s1">&#39;folder1&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;2&#39;</span><span class="p">:</span> <span class="s1">&#39;folder2&#39;</span><span class="p">}</span> <span class="n">etc</span>
+</pre></div>
+</div>
 <p>I find this is a useful to create a dict object that I copy to the start of my analysis scripts</p>
 </dd></dl>
 
@@ -946,6 +947,24 @@ this option for cleaner code elsewhere. Gy_Harmonics and Gz_Harmonics are the sa
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="mri_distortion_toolkit.utilities.plot_harmonics_over_sphere">
+<span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.utilities.</span></span><span class="sig-name descname"><span class="pre">plot_harmonics_over_sphere</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">harmonics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.utilities.plot_harmonics_over_sphere" title="Permalink to this definition"></a></dt>
+<dd><p>plot the reconstructed harmonics over the surface of a sphere
+I’ve used plotly instead of matplotlib for this as I wasnt happy with the matplotlib result.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>harmonics</strong> – either an instance of SphericalHarmonicFit or the equivalent data frame loaded from csv</p></li>
+<li><p><strong>radius</strong> (<em>float</em>) – radius of sphere</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="mri_distortion_toolkit.utilities.plot_matched_volume_hist">
 <span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.utilities.</span></span><span class="sig-name descname"><span class="pre">plot_matched_volume_hist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">VolumeList</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.utilities.plot_matched_volume_hist" title="Permalink to this definition"></a></dt>
 <dd><p>create a histogram of total distortion for all input volumes</p>
@@ -1012,7 +1031,7 @@ elevation, azimuth, and r</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns Bz_recon</dt>
-<dd class="field-even"><p>Pandase series with the value of Bz at each element in coords</p>
+<dd class="field-even"><p>Pandas series with the value of Bz at each element in coords</p>
 </dd>
 </dl>
 </dd></dl>
