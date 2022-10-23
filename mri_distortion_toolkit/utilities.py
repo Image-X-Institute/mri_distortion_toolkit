@@ -15,6 +15,7 @@ from matplotlib import pyplot as plt
 import pydicom
 import json
 from itertools import compress
+import plotly.graph_objects as go
 
 ch = logging.StreamHandler()
 formatter = logging.Formatter('[%(filename)s: line %(lineno)d %(levelname)8s] %(message)s')
@@ -471,7 +472,7 @@ def reconstruct_Bz(harmonics, coords, quantity='uT', r_outer=None):
         - 'uT': return field in uT, with A00 set to 0.
     :param r_outer: optional parameter; if you try to reconstruct points with r > r_outer a warning is thrown
     :type r_outer: float or None
-    :returns Bz_recon: Pandase series with the value of Bz at each element in coords
+    :returns Bz_recon: Pandas series with the value of Bz at each element in coords
     """
 
     if not quantity in ['uT', 'T']:
@@ -550,10 +551,10 @@ def compare_recon_report_with_ground_truth_report(ground_truth_report, recon_rep
 
 def enumerate_subfolders(data_loc):
     """
-    A simple function that prints all the subfolders in data_loc as a dict, e.g.
+    A simple function that prints all the subfolders in data_loc as a dict, e.g::
 
-    {'1': 'folder1',
-     '2': 'folder2'} etc
+        {'1': 'folder1',
+         '2': 'folder2'} etc
 
     I find this is a useful to create a dict object that I copy to the start of my analysis scripts
     """
@@ -681,3 +682,47 @@ def print_dict(dict):
     for key in dict.keys():
         print(f'{key}: {dict[key]}')
 
+def plot_harmonics_over_sphere(harmonics, radius, title=None):
+    """
+    plot the reconstructed harmonics over the surface of a sphere
+    I've used plotly instead of matplotlib for this as I wasnt happy with the matplotlib result.
+
+    :param harmonics: either an instance of SphericalHarmonicFit or the equivalent data frame loaded from csv
+    :param radius: radius of sphere
+    :type radius: float
+    :return: None
+    """
+    if title is None:
+        title = 'DSV surface [uT]'
+    # generate coordinates:
+    _density = 100
+    azimuth = np.linspace(0, 2*np.pi, _density)
+    elevation = np.linspace(0, np.pi, _density)
+    [AZ, EL] = np.meshgrid(azimuth, elevation)
+    R = np.ones(AZ.shape) * radius
+    coords = pd.DataFrame({'elevation': EL.flatten(), 'azimuth': AZ.flatten(), 'r': R.flatten()})
+    coords = convert_spherical_to_cartesian(coords)
+    X = coords.x.to_numpy().reshape(R.shape)
+    Y = coords.y.to_numpy().reshape(R.shape)
+    Z = coords.z.to_numpy().reshape(R.shape)
+
+    Bz = reconstruct_Bz(harmonics, coords)
+    Bz = Bz.to_numpy().reshape(R.shape)
+
+    fig_harmonic_surface = go.Figure(data=[go.Surface(z=Z, x=X, y=Y, colorbar=dict(title='B(uT)',
+                                                                                   titlefont={'size': 20},
+                                                                                   tickfont=dict(size=40)),
+                                                                    surfacecolor=Bz)])
+
+    _available_plotly_themes = ["plotly", "plotly_white", "plotly_dark", "ggplot2",
+                                "seaborn", "simple_white", "none"]
+    _plotly_theme = 'seaborn'
+    assert _plotly_theme in _available_plotly_themes
+    fig_harmonic_surface.update_layout(title=title, autosize=True,
+                                       template=_plotly_theme,
+                                       font={'size': 20},
+                                       scene=dict(xaxis=dict(title='X [mm]', titlefont=dict(size=20)),
+                                                  yaxis=dict(title='Y [mm]', titlefont=dict(size=20)),
+                                                  zaxis=dict(title='Z [mm]', titlefont=dict(size=20))))
+
+    return fig_harmonic_surface
