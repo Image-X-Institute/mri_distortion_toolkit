@@ -13,6 +13,7 @@ def test_examples_run():
     e.g. everything created in _2_marker_matching is under _2_marker_matching.relevant_variable
     """
     from examples import _0_build_phantoms
+    from examples import _0b_complete_phantom
     from examples import _2_marker_matching
     from examples import _3_field_calculation
     from examples import _4_fit_harmonics

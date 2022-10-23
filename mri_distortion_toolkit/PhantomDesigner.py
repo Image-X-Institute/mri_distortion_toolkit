@@ -4,14 +4,18 @@ import warnings
 import numpy as np
 from pathlib import Path
 import sys
+
 try:
     import Draft  # note when this is run through FreeCAD, these libraries will already be available
     import Part
     import FreeCAD
+
     doc = FreeCAD.newDocument('DistPhantom')  # instantiate doc object
 except ImportError:
-    warnings.warn('failed to import FreeCAD libraries; you should execute your script from within FreeCAD to '
-                  'generate CAD designs. Continuing.')
+    msg = '\nfailed to import FreeCAD libraries;' \
+          '\nyou should execute your script from within' \
+          ' FreeCAD to generate CAD designs. Continuing.'
+    warnings.warn(msg)
 
 
 class PhantomSlice:
@@ -73,9 +77,9 @@ class PhantomSlice:
 
     def __init__(self, slice_shape='rectangle', slice_thickness=30, HVL_x=250, HVL_Y=250, z_pos=0, hole_depth=17,
                  hole_spacing=25,
-                 hole_radius=8.7/2, hole_stop=None, GridOffset=0, HoleCentroids='cartesian', DSV=150,
+                 hole_radius=8.7 / 2, hole_stop=None, GridOffset=0, HoleCentroids='cartesian', DSV=150,
                  LoadRegion=None,
-                 ReferenceCrosshairRadius = None,
+                 ReferenceCrosshairRadius=None,
                  GuideRods=None,
                  hole_start=None,
                  bottom_cut=0):
@@ -111,11 +115,15 @@ class PhantomSlice:
             # calculate the intersection of the DSV with this slice location.
             self._roi_on_surface = self.DSV - abs(self.z_pos - self.hole_depth / 2)
             self._roi_on_marker_center = self.DSV - abs(self.z_pos)
-            self._roi_radius_surface = np.sqrt((2 * self._roi_on_surface * self.DSV) - (self._roi_on_surface ** 2))
+            with warnings.catch_warnings():
+                warnings.filterwarnings("error")
+                try:
+                    self._roi_radius_surface = np.sqrt(
+                        (2 * self._roi_on_surface * self.DSV) - (self._roi_on_surface ** 2))
+                except RuntimeWarning as w:
+                    assert 'invalid value' in w.args[0]
             self._roi_radius_center = np.sqrt(
                 (2 * self._roi_on_marker_center * self.DSV) - (self._roi_on_marker_center ** 2))
-
-
 
         if HoleCentroids == 'ROI_polar':
             self._generate_roi_polar_hole_positions()
@@ -220,8 +228,9 @@ class PhantomSlice:
         self.HoleCentroids = [AllX, AllY]
         if self._n_markers_on_dsv is None:
             self._n_markers_on_dsv = 0
-            print(f'NO MARKERS FOUND. roi_radius: {self._roi_radius_center}, all r: {RadialCoordinates},'
-                  f'z_pos is {self.z_pos}')
+            msg = f'for slice location {self.z_pos: 1.1f}, no markers intersect roi_radius: {self._roi_radius_center} ' \
+                  f'all r: {RadialCoordinates}'
+            warnings.warn(msg)
 
     def _generate_cartesian_hole_positions(self):
 
@@ -415,8 +424,8 @@ class PhantomSlice:
         self.SliceBase.Width = self.HVL_Y * 2
         self.SliceBase.Height = self.slice_thickness
         self.SliceBase.Placement = FreeCAD.Placement(FreeCAD.Vector(-self.HVL_x, -self.HVL_Y, 0),
-                                                FreeCAD.Rotation(FreeCAD.Vector(0, 0, 1), 0),
-                                                FreeCAD.Vector(0, 0, 0))
+                                                     FreeCAD.Rotation(FreeCAD.Vector(0, 0, 1), 0),
+                                                     FreeCAD.Vector(0, 0, 0))
 
     def _draw_slice_ellipse(self):  # pragma: no cover
 
@@ -439,9 +448,9 @@ class PhantomSlice:
         Bottom_Cut.Length = self.HVL_x * 2
         Bottom_Cut.Width = self.HVL_Y * 2
         Bottom_Cut.Height = self.slice_thickness
-        Bottom_Cut.Placement = FreeCAD.Placement(FreeCAD.Vector(-self.HVL_x, -3*self.HVL_Y + self.bottom_cut, 0),
-                                                FreeCAD.Rotation(FreeCAD.Vector(0, 0, 1), 0),
-                                                FreeCAD.Vector(0, 0, 0))
+        Bottom_Cut.Placement = FreeCAD.Placement(FreeCAD.Vector(-self.HVL_x, -3 * self.HVL_Y + self.bottom_cut, 0),
+                                                 FreeCAD.Rotation(FreeCAD.Vector(0, 0, 1), 0),
+                                                 FreeCAD.Vector(0, 0, 0))
 
         CutSlice = doc.addObject("Part::Cut", "Cut")
         CutSlice.Base = self.SliceBase
@@ -460,8 +469,8 @@ class PhantomSlice:
         Xpos = 0
         Ypos = self.HVL_Y - self.GuideRods['position']
         Guide_a.Placement = FreeCAD.Placement(FreeCAD.Vector(Xpos, Ypos, Zpos),
-                                            FreeCAD.Rotation(FreeCAD.Vector(0, 0, 1), 0),
-                                            FreeCAD.Vector(0, 0, 0))
+                                              FreeCAD.Rotation(FreeCAD.Vector(0, 0, 1), 0),
+                                              FreeCAD.Vector(0, 0, 0))
 
         # b
         Guide_b = doc.addObject("Part::Cylinder", "Guide_b")
@@ -472,8 +481,8 @@ class PhantomSlice:
         Xpos = self.HVL_x - self.GuideRods['position']
         Ypos = 0
         Guide_b.Placement = FreeCAD.Placement(FreeCAD.Vector(Xpos, Ypos, Zpos),
-                                            FreeCAD.Rotation(FreeCAD.Vector(0, 0, 1), 0),
-                                            FreeCAD.Vector(0, 0, 0))
+                                              FreeCAD.Rotation(FreeCAD.Vector(0, 0, 1), 0),
+                                              FreeCAD.Vector(0, 0, 0))
 
         # top
         Guide_c = doc.addObject("Part::Cylinder", "Guide_c")
@@ -521,8 +530,8 @@ class PhantomSlice:
         Xpos = self.HVL_x - self.GuideRods['position']
         Ypos = self.HVL_Y - self.GuideRods['position']
         Guide_tl.Placement = FreeCAD.Placement(FreeCAD.Vector(Xpos, Ypos, Zpos),
-                                            FreeCAD.Rotation(FreeCAD.Vector(0, 0, 1), 0),
-                                            FreeCAD.Vector(0, 0, 0))
+                                               FreeCAD.Rotation(FreeCAD.Vector(0, 0, 1), 0),
+                                               FreeCAD.Vector(0, 0, 0))
         # top left
         Guide_tr = doc.addObject("Part::Cylinder", "Guide_TR")
         Guide_tr.Radius = self.GuideRods['radius']
@@ -532,8 +541,8 @@ class PhantomSlice:
         Xpos = -self.HVL_x + self.GuideRods['position']
         Ypos = self.HVL_Y - self.GuideRods['position']
         Guide_tr.Placement = FreeCAD.Placement(FreeCAD.Vector(Xpos, Ypos, Zpos),
-                                            FreeCAD.Rotation(FreeCAD.Vector(0, 0, 1), 0),
-                                            FreeCAD.Vector(0, 0, 0))
+                                               FreeCAD.Rotation(FreeCAD.Vector(0, 0, 1), 0),
+                                               FreeCAD.Vector(0, 0, 0))
         # bottom right
         Guide_br = doc.addObject("Part::Cylinder", "Guide_BR")
         Guide_br.Radius = self.GuideRods['radius']
@@ -543,8 +552,8 @@ class PhantomSlice:
         Xpos = self.HVL_x - self.GuideRods['position']
         Ypos = -self.HVL_Y + self.GuideRods['position'] + self.bottom_cut
         Guide_br.Placement = FreeCAD.Placement(FreeCAD.Vector(Xpos, Ypos, Zpos),
-                                            FreeCAD.Rotation(FreeCAD.Vector(0, 0, 1), 0),
-                                            FreeCAD.Vector(0, 0, 0))
+                                               FreeCAD.Rotation(FreeCAD.Vector(0, 0, 1), 0),
+                                               FreeCAD.Vector(0, 0, 0))
 
         # bottom left
         Guide_bl = doc.addObject("Part::Cylinder", "Guide_BL")
@@ -555,9 +564,9 @@ class PhantomSlice:
         Xpos = -self.HVL_x + self.GuideRods['position']
         Ypos = -self.HVL_Y + self.GuideRods['position'] + self.bottom_cut
         Guide_bl.Placement = FreeCAD.Placement(FreeCAD.Vector(Xpos, Ypos, Zpos),
-                                            FreeCAD.Rotation(FreeCAD.Vector(0, 0, 1), 0),
-                                            FreeCAD.Vector(0, 0, 0))
-        
+                                               FreeCAD.Rotation(FreeCAD.Vector(0, 0, 1), 0),
+                                               FreeCAD.Vector(0, 0, 0))
+
         if cut_from_slice:
             # combine
             combined_rods = doc.addObject("Part::Compound", "combined_guides")
