@@ -4,6 +4,7 @@ General purpose reusable functions
 
 import os
 import pathlib
+import shutil
 import sys
 import glob
 import logging
@@ -16,6 +17,7 @@ import pydicom
 import json
 from itertools import compress
 import plotly.graph_objects as go
+import warnings
 
 ch = logging.StreamHandler()
 formatter = logging.Formatter('[%(filename)s: line %(lineno)d %(levelname)8s] %(message)s')
@@ -148,6 +150,7 @@ def dicom_to_numpy(path_to_dicoms, FilesToReadIn=None, file_extension='dcm', ret
 
     dicom_slices = [pydicom.read_file(f) for f in CompletePathFiles]
 
+
     dicom_slices = sort_dicom_slices(dicom_slices)[0]
     dicom_affine = build_dicom_affine(dicom_slices)
     dicom_affine[0:3, 3] = dicom_affine[0:3, 3] + (-1*zero_pad*dicom_affine[0:3, 0:3].sum(axis=1))  # update start point for zero padding
@@ -213,6 +216,50 @@ def sort_dicom_slices(dicom_datasets, filter_non_image_data=True):
     instance_number = [el.InstanceNumber for el in dicom_datasets]
     sort_ind = np.argsort(instance_number)
     return list(np.array(dicom_datasets)[sort_ind]), sort_ind
+
+
+def sort_dicoms_by_echo_time(PathToData, file_extension='dcm'):
+    """
+    This function will get all files of type 'file_extension' and sort them into
+    folders based on the dicom attribute EchoTime. If any of the slices do not have this
+    attribute a warning is raised an no action taken.
+
+    This function is useful when dealing with double echo phase map data, which is sometimes returned
+    as a single dicome series
+
+    :param PathToData: location of files to sort
+    :type PathToData: str or Path
+    :param file_extension: extension of files to get inside PathToData
+    :type file_extension: str
+    :returns: data_dirs: a list of new data locations, sorted by smallest echo time to largest
+    """
+    PathToData = Path(PathToData)
+    AllFiles = get_all_files(PathToData, file_extension)
+    CompletePathFiles = [str(Path(PathToData) / file) for file in AllFiles]
+    dicom_slices = [pydicom.read_file(f) for f in CompletePathFiles]
+    try:
+        echo_times = [slice.EchoTime for slice in dicom_slices]
+    except AttributeError:
+        warnings.warn('at least one file does not have an EchoTime attribute; exiting')
+        return
+    vendor = [slice.Manufacturer.lower() for slice in dicom_slices]
+    if not np.all(['siemens' in v for v in vendor]):
+        warnings.warn(f'this code was written for and tested with siemens scanners, your data is {np.unique(vendor)}')
+    print(f'{(np.unique(echo_times)).shape[0]} different echo times found; saving data...')
+    data_dirs = []
+    for echo_time in np.unique(echo_times):
+        save_dir = Path(PathToData) / str(f'echo_{echo_time}')
+        shutil.rmtree(save_dir)
+        save_dir.mkdir()
+        dicom_data_file = save_dir / 'dicom_data.json'
+
+        data_dirs.append(save_dir)
+        include_files_ind = np.equal(echo_times, echo_time)
+        for slice, ind in zip(dicom_slices, include_files_ind):
+            if ind:
+
+                slice.save_as(save_dir / os.path.split(slice.filename)[1])
+    return data_dirs
 
 
 def get_all_files(PathToData, file_extension):
@@ -681,6 +728,7 @@ def print_dict(dict):
     """
     for key in dict.keys():
         print(f'{key}: {dict[key]}')
+
 
 def plot_harmonics_over_sphere(harmonics, radius, title=None):
     """

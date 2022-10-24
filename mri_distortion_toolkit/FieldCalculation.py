@@ -3,6 +3,10 @@ import numpy as np
 import logging
 import json
 from .utilities import get_dicom_data
+from .utilities import dicom_to_numpy
+import pydicom
+from pathlib import Path
+from .utilities import get_all_files
 
 ch = logging.StreamHandler()
 formatter = logging.Formatter('[%(filename)s: line %(lineno)d %(levelname)8s] %(message)s')
@@ -116,3 +120,59 @@ class ConvertMatchedMarkersToBz:
                                         gradient_strength[self._B0_direction_bool][0] * mm_to_m_factor
 
 
+class ConvertPhaseMapsToBz:
+    """
+    accepts two phase map images taken with different echo time, and returns the Bz field calculation
+    """
+    def __init__(self, image_echo1_loc, image_echo2_loc, te1=None, te2=None, file_extension='dcm'):
+
+        self._image_echo1_loc = Path(image_echo1_loc)
+        self._image_echo2_loc = Path(image_echo2_loc)
+        self._file_extension = file_extension
+
+        self._echo1, self._dicom_affine1, (self.X, self.Y, self.Z) = dicom_to_numpy(image_echo1_loc,
+                                                                                    file_extension=file_extension,
+                                                                                    return_XYZ=True)
+        self._echo2, self._dicom_affine2, (self.X, self.Y, self.Z) = dicom_to_numpy(image_echo2_loc,
+                                                                                    file_extension=file_extension,
+                                                                                    return_XYZ=True)
+        # assumption is image coordinates are the same; check:
+        assert np.isclose(self._dicom_affine1, self._dicom_affine2).all()
+        self._get_echo_time(te1, te2)
+        self._unwrap_phase()
+
+    def _unwrap_phase(self):
+        """
+        unwrap the two input phase images
+        """
+        from skimage.restoration import unwrap_phase
+        self.phase1 = unwrap_phase(self._echo1)
+        self.phase2 = unwrap_phase(self._echo2)
+
+    def _calculate_field(self):
+        """
+        see this paper
+        https://pubmed.ncbi.nlm.nih.gov/19810464/
+        equation 2
+        """
+        print('ger')
+
+    def _get_echo_time(self, te1, te2):
+        """
+        read echo time of the dicoms in data_loc and set it as a new attribute in self
+        note that we only check one echo time; assumption is that folders are appropriately sorted
+        """
+        if te1 is None:
+            dicom_files = get_all_files(self._image_echo1_loc, file_extension=self._file_extension)
+            self._te1 = float(pydicom.read_file(self._image_echo1_loc / dicom_files[0]).EchoTime) *1e-3
+        else:
+            self._te1 = te1
+        if te2 is None:
+            dicom_files = get_all_files(self._image_echo2_loc, file_extension=self._file_extension)
+            self._te2 = float(pydicom.read_file(self._image_echo2_loc / dicom_files[0]).EchoTime) * 1e-3
+        else:
+            self._te2 = te2
+
+        self._delta_t = abs(te2 - te1)
+        print(f'echo time 1: {self._te1: 1.2f} ms')
+        print(f'echo time 2: {self._te2: 1.2f} ms')
