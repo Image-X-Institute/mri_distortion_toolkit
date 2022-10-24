@@ -40,7 +40,7 @@ for i, z_pos in enumerate(SliceZPositions):
 
     Slice = PhantomDesigner.PhantomSlice(slice_shape='rectangle',
                                            slice_thickness=SliceThickness, HVL_x=390 / 2, HVL_Y=390 / 2,
-                                           hole_depth=18, hole_spacing=25,
+                                           hole_depth=19, hole_spacing=25,
                                            hole_radius=8.5 / 2,
                                            DSV=150, z_pos=z_pos,
                                            LoadRegion=load,
@@ -51,7 +51,7 @@ for i, z_pos in enumerate(SliceZPositions):
                                            hole_start=HoleStart)
     if run_in_free_cad:
         Slice.draw_slice()
-        # Slice.add_full_scale_drawing()
+        Slice.add_full_scale_drawing()
 
     z_array = np.ones(np.shape(Slice.HoleCentroids)[1]) * z_pos
     marker_positions_temp = np.vstack([np.array(Slice.HoleCentroids), z_array])
