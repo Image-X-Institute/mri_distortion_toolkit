@@ -18,11 +18,11 @@ GDC = ImageDomainDistortionCorrector(ImageDirectory=distorted_data_loc.resolve()
                                                     Path('_example_data/G_z_Harmonics.csv').resolve()],
                                 ImExtension='dcm',
                                 dicom_data=dis_volume.dicom_data,
-                                correct_through_plane=False)
+                                correct_through_plane=True)
 
 GDC.correct_all_images()
 GDC.save_all_images()  # saves as png so you can quickly inspect results
-# GDC.save_all_images_as_dicom()  # saves as dicom which can be read into analysis packages.
+GDC.save_all_images_as_dicom()  # saves as dicom which can be read into analysis packages.
 
 # Assess correction:
 this_file_loc = Path(__file__).parent.resolve()
