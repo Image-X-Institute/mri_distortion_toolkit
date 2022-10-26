@@ -37,7 +37,7 @@ normalisation_factor = [1 / gradient_strength[0], 1 / gradient_strength[1], 1 / 
 # normalisation_factor = [1, 1, 1, 1]
 G_x_Harmonics, G_y_Harmonics, G_z_Harmonics, B0_Harmonics = calculate_harmonics(B_fields.MagneticFields,
                                                                                 n_order=8,
-                                                                                norm=normalisation_factor)
+                                                                                scale=normalisation_factor)
 # correct input images
 GDC = ImageDomainDistortionCorrector(ImageDirectory=distorted_data_loc.resolve(),
                                 gradient_harmonics=[G_x_Harmonics.harmonics,
