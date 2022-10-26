@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Distortion Correction &mdash; mri_distortion_toolkit  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+        <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+        <script>mermaid.initialize({startOnLoad:true});</script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> mri_distortion_toolkit
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Worked Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="phantom_notes.html">MRI_DistortionPhantom</a></li>
+<li class="toctree-l1"><a class="reference internal" href="code_docs.html">Code Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">mri_distortion_toolkit</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Distortion Correction</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/distortion_correction.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="distortion-correction">
+<h1>Distortion Correction<a class="headerlink" href="#distortion-correction" title="Permalink to this heading"></a></h1>
+<p>Once we have a knowledge of the distorting fields, we should be able to use this knowledge to correct distorted images. With the spherical harmonics, we have all the knowledge of the fields we need.</p>
+<p>There are two main approaches to correcting gradient distortion: Image domain and k-space domain. Both methods are implemented in this code. The following code snippet demonstrates correction in the image domain. You should use the harmonics calculated and saved in the previous examples, or you can use the ones stored <a class="reference external" href="https://github.com/ACRF-Image-X-Institute/mri_distortion_toolkit">here</a>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">mri_distortion_toolkit.DistortionCorrection</span> <span class="kn">import</span> <span class="n">ImageDomainDistortionCorrector</span>
+<span class="kn">from</span> <span class="nn">mri_distortion_toolkit.MarkerAnalysis</span> <span class="kn">import</span> <span class="n">MarkerVolume</span><span class="p">,</span> <span class="n">MatchedMarkerVolumes</span>
+<span class="kn">from</span> <span class="nn">mri_distortion_toolkit.utilities</span> <span class="kn">import</span> <span class="n">plot_distortion_xyz_hist</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">download example data and unzip:</span>
+<span class="sd">https://cloudstor.aarnet.edu.au/plus/s/Wm9vndV47u941JU</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="n">distorted_data_loc</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;/home/brendan/Downloads/MRI_distortion_QA_sample_data/MR/04 gre_trans_AP_330&#39;</span><span class="p">)</span>
+<span class="n">dis_volume</span> <span class="o">=</span> <span class="n">MarkerVolume</span><span class="p">(</span><span class="n">distorted_data_loc</span><span class="p">)</span>
+
+<span class="n">GDC</span> <span class="o">=</span> <span class="n">ImageDomainDistortionCorrector</span><span class="p">(</span><span class="n">ImageDirectory</span><span class="o">=</span><span class="n">distorted_data_loc</span><span class="o">.</span><span class="n">resolve</span><span class="p">(),</span>
+                                     <span class="n">gradient_harmonics</span><span class="o">=</span><span class="p">[</span><span class="n">Path</span><span class="p">(</span><span class="s1">&#39;_example_data/G_x_Harmonics.csv&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">(),</span>
+                                                         <span class="n">Path</span><span class="p">(</span><span class="s1">&#39;_example_data/G_y_Harmonics.csv&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">(),</span>
+                                                         <span class="n">Path</span><span class="p">(</span><span class="s1">&#39;_example_data/G_z_Harmonics.csv&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()],</span>
+                                     <span class="n">ImExtension</span><span class="o">=</span><span class="s1">&#39;dcm&#39;</span><span class="p">,</span>
+                                     <span class="n">dicom_data</span><span class="o">=</span><span class="n">dis_volume</span><span class="o">.</span><span class="n">dicom_data</span><span class="p">,</span>
+                                     <span class="n">correct_through_plane</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="n">GDC</span><span class="o">.</span><span class="n">correct_all_images</span><span class="p">()</span>
+<span class="n">GDC</span><span class="o">.</span><span class="n">save_all_images</span><span class="p">()</span>  <span class="c1"># saves as png so you can quickly inspect results</span>
+<span class="n">GDC</span><span class="o">.</span><span class="n">save_all_images_as_dicom</span><span class="p">()</span>  <span class="c1"># saves as dicom which can be read into analysis packages.</span>
+</pre></div>
+</div>
+<p>To switch from image domain to k-space domain, you just need to change two lines of code:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">mri_distortion_toolkit.DistortionCorrection</span> <span class="kn">import</span> <span class="n">ImageDomainDistortionCorrector</span>
+<span class="c1"># to</span>
+<span class="kn">from</span> <span class="nn">mri_distortion_toolkit.DistortionCorrection</span> <span class="kn">import</span> <span class="n">KspaceDistortionCorrector</span>
+<span class="c1">#and</span>
+<span class="n">GDC</span> <span class="o">=</span> <span class="n">ImageDomainDistortionCorrector</span><span class="p">(</span><span class="o">...</span>
+<span class="c1"># to</span>
+<span class="n">GDC</span> <span class="o">=</span> <span class="n">KspaceDistortionCorrector</span><span class="p">(</span><span class="o">...</span>
+</pre></div>
+</div>
+<p>In principle the k-space corrector should perform better than the image domain corrector in terms of blurring in the corrected image, however it is substantially slower. Also, the k-space code is around fives times slower on linux than on windows for reasons we are still trying to figure out!</p>
+<p>Following correction, you may wish to test how well the correction actually worked.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">GDC.save_all_images()</span></code> line will have saved all images in a folder called corrected the <code class="docutils literal notranslate"><span class="pre">ImageDirectory</span></code>. You can visually examine these for a comparison for the pre/post distortion:</p>
+<p><img alt="" src="_images/distortion_example.png" /></p>
+<p>Although somewhat useful to check the the correction hasn’t made things look much worse, it’s not very quantitative. For that, you can read the corrected dicom images back into a MarkerVolume, and quantify the distortion in that:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">this_file_loc</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+<span class="n">gt_data_loc</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;/home/brendan/Downloads/MRI_distortion_QA_sample_data/CT/slicer_centroids.mrk.json&#39;</span>
+<span class="n">gt_volume</span> <span class="o">=</span> <span class="n">MarkerVolume</span><span class="p">(</span><span class="n">gt_data_loc</span><span class="p">)</span>
+
+<span class="n">corrected_volume</span> <span class="o">=</span> <span class="n">MarkerVolume</span><span class="p">(</span><span class="n">distorted_data_loc</span> <span class="o">/</span> <span class="s1">&#39;corrected_dcm&#39;</span><span class="p">,</span>
+                                <span class="n">n_markers_expected</span><span class="o">=</span><span class="mi">336</span><span class="p">,</span>
+                                <span class="n">iterative_segmentation</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">r_max</span><span class="o">=</span><span class="mi">160</span><span class="p">)</span>
+<span class="n">remove_ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">corrected_volume</span><span class="o">.</span><span class="n">MarkerCentroids</span><span class="o">.</span><span class="n">r</span> <span class="o">&gt;=</span> <span class="mi">70</span><span class="p">,</span> <span class="n">corrected_volume</span><span class="o">.</span><span class="n">MarkerCentroids</span><span class="o">.</span><span class="n">r</span> <span class="o">&lt;=</span> <span class="mi">140</span><span class="p">)</span>
+<span class="n">corrected_volume</span><span class="o">.</span><span class="n">MarkerCentroids</span> <span class="o">=</span> <span class="n">corrected_volume</span><span class="o">.</span><span class="n">MarkerCentroids</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span>
+    <span class="n">corrected_volume</span><span class="o">.</span><span class="n">MarkerCentroids</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">remove_ind</span><span class="p">])</span>
+<span class="n">matched_volume_corrected</span> <span class="o">=</span> <span class="n">MatchedMarkerVolumes</span><span class="p">(</span><span class="n">gt_volume</span><span class="p">,</span> <span class="n">corrected_volume</span><span class="p">,</span> <span class="n">n_refernce_markers</span><span class="o">=</span><span class="mi">11</span><span class="p">)</span>
+<span class="n">plot_distortion_xyz_hist</span><span class="p">(</span><span class="n">matched_volume_corrected</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This generates the following histogram:</p>
+<p><img alt="" src="_images/dist_correction_result.png" /></p>
+<p>Compare this with the uncorrected version, and it is clear that this distortion correction has been quite effective:</p>
+<p><img alt="" src="_images/uncorrected_result.png" /></p>
+<section id="but-why-isn-t-the-distortion-correction-better">
+<h2>But why isn’t the distortion correction better?!<a class="headerlink" href="#but-why-isn-t-the-distortion-correction-better" title="Permalink to this heading"></a></h2>
+<p>Although the distortion correction markers are far superior to the uncorrected version, they still aren’t THAT good, with maximum distortions up to ~5 mm which is quite a lot.</p>
+<p>The main reason for this is that we are not correcting B0; you can see that the biggest residual distortions are in the x direction, which is the frequency encode direction, and the next biggest are in z, which is the slice encoding direction. How good might the results look if we could correct B0 as well?</p>
+<p>This is currently under development, but as a sneak preview, here are the results which incorporate B0 correction as well:</p>
+<p><img alt="" src="_images/B0_distortion_correction_preview.png" /></p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Brendan Whelan(s).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
