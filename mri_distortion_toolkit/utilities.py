@@ -418,6 +418,8 @@ def get_gradient_spherical_harmonics(Gx_Harmonics, Gy_Harmonics, Gz_Harmonics):
     if isinstance(Gx_Harmonics, pd.Series):
         Gx_Harmonics = Gx_Harmonics
     elif isinstance(Gx_Harmonics, (str,Path)):
+        if not (Path(Gx_Harmonics).is_file()):
+            raise FileNotFoundError(f'{Gx_Harmonics} does not exist')
         Gx_Harmonics = pd.read_csv(Gx_Harmonics, index_col=0).squeeze("columns")
     else:
         raise AttributeError('could not read in Gx harmonics...please input either a series or a '
@@ -426,6 +428,8 @@ def get_gradient_spherical_harmonics(Gx_Harmonics, Gy_Harmonics, Gz_Harmonics):
     if isinstance(Gy_Harmonics, pd.Series):
         Gy_Harmonics = Gy_Harmonics
     elif isinstance(Gy_Harmonics, (str,Path)):
+        if not (Path(Gy_Harmonics).is_file()):
+            raise FileNotFoundError(f'{Gy_Harmonics} does not exist')
         Gy_Harmonics = pd.read_csv(Gy_Harmonics, index_col=0).squeeze("columns")
     else:
         raise AttributeError('could not read in Gy harmonics...please input either a series or a '
@@ -434,6 +438,8 @@ def get_gradient_spherical_harmonics(Gx_Harmonics, Gy_Harmonics, Gz_Harmonics):
     if isinstance(Gz_Harmonics, pd.Series):
         Gz_Harmonics = Gz_Harmonics
     elif isinstance(Gz_Harmonics, (str,Path)):
+        if not (Path(Gz_Harmonics).is_file()):
+            raise FileNotFoundError(f'{Gz_Harmonics} does not exist')
         Gz_Harmonics = pd.read_csv(Gz_Harmonics, index_col=0).squeeze("columns")
     else:
         raise AttributeError('could not read in Gz harmonics...please input either a series or a '
