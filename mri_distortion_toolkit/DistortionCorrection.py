@@ -1,3 +1,4 @@
+import math
 import os
 import logging
 import sys
@@ -107,7 +108,15 @@ class DistortionCorrectorBase:
         demo_header = pydicom.read_file(self.ImageDirectory / self._all_dicom_files[0])
         self._Rows, self._Cols, self._Slices = self.ImageArray.shape
         self._ImageOrientationPatient = demo_header.ImageOrientationPatient
-        self._PixelSpacing = self._dicom_data['pixel_spacing']
+
+        if self._dicom_data is None:
+            x_pixel_spacing = np.mean(np.diff(np.unique(self._X)))
+            y_pixel_spacing = np.mean(np.diff(np.unique(self._Y)))
+            z_pixel_spacing = np.mean(np.diff(np.unique(self._Z)))
+            self._PixelSpacing = [x_pixel_spacing, y_pixel_spacing, z_pixel_spacing]
+
+        else:
+            self._PixelSpacing = self._dicom_data['pixel_spacing']
 
     def _get_iso_offset(self):
         """
