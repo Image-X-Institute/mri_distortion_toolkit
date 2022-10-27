@@ -63,7 +63,7 @@ class DistortionCorrectorBase:
             get_gradient_spherical_harmonics(gradient_harmonics[0], gradient_harmonics[1], gradient_harmonics[2])
         self._Gx_Harmonics = self._Gx_Harmonics * 1
         self._Gy_Harmonics = self._Gy_Harmonics * 1
-        self._Gz_Harmonics = self._Gz_Harmonics * -1
+        self._Gz_Harmonics = self._Gz_Harmonics * 1
 
         self.ImageDirectory = Path(ImageDirectory)
         self._all_dicom_files = get_all_files(self.ImageDirectory, ImExtension)
@@ -389,7 +389,7 @@ class DistortionCorrectorBase:
         self._unpad_image_arrays()
         print(f'total correction time: {perf_counter() - start_time: 1.1f} s')
 
-    def save_all_images(self, save_loc=None):
+    def save_all_images(self, save_loc=None, DSV_radius=None, grid=True):
         """
         save corrected data as png
 
@@ -406,29 +406,75 @@ class DistortionCorrectorBase:
         loop_axis = 2
         zipped_data = zip(np.rollaxis(self.ImageArray, loop_axis),
                           np.rollaxis(self._image_array_corrected, loop_axis))
+
+        # generate extent and labels
+        extent = None
+        row_label = None
+        col_label = None
+        FOV = None
+        slice_coords = None
+        from matplotlib.patches import Circle
+        if ((np.round(self._ImageOrientationPatient) == [0, 1, 0, 0, 0, -1]).all() or
+                np.round(self._ImageOrientationPatient == [2, 2, 2, 2, 2, 2]).all()):
+            extent = (self._X.min(), self._X.max(), self._Z.min(), self._Z.max())
+            slice_coords = np.unique(self._X)
+            row_label = 'X [mm]'
+            col_label = 'Z [mm]'
+
+        elif ((np.round(self._ImageOrientationPatient) == [1, 0, 0, 0, 0, -1]).all() or
+              np.round(self._ImageOrientationPatient == [3, 3, 3, 3, 3, 3]).all()):
+
+            extent = (self._Y.min(), self._Y.max(), self._Z.min(), self._Z.max())
+            slice_coords = np.unique(self._Y)
+            row_label = 'Y [mm]'
+            col_label = 'Z [mm]'
+
+        elif ((np.round(self._ImageOrientationPatient) == [1, 0, 0, 0, 1, 0]).all() or
+              np.round(self._ImageOrientationPatient == [1, 1, 1, 1, 1, 1]).all()):
+            extent = (self._Y.min(), self._Y.max(), self._Z.min(), self._Z.max())
+            slice_coords = np.unique(self._Z)
+            row_label = 'X [mm]'
+            col_label = 'Y [mm]'
+
+        if slice_coords is None:
+            slice_coords = np.ones(np.rollaxis(self.ImageArray, loop_axis).shape[0])
+        zipped_data = zip(np.rollaxis(self.ImageArray, loop_axis),
+                          np.rollaxis(self._image_array_corrected, loop_axis),
+                          slice_coords)
+
         i = 0
-        for original_image, corrected_image in zipped_data:
+        for original_image, corrected_image, slice_coord in zipped_data:
             fig, axs = plt.subplots(nrows=1, ncols=2)
 
             # axs[0].imshow(self.pixel_array, extent=self._extent)
-            im1 = axs[0].imshow(original_image)
+            im1 = axs[0].imshow(original_image, extent=extent)
             axs[0].set_title('Original Image')
             axs[0].set_aspect('equal')
-            # axs[0].set_xlabel(self._row_label)
-            # axs[0].set_ylabel(self._col_label)
-            axs[0].grid(True)
-            # fig.colorbar(im1, ax=axs[0])
+            axs[0].set_xlabel(row_label)
+            axs[0].set_ylabel(col_label)
+            if grid:
+                axs[0].grid(True)
+            if DSV_radius:
+                h = 150 - slice_coord
+                with warnings.catch_warnings(record=True) as who_cares:
+                    warnings.simplefilter("always")
+                    FOV_radius = np.sqrt((2 * h * DSV_radius) - (h ** 2))
+                circ = Circle((0, 0), FOV_radius, facecolor='none', edgecolor='white')
+                axs[0].add_patch(circ)
 
-            # axs[1].imshow(self.outputImage, extent=self._extent)
-            im2 = axs[1].imshow(corrected_image)
+            im2 = axs[1].imshow(corrected_image, extent=extent)
             axs[1].set_title('Corrected Image')
             axs[1].set_aspect('equal')
-            # axs[1].set_xlabel(self._row_label)
-            # axs[1].set_ylabel(self._col_label)
-            axs[1].grid(True)
-            # fig.colorbar(im2, ax=axs[1])
+            axs[1].set_xlabel(row_label)
+            axs[1].set_ylabel(col_label)
+            if grid:
+                axs[1].grid(True)
+            if DSV_radius:
+                circ = Circle((0, 0), FOV_radius, facecolor='none', edgecolor='white')
+                axs[1].add_patch(circ)
 
             plt.tight_layout()
+
             plt.savefig(save_loc / (str(i) + '.png'), format='png')
             plt.close(fig)
             i += 1
