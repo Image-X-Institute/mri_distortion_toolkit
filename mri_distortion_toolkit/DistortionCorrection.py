@@ -63,7 +63,7 @@ class DistortionCorrectorBase:
             get_gradient_spherical_harmonics(gradient_harmonics[0], gradient_harmonics[1], gradient_harmonics[2])
         self._Gx_Harmonics = self._Gx_Harmonics * 1
         self._Gy_Harmonics = self._Gy_Harmonics * 1
-        self._Gz_Harmonics = self._Gz_Harmonics * 1
+        self._Gz_Harmonics = self._Gz_Harmonics * -1
 
         self.ImageDirectory = Path(ImageDirectory)
         self._all_dicom_files = get_all_files(self.ImageDirectory, ImExtension)
