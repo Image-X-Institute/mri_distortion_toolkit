@@ -16,14 +16,12 @@ download example data and unzip:
 https://cloudstor.aarnet.edu.au/plus/s/Wm9vndV47u941JU
 '''
 distorted_data_loc = Path(r'/home/brendan/Downloads/MRI_distortion_QA_sample_data/MR/04 gre_trans_AP_330')
-dis_volume = MarkerVolume(distorted_data_loc)
 
 GDC = ImageDomainDistortionCorrector(ImageDirectory=distorted_data_loc.resolve(),
                                      gradient_harmonics=[Path('_example_data/G_x_Harmonics.csv').resolve(),
                                                          Path('_example_data/G_y_Harmonics.csv').resolve(),
                                                          Path('_example_data/G_z_Harmonics.csv').resolve()],
-                                     ImExtension='dcm',
-                                     dicom_data=dis_volume.dicom_data,
+                                     ImExtension='dcm'
                                      correct_through_plane=False)
 
 GDC.correct_all_images()
