@@ -39,9 +39,6 @@ class DistortionCorrectorBase:
     :type gradient_harmonics: list
     :param ImExtension: extension of files to read in in ImageDirectory, e.g. 'dcm', or 'IMA'
     :type ImExtension: str, optional
-    :param dicom_data: A json file exported from an instance of MarkerVolume.dicom_data, or MarkerVolume.dicom_data. This
-        contains the information required to construct the distorted indices, which cannot be read from a single header.
-    :type dicom_data: json or dict
     :param correct_through_plane: if True, through plane (3D) correction is carried out, which is roughly twice as slow
         as 2D only
     :type correct_through_plane: bool. optional
@@ -50,7 +47,7 @@ class DistortionCorrectorBase:
     """
 
 
-    def __init__(self, ImageDirectory, gradient_harmonics, dicom_data,
+    def __init__(self, ImageDirectory, gradient_harmonics,
                  ImExtension='.dcm', correct_through_plane=True, pad=0):
         """
         init method
@@ -62,7 +59,6 @@ class DistortionCorrectorBase:
 
         self.correct_through_plane = correct_through_plane
         self._n_zero_pad = pad  # n_pixels to add around each edge of volume. set to 0 for no zero padding
-        self._dicom_data = dicom_data
         self._Gx_Harmonics, self._Gy_Harmonics, self._Gz_Harmonics = \
             get_gradient_spherical_harmonics(gradient_harmonics[0], gradient_harmonics[1], gradient_harmonics[2])
         self._Gx_Harmonics = self._Gx_Harmonics * 1
@@ -108,15 +104,7 @@ class DistortionCorrectorBase:
         demo_header = pydicom.read_file(self.ImageDirectory / self._all_dicom_files[0])
         self._Rows, self._Cols, self._Slices = self.ImageArray.shape
         self._ImageOrientationPatient = demo_header.ImageOrientationPatient
-
-        if self._dicom_data is None:
-            x_pixel_spacing = np.mean(np.diff(np.unique(self._X)))
-            y_pixel_spacing = np.mean(np.diff(np.unique(self._Y)))
-            z_pixel_spacing = np.mean(np.diff(np.unique(self._Z)))
-            self._dicom_affine[0:3, 0:3].sum(1)
-            self._pixel_spacing = self._dicom_affine[0:3, 0:3].sum(1)
-        else:
-            self._pixel_spacing = self._dicom_data['pixel_spacing']
+        self._pixel_spacing = self._dicom_affine[0:3, 0:3].sum(1)
         self._pixel_spacing = [ps if not ps == 0 else np.nan for ps in self._pixel_spacing]
 
     def _get_iso_offset(self):
