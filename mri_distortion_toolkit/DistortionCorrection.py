@@ -113,10 +113,11 @@ class DistortionCorrectorBase:
             x_pixel_spacing = np.mean(np.diff(np.unique(self._X)))
             y_pixel_spacing = np.mean(np.diff(np.unique(self._Y)))
             z_pixel_spacing = np.mean(np.diff(np.unique(self._Z)))
-            self._PixelSpacing = [x_pixel_spacing, y_pixel_spacing, z_pixel_spacing]
-
+            self._dicom_affine[0:3, 0:3].sum(1)
+            self._pixel_spacing = self._dicom_affine[0:3, 0:3].sum(1)
         else:
-            self._PixelSpacing = self._dicom_data['pixel_spacing']
+            self._pixel_spacing = self._dicom_data['pixel_spacing']
+        self._pixel_spacing = [ps if not ps == 0 else np.nan for ps in self._pixel_spacing]
 
     def _get_iso_offset(self):
         """
@@ -127,9 +128,8 @@ class DistortionCorrectorBase:
         assert np.allclose(self._image_position_patient_start,self._dicom_affine[0:3, 3])
         self._image_position_patient_end = [self._X[-1, -1, -1], self._Y[-1, -1, -1], self._Z[-1, -1, -1]]
         self._iso_offset = -1*np.add(self._image_position_patient_end, self._image_position_patient_start)/2
-        pixel_spacing = self._dicom_affine[0:3,0:3].sum(1)
-        self._iso_offset_pixels = np.divide(self._iso_offset, pixel_spacing)
-
+        pixel_spacing = self._dicom_affine[0:3, 0:3].sum(1)
+        self._iso_offset_pixels = np.divide(self._iso_offset, self._pixel_spacing)
 
     def _check_input_data(self):
         """
@@ -193,36 +193,36 @@ class DistortionCorrectorBase:
         self.tk = yn_lin / y_lin_size
 
         if (np.round(self._ImageOrientationPatient) == [0, 1, 0, 0, 0, -1]).all():
-            xn_dis = self.Gz_encode / (self._PixelSpacing[2]) + self._iso_offset_pixels[2]
+            xn_dis = self.Gz_encode / (self._pixel_spacing[2]) + self._iso_offset_pixels[2]
             self.xj = xn_dis * 2 * np.pi
-            yn_dis = self.Gy_encode / (self._PixelSpacing[1]) + self._iso_offset_pixels[1]
+            yn_dis = self.Gy_encode / (self._pixel_spacing[1]) + self._iso_offset_pixels[1]
             self.yj = yn_dis * 2 * np.pi
         elif (np.round(self._ImageOrientationPatient) == [1, 0, 0, 0, 0, -1]).all():
-            xn_dis = (self.Gz_encode / (self._PixelSpacing[2])) + self._iso_offset_pixels[2]
+            xn_dis = (self.Gz_encode / (self._pixel_spacing[2])) + self._iso_offset_pixels[2]
             self.xj = xn_dis * 2 * np.pi
-            yn_dis = self.Gx_encode / (self._PixelSpacing[0]) + self._iso_offset_pixels[0]
+            yn_dis = self.Gx_encode / (self._pixel_spacing[0]) + self._iso_offset_pixels[0]
             self.yj = yn_dis * 2 * np.pi
         elif (np.round(self._ImageOrientationPatient) == [1, 0, 0, 0, 1, 0]).all():
-            xn_dis = self.Gy_encode / (self._PixelSpacing[1]) + self._iso_offset_pixels[1]
+            xn_dis = self.Gy_encode / (self._pixel_spacing[1]) + self._iso_offset_pixels[1]
             self.xj = xn_dis * 2 * np.pi
-            yn_dis = self.Gx_encode / (self._PixelSpacing[0]) + self._iso_offset_pixels[0]
+            yn_dis = self.Gx_encode / (self._pixel_spacing[0]) + self._iso_offset_pixels[0]
             self.yj = yn_dis * 2 * np.pi
         elif np.round(self._ImageOrientationPatient == [2, 2, 2, 2, 2, 2]).all():
             # this is for through plane correction where the real images are [0, 1, 0, 0, 0, -1]
             self.xj = pd.Series(xn_lin * 2 * np.pi)
-            yn_dis = self.Gx_encode / (self._PixelSpacing[0]) + self._iso_offset_pixels[0]
+            yn_dis = self.Gx_encode / (self._pixel_spacing[0]) + self._iso_offset_pixels[0]
             self.yj = pd.Series(yn_dis * 2 * np.pi)
             xn_dis = pd.Series(np.copy(xn_lin))
         elif np.round(self._ImageOrientationPatient == [3, 3, 3, 3, 3, 3]).all():
             # this is for through plane correction where the real images are [1, 0, 0, 0, 0, -1]
             self.xj = pd.Series(xn_lin * 2 * np.pi)
-            yn_dis = self.Gy_encode / (self._PixelSpacing[1]) + self._iso_offset_pixels[1]
+            yn_dis = self.Gy_encode / (self._pixel_spacing[1]) + self._iso_offset_pixels[1]
             self.yj = yn_dis * 2 * np.pi
             xn_dis = pd.Series(np.copy(xn_lin))
         elif (np.round(self._ImageOrientationPatient) == [1, 1, 1, 1, 1, 1]).all():
             # this is for through plane correction where the real images are [1, 0, 0, 0, 1, 0]
             self.xj = pd.Series(xn_lin * 2 * np.pi)
-            yn_dis = -1*self.Gz_encode / (self._PixelSpacing[2]) + self._iso_offset_pixels[2]
+            yn_dis = -1*self.Gz_encode / (self._pixel_spacing[2]) + self._iso_offset_pixels[2]
             self.yj = yn_dis * 2 * np.pi
             xn_dis = pd.Series(np.copy(xn_lin))
         else:
