@@ -24,7 +24,6 @@ def test_k_space_corrector_runs():
                                                         (test_data_dir / 'G_y_Harmonics.csv').resolve(),
                                                         (test_data_dir / 'G_z_Harmonics.csv').resolve()],
                                     ImExtension='dcm',
-                                    dicom_data=dis_volume.dicom_data,
                                     correct_through_plane=True)
     GDC.correct_all_images()
     GDC.save_all_images()
@@ -44,7 +43,6 @@ def test_image_domain_corrector_runs():
                                                         (test_data_dir / 'G_y_Harmonics.csv').resolve(),
                                                         (test_data_dir / 'G_z_Harmonics.csv').resolve()],
                                     ImExtension='dcm',
-                                    dicom_data=dis_volume.dicom_data,
                                     correct_through_plane=True)
     GDC.correct_all_images()
     GDC.save_all_images_as_dicom(save_loc=this_dir / 'test_data' / 'MR_dicom' / 'im_domain_corrected_dcm')
