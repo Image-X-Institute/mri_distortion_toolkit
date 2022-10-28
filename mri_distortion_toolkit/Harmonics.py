@@ -72,7 +72,7 @@ class SphericalHarmonicFit:
         self.TrimDataBy_r_outer = TrimDataBy_r_outer
         self.r_outer = r_outer
         self.QuantifyFit = QuantifyFit
-        self.AssessHarmonicPk_Pk = AssessHarmonicPk_Pk
+        self._AssessHarmonicPk_Pk = AssessHarmonicPk_Pk
         self.n_order = n_order
         self.n_harmonics = (self.n_order + 1) ** 2
         self.input_Bz_data = input_Bz_data.copy()
@@ -89,7 +89,7 @@ class SphericalHarmonicFit:
         self.harmonics = self.harmonics * scale
         if self.QuantifyFit:
             self._quantify_fit()
-        if self.AssessHarmonicPk_Pk:
+        if self._AssessHarmonicPk_Pk:
             self._assess_harmonic_pk_pk()
 
     def _check_data_input(self):
@@ -210,7 +210,7 @@ class SphericalHarmonicFit:
 
     # Public Methods
 
-    def plot_harmonics_pk_pk(self, cut_off=.1):  # pragma: no cover
+    def plot_harmonics_pk_pk(self, cut_off=.1, title=None, return_axs=False):  # pragma: no cover
         """
         produces a barplot of harmonics.
 
@@ -228,12 +228,18 @@ class SphericalHarmonicFit:
         HarmonicsToPlot = KeyHarmonics
 
         axs = sns.barplot(x=HarmonicsToPlot.index, y=HarmonicsToPlot.values, palette="Blues_d")
-        axs.set_title(f'Principle Harmonics pk-pk (>{cut_off * 100: 1.0f}% of max)')
+        if title is None:
+            axs.set_title(f'Principle Harmonics pk-pk (>{cut_off * 100: 1.0f}% of max)')
+        else:
+            axs.set_title(title)
 
         axs.set_ylabel('pk-pk [\u03BCT]')
         for item in axs.get_xticklabels():
             item.set_rotation(45)
-        plt.show()
+        if not return_axs:
+            plt.show()
+        else:
+            return axs
 
     def plot_cut_planes(self, resolution=2.5, AddColorBar=True, quantity='uT', vmin=None,
                         vmax=None):  # pragma: no cover

@@ -22,7 +22,7 @@ def calculate_harmonics(MagneticFields, n_order=5, scale=None):
     if not np.shape(scale)[0] == 4:
         raise ValueError('scale must be a list such as [2,2,2,2], where the elements correspond to Gx, Gy, Gz, and B0')
 
-    if len(n_order) == 1:
+    if isinstance(n_order, int):
         n_order = [n_order, n_order, n_order, n_order]
     elif not len(n_order) == 4:
         raise ValueError('n_order must either be a single integer or a list of 4 integers corresponding to'
