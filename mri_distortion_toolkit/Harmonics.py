@@ -7,6 +7,7 @@ from matplotlib import pyplot as plt
 from .utilities import bcolors
 from .utilities import convert_cartesian_to_spherical, generate_legendre_basis
 from .utilities import reconstruct_Bz
+from .utilities import generate_harmonic_names
 import seaborn as sns
 
 sns.set_theme(style="whitegrid")
@@ -82,7 +83,7 @@ class SphericalHarmonicFit:
         self._check_data_input()
         if self.TrimDataBy_r_outer:
             self._filter_data()
-        self._generate_harmonic_names()
+        self._coeff_names = generate_harmonic_names(self.n_order)
         self.legendre_basis = generate_legendre_basis(self.input_Bz_data, self.n_order)
         self._svd_fit()
 
@@ -126,21 +127,6 @@ class SphericalHarmonicFit:
         if self.input_Bz_data.shape[0] == 0:
             logger.error(f'After filtering for data insdide {self.r_outer} mm, there is no data left!')
             sys.exit(1)
-
-    def _generate_harmonic_names(self):
-        """
-        generate the names of each harmonic. Used to label the columns in the harmonics dataframe
-        """
-        k = 0
-        self._coeff_names = []
-        for n in range(0, self.n_order + 1):  # the plus 1 is because range stops at -1 for some reason
-            self._coeff_names.append(f'A_{n}_0')
-            k = k + 1
-            for m in range(0, n):
-                self._coeff_names.append(f'A_{n}_{m + 1}')
-                k = k + 1
-                self._coeff_names.append(f'B_{n}_{m + 1}')
-                k = k + 1
 
     def _svd_fit(self):
         """

@@ -17,7 +17,6 @@ this_dir = Path(__file__).parent
 sys.path.insert(0, str(this_dir.parent))
 import mri_distortion_toolkit.utilities as ut
 
-
 test_data_dir = (this_dir / 'test_data').resolve()
 dicom_directory = (test_data_dir / 'MR_dicom').resolve()
 test_coordinates = pd.read_csv((test_data_dir / 'test_coords.csv').resolve()).squeeze("columns")
@@ -55,15 +54,14 @@ def test_dicom_read_in():
 
 
 def test_marker_volume_zero_padding():
-
     data_loc = (this_dir / 'test_data' / 'MR_dicom').resolve()
     n_zero_pad = 2
     ImageArray, dicom_affine, (X, Y, Z) = ut.dicom_to_numpy(data_loc, file_extension='dcm',
-                                                         return_XYZ=True,
-                                                         zero_pad=0)
+                                                            return_XYZ=True,
+                                                            zero_pad=0)
     ImageArray, dicom_affine_zp, (X_zp, Y_zp, Z_zp) = ut.dicom_to_numpy(data_loc, file_extension='dcm',
-                                                         return_XYZ=True,
-                                                         zero_pad=n_zero_pad)
+                                                                        return_XYZ=True,
+                                                                        zero_pad=n_zero_pad)
     xyz_spacing = dicom_affine[0:3, 0:3].sum(axis=0)
     assert X_zp.min() == X.min() - xyz_spacing[0] * n_zero_pad
     assert X_zp.max() == X.max() + xyz_spacing[0] * n_zero_pad
@@ -92,7 +90,7 @@ def test_generate_legendre_basis():
 
     n_order = 10  # arbitrary order
     legendre = ut.generate_legendre_basis(test_coordinates_spherical, n_order)
-    assert legendre.shape == (test_coordinates_spherical.shape[0], (n_order+1)**2)
+    assert legendre.shape == (test_coordinates_spherical.shape[0], (n_order + 1) ** 2)
     # read in old data
     legendre_test = pd.read_csv((test_data_dir / 'legendre_test.csv').resolve(), index_col=0).squeeze("columns")
     assert np.allclose(legendre, legendre_test)
@@ -106,9 +104,9 @@ def test_get_spherical_harmonics():
 
     global Gx_Harmonics, Gy_Harmonics, Gz_Harmonics  # i need these for other tests
     # test csv
-    Gx_Harmonics, Gy_Harmonics, Gz_Harmonics = ut.get_gradient_spherical_harmonics(test_data_dir / 'G_x_Harmonics.csv',
-                                                                          test_data_dir / 'G_y_Harmonics.csv',
-                                                                          test_data_dir / 'G_z_Harmonics.csv')
+    Gx_Harmonics, Gy_Harmonics, Gz_Harmonics = ut.get_harmonics(test_data_dir / 'G_x_Harmonics.csv',
+                                                                test_data_dir / 'G_y_Harmonics.csv',
+                                                                test_data_dir / 'G_z_Harmonics.csv')
     Gx_Harmonics2 = pd.read_csv((test_data_dir / 'G_x_Harmonics.csv').resolve(), index_col=0).squeeze("columns")
     Gy_Harmonics2 = pd.read_csv((test_data_dir / 'G_y_Harmonics.csv').resolve(), index_col=0).squeeze("columns")
     Gz_Harmonics2 = pd.read_csv((test_data_dir / 'G_z_Harmonics.csv').resolve(), index_col=0).squeeze("columns")
@@ -122,20 +120,36 @@ def test_reconstruct_Bz():
     """
     tests stability wrt to previous code
     """
-    Gx_Harmonics, Gy_Harmonics, Gz_Harmonics = ut.get_gradient_spherical_harmonics(test_data_dir / 'G_x_Harmonics.csv',
-                                                                          test_data_dir / 'G_y_Harmonics.csv',
-                                                                          test_data_dir / 'G_z_Harmonics.csv')
+    Gx_Harmonics, Gy_Harmonics, Gz_Harmonics = ut.get_harmonics(test_data_dir / 'G_x_Harmonics.csv',
+                                                                test_data_dir / 'G_y_Harmonics.csv',
+                                                                test_data_dir / 'G_z_Harmonics.csv')
     dicom_data = ut.get_dicom_data(test_data_dir / 'dicom_data.json')
     Bz_uT = ut.reconstruct_Bz(Gx_Harmonics * dicom_data['gradient_strength'][0], test_coordinates_spherical,
-                      quantity='uT', r_outer=None)
+                              quantity='uT', r_outer=None)
     # this should be very roughly 700
-    assert ((Bz_uT.max() - Bz_uT.min()) - 700)/700 < 0.05  # accept 5% error
+    assert ((Bz_uT.max() - Bz_uT.min()) - 700) / 700 < 0.05  # accept 5% error
     Bz_T = ut.reconstruct_Bz(Gy_Harmonics * dicom_data['gradient_strength'][0], test_coordinates_spherical,
-                      quantity='T', r_outer=150)
-    assert ((Bz_T.max() - Bz_T.min())*1e6 - 700) / 700 < 0.05  # accept 5% error
+                             quantity='T', r_outer=150)
+    assert ((Bz_T.max() - Bz_T.min()) * 1e6 - 700) / 700 < 0.05  # accept 5% error
     Bz_uT2 = pd.read_csv((test_data_dir / 'Bz_uT_test.csv').resolve(), index_col=0).squeeze("columns")
     Bz_T2 = pd.read_csv((test_data_dir / 'Bz_T_test.csv').resolve(), index_col=0).squeeze("columns")
     assert np.allclose(Bz_uT, Bz_uT2)
     assert np.allclose(Bz_T, Bz_T2)
 
 
+def test_print_dict():
+    test_dict = {'one': 1, 'two': 2}
+    ut.print_dict(test_dict)
+
+
+def test_combine_harmonics():
+    dummy_harmonics_1 = [1, 2, 3, 4, 5, 6, 7, 8, 9]  # 2nd order
+    dummy_harmonics_2 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]  # 3rd order
+    expected_combination = [2,4,6,8,10,12,14,16,18,10,11,12,13,14,15,16]
+    combined_harmonics1 = ut.combine_harmonics(dummy_harmonics_1, dummy_harmonics_2)
+    assert len(combined_harmonics1) == len(dummy_harmonics_2)
+    assert np.allclose(combined_harmonics1, expected_combination)
+    combined_harmonics2 = ut.combine_harmonics(dummy_harmonics_2, dummy_harmonics_1)
+    assert np.allclose(combined_harmonics2, combined_harmonics1)
+    combined_harmonics3 = ut.combine_harmonics(dummy_harmonics_2, dummy_harmonics_1, n_order_return=2)
+    assert len(combined_harmonics3) == 9
