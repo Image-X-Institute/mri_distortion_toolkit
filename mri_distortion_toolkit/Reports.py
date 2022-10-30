@@ -264,7 +264,7 @@ class MRI_QA_Reporter:
 
         if gradient_harmonics is not None:
             self._check_dicom_data()
-            self._Gx_Harmonics, self._Gy_Harmonics, self._Gz_Harmonics = \
+            self._Gx_Harmonics, self._Gy_Harmonics, self._Gz_Harmonics, self._B0_harmonics = \
                 get_harmonics(gradient_harmonics[0], gradient_harmonics[1], gradient_harmonics[2])
             self._Gx_Harmonics = self._Gx_Harmonics * self.dicom_data['gradient_strength'][0]
             self._Gy_Harmonics = self._Gy_Harmonics * self.dicom_data['gradient_strength'][1]

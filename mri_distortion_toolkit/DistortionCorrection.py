@@ -145,13 +145,22 @@ class DistortionCorrectorBase:
             return
 
         if freq_encode_direction == 'x':
-            self._Gx_Harmonics = combine_harmonics(self._Gx_Harmonics, self._B0_Harmonics)
+            scale = 1/self._dicom_data['gradient_strength'][0]
+            self._Gx_Harmonics = combine_harmonics(self._Gx_Harmonics, self._B0_Harmonics * scale, operation='subtract')
         elif freq_encode_direction == 'y':
-            self._Gy_Harmonics = combine_harmonics(self._Gy_Harmonics, self._B0_Harmonics)
+            scale = 1 / self._dicom_data['gradient_strength'][1]
+            self._Gy_Harmonics = combine_harmonics(self._Gy_Harmonics, self._B0_Harmonics*scale)
         elif freq_encode_direction == 'z':
-            self._Gz_Harmonics = combine_harmonics(self._Gz_Harmonics, self._B0_Harmonics)
+            scale = 1 / self._dicom_data['gradient_strength'][2]
+            self._Gz_Harmonics = combine_harmonics(self._Gz_Harmonics, self._B0_Harmonics*scale)
 
-        print('hello')
+        # from .Harmonics import SphericalHarmonicFit
+        # input_data = pd.DataFrame({'x': [0, 0, 0], 'y': [0, 0, 0], 'z': [0, 0, 0], 'Bz': [0, 1, 2]})
+        # tempH = SphericalHarmonicFit(input_data)
+        # tempH.harmonics = self._Gx_Harmonics
+        # tempH._assess_harmonic_pk_pk()
+        # tempH.plot_harmonics_pk_pk(cut_off=.005)
+        # print('hello')
 
 
 

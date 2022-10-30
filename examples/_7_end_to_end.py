@@ -18,9 +18,9 @@ data_loc = this_file_loc / '_example_data'
 
 
 # Data import
-distorted_data_loc = Path(r'/home/brendan/Downloads/MRI_distortion_QA_sample_data/MR/04 gre_trans_AP_330')
-distorted_data_loc_rev = Path(r'/home/brendan/Downloads/MRI_distortion_QA_sample_data/MR/05 gre_trans_PA_330')
-gt_data_loc = Path(r'/home/brendan/Downloads/MRI_distortion_QA_sample_data/CT/slicer_centroids.mrk.json')
+distorted_data_loc = Path(r'C:\Users\Brendan\Downloads\MRI_distortion_QA_sample_data(2)\MRI_distortion_QA_sample_data\MR\04 gre_trans_AP_330')
+distorted_data_loc_rev = Path(r'C:\Users\Brendan\Downloads\MRI_distortion_QA_sample_data(2)\MRI_distortion_QA_sample_data\MR\05 gre_trans_PA_330')
+gt_data_loc = Path(r'C:\Users\Brendan\Downloads\MRI_distortion_QA_sample_data(2)\MRI_distortion_QA_sample_data\CT\slicer_centroids.mrk.json')
 
 # extract markers:
 gt_volume = MarkerVolume(gt_data_loc, r_max=300)
@@ -36,7 +36,7 @@ normalisation_factor = [1 / gradient_strength[0], 1 / gradient_strength[1], 1 / 
                         1]  # this normalised gradient harmonics to 1mT/m
 # normalisation_factor = [1, 1, 1, 1]
 G_x_Harmonics, G_y_Harmonics, G_z_Harmonics, B0_Harmonics = calculate_harmonics(B_fields.MagneticFields,
-                                                                                n_order=8,
+                                                                                n_order=5,
                                                                                 scale=normalisation_factor)
 # correct input images
 GDC = ImageDomainDistortionCorrector(ImageDirectory=distorted_data_loc.resolve(),

@@ -306,7 +306,7 @@ def generate_harmonic_names(n_order):
     return coeff_names
 
 
-def combine_harmonics(harmonics_1, harmonics_2, n_order_return=None):
+def combine_harmonics(harmonics_1, harmonics_2, operation='add', n_order_return=None):
     """
     This is a general purpose function to combine two harmonic series.
     If the series are of the same order, this is the default order of the returned series.
@@ -317,28 +317,40 @@ def combine_harmonics(harmonics_1, harmonics_2, n_order_return=None):
     :type harmonics_1: array-like
     :param harmonics_2: second series to combine
     :type harmonics_2: array-like
+    :param operation: 'add' or 'subtract'
+    :type operation: str, optional
     :param n_order_return: order of returned series
-    :type n_order_return: int
+    :type n_order_return: int, optional
 
     :return: combined_harmonics
     """
 
     assert isinstance(n_order_return, int) or n_order_return is None
+    assert operation=='add' or operation=='subtract'
 
     if (len(harmonics_1) == len(harmonics_2)):
-        combined_harmonics = np.add(harmonics_1, harmonics_2)
+        if operation == 'add':
+            combined_harmonics = np.add(harmonics_1, harmonics_2)
+        elif operation == 'subtract':
+            combined_harmonics = np.subtract(harmonics_1, harmonics_2)
         harmonics_zeros = harmonics_1.copy()
         harmonics_zeros[:] = 0
         new_index = generate_harmonic_names(len(harmonics_2))
     elif len(harmonics_1) > len(harmonics_2):
         combined_harmonics = list(np.zeros(len(harmonics_1)))
         lower_ind = len(harmonics_2)
-        combined_harmonics[:lower_ind] = np.add(harmonics_2, harmonics_1[:lower_ind])
+        if operation == 'add':
+            combined_harmonics[:lower_ind] = np.add(harmonics_2, harmonics_1[:lower_ind])
+        elif operation == 'subtract':
+            combined_harmonics[:lower_ind] = np.subtract(harmonics_2, harmonics_1[:lower_ind])
         combined_harmonics[lower_ind:] = harmonics_1[lower_ind:]
     else:
         combined_harmonics = list(np.zeros(len(harmonics_1)))
         lower_ind = len(harmonics_1)
-        combined_harmonics[:lower_ind] = np.add(harmonics_2[:lower_ind], harmonics_1)
+        if operation == 'add':
+            combined_harmonics[:lower_ind] = np.add(harmonics_2[:lower_ind], harmonics_1)
+        elif operation == 'subtract':
+            combined_harmonics[:lower_ind] = np.subtract(harmonics_2[:lower_ind], harmonics_1)
         combined_harmonics[lower_ind:] = harmonics_2[lower_ind:]
 
     n_order_in = int(np.sqrt(len(combined_harmonics)) - 1)
@@ -534,11 +546,7 @@ def get_harmonics(Gx_Harmonics, Gy_Harmonics, Gz_Harmonics, B0_Harmonics=None):
             raise AttributeError('could not read in B0 harmonics...please input either a series or a '
                                  'path to a saved csv file')
 
-    if B0_Harmonics is not None:
-        return Gx_Harmonics, Gy_Harmonics, Gz_Harmonics, B0_Harmonics
-    else:
-        return Gx_Harmonics, Gy_Harmonics, Gz_Harmonics
-
+    return Gx_Harmonics, Gy_Harmonics, Gz_Harmonics, B0_Harmonics
 
 def get_dicom_data(dicom_data):
     """

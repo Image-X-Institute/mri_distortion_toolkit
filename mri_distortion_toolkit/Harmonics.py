@@ -40,8 +40,8 @@ class SphericalHarmonicFit:
 
     This task is performed using numpys pseudo_inverse functionality to invert L
 
-    :param InputData: A pandas dataframe with columns x, y, z, Bz. Data should be in mm and T
-    :type InputData: Pandas.DataFrame
+    :param input_Bz_data: A pandas dataframe with columns x, y, z, Bz. Data should be in mm and T
+    :type input_Bz_data: Pandas.DataFrame
     :param r_outer: radius of sphere of interest. If AssessHarmonicPk_Pk=True, data is reconstucted on r_outer. if
         TrimDataBy_r_outer=True, data lying outside r_outer will be deleted. Finally, r_outer is used to set the limits
         on plotting data.
@@ -64,7 +64,7 @@ class SphericalHarmonicFit:
     :type scale: float, optional
     """
 
-    def __init__(self, input_Bz_data, r_outer=150, n_order=8, AssessHarmonicPk_Pk=True, QuantifyFit=True,
+    def __init__(self, input_Bz_data, r_outer=150, n_order=5, AssessHarmonicPk_Pk=True, QuantifyFit=True,
                  TrimDataBy_r_outer=False, scale=1):
 
         # attributes:
