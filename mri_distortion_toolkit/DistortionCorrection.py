@@ -5,6 +5,7 @@ import sys
 import warnings
 import pydicom
 import matplotlib.pyplot as plt
+from matplotlib.patches import Circle
 from finufft import Plan
 from finufft import nufft2d1, nufft2d2
 import numpy as np
@@ -63,7 +64,7 @@ class DistortionCorrectorBase:
             get_gradient_spherical_harmonics(gradient_harmonics[0], gradient_harmonics[1], gradient_harmonics[2])
         self._Gx_Harmonics = self._Gx_Harmonics * 1
         self._Gy_Harmonics = self._Gy_Harmonics * 1
-        self._Gz_Harmonics = self._Gz_Harmonics * -1
+        self._Gz_Harmonics = self._Gz_Harmonics * 1
 
         self.ImageDirectory = Path(ImageDirectory)
         self._all_dicom_files = get_all_files(self.ImageDirectory, ImExtension)
@@ -396,6 +397,8 @@ class DistortionCorrectorBase:
         :param save_loc: path to save data at.
         :type save_loc: string or path
         """
+
+        print('saving all data as png...')
         plt.ioff()
         if save_loc is None:
             save_loc = self.ImageDirectory / 'corrected'
@@ -413,7 +416,7 @@ class DistortionCorrectorBase:
         col_label = None
         FOV = None
         slice_coords = None
-        from matplotlib.patches import Circle
+
         if ((np.round(self._ImageOrientationPatient) == [0, 1, 0, 0, 0, -1]).all() or
                 np.round(self._ImageOrientationPatient == [2, 2, 2, 2, 2, 2]).all()):
             extent = (self._X.min(), self._X.max(), self._Z.min(), self._Z.max())
@@ -431,7 +434,7 @@ class DistortionCorrectorBase:
 
         elif ((np.round(self._ImageOrientationPatient) == [1, 0, 0, 0, 1, 0]).all() or
               np.round(self._ImageOrientationPatient == [1, 1, 1, 1, 1, 1]).all()):
-            extent = (self._Y.min(), self._Y.max(), self._Z.min(), self._Z.max())
+            extent = (self._X.min(), self._X.max(), self._Y.min(), self._Y.max())
             slice_coords = np.unique(self._Z)
             row_label = 'X [mm]'
             col_label = 'Y [mm]'
@@ -478,7 +481,7 @@ class DistortionCorrectorBase:
             plt.savefig(save_loc / (str(i) + '.png'), format='png')
             plt.close(fig)
             i += 1
-        print('images export to png')
+        print('images export to png successful')
 
     def save_all_images_as_dicom(self, save_loc=None):
         """
@@ -487,6 +490,8 @@ class DistortionCorrectorBase:
         :param save_loc: path to save data at.
         :type save_loc: string or path
         """
+
+        print('saving all data as dcm...')
         if self._image_array_corrected.min() < 0:
             self._image_array_corrected = self._zero_volume(self._image_array_corrected)
         if save_loc is None:
