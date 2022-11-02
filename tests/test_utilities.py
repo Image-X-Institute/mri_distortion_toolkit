@@ -104,7 +104,7 @@ def test_get_spherical_harmonics():
 
     global Gx_Harmonics, Gy_Harmonics, Gz_Harmonics  # i need these for other tests
     # test csv
-    Gx_Harmonics, Gy_Harmonics, Gz_Harmonics = ut.get_harmonics(test_data_dir / 'G_x_Harmonics.csv',
+    Gx_Harmonics, Gy_Harmonics, Gz_Harmonics, B0_Harmonics = ut.get_harmonics(test_data_dir / 'G_x_Harmonics.csv',
                                                                 test_data_dir / 'G_y_Harmonics.csv',
                                                                 test_data_dir / 'G_z_Harmonics.csv')
     Gx_Harmonics2 = pd.read_csv((test_data_dir / 'G_x_Harmonics.csv').resolve(), index_col=0).squeeze("columns")
@@ -120,7 +120,7 @@ def test_reconstruct_Bz():
     """
     tests stability wrt to previous code
     """
-    Gx_Harmonics, Gy_Harmonics, Gz_Harmonics = ut.get_harmonics(test_data_dir / 'G_x_Harmonics.csv',
+    Gx_Harmonics, Gy_Harmonics, Gz_Harmonics, B0_Harmonics = ut.get_harmonics(test_data_dir / 'G_x_Harmonics.csv',
                                                                 test_data_dir / 'G_y_Harmonics.csv',
                                                                 test_data_dir / 'G_z_Harmonics.csv')
     dicom_data = ut.get_dicom_data(test_data_dir / 'dicom_data.json')
