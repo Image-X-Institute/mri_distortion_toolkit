@@ -11,3 +11,4 @@ Worked Examples
    /field_calculation.md
    /fit_spherical_harmonics.md
    /reporting.md
+   /distortion_correction.md

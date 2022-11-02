@@ -19,7 +19,8 @@ GDC = ImageDomainDistortionCorrector(ImageDirectory=distorted_data_loc.resolve()
                                 correct_through_plane=True)
 
 GDC.correct_all_images()
-GDC.save_all_images()  # saves as png so you can quickly inspect results
+GDC.save_all_images(DSV_radius=150)  # saves as png so you can quickly inspect results
+
 GDC.save_all_images_as_dicom()  # saves as dicom which can be read into analysis packages.
 
 # Assess correction:
