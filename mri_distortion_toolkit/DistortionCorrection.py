@@ -18,10 +18,11 @@ import pandas as pd
 from pathlib import Path
 from .utilities import get_all_files, convert_cartesian_to_spherical, generate_legendre_basis, dicom_to_numpy
 from .utilities import sort_dicom_slices
-from .utilities import get_gradient_spherical_harmonics
+from .utilities import get_harmonics
 from .utilities import printProgressBar
 from time import perf_counter
 from abc import abstractmethod
+from .utilities import combine_harmonics
 
 logging.basicConfig(format='[%(filename)s: line %(lineno)d] %(message)s', level=logging.WARNING)
 logger = logging.getLogger(__name__)
@@ -38,33 +39,51 @@ class DistortionCorrectorBase:
     :param gradient_harmonics: a list of three harmonics, which should either be csv files exported from an instance of
         SphericalHarmonicFit, or SphericalHarmonicFit.harmonics
     :type gradient_harmonics: list
-    :param ImExtension: extension of files to read in in ImageDirectory, e.g. 'dcm', or 'IMA'
+    :param B0_harmonics: Instance of SphericalHarmonicFit.harmonics describing B0, or else an equivalent csv file
+    :type B0_harmonics: SphericalHarmonicFit.harmonics or csv, optional
+    :param ImExtension: extension of files to read in ImageDirectory, e.g. 'dcm', or 'IMA'
     :type ImExtension: str, optional
     :param correct_through_plane: if True, through plane (3D) correction is carried out, which is roughly twice as slow
         as 2D only
     :type correct_through_plane: bool. optional
+    :param correct_B0: if True, and if B0_harmonics is supplied, will also correct for B0 effects. Probably only works
+        for standard (non EPI) sequences.
+    :type correct_B0: bool, optional
+    :param B0_direction: 'forward' or 'back'. Determines whether the B0 harmonics should be added (forward) or
+        subtracted (backward) from the gradient harmonics
+    :type B0_direction: str, optional
     :param pad: pixels to 0 pad image volume. This can be useful in the k-space domain
     :type pad: int, optional
     """
 
-
-    def __init__(self, ImageDirectory, gradient_harmonics,
-                 ImExtension='.dcm', correct_through_plane=True, pad=0):
+    def __init__(self, ImageDirectory, gradient_harmonics, B0_harmonics=None,
+                 dicom_data=None,
+                 ImExtension='.dcm', correct_through_plane=True, correct_B0=True,
+                 B0_direction='forward', pad=0):
         """
         init method
         """
 
         if 'DistortionCorrectorBase' in str(self.__class__):
             raise TypeError('DistortionCorrectorBase should not be called directly; it only exists for other correctors'
-                         'to inherit. Quitting')
+                            'to inherit. Quitting')
 
         self.correct_through_plane = correct_through_plane
+        self.correct_B0 = correct_B0
+        self.B0_direction = B0_direction
         self._n_zero_pad = pad  # n_pixels to add around each edge of volume. set to 0 for no zero padding
-        self._Gx_Harmonics, self._Gy_Harmonics, self._Gz_Harmonics = \
-            get_gradient_spherical_harmonics(gradient_harmonics[0], gradient_harmonics[1], gradient_harmonics[2])
+        self._Gx_Harmonics, self._Gy_Harmonics, self._Gz_Harmonics, self._B0_Harmonics = \
+            get_harmonics(gradient_harmonics[0], gradient_harmonics[1], gradient_harmonics[2], B0_harmonics)
         self._Gx_Harmonics = self._Gx_Harmonics * 1
         self._Gy_Harmonics = self._Gy_Harmonics * 1
-        self._Gz_Harmonics = self._Gz_Harmonics * 1
+        self._Gz_Harmonics = self._Gz_Harmonics * -1
+        self._dicom_data = dicom_data
+
+        if self.correct_B0:
+            if self._B0_Harmonics is None:
+                warnings.warn('cannot correct B0 as no B0 harmonics supplied, continuing')
+            else:
+                self._add_B0_to_gradient()
 
         self.ImageDirectory = Path(ImageDirectory)
         self._all_dicom_files = get_all_files(self.ImageDirectory, ImExtension)
@@ -74,9 +93,8 @@ class DistortionCorrectorBase:
         self._all_dicom_files = list(np.array(self._all_dicom_files)[sort_ind])
         self._n_dicom_files = len(self._all_dicom_files)
 
-
-        self.ImageArray,\
-        self._dicom_affine,\
+        self.ImageArray, \
+        self._dicom_affine, \
         (self._X, self._Y, self._Z) = dicom_to_numpy(self.ImageDirectory,
                                                      file_extension=ImExtension,
                                                      return_XYZ=True,
@@ -113,10 +131,10 @@ class DistortionCorrectorBase:
         calculate the offset between the center of the volume and scanner isocenter.
         This offset is used in _calculate_encoding_indices
         """
-        self._image_position_patient_start = [self._X[0,0,0], self._Y[0,0,0], self._Z[0,0,0]]
-        assert np.allclose(self._image_position_patient_start,self._dicom_affine[0:3, 3])
+        self._image_position_patient_start = [self._X[0, 0, 0], self._Y[0, 0, 0], self._Z[0, 0, 0]]
+        assert np.allclose(self._image_position_patient_start, self._dicom_affine[0:3, 3])
         self._image_position_patient_end = [self._X[-1, -1, -1], self._Y[-1, -1, -1], self._Z[-1, -1, -1]]
-        self._iso_offset = -1*np.add(self._image_position_patient_end, self._image_position_patient_start)/2
+        self._iso_offset = -1 * np.add(self._image_position_patient_end, self._image_position_patient_start) / 2
         pixel_spacing = self._dicom_affine[0:3, 0:3].sum(1)
         self._iso_offset_pixels = np.divide(self._iso_offset, self._pixel_spacing)
 
@@ -126,6 +144,51 @@ class DistortionCorrectorBase:
         """
         assert self._Gx_Harmonics.shape == self._Gy_Harmonics.shape == self._Gz_Harmonics.shape
         assert self._n_zero_pad >= 0
+
+    def _add_B0_to_gradient(self):
+        """
+        combine the B0 harmonics with the gradient harmonics in the frequency encode direciton
+        :return:
+        """
+
+        assert self.B0_direction == 'forward' or self.B0_direction == 'backward'
+        if self.B0_direction == 'foward':
+            _operation = 'add'
+        elif self.B0_direction == 'back':
+            _operation = 'subtract'
+        else:
+            raise TypeError('B0_direction must be "forward" or "back"')
+
+        try:
+            freq_encode_direction = self._dicom_data['freq_encode_direction']
+            _test = self._dicom_data['gradient_strength']
+        except (AttributeError, TypeError):
+            raise AttributeError('Cannot combine gradient and B0 harmonics as no dicom_data was supplied. '
+                           'At a minimum, we need the following: '
+                           'dicom_data = {"freq_encode_direction": e.g. "x",'
+                           '              "gradient_strength": e.g. [1,2,3]}'
+                           'continuing with just the supplied gradient harmonics')
+
+        if freq_encode_direction == 'x':
+            scale = 1/self._dicom_data['gradient_strength'][0]
+            if self.B0_direction == 'back':
+                self._Gx_Harmonics = combine_harmonics(self._Gx_Harmonics, self._B0_Harmonics*scale, operation=_operation)
+        elif freq_encode_direction == 'y':
+            scale = 1 / self._dicom_data['gradient_strength'][1]
+            self._Gy_Harmonics = combine_harmonics(self._Gy_Harmonics, self._B0_Harmonics*scale, operation=_operation)
+        elif freq_encode_direction == 'z':
+            scale = 1 / self._dicom_data['gradient_strength'][2]
+            self._Gz_Harmonics = combine_harmonics(self._Gz_Harmonics, self._B0_Harmonics*scale, operation=_operation)
+
+        # from .Harmonics import SphericalHarmonicFit
+        # input_data = pd.DataFrame({'x': [0, 0, 0], 'y': [0, 0, 0], 'z': [0, 0, 0], 'Bz': [0, 1, 2]})
+        # tempH = SphericalHarmonicFit(input_data)
+        # tempH.harmonics = self._Gx_Harmonics
+        # tempH._assess_harmonic_pk_pk()
+        # tempH.plot_harmonics_pk_pk(cut_off=.005)
+        # print('hello')
+
+
 
     def _unpad_image_arrays(self):
         """
@@ -155,7 +218,8 @@ class DistortionCorrectorBase:
         required for the image domain corrector which tends to produce -ve pixels
         """
         negative_ind = volume_to_zero < 0
-        logger.warning(f'{np.count_nonzero(negative_ind)} negative pixels detected; setting these to zero and continuing')
+        logger.warning(
+            f'{np.count_nonzero(negative_ind)} negative pixels detected; setting these to zero and continuing')
         volume_to_zero[negative_ind] = 0
         return volume_to_zero
 
@@ -211,7 +275,7 @@ class DistortionCorrectorBase:
         elif (np.round(self._ImageOrientationPatient) == [1, 1, 1, 1, 1, 1]).all():
             # this is for through plane correction where the real images are [1, 0, 0, 0, 1, 0]
             self.xj = pd.Series(xn_lin * 2 * np.pi)
-            yn_dis = -1*self.Gz_encode / (self._pixel_spacing[2]) + self._iso_offset_pixels[2]
+            yn_dis = -1 * self.Gz_encode / (self._pixel_spacing[2]) + self._iso_offset_pixels[2]
             self.yj = yn_dis * 2 * np.pi
             xn_dis = pd.Series(np.copy(xn_lin))
         else:
@@ -337,7 +401,7 @@ class DistortionCorrectorBase:
                 continue
 
             if i % update_every_n_slices == 0:
-                print(printProgressBar(i-self._n_zero_pad, n_images_to_correct))
+                print(printProgressBar(i - self._n_zero_pad, n_images_to_correct))
             self._image_to_correct = array_slice
             self._X_slice = X
             self._Y_slice = Y
@@ -374,7 +438,7 @@ class DistortionCorrectorBase:
                     continue
 
                 if j % update_every_n_slices == 0:
-                    print(printProgressBar(i+j-(self._n_zero_pad*4), n_images_to_correct))
+                    print(printProgressBar(i + j - (self._n_zero_pad * 4), n_images_to_correct))
                 self._image_to_correct = array_slice
                 self._X_slice = X
                 self._Y_slice = Y
@@ -635,4 +699,3 @@ class ImageDomainDistortionCorrector(DistortionCorrectorBase):
                                  (yvector > self._image_shape[1]), 0, _output_image)
 
         self.outputImage = _output_image.reshape(self._image_shape)
-

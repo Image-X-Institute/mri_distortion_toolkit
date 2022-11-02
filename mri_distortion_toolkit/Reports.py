@@ -5,7 +5,7 @@ import numpy as np
 import logging
 import plotly.express as px
 import pandas as pd
-from .utilities import get_gradient_spherical_harmonics, convert_cartesian_to_spherical, reconstruct_Bz
+from .utilities import get_harmonics, convert_cartesian_to_spherical, reconstruct_Bz
 from .utilities import convert_spherical_to_cartesian
 import plotly.graph_objects as go
 from distutils.dir_util import copy_tree
@@ -264,8 +264,8 @@ class MRI_QA_Reporter:
 
         if gradient_harmonics is not None:
             self._check_dicom_data()
-            self._Gx_Harmonics, self._Gy_Harmonics, self._Gz_Harmonics = \
-                get_gradient_spherical_harmonics(gradient_harmonics[0], gradient_harmonics[1], gradient_harmonics[2])
+            self._Gx_Harmonics, self._Gy_Harmonics, self._Gz_Harmonics, self._B0_harmonics = \
+                get_harmonics(gradient_harmonics[0], gradient_harmonics[1], gradient_harmonics[2])
             self._Gx_Harmonics = self._Gx_Harmonics * self.dicom_data['gradient_strength'][0]
             self._Gy_Harmonics = self._Gy_Harmonics * self.dicom_data['gradient_strength'][1]
             self._Gz_Harmonics = self._Gz_Harmonics * self.dicom_data['gradient_strength'][2]

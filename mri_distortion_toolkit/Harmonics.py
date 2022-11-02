@@ -7,6 +7,7 @@ from matplotlib import pyplot as plt
 from .utilities import bcolors
 from .utilities import convert_cartesian_to_spherical, generate_legendre_basis
 from .utilities import reconstruct_Bz
+from .utilities import generate_harmonic_names
 import seaborn as sns
 
 sns.set_theme(style="whitegrid")
@@ -39,8 +40,8 @@ class SphericalHarmonicFit:
 
     This task is performed using numpys pseudo_inverse functionality to invert L
 
-    :param InputData: A pandas dataframe with columns x, y, z, Bz. Data should be in mm and T
-    :type InputData: Pandas.DataFrame
+    :param input_Bz_data: A pandas dataframe with columns x, y, z, Bz. Data should be in mm and T
+    :type input_Bz_data: Pandas.DataFrame
     :param r_outer: radius of sphere of interest. If AssessHarmonicPk_Pk=True, data is reconstucted on r_outer. if
         TrimDataBy_r_outer=True, data lying outside r_outer will be deleted. Finally, r_outer is used to set the limits
         on plotting data.
@@ -63,7 +64,7 @@ class SphericalHarmonicFit:
     :type scale: float, optional
     """
 
-    def __init__(self, input_Bz_data, r_outer=150, n_order=8, AssessHarmonicPk_Pk=True, QuantifyFit=True,
+    def __init__(self, input_Bz_data, r_outer=150, n_order=5, AssessHarmonicPk_Pk=True, QuantifyFit=True,
                  TrimDataBy_r_outer=False, scale=1):
 
         # attributes:
@@ -72,7 +73,7 @@ class SphericalHarmonicFit:
         self.TrimDataBy_r_outer = TrimDataBy_r_outer
         self.r_outer = r_outer
         self.QuantifyFit = QuantifyFit
-        self.AssessHarmonicPk_Pk = AssessHarmonicPk_Pk
+        self._AssessHarmonicPk_Pk = AssessHarmonicPk_Pk
         self.n_order = n_order
         self.n_harmonics = (self.n_order + 1) ** 2
         self.input_Bz_data = input_Bz_data.copy()
@@ -82,14 +83,14 @@ class SphericalHarmonicFit:
         self._check_data_input()
         if self.TrimDataBy_r_outer:
             self._filter_data()
-        self._generate_harmonic_names()
+        self._coeff_names = generate_harmonic_names(self.n_order)
         self.legendre_basis = generate_legendre_basis(self.input_Bz_data, self.n_order)
         self._svd_fit()
 
         self.harmonics = self.harmonics * scale
         if self.QuantifyFit:
             self._quantify_fit()
-        if self.AssessHarmonicPk_Pk:
+        if self._AssessHarmonicPk_Pk:
             self._assess_harmonic_pk_pk()
 
     def _check_data_input(self):
@@ -126,21 +127,6 @@ class SphericalHarmonicFit:
         if self.input_Bz_data.shape[0] == 0:
             logger.error(f'After filtering for data insdide {self.r_outer} mm, there is no data left!')
             sys.exit(1)
-
-    def _generate_harmonic_names(self):
-        """
-        generate the names of each harmonic. Used to label the columns in the harmonics dataframe
-        """
-        k = 0
-        self._coeff_names = []
-        for n in range(0, self.n_order + 1):  # the plus 1 is because range stops at -1 for some reason
-            self._coeff_names.append(f'A_{n}_0')
-            k = k + 1
-            for m in range(0, n):
-                self._coeff_names.append(f'A_{n}_{m + 1}')
-                k = k + 1
-                self._coeff_names.append(f'B_{n}_{m + 1}')
-                k = k + 1
 
     def _svd_fit(self):
         """
@@ -210,7 +196,7 @@ class SphericalHarmonicFit:
 
     # Public Methods
 
-    def plot_harmonics_pk_pk(self, cut_off=.1):  # pragma: no cover
+    def plot_harmonics_pk_pk(self, cut_off=.1, title=None, return_axs=False):  # pragma: no cover
         """
         produces a barplot of harmonics.
 
@@ -228,12 +214,18 @@ class SphericalHarmonicFit:
         HarmonicsToPlot = KeyHarmonics
 
         axs = sns.barplot(x=HarmonicsToPlot.index, y=HarmonicsToPlot.values, palette="Blues_d")
-        axs.set_title(f'Principle Harmonics pk-pk (>{cut_off * 100: 1.0f}% of max)')
+        if title is None:
+            axs.set_title(f'Principle Harmonics pk-pk (>{cut_off * 100: 1.0f}% of max)')
+        else:
+            axs.set_title(title)
 
         axs.set_ylabel('pk-pk [\u03BCT]')
         for item in axs.get_xticklabels():
             item.set_rotation(45)
-        plt.show()
+        if not return_axs:
+            plt.show()
+        else:
+            return axs
 
     def plot_cut_planes(self, resolution=2.5, AddColorBar=True, quantity='uT', vmin=None,
                         vmax=None):  # pragma: no cover

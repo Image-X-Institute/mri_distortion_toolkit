@@ -16,6 +16,7 @@ import pydicom
 import json
 from itertools import compress
 import plotly.graph_objects as go
+import warnings
 
 ch = logging.StreamHandler()
 formatter = logging.Formatter('[%(filename)s: line %(lineno)d %(levelname)8s] %(message)s')
@@ -129,7 +130,7 @@ def dicom_to_numpy(path_to_dicoms, FilesToReadIn=None, file_extension='dcm', ret
         pixel.
     :type return_XYZ: bool, optional
     :param zero_pad: this many zeros will be placed around the returned volume and the coordinates updated accordingly.
-        main use case was for distortion correction. Note that all returned objects will be self consistently affected
+        main use case was for distortion correction. Note that all returned objects will be  consistently affected
         by this parameter
     :type zero_pad: int, optional
     :returns: ImageArray: a numpy array of voxels
@@ -283,6 +284,95 @@ def convert_cartesian_to_spherical(InputCoords):
     return InputCoords
 
 
+def generate_harmonic_names(n_order):
+    """
+    generate the names of each harmonic. Used to label the columns in the harmonics dataframe
+
+    :param n_order: order of harmonics
+    :type n_order: int
+
+    :return: coeef_names: a list of names
+    """
+    k = 0
+    coeff_names = []
+    for n in range(0, n_order + 1):  # the plus 1 is because range stops at -1 for some reason
+        coeff_names.append(f'A_{n}_0')
+        k = k + 1
+        for m in range(0, n):
+            coeff_names.append(f'A_{n}_{m + 1}')
+            k = k + 1
+            coeff_names.append(f'B_{n}_{m + 1}')
+            k = k + 1
+    return coeff_names
+
+
+def combine_harmonics(harmonics_1, harmonics_2, operation='add', n_order_return=None):
+    """
+    This is a general purpose function to combine two harmonic series.
+    If the series are of the same order, this is the default order of the returned series.
+    If they are different, by default the returned series will match the higher order.
+    In either case, you can specify the return order to be lower than the default.
+
+    :param harmonics_1: first series to combine
+    :type harmonics_1: array-like
+    :param harmonics_2: second series to combine
+    :type harmonics_2: array-like
+    :param operation: 'add' or 'subtract'
+    :type operation: str, optional
+    :param n_order_return: order of returned series
+    :type n_order_return: int, optional
+
+    :return: combined_harmonics
+    """
+
+    assert isinstance(n_order_return, int) or n_order_return is None
+    assert operation=='add' or operation=='subtract'
+
+    if (len(harmonics_1) == len(harmonics_2)):
+        if operation == 'add':
+            combined_harmonics = np.add(harmonics_1, harmonics_2)
+        elif operation == 'subtract':
+            combined_harmonics = np.subtract(harmonics_1, harmonics_2)
+        harmonics_zeros = harmonics_1.copy()
+        harmonics_zeros[:] = 0
+        new_index = generate_harmonic_names(len(harmonics_2))
+    elif len(harmonics_1) > len(harmonics_2):
+        combined_harmonics = list(np.zeros(len(harmonics_1)))
+        lower_ind = len(harmonics_2)
+        if operation == 'add':
+            combined_harmonics[:lower_ind] = np.add(harmonics_2, harmonics_1[:lower_ind])
+        elif operation == 'subtract':
+            combined_harmonics[:lower_ind] = np.subtract(harmonics_2, harmonics_1[:lower_ind])
+        combined_harmonics[lower_ind:] = harmonics_1[lower_ind:]
+    else:
+        combined_harmonics = list(np.zeros(len(harmonics_1)))
+        lower_ind = len(harmonics_1)
+        if operation == 'add':
+            combined_harmonics[:lower_ind] = np.add(harmonics_2[:lower_ind], harmonics_1)
+        elif operation == 'subtract':
+            combined_harmonics[:lower_ind] = np.subtract(harmonics_2[:lower_ind], harmonics_1)
+        combined_harmonics[lower_ind:] = harmonics_2[lower_ind:]
+
+    n_order_in = int(np.sqrt(len(combined_harmonics)) - 1)
+    new_index = generate_harmonic_names(n_order_in)
+    assert len(combined_harmonics) == np.max([len(harmonics_2), len(harmonics_1)])
+    if n_order_return is not None:
+
+        if n_order_return > n_order_in:
+            logger.warning(f'return order of {n_order_return} specified, but maximum input order is {n_order_in} '
+                          f'so this has no effect')
+            clip_ind = len(combined_harmonics)
+        else:
+            clip_ind = int((n_order_return + 1) ** 2)
+        combined_harmonics = combined_harmonics[:clip_ind]
+        new_index = new_index[:clip_ind]
+
+    combined_harmonics = pd.Series(combined_harmonics, index=new_index)
+
+    return combined_harmonics
+
+
+
 def convert_spherical_to_cartesian(InputCoords):
     """
     Converts spherical coordinates [r, azimuth, elevation] to cartesian coordinates [x,y,z].
@@ -405,7 +495,7 @@ def convert_spherical_harmonics(harmonics, input_format='full', output_format='n
     return converted_harmonics
 
 
-def get_gradient_spherical_harmonics(Gx_Harmonics, Gy_Harmonics, Gz_Harmonics):
+def get_harmonics(Gx_Harmonics, Gy_Harmonics, Gz_Harmonics, B0_Harmonics=None):
     """
     return the gradient spherical harmonics as pandas series. this function is simply a clean way to handle
     the different ways users can specify harmonics to other componets of this code
@@ -445,8 +535,18 @@ def get_gradient_spherical_harmonics(Gx_Harmonics, Gy_Harmonics, Gz_Harmonics):
         raise AttributeError('could not read in Gz harmonics...please input either a series or a '
                      'path to a saved csv file')
 
-    return Gx_Harmonics, Gy_Harmonics, Gz_Harmonics
+    if B0_Harmonics is not None:
+        if isinstance(B0_Harmonics, pd.Series):
+            B0_Harmonics = B0_Harmonics
+        elif isinstance(B0_Harmonics, (str, Path)):
+            if not (Path(B0_Harmonics).is_file()):
+                raise FileNotFoundError(f'{B0_Harmonics} does not exist')
+            B0_Harmonics = pd.read_csv(B0_Harmonics, index_col=0).squeeze("columns")
+        else:
+            raise AttributeError('could not read in B0 harmonics...please input either a series or a '
+                                 'path to a saved csv file')
 
+    return Gx_Harmonics, Gy_Harmonics, Gz_Harmonics, B0_Harmonics
 
 def get_dicom_data(dicom_data):
     """
@@ -688,7 +788,8 @@ def print_dict(dict):
     for key in dict.keys():
         print(f'{key}: {dict[key]}')
 
-def plot_harmonics_over_sphere(harmonics, radius, title=None):
+
+def plot_harmonics_over_sphere(harmonics, radius, title=None):  # pragma: no cover
     """
     plot the reconstructed harmonics over the surface of a sphere
     I've used plotly instead of matplotlib for this as I wasnt happy with the matplotlib result.
