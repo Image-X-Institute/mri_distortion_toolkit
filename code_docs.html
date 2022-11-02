@@ -121,16 +121,18 @@
 <li class="toctree-l2"><a class="reference internal" href="#module-mri_distortion_toolkit.utilities">utilities</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.utilities.bcolors"><code class="docutils literal notranslate"><span class="pre">bcolors</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.utilities.build_dicom_affine"><code class="docutils literal notranslate"><span class="pre">build_dicom_affine()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.utilities.combine_harmonics"><code class="docutils literal notranslate"><span class="pre">combine_harmonics()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.utilities.compare_recon_report_with_ground_truth_report"><code class="docutils literal notranslate"><span class="pre">compare_recon_report_with_ground_truth_report()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.utilities.convert_cartesian_to_spherical"><code class="docutils literal notranslate"><span class="pre">convert_cartesian_to_spherical()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.utilities.convert_spherical_harmonics"><code class="docutils literal notranslate"><span class="pre">convert_spherical_harmonics()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.utilities.convert_spherical_to_cartesian"><code class="docutils literal notranslate"><span class="pre">convert_spherical_to_cartesian()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.utilities.dicom_to_numpy"><code class="docutils literal notranslate"><span class="pre">dicom_to_numpy()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.utilities.enumerate_subfolders"><code class="docutils literal notranslate"><span class="pre">enumerate_subfolders()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.utilities.generate_harmonic_names"><code class="docutils literal notranslate"><span class="pre">generate_harmonic_names()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.utilities.generate_legendre_basis"><code class="docutils literal notranslate"><span class="pre">generate_legendre_basis()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.utilities.get_all_files"><code class="docutils literal notranslate"><span class="pre">get_all_files()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.utilities.get_dicom_data"><code class="docutils literal notranslate"><span class="pre">get_dicom_data()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.utilities.get_gradient_spherical_harmonics"><code class="docutils literal notranslate"><span class="pre">get_gradient_spherical_harmonics()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.utilities.get_harmonics"><code class="docutils literal notranslate"><span class="pre">get_harmonics()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.utilities.plot_MarkerVolume_overlay"><code class="docutils literal notranslate"><span class="pre">plot_MarkerVolume_overlay()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.utilities.plot_compressed_MarkerVolumes"><code class="docutils literal notranslate"><span class="pre">plot_compressed_MarkerVolumes()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.utilities.plot_distortion_xyz_hist"><code class="docutils literal notranslate"><span class="pre">plot_distortion_xyz_hist()</span></code></a></li>
@@ -163,8 +165,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Code Documentation</li>
+      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">Code Documentation</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/code_docs.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -427,7 +429,7 @@ to json using:</p>
 <span id="harmonic-analysis"></span><h2>Harmonic Analysis<a class="headerlink" href="#module-mri_distortion_toolkit.Harmonics" title="Permalink to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="mri_distortion_toolkit.Harmonics.SphericalHarmonicFit">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.Harmonics.</span></span><span class="sig-name descname"><span class="pre">SphericalHarmonicFit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_Bz_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_outer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">150</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">AssessHarmonicPk_Pk</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">QuantifyFit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">TrimDataBy_r_outer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.Harmonics.SphericalHarmonicFit" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.Harmonics.</span></span><span class="sig-name descname"><span class="pre">SphericalHarmonicFit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_Bz_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_outer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">150</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">AssessHarmonicPk_Pk</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">QuantifyFit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">TrimDataBy_r_outer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.Harmonics.SphericalHarmonicFit" title="Permalink to this definition"></a></dt>
 <dd><p>Uses single value decomposition to fit spherical harmonics to InputData.</p>
 <p>Let the legendre basis be called L, the Harmonics be H and the magnetic field B.
 L will have size [n_coords, n_harmonics], Harmonics has size [n_harmonics, 1] and B has size [n_coords, 1]</p>
@@ -442,7 +444,7 @@ H = L^{-1}.B\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>InputData</strong> (<em>Pandas.DataFrame</em>) – A pandas dataframe with columns x, y, z, Bz. Data should be in mm and T</p></li>
+<li><p><strong>input_Bz_data</strong> (<em>Pandas.DataFrame</em>) – A pandas dataframe with columns x, y, z, Bz. Data should be in mm and T</p></li>
 <li><p><strong>r_outer</strong> (<em>float</em><em>, </em><em>optional</em>) – radius of sphere of interest. If AssessHarmonicPk_Pk=True, data is reconstucted on r_outer. if
 TrimDataBy_r_outer=True, data lying outside r_outer will be deleted. Finally, r_outer is used to set the limits
 on plotting data.</p></li>
@@ -480,7 +482,7 @@ Note this is basically the same code copied three times in  a row, one for each 
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mri_distortion_toolkit.Harmonics.SphericalHarmonicFit.plot_harmonics_pk_pk">
-<span class="sig-name descname"><span class="pre">plot_harmonics_pk_pk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cut_off</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.Harmonics.SphericalHarmonicFit.plot_harmonics_pk_pk" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">plot_harmonics_pk_pk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cut_off</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_axs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.Harmonics.SphericalHarmonicFit.plot_harmonics_pk_pk" title="Permalink to this definition"></a></dt>
 <dd><p>produces a barplot of harmonics.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -618,7 +620,7 @@ plotly figures</p>
 <span id="distortion-correction"></span><h2>distortion_correction<a class="headerlink" href="#module-mri_distortion_toolkit.DistortionCorrection" title="Permalink to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="mri_distortion_toolkit.DistortionCorrection.DistortionCorrectorBase">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.DistortionCorrection.</span></span><span class="sig-name descname"><span class="pre">DistortionCorrectorBase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ImageDirectory</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gradient_harmonics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ImExtension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.dcm'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">correct_through_plane</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.DistortionCorrection.DistortionCorrectorBase" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.DistortionCorrection.</span></span><span class="sig-name descname"><span class="pre">DistortionCorrectorBase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ImageDirectory</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gradient_harmonics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B0_harmonics</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dicom_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ImExtension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.dcm'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">correct_through_plane</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">correct_B0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B0_direction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'forward'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.DistortionCorrection.DistortionCorrectorBase" title="Permalink to this definition"></a></dt>
 <dd><p>This is the base class which other distortion correction methods can inherit from, and includes the core required
 behavior.</p>
 <dl class="field-list simple">
@@ -628,9 +630,14 @@ behavior.</p>
 read in; therefore only one series should be inside ImageDirectory (we dont check this!)</p></li>
 <li><p><strong>gradient_harmonics</strong> (<em>list</em>) – a list of three harmonics, which should either be csv files exported from an instance of
 SphericalHarmonicFit, or SphericalHarmonicFit.harmonics</p></li>
-<li><p><strong>ImExtension</strong> (<em>str</em><em>, </em><em>optional</em>) – extension of files to read in in ImageDirectory, e.g. ‘dcm’, or ‘IMA’</p></li>
+<li><p><strong>B0_harmonics</strong> (<em>SphericalHarmonicFit.harmonics</em><em> or </em><em>csv</em><em>, </em><em>optional</em>) – Instance of SphericalHarmonicFit.harmonics describing B0, or else an equivalent csv file</p></li>
+<li><p><strong>ImExtension</strong> (<em>str</em><em>, </em><em>optional</em>) – extension of files to read in ImageDirectory, e.g. ‘dcm’, or ‘IMA’</p></li>
 <li><p><strong>correct_through_plane</strong> (<em>bool. optional</em>) – if True, through plane (3D) correction is carried out, which is roughly twice as slow
 as 2D only</p></li>
+<li><p><strong>correct_B0</strong> (<em>bool</em><em>, </em><em>optional</em>) – if True, and if B0_harmonics is supplied, will also correct for B0 effects. Probably only works
+for standard (non EPI) sequences.</p></li>
+<li><p><strong>B0_direction</strong> (<em>str</em><em>, </em><em>optional</em>) – ‘forward’ or ‘back’. Determines whether the B0 harmonics should be added (forward) or
+subtracted (backward) from the gradient harmonics</p></li>
 <li><p><strong>pad</strong> (<em>int</em><em>, </em><em>optional</em>) – pixels to 0 pad image volume. This can be useful in the k-space domain</p></li>
 </ul>
 </dd>
@@ -670,7 +677,7 @@ in the second loop.
 
 <dl class="py class">
 <dt class="sig sig-object py" id="mri_distortion_toolkit.DistortionCorrection.ImageDomainDistortionCorrector">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.DistortionCorrection.</span></span><span class="sig-name descname"><span class="pre">ImageDomainDistortionCorrector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ImageDirectory</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gradient_harmonics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ImExtension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.dcm'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">correct_through_plane</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.DistortionCorrection.ImageDomainDistortionCorrector" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.DistortionCorrection.</span></span><span class="sig-name descname"><span class="pre">ImageDomainDistortionCorrector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ImageDirectory</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gradient_harmonics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B0_harmonics</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dicom_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ImExtension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.dcm'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">correct_through_plane</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">correct_B0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B0_direction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'forward'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.DistortionCorrection.ImageDomainDistortionCorrector" title="Permalink to this definition"></a></dt>
 <dd><p>This performs image correction in the image domain by constructing a spline between the linear and distorted
 indices.</p>
 </dd></dl>
@@ -704,6 +711,28 @@ The reference I used to create the affine is <a class="reference external" href=
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>CoordinateMatrix, a 4x4 matrix which transforms the image based coordinates (i,j,k) to world coordinates (x,y,z)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mri_distortion_toolkit.utilities.combine_harmonics">
+<span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.utilities.</span></span><span class="sig-name descname"><span class="pre">combine_harmonics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">harmonics_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">harmonics_2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">operation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'add'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_order_return</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.utilities.combine_harmonics" title="Permalink to this definition"></a></dt>
+<dd><p>This is a general purpose function to combine two harmonic series.
+If the series are of the same order, this is the default order of the returned series.
+If they are different, by default the returned series will match the higher order.
+In either case, you can specify the return order to be lower than the default.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>harmonics_1</strong> (<em>array-like</em>) – first series to combine</p></li>
+<li><p><strong>harmonics_2</strong> (<em>array-like</em>) – second series to combine</p></li>
+<li><p><strong>operation</strong> (<em>str</em><em>, </em><em>optional</em>) – ‘add’ or ‘subtract’</p></li>
+<li><p><strong>n_order_return</strong> (<em>int</em><em>, </em><em>optional</em>) – order of returned series</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>combined_harmonics</p>
 </dd>
 </dl>
 </dd></dl>
@@ -807,7 +836,7 @@ to read in a subset of files, you can specify them with FilesToReadIn</p></li>
 <li><p><strong>return_XYZ</strong> (<em>bool</em><em>, </em><em>optional</em>) – if True, will build and return three matrics containing the X, Y, and Z coords at each i,j,k
 pixel.</p></li>
 <li><p><strong>zero_pad</strong> (<em>int</em><em>, </em><em>optional</em>) – this many zeros will be placed around the returned volume and the coordinates updated accordingly.
-main use case was for distortion correction. Note that all returned objects will be self consistently affected
+main use case was for distortion correction. Note that all returned objects will be  consistently affected
 by this parameter</p></li>
 </ul>
 </dd>
@@ -832,6 +861,20 @@ by this parameter</p></li>
 </pre></div>
 </div>
 <p>I find this is a useful to create a dict object that I copy to the start of my analysis scripts</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mri_distortion_toolkit.utilities.generate_harmonic_names">
+<span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.utilities.</span></span><span class="sig-name descname"><span class="pre">generate_harmonic_names</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_order</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.utilities.generate_harmonic_names" title="Permalink to this definition"></a></dt>
+<dd><p>generate the names of each harmonic. Used to label the columns in the harmonics dataframe</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>n_order</strong> (<em>int</em>) – order of harmonics</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>coeef_names: a list of names</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -880,8 +923,8 @@ if the latter, reads into  a dict and returns</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="mri_distortion_toolkit.utilities.get_gradient_spherical_harmonics">
-<span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.utilities.</span></span><span class="sig-name descname"><span class="pre">get_gradient_spherical_harmonics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Gx_Harmonics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Gy_Harmonics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Gz_Harmonics</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.utilities.get_gradient_spherical_harmonics" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="mri_distortion_toolkit.utilities.get_harmonics">
+<span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.utilities.</span></span><span class="sig-name descname"><span class="pre">get_harmonics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Gx_Harmonics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Gy_Harmonics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Gz_Harmonics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B0_Harmonics</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.utilities.get_harmonics" title="Permalink to this definition"></a></dt>
 <dd><p>return the gradient spherical harmonics as pandas series. this function is simply a clean way to handle
 the different ways users can specify harmonics to other componets of this code</p>
 <dl class="field-list simple">
@@ -1056,7 +1099,7 @@ elevation, azimuth, and r</p></li>
 <span id="calculate-harmonics"></span><h2>calculate_harmonics<a class="headerlink" href="#module-mri_distortion_toolkit.calculate_harmonics" title="Permalink to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="mri_distortion_toolkit.calculate_harmonics.calculate_harmonics">
-<span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.calculate_harmonics.</span></span><span class="sig-name descname"><span class="pre">calculate_harmonics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">MagneticFields</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.calculate_harmonics.calculate_harmonics" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.calculate_harmonics.</span></span><span class="sig-name descname"><span class="pre">calculate_harmonics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">MagneticFields</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.calculate_harmonics.calculate_harmonics" title="Permalink to this definition"></a></dt>
 <dd><p>This function is essentially a wrapper of convenience. Given a set of B fields and dicom_data,
 it will calculate and return the Gx, Gy, and Gz harmonics.</p>
 <dl class="field-list simple">
@@ -1064,7 +1107,7 @@ it will calculate and return the Gx, Gy, and Gz harmonics.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>MagneticFields</strong> (<em>pandas dataframe</em>) – a pandas dataframe with columns [‘x’, ‘y’, ‘z’, ‘B_Gx’, ‘B_Gy’, ‘B_Gz’, ‘B0’]. B0 is optional.
 x, y, z are in mm and the fields are in any unit - the harmonics will reflect the units</p></li>
-<li><p><strong>n_order</strong> (<em>int</em><em>, </em><em>optional</em>) – order of harmonic fit</p></li>
+<li><p><strong>n_order</strong> (<em>int</em><em> or </em><em>list</em><em>, </em><em>optional</em>) – order of harmonic fit</p></li>
 <li><p><strong>scale</strong> – Can pass a list of four values, the four returned harmonic lists will be scalealised accordingly.
 e.g. scale = [2,2,2,2] will multiply all harmonics by 2. This is useful to normalise the fields to some
 value</p></li>
