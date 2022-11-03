@@ -700,16 +700,17 @@ def plot_MarkerVolume_overlay(MarkerVolumeList, legend=None):  # pragma: no cove
     plt.show()
 
 
-def plot_compressed_MarkerVolumes(MarkerVolumeList, z_max=20, z_min=-20, title=None, legend=None): # pragma: no cover
+def plot_compressed_MarkerVolumes(MarkerVolumeList, p_max=20, p_min=-20, title=None, legend=None,
+                                  projection_direction='z'): # pragma: no cover
     """
     plot overlay of compressed marker volumes (z coord is ignored)
 
     :param MarkerVolumeList:  list of MarkerVolume instances
     :type MarkerVolumeList: list
-    :param z_max: max z data to include
-    :type z_max: float, optional
-    :param z_min: min z data to include
-    :type z_min: float, optional
+    :param p_max: max data to include in projection_direction
+    :type p_max: float, optional
+    :param p_min: min z data to include in projection_direction
+    :type p_min: float, optional
     :param title: title of plot
     :type title: str, optional
     :param legend: legend of plot
@@ -718,14 +719,35 @@ def plot_compressed_MarkerVolumes(MarkerVolumeList, z_max=20, z_min=-20, title=N
     """
 
     fig, axs = plt.subplots(figsize=[8, 8], ncols=1, nrows=1)
+    if not isinstance(MarkerVolumeList, list):
+            MarkerVolumeList = MarkerVolumeList
+    if not projection_direction in ['x', 'y', 'z']:
+        warnings.warn(f'projection direction must be "x", "y", or "z", not {projection_direction}.'
+                      f'setting to z and continuing')
+        projection_direction = 'z'
+
     for MarkerVolume in MarkerVolumeList:
-        data_ind = np.logical_and(MarkerVolume.MarkerCentroids.z > z_min, MarkerVolume.MarkerCentroids.z < z_max)
-        plot_data = MarkerVolume.MarkerCentroids[data_ind]
-        axs.scatter(plot_data.x, plot_data.y)
+        if projection_direction == 'z':
+            data_ind = np.logical_and(MarkerVolume.MarkerCentroids.z > p_min, MarkerVolume.MarkerCentroids.z < p_max)
+            plot_data = MarkerVolume.MarkerCentroids[data_ind]
+            axs.scatter(plot_data.x, plot_data.y)
+            axs.set_xlabel('x [mm]', fontsize=15)
+            axs.set_ylabel('y [mm]', fontsize=15)
+        elif projection_direction == 'x':
+            data_ind = np.logical_and(MarkerVolume.MarkerCentroids.x > p_min, MarkerVolume.MarkerCentroids.x < p_max)
+            plot_data = MarkerVolume.MarkerCentroids[data_ind]
+            axs.scatter(plot_data.z, plot_data.y)
+            axs.set_xlabel('z [mm]', fontsize=15)
+            axs.set_ylabel('y [mm]', fontsize=15)
+        elif projection_direction == 'y':
+            data_ind = np.logical_and(MarkerVolume.MarkerCentroids.y > p_min, MarkerVolume.MarkerCentroids.y < p_max)
+            plot_data = MarkerVolume.MarkerCentroids[data_ind]
+            axs.scatter(plot_data.x, plot_data.z)
+            axs.set_xlabel('x [mm]', fontsize=15)
+            axs.set_ylabel('z [mm]', fontsize=15)
+
         axs.set_xlim([-150, 150])
         axs.set_ylim([-150, 150])
-        axs.set_xlabel('x [mm]', fontsize=15)
-        axs.set_ylabel('y [mm]', fontsize=15)
         axs.tick_params(axis='both', which='major', labelsize=12)
         axs.tick_params(axis='both', which='minor', labelsize=12)
         axs.axis("equal")
