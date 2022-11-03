@@ -151,8 +151,8 @@ class DistortionCorrectorBase:
         :return:
         """
 
-        assert self.B0_direction == 'forward' or self.B0_direction == 'backward'
-        if self.B0_direction == 'foward':
+        assert self.B0_direction == 'forward' or self.B0_direction == 'back'
+        if self.B0_direction == 'forward':
             _operation = 'add'
         elif self.B0_direction == 'back':
             _operation = 'subtract'
@@ -171,8 +171,7 @@ class DistortionCorrectorBase:
 
         if freq_encode_direction == 'x':
             scale = 1/self._dicom_data['gradient_strength'][0]
-            if self.B0_direction == 'back':
-                self._Gx_Harmonics = combine_harmonics(self._Gx_Harmonics, self._B0_Harmonics*scale, operation=_operation)
+            self._Gx_Harmonics = combine_harmonics(self._Gx_Harmonics, self._B0_Harmonics*scale, operation=_operation)
         elif freq_encode_direction == 'y':
             scale = 1 / self._dicom_data['gradient_strength'][1]
             self._Gy_Harmonics = combine_harmonics(self._Gy_Harmonics, self._B0_Harmonics*scale, operation=_operation)
@@ -186,9 +185,6 @@ class DistortionCorrectorBase:
         # tempH.harmonics = self._Gx_Harmonics
         # tempH._assess_harmonic_pk_pk()
         # tempH.plot_harmonics_pk_pk(cut_off=.005)
-        # print('hello')
-
-
 
     def _unpad_image_arrays(self):
         """
@@ -201,6 +197,15 @@ class DistortionCorrectorBase:
             self._image_array_corrected = self._image_array_corrected[self._n_zero_pad:-self._n_zero_pad,
                                           self._n_zero_pad:-self._n_zero_pad,
                                           self._n_zero_pad:-self._n_zero_pad]
+            self._X = self._X[self._n_zero_pad:-self._n_zero_pad,
+                              self._n_zero_pad:-self._n_zero_pad,
+                              self._n_zero_pad:-self._n_zero_pad]
+            self._Y = self._Y[self._n_zero_pad:-self._n_zero_pad,
+                              self._n_zero_pad:-self._n_zero_pad,
+                              self._n_zero_pad:-self._n_zero_pad]
+            self._Z = self._Z[self._n_zero_pad:-self._n_zero_pad,
+                              self._n_zero_pad:-self._n_zero_pad,
+                              self._n_zero_pad:-self._n_zero_pad]
 
     def _calculate_encoding_fields(self):
         """

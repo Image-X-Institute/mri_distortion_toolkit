@@ -638,7 +638,8 @@ class MatchedMarkerVolumes:
     """
 
     def __init__(self, GroundTruthData, DistortedData, reverse_gradient_data=None, WarpSearchData=True,
-                 AutomatchMarkers=True, AllowDoubleMatching=False, sorting_method='radial', n_refernce_markers=0, skip_unmatchable_markers=False):
+                 AutomatchMarkers=True, AllowDoubleMatching=False, sorting_method='radial', n_refernce_markers=0,
+                 skip_unmatchable_markers=True):
 
         # warping parameters:
         self.WarpSearchData = WarpSearchData
@@ -663,13 +664,15 @@ class MatchedMarkerVolumes:
         else:
             self.distorted_centroidsRev = reverse_gradient_data.MarkerCentroids
 
-        self._check_input_data()
+
         # run analysis:
         if self._n_reference_markers > 0:
             self._align_reference()
-
         if self._skip_unmatchable_markers:
             self._remove_unmatchable_distorted_centroids()
+        self._check_input_data()
+
+
 
         if self.AutomatchMarkers:
             self.distorted_centroids = self._sort_distorted_centroids(self.distorted_centroids)
@@ -820,9 +823,11 @@ class MatchedMarkerVolumes:
 
         # Transform centroids
         aligned = self.ground_truth_centroids[['x', 'y', 'z']] + translation_vector
-
+        print(f'aligning ground truth centroids by \n{translation_vector}')
         if rotation is True:
             aligned = rotation_vector.apply(aligned)
+            print(f'rotating ground truth centroids by \n{rotation_vector.as_matrix()}')
+
 
         aligned = pd.DataFrame(aligned, columns=['x', 'y', 'z'])
         self.ground_truth_centroids = _calculate_radial_distance(aligned)
@@ -847,6 +852,9 @@ class MatchedMarkerVolumes:
             distance_to_closest = np.min(Distances)
             if distance_to_closest > self._max_match_tolerance:
                 unmatchable_index.append(index)
+        if unmatchable_index:
+            logger.warning(f'removing {len(unmatchable_index)} markers because no ground truth markers were within'
+                           f'{self._max_match_tolerance} mm')
 
         self.distorted_centroids = self.distorted_centroids.drop(unmatchable_index, axis=0)
 
