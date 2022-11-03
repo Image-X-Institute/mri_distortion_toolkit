@@ -664,12 +664,13 @@ class MatchedMarkerVolumes:
         else:
             self.distorted_centroidsRev = reverse_gradient_data.MarkerCentroids
 
-        if self._skip_unmatchable_markers:
-            self._remove_unmatchable_distorted_centroids()
-        self._check_input_data()
+
         # run analysis:
         if self._n_reference_markers > 0:
             self._align_reference()
+        if self._skip_unmatchable_markers:
+            self._remove_unmatchable_distorted_centroids()
+        self._check_input_data()
 
 
 
