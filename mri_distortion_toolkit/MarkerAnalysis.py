@@ -632,10 +632,13 @@ class MatchedMarkerVolumes:
         before  matching. this can correct for setup errors. Note that we always move the reference. the best way
         for this to not matter either way is to not have any set up error!
     :type n_refernce_markers: int, optional
+    :param skip_unmatchable_markers: if true, distorted markers where the nearest centroid marker is above the maximum
+        distortion threshold are removed
+    :type skip_unmatchable_markers: bool, optional
     """
 
     def __init__(self, GroundTruthData, DistortedData, reverse_gradient_data=None, WarpSearchData=True,
-                 AutomatchMarkers=True, AllowDoubleMatching=False, sorting_method='radial', n_refernce_markers=0):
+                 AutomatchMarkers=True, AllowDoubleMatching=False, sorting_method='radial', n_refernce_markers=0, skip_unmatchable_markers=False):
 
         # warping parameters:
         self.WarpSearchData = WarpSearchData
@@ -643,10 +646,12 @@ class MatchedMarkerVolumes:
         self._motion_estimate_update_rate = 1  # 1 = every found marker, which is potentially more accurate but slower.
         self.sorting_method = sorting_method
         self.AllowDoubleMatching = AllowDoubleMatching
+
         # match check parameters:
         self._mean_match_tolerance = 20  # warning raised if mean larger than this
         self._max_match_tolerance = 30  # warning raised if max larger than this
 
+        self._skip_unmatchable_markers = skip_unmatchable_markers
         self._n_reference_markers = n_refernce_markers
 
         # marker data:
@@ -662,6 +667,9 @@ class MatchedMarkerVolumes:
         # run analysis:
         if self._n_reference_markers > 0:
             self._align_reference()
+
+        if self._skip_unmatchable_markers:
+            self._remove_unmatchable_distorted_centroids()
 
         if self.AutomatchMarkers:
             self.distorted_centroids = self._sort_distorted_centroids(self.distorted_centroids)
@@ -818,6 +826,29 @@ class MatchedMarkerVolumes:
 
         aligned = pd.DataFrame(aligned, columns=['x', 'y', 'z'])
         self.ground_truth_centroids = _calculate_radial_distance(aligned)
+
+    def _remove_unmatchable_distorted_centroids(self):
+        """
+            Calculates the distance between each distorted marker and each ground truth markers
+            Distorted markers where the nearest ground truth marker exceeds the distance thresholds are deleted from
+             the search list
+        """
+
+        unmatchable_index = []
+        CentroidsToSearch = self.ground_truth_centroids.copy()
+        DistortedCentroids = self.distorted_centroids.copy()
+
+        for index, row in DistortedCentroids.iterrows():
+            XA = CentroidsToSearch[["x", "y", "z"]].to_numpy()
+            XB = row[0:3].values
+            # Calculate distance from this marker to each item in search list
+            Distances = cdist(XA, np.atleast_2d(XB), metric='euclidean')
+            # Match marker with closest and save it
+            distance_to_closest = np.min(Distances)
+            if distance_to_closest > self._max_match_tolerance:
+                unmatchable_index.append(index)
+
+        self.distorted_centroids = self.distorted_centroids.drop(unmatchable_index, axis=0)
 
     def _match_distorted_markers_to_ground_truth(self, CentroidsToMatch):
         """
