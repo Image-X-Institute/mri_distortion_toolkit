@@ -852,6 +852,9 @@ class MatchedMarkerVolumes:
             distance_to_closest = np.min(Distances)
             if distance_to_closest > self._max_match_tolerance:
                 unmatchable_index.append(index)
+        if unmatchable_index:
+            logger.warning(f'removing {len(unmatchable_index)} markers because no ground truth markers were within'
+                           f'{self._max_match_tolerance} mm')
 
         self.distorted_centroids = self.distorted_centroids.drop(unmatchable_index, axis=0)
 
