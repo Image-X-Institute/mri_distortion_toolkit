@@ -658,7 +658,7 @@ class MatchedMarkerVolumes:
 
     def __init__(self, GroundTruthData, DistortedData, reverse_gradient_data=None, WarpSearchData=True,
                  AutomatchMarkers=True, AllowDoubleMatching=False, sorting_method='radial', n_refernce_markers=0,
-                 skip_unmatchable_markers=False):
+                 skip_unmatchable_markers=True):
 
         # warping parameters:
         self.WarpSearchData = WarpSearchData
