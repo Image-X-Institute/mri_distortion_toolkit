@@ -62,6 +62,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#mri_distortion_toolkit.MarkerAnalysis.MarkerVolume.perturb_marker_positions"><code class="docutils literal notranslate"><span class="pre">MarkerVolume.perturb_marker_positions()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#mri_distortion_toolkit.MarkerAnalysis.MarkerVolume.plot_3D_markers"><code class="docutils literal notranslate"><span class="pre">MarkerVolume.plot_3D_markers()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#mri_distortion_toolkit.MarkerAnalysis.MarkerVolume.save_dicom_data"><code class="docutils literal notranslate"><span class="pre">MarkerVolume.save_dicom_data()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mri_distortion_toolkit.MarkerAnalysis.MarkerVolume.transform_markers"><code class="docutils literal notranslate"><span class="pre">MarkerVolume.transform_markers()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.MarkerAnalysis.MatchedMarkerVolumes"><code class="docutils literal notranslate"><span class="pre">MatchedMarkerVolumes</span></code></a><ul>
@@ -326,6 +327,12 @@ distribution is used</p></li>
 <dd><p>save the dicom data as json.  This file will be saved at the same
 spot as input data if dicom was input, otherwise it will be saved
 to save_path.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mri_distortion_toolkit.MarkerAnalysis.MarkerVolume.transform_markers">
+<span class="sig-name descname"><span class="pre">transform_markers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_shift</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_shift</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_shift</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xaxis_angle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yaxis_angle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zaxis_angle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.MarkerAnalysis.MarkerVolume.transform_markers" title="Permalink to this definition"></a></dt>
+<dd><p>Applies a manual translation/rotation of markers if required</p>
 </dd></dl>
 
 </dd></dl>
