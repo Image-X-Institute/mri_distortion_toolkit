@@ -141,6 +141,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.utilities.plot_matched_volume_hist"><code class="docutils literal notranslate"><span class="pre">plot_matched_volume_hist()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.utilities.printProgressBar"><code class="docutils literal notranslate"><span class="pre">printProgressBar()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.utilities.print_dict"><code class="docutils literal notranslate"><span class="pre">print_dict()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.utilities.read_opera_table_file"><code class="docutils literal notranslate"><span class="pre">read_opera_table_file()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.utilities.reconstruct_Bz"><code class="docutils literal notranslate"><span class="pre">reconstruct_Bz()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.utilities.sort_dicom_slices"><code class="docutils literal notranslate"><span class="pre">sort_dicom_slices()</span></code></a></li>
 </ul>
@@ -1058,6 +1059,23 @@ I’ve used plotly instead of matplotlib for this as I wasnt happy with the matp
 <span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.utilities.</span></span><span class="sig-name descname"><span class="pre">print_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.utilities.print_dict" title="Permalink to this definition"></a></dt>
 <dd><p>just provides a nicer display of the input dict than the default print function,
 got sick of writing the same code over and over…</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mri_distortion_toolkit.utilities.read_opera_table_file">
+<span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.utilities.</span></span><span class="sig-name descname"><span class="pre">read_opera_table_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_loc</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.utilities.read_opera_table_file" title="Permalink to this definition"></a></dt>
+<dd><p>reads a table file from opera Tosca and returns the data as a data frame that can be
+read into spherical harmonic fit.
+Expected column order is  X [MM], Y [MM], Z [MM], BZ [T], with 6 header lines.
+No error handling is included for incorrect input</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data_loc</strong> (<em>str</em><em> or </em><em>pathlib.Path</em>) – location of table file</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Bz_data, a pandas dataframe</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
