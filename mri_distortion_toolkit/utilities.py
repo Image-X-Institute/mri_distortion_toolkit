@@ -372,7 +372,6 @@ def combine_harmonics(harmonics_1, harmonics_2, operation='add', n_order_return=
     return combined_harmonics
 
 
-
 def convert_spherical_to_cartesian(InputCoords):
     """
     Converts spherical coordinates [r, azimuth, elevation] to cartesian coordinates [x,y,z].
@@ -855,3 +854,22 @@ def plot_harmonics_over_sphere(harmonics, radius, title=None):  # pragma: no cov
                                                   zaxis=dict(title='Z [mm]', titlefont=dict(size=20))))
 
     return fig_harmonic_surface
+
+
+def read_opera_table_file(data_loc):
+    """
+    reads a table file from opera Tosca and returns the data as a data frame that can be
+    read into spherical harmonic fit.
+    Expected column order is  X [MM], Y [MM], Z [MM], BZ [T], with 6 header lines.
+    No error handling is included for incorrect input
+
+    :param data_loc: location of table file
+    :type data_loc: str or pathlib.Path
+    :return: Bz_data, a pandas dataframe
+    """
+    with open(data_loc, 'r') as f:
+        data = np.loadtxt(f, skiprows=6)
+    assert data.shape[1] == 4
+
+    input_Bz_data = pd.DataFrame({'x': data[:, 0], 'y': data[:, 1], 'z': data[:, 2], 'Bz': data[:, 3]})
+    return input_Bz_data
