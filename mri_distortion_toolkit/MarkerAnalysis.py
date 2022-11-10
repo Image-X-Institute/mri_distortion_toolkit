@@ -511,6 +511,14 @@ class MarkerVolume:
     def transform_markers(self, x_shift=0, y_shift=0, z_shift=0, xaxis_angle=0, yaxis_angle=0, zaxis_angle=0):
         """
         Applies a manual translation/rotation of markers if required
+
+        :param x_shift:
+        :param y_shift:
+        :param z_shift:
+        :param xaxis_angle:
+        :param yaxis_angle:
+        :param zaxis_angle:
+        :return:
         """
 
         try:
@@ -522,6 +530,9 @@ class MarkerVolume:
             translated = self.MarkerCentroids[['x', 'y', 'z']] + translate
             rotated = rotation_vector.apply(translated)
             self.MarkerCentroids = pd.DataFrame(rotated, columns=['x', 'y', 'z'])
+            # insert the radial value of each marker:
+            self.MarkerCentroids['r'] = self.MarkerCentroids.apply(
+                lambda row: np.sqrt(row[0] ** 2 + row[1] ** 2 + row[2] ** 2), axis=1)
         except:
             logger.warning("Marker transform failed. Use integers for all values.")
 
@@ -1177,5 +1188,5 @@ class MatchedMarkerVolumes:
 
     def report(self):
         print(f'mean distortion: {self.MatchedCentroids.match_distance.mean(): 1.1f} mm, '
-              f'std: {np.std(self.MatchedCentroids.match_distance)}'
+              f'std: {np.std(self.MatchedCentroids.match_distance): 1.1f}'
               f'Max distortion: {self.MatchedCentroids.match_distance.max(): 1.1f} mm')

@@ -76,7 +76,7 @@ class DistortionCorrectorBase:
             get_harmonics(gradient_harmonics[0], gradient_harmonics[1], gradient_harmonics[2], B0_harmonics)
         self._Gx_Harmonics = self._Gx_Harmonics * 1
         self._Gy_Harmonics = self._Gy_Harmonics * 1
-        self._Gz_Harmonics = self._Gz_Harmonics * -1
+        self._Gz_Harmonics = self._Gz_Harmonics * 1
         self._dicom_data = dicom_data
 
         if self.correct_B0:
@@ -417,11 +417,11 @@ class DistortionCorrectorBase:
 
         if self.correct_through_plane:
 
-            if (np.round(self._ImageOrientationPatient) == [1, 0, 0, 0, 1, 0]).all():
+            if np.allclose(np.round(self._ImageOrientationPatient), [1, 0, 0, 0, 1, 0]):
                 self._ImageOrientationPatient = [1, 1, 1, 1, 1, 1]
-            elif np.round(self._ImageOrientationPatient == [0, 1, 0, 0, 0, -1]).all():
+            elif np.allclose(np.round(self._ImageOrientationPatient), [0, 1, -0, -0, 0, -1]):
                 self._ImageOrientationPatient = [2, 2, 2, 2, 2, 2]
-            elif np.round(self._ImageOrientationPatient == [1, 0, 0, 0, 0, -1]).all():
+            elif np.allclose(np.round(self._ImageOrientationPatient), [1, 0, 0, 0, 0, -1]):
                 self._ImageOrientationPatient = [3, 3, 3, 3, 3, 3]
             else:
                 raise NotImplementedError
