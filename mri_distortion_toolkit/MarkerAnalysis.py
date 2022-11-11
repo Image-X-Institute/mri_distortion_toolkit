@@ -486,7 +486,7 @@ class MarkerVolume:
             if voxels < self._voxel_min or voxels > self._voxel_max:
                 skipped += 1
                 if self.verbose:
-                    print('Region ' + str(i + 1) + ': Skipped, v = ' + str(voxels))
+                    print('\033[93mRegion ' + str(i + 1) + ': Skipped, v = ' + str(voxels) + '\033[0m')
                 continue  # skip outliers
 
             region_sum = np.sum(self.InputVolume[RegionInd])

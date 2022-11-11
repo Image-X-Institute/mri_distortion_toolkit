@@ -666,6 +666,7 @@ def enumerate_subfolders(data_loc):
     """
     data_dict = {}
     subfolders = [ f.path for f in os.scandir(data_loc) if f.is_dir() ]
+    subfolders = np.sort(subfolders)
     for i, dir in enumerate(subfolders):
         folder_name = os.path.split(dir)[1]
         data_dict[str(i)] = folder_name

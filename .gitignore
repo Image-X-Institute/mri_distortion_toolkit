@@ -14,3 +14,4 @@ dist
 venv
 tests/2D_distortion_correction
 tests/3D_distortion_correction
+franken_goam/*
