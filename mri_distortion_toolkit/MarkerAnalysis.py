@@ -843,18 +843,18 @@ class MatchedMarkerVolumes:
             axis=1)
 
         # Find the crosshair reference markers
-        gt_reference = ground_truth.nsmallest(self._n_reference_markers, 'r_centre')[['x', 'y', 'z']]
-        dist_reference = self.distorted_centroids.nsmallest(self._n_reference_markers, 'r')[['x', 'y', 'z']]
+        self._gt_reference = ground_truth.nsmallest(self._n_reference_markers, 'r_centre')[['x', 'y', 'z']]
+        self._dist_reference = self.distorted_centroids.nsmallest(self._n_reference_markers, 'r')[['x', 'y', 'z']]
 
         # Calculate translation vector
-        translation_vector = dist_reference.mean() - gt_reference.mean()
+        translation_vector = self._dist_reference.mean() - self._gt_reference.mean()
 
         # Calculate rotation vector
         if self._n_reference_markers < 3:
             rotation = False
         else:
-            matched_reference = _match_crosshair(gt_reference + translation_vector, dist_reference)
-            rotation_vector, error = transform.Rotation.align_vectors(dist_reference, matched_reference)
+            matched_reference = _match_crosshair(self._gt_reference + translation_vector, self._dist_reference)
+            rotation_vector, error = transform.Rotation.align_vectors(self._dist_reference, matched_reference)
 
         # Transform centroids
         aligned = self.ground_truth_centroids[['x', 'y', 'z']] + translation_vector
@@ -1190,6 +1190,29 @@ class MatchedMarkerVolumes:
 
         plot_data = get_markers_as_function_of_z()
         plot_markers_inner(plot_data)
+
+    def plot_reference_markers(self, title='Reference alignment markers'):
+
+        try:
+            fig = plt.figure()
+            axs = fig.add_subplot(111, projection='3d')
+            axs.scatter(self._gt_reference.x, self._gt_reference.y, self._gt_reference.z)
+            axs.scatter(self._dist_reference.x, self._dist_reference.y, self._dist_reference.z)
+
+        except AttributeError:
+            logger.warning('Cannot plt reference  as it does not exist...')
+            return
+
+        axs.set_xlabel('X [mm]')
+        axs.set_ylabel('Y [mm]')
+        axs.set_zlabel('Z [mm]')
+        axs.set_title(title)
+        axs.set_box_aspect((np.ptp(self.MatchedCentroids.x_gt), np.ptp(self.MatchedCentroids.y_gt),
+                            np.ptp(self.MatchedCentroids.z_gt)))
+        plt.legend(['ground truth', 'distorted'])
+        plt.show()
+
+
 
     def report(self):
         print(f'mean distortion: {self.MatchedCentroids.match_distance.mean(): 1.1f} mm, '
