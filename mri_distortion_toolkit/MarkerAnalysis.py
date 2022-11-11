@@ -508,22 +508,38 @@ class MarkerVolume:
 
     # public methods
 
-    def transform_markers(self, x_shift=0, y_shift=0, z_shift=0, xaxis_angle=0, yaxis_angle=0, zaxis_angle=0):
+    def rotate_markers(self, xaxis_angle=0, yaxis_angle=0, zaxis_angle=0):
         """
-        Applies a manual translation/rotation of markers if required
+        rotate markers using euler angles
+
+        :param xaxis_angle: rotation around x angle in degrees
+        :param yaxis_angle: rotation around y angle in degrees
+        :param zaxis_angle: rotation around z angle in degrees
+        :return:
         """
 
-        try:
-            translate = np.array([x_shift, y_shift, z_shift], dtype=np.int16)
-            rotate = np.array([xaxis_angle, yaxis_angle, zaxis_angle], dtype=np.int16)
-            rotation_vector = transform.Rotation.from_euler('xyz', rotate, degrees=True)
+        rotate = np.array([xaxis_angle, yaxis_angle, zaxis_angle], dtype=np.int16)
+        rotation_vector = transform.Rotation.from_euler('xyz', rotate, degrees=True)
+        # Transform centroids
+        rotated = rotation_vector.apply(self.MarkerCentroids[['x', 'y', 'z']])
+        self.MarkerCentroids = pd.DataFrame(rotated, columns=['x', 'y', 'z'])
+        self.MarkerCentroids['r'] = self.MarkerCentroids.apply(
+            lambda row: np.sqrt(row[0] ** 2 + row[1] ** 2 + row[2] ** 2), axis=1)
 
-            # Transform centroids
-            translated = self.MarkerCentroids[['x', 'y', 'z']] + translate
-            rotated = rotation_vector.apply(translated)
-            self.MarkerCentroids = pd.DataFrame(rotated, columns=['x', 'y', 'z'])
-        except:
-            logger.warning("Marker transform failed. Use integers for all values.")
+    def translate_markers(self, x_shift=0, y_shift=0, z_shift=0):
+        """
+        translate markers
+
+        :param x_shift: x translation in mm
+        :param y_shift: y translation in mm
+        :param z_shift: z translation in mm
+        :return:
+        """
+        translate = np.array([x_shift, y_shift, z_shift], dtype=np.int16)
+        translated = self.MarkerCentroids[['x', 'y', 'z']] + translate
+        self.MarkerCentroids = pd.DataFrame(translated, columns=['x', 'y', 'z'])
+        self.MarkerCentroids['r'] = self.MarkerCentroids.apply(
+            lambda row: np.sqrt(row[0] ** 2 + row[1] ** 2 + row[2] ** 2), axis=1)
 
     def plot_3D_markers(self, title='3D marker positions'):  # pragma: no cover
         """
