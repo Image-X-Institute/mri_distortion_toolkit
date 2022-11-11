@@ -125,7 +125,8 @@ class MarkerVolume:
                     with open(os.path.join(self.input_data_path.parent, 'dicom_data.json')) as f:
                         self.dicom_data = json.load(f)
                 except:
-                    logger.warning(f'MR data file dicom_data.json not found at {self.input_data_path.parent}. Continuing')
+                    logger.warning(
+                        f'MR data file dicom_data.json not found at {self.input_data_path.parent}. Continuing')
             else:
                 raise FileNotFoundError(f'could not find any data at {self.input_data_path}')
         elif isinstance(input_data, np.ndarray):
@@ -195,7 +196,7 @@ class MarkerVolume:
         """
         all_dicom_files = get_all_files(self.input_data_path, file_extension=self._file_extension)
         # use first one that has pixel data:
-        j=0
+        j = 0
         while True:
             example_dicom_file = pydicom.read_file(self.input_data_path / all_dicom_files[j])
             try:
@@ -325,9 +326,9 @@ class MarkerVolume:
         # finds a range of thresholds that give a number of segments near to the number of expected markers
         histogram_division = 100
 
-        candidate_thresholds = []       # Thresholds that have fewer markers than expected, use when no valid thresholds
+        candidate_thresholds = []  # Thresholds that have fewer markers than expected, use when no valid thresholds
         candidate_n_points = []
-        valid_thresholds = []           # Thresholds that should give the corrected number of markers
+        valid_thresholds = []  # Thresholds that should give the corrected number of markers
 
         # divide the range into segments and calculate how many volumes result from each segment
         background_value = np.median(np.round(blurred_volume))
@@ -344,7 +345,8 @@ class MarkerVolume:
             unique_labels = np.unique(labels)[1:]  # first label is background so skip
             # Check number of segments falls within valid range:
             tol = 0.1
-            if len(unique_labels) < self._n_markers_expected*(1-tol) or len(unique_labels) > self._n_markers_expected * (1+tol):
+            if len(unique_labels) < self._n_markers_expected * (1 - tol) or len(
+                    unique_labels) > self._n_markers_expected * (1 + tol):
                 continue  # Too few or too many segments
             else:
                 # This threshold is possibly valid
@@ -505,6 +507,23 @@ class MarkerVolume:
         return np.array([x_centroids, y_centroids, z_centroids]).T
 
     # public methods
+
+    def transform_markers(self, x_shift=0, y_shift=0, z_shift=0, xaxis_angle=0, yaxis_angle=0, zaxis_angle=0):
+        """
+        Applies a manual translation/rotation of markers if required
+        """
+
+        try:
+            translate = np.array([x_shift, y_shift, z_shift], dtype=np.int16)
+            rotate = np.array([xaxis_angle, yaxis_angle, zaxis_angle], dtype=np.int16)
+            rotation_vector = transform.Rotation.from_euler('xyz', rotate, degrees=True)
+
+            # Transform centroids
+            translated = self.MarkerCentroids[['x', 'y', 'z']] + translate
+            rotated = rotation_vector.apply(translated)
+            self.MarkerCentroids = pd.DataFrame(rotated, columns=['x', 'y', 'z'])
+        except:
+            logger.warning("Marker transform failed. Use integers for all values.")
 
     def plot_3D_markers(self, title='3D marker positions'):  # pragma: no cover
         """
@@ -928,11 +947,12 @@ class MatchedMarkerVolumes:
             _throw_warning = True
 
         if _throw_warning:
-            warn(f'\n\nThe marker match may have failed.\n\nThe mean detected distortion is {self._CentroidMatch.match_distance.mean(): 1.1f} mm '
-                 f'and the max is {self._CentroidMatch.match_distance.max(): 1.1f}.'
-                 f'\nYou can continue by pressing any key, but you should visualize the data using the plot_3D_markers'
-                 f' method. If the match has failed, a simple remedy can be to trim the input data at the MarkerVolume'
-                 f'\n stage...')
+            warn(
+                f'\n\nThe marker match may have failed.\n\nThe mean detected distortion is {self._CentroidMatch.match_distance.mean(): 1.1f} mm '
+                f'and the max is {self._CentroidMatch.match_distance.max(): 1.1f}.'
+                f'\nYou can continue by pressing any key, but you should visualize the data using the plot_3D_markers'
+                f' method. If the match has failed, a simple remedy can be to trim the input data at the MarkerVolume'
+                f'\n stage...')
             input("Press any key to continue...")
 
     def _handle_double_matched_markers(self):
