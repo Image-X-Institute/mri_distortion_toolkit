@@ -547,6 +547,7 @@ def get_harmonics(Gx_Harmonics, Gy_Harmonics, Gz_Harmonics, B0_Harmonics=None):
 
     return Gx_Harmonics, Gy_Harmonics, Gz_Harmonics, B0_Harmonics
 
+
 def get_dicom_data(dicom_data):
     """
     figures out whether dicom data is a dict or a path to a json file
@@ -665,6 +666,7 @@ def enumerate_subfolders(data_loc):
     """
     data_dict = {}
     subfolders = [ f.path for f in os.scandir(data_loc) if f.is_dir() ]
+    subfolders = np.sort(subfolders)
     for i, dir in enumerate(subfolders):
         folder_name = os.path.split(dir)[1]
         data_dict[str(i)] = folder_name
