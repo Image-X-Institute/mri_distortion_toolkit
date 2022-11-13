@@ -547,6 +547,7 @@ def get_harmonics(Gx_Harmonics, Gy_Harmonics, Gz_Harmonics, B0_Harmonics=None):
 
     return Gx_Harmonics, Gy_Harmonics, Gz_Harmonics, B0_Harmonics
 
+
 def get_dicom_data(dicom_data):
     """
     figures out whether dicom data is a dict or a path to a json file
@@ -720,7 +721,7 @@ def plot_compressed_MarkerVolumes(MarkerVolumeList, p_max=20, p_min=-20, title=N
 
     fig, axs = plt.subplots(figsize=[8, 8], ncols=1, nrows=1)
     if not isinstance(MarkerVolumeList, list):
-            MarkerVolumeList = MarkerVolumeList
+            MarkerVolumeList = [MarkerVolumeList]
     if not projection_direction in ['x', 'y', 'z']:
         warnings.warn(f'projection direction must be "x", "y", or "z", not {projection_direction}.'
                       f'setting to z and continuing')

@@ -515,7 +515,6 @@ class MarkerVolume:
         :param xaxis_angle: rotation around x angle in degrees
         :param yaxis_angle: rotation around y angle in degrees
         :param zaxis_angle: rotation around z angle in degrees
-        :return:
         """
 
         rotate = np.array([xaxis_angle, yaxis_angle, zaxis_angle], dtype=np.int16)
@@ -1216,5 +1215,5 @@ class MatchedMarkerVolumes:
 
     def report(self):
         print(f'mean distortion: {self.MatchedCentroids.match_distance.mean(): 1.1f} mm, '
-              f'std: {np.std(self.MatchedCentroids.match_distance)}'
+              f'std: {np.std(self.MatchedCentroids.match_distance): 1.1f}'
               f'Max distortion: {self.MatchedCentroids.match_distance.max(): 1.1f} mm')
