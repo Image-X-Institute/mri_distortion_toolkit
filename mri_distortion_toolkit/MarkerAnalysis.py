@@ -488,7 +488,7 @@ class MarkerVolume:
             if voxels < self._voxel_min or voxels > self._voxel_max:
                 skipped += 1
                 if self.verbose:
-                    print('Region ' + str(i + 1) + ': Skipped, v = ' + str(voxels))
+                    print('\033[93mRegion ' + str(i + 1) + ': Skipped, v = ' + str(voxels) + '\033[0m')
                 continue  # skip outliers
 
             region_sum = np.sum(self.InputVolume[RegionInd])
@@ -508,22 +508,37 @@ class MarkerVolume:
 
     # public methods
 
-    def transform_markers(self, x_shift=0, y_shift=0, z_shift=0, xaxis_angle=0, yaxis_angle=0, zaxis_angle=0):
+    def rotate_markers(self, xaxis_angle=0, yaxis_angle=0, zaxis_angle=0):
         """
-        Applies a manual translation/rotation of markers if required
+        rotate markers using euler angles
+
+        :param xaxis_angle: rotation around x angle in degrees
+        :param yaxis_angle: rotation around y angle in degrees
+        :param zaxis_angle: rotation around z angle in degrees
         """
 
-        try:
-            translate = np.array([x_shift, y_shift, z_shift], dtype=np.int16)
-            rotate = np.array([xaxis_angle, yaxis_angle, zaxis_angle], dtype=np.int16)
-            rotation_vector = transform.Rotation.from_euler('xyz', rotate, degrees=True)
+        rotate = np.array([xaxis_angle, yaxis_angle, zaxis_angle], dtype=np.int16)
+        rotation_vector = transform.Rotation.from_euler('xyz', rotate, degrees=True)
+        # Transform centroids
+        rotated = rotation_vector.apply(self.MarkerCentroids[['x', 'y', 'z']])
+        self.MarkerCentroids = pd.DataFrame(rotated, columns=['x', 'y', 'z'])
+        self.MarkerCentroids['r'] = self.MarkerCentroids.apply(
+            lambda row: np.sqrt(row[0] ** 2 + row[1] ** 2 + row[2] ** 2), axis=1)
 
-            # Transform centroids
-            translated = self.MarkerCentroids[['x', 'y', 'z']] + translate
-            rotated = rotation_vector.apply(translated)
-            self.MarkerCentroids = pd.DataFrame(rotated, columns=['x', 'y', 'z'])
-        except:
-            logger.warning("Marker transform failed. Use integers for all values.")
+    def translate_markers(self, x_shift=0, y_shift=0, z_shift=0):
+        """
+        translate markers
+
+        :param x_shift: x translation in mm
+        :param y_shift: y translation in mm
+        :param z_shift: z translation in mm
+        :return:
+        """
+        translate = np.array([x_shift, y_shift, z_shift], dtype=np.int16)
+        translated = self.MarkerCentroids[['x', 'y', 'z']] + translate
+        self.MarkerCentroids = pd.DataFrame(translated, columns=['x', 'y', 'z'])
+        self.MarkerCentroids['r'] = self.MarkerCentroids.apply(
+            lambda row: np.sqrt(row[0] ** 2 + row[1] ** 2 + row[2] ** 2), axis=1)
 
     def plot_3D_markers(self, title='3D marker positions'):  # pragma: no cover
         """
@@ -827,18 +842,18 @@ class MatchedMarkerVolumes:
             axis=1)
 
         # Find the crosshair reference markers
-        gt_reference = ground_truth.nsmallest(self._n_reference_markers, 'r_centre')[['x', 'y', 'z']]
-        dist_reference = self.distorted_centroids.nsmallest(self._n_reference_markers, 'r')[['x', 'y', 'z']]
+        self._gt_reference = ground_truth.nsmallest(self._n_reference_markers, 'r_centre')[['x', 'y', 'z']]
+        self._dist_reference = self.distorted_centroids.nsmallest(self._n_reference_markers, 'r')[['x', 'y', 'z']]
 
         # Calculate translation vector
-        translation_vector = dist_reference.mean() - gt_reference.mean()
+        translation_vector = self._dist_reference.mean() - self._gt_reference.mean()
 
         # Calculate rotation vector
         if self._n_reference_markers < 3:
             rotation = False
         else:
-            matched_reference = _match_crosshair(gt_reference + translation_vector, dist_reference)
-            rotation_vector, error = transform.Rotation.align_vectors(dist_reference, matched_reference)
+            matched_reference = _match_crosshair(self._gt_reference + translation_vector, self._dist_reference)
+            rotation_vector, error = transform.Rotation.align_vectors(self._dist_reference, matched_reference)
 
         # Transform centroids
         aligned = self.ground_truth_centroids[['x', 'y', 'z']] + translation_vector
@@ -1175,7 +1190,30 @@ class MatchedMarkerVolumes:
         plot_data = get_markers_as_function_of_z()
         plot_markers_inner(plot_data)
 
+    def plot_reference_markers(self, title='Reference alignment markers'):
+
+        try:
+            fig = plt.figure()
+            axs = fig.add_subplot(111, projection='3d')
+            axs.scatter(self._gt_reference.x, self._gt_reference.y, self._gt_reference.z)
+            axs.scatter(self._dist_reference.x, self._dist_reference.y, self._dist_reference.z)
+
+        except AttributeError:
+            logger.warning('Cannot plt reference  as it does not exist...')
+            return
+
+        axs.set_xlabel('X [mm]')
+        axs.set_ylabel('Y [mm]')
+        axs.set_zlabel('Z [mm]')
+        axs.set_title(title)
+        axs.set_box_aspect((np.ptp(self.MatchedCentroids.x_gt), np.ptp(self.MatchedCentroids.y_gt),
+                            np.ptp(self.MatchedCentroids.z_gt)))
+        plt.legend(['ground truth', 'distorted'])
+        plt.show()
+
+
+
     def report(self):
         print(f'mean distortion: {self.MatchedCentroids.match_distance.mean(): 1.1f} mm, '
-              f'std: {np.std(self.MatchedCentroids.match_distance)}'
+              f'std: {np.std(self.MatchedCentroids.match_distance): 1.1f}'
               f'Max distortion: {self.MatchedCentroids.match_distance.max(): 1.1f} mm')
