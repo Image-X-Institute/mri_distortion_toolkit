@@ -58,7 +58,7 @@ class DistortionCorrectorBase:
 
     def __init__(self, ImageDirectory, gradient_harmonics, B0_harmonics=None,
                  dicom_data=None,
-                 ImExtension='.dcm', correct_through_plane=True, correct_B0=True,
+                 ImExtension='.dcm', correct_through_plane=True, correct_B0=False,
                  B0_direction='forward', pad=0):
         """
         init method
@@ -455,9 +455,9 @@ class DistortionCorrectorBase:
 
         execution_time = perf_counter() - start_time
         print(f'\ntotal time: {execution_time: 1.1f}s')
-        print(f'mean time per slice = {execution_time / n_images_to_correct: 1.1}s')
+        print(f'mean time per slice: {execution_time / n_images_to_correct: 1.1}s')
         self._unpad_image_arrays()
-        print(f'total correction time: {perf_counter() - start_time: 1.1f} s')
+
 
     def save_all_images(self, save_loc=None, DSV_radius=None, grid=True):
         """
