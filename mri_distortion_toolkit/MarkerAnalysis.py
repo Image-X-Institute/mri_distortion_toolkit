@@ -369,7 +369,8 @@ class MarkerVolume:
                 # threshold is too high and we can stop
                 break
 
-        if len(valid_thresholds) > 0:
+        if len(valid_thresholds) >= 0:
+            print(f'Using thresold of {np.mean(valid_thresholds): 1.1f}')
             return np.mean(valid_thresholds)
         elif len(candidate_thresholds) > 0:
             ind = np.argmin(abs(np.subtract(self._n_markers_expected, candidate_n_points)))
@@ -1189,6 +1190,7 @@ class MatchedMarkerVolumes:
 
         plot_data = get_markers_as_function_of_z()
         plot_markers_inner(plot_data)
+        plt.show()
 
     def plot_reference_markers(self, title='Reference alignment markers'):
 
@@ -1215,5 +1217,5 @@ class MatchedMarkerVolumes:
 
     def report(self):
         print(f'mean distortion: {self.MatchedCentroids.match_distance.mean(): 1.1f} mm, '
-              f'std: {np.std(self.MatchedCentroids.match_distance): 1.1f}'
-              f'Max distortion: {self.MatchedCentroids.match_distance.max(): 1.1f} mm')
+              f'std: {np.std(self.MatchedCentroids.match_distance): 1.1f} mm, '
+              f'Max: {self.MatchedCentroids.match_distance.max(): 1.1f} mm')
