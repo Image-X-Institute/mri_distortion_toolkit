@@ -467,6 +467,12 @@ class DistortionCorrectorBase:
         :type save_loc: string or path
         """
 
+        import cProfile, pstats, io
+        from pstats import SortKey
+        pr = cProfile.Profile()
+        pr.enable()
+
+        _start_time = perf_counter()
         print('saving all data as png...')
         plt.ioff()
         if save_loc is None:
@@ -544,13 +550,15 @@ class DistortionCorrectorBase:
             if DSV_radius:
                 circ = Circle((0, 0), FOV_radius, facecolor='none', edgecolor='white')
                 axs[1].add_patch(circ)
-
             plt.tight_layout()
-
             plt.savefig(save_loc / (str(i) + '.png'), format='png')
-            plt.close(fig)
+            plt.close('all')
             i += 1
-        print('images export to png successful')
+        print(f'images export to png successful in {perf_counter() - _start_time} s')
+
+        pr.disable()
+        pr.dump_stats('save_images_stats')
+
 
     def save_all_images_as_dicom(self, save_loc=None):
         """
@@ -559,7 +567,7 @@ class DistortionCorrectorBase:
         :param save_loc: path to save data at.
         :type save_loc: string or path
         """
-
+        _start_time = perf_counter()
         print('saving all data as dcm...')
         if self._image_array_corrected.min() < 0:
             self._image_array_corrected = self._zero_volume(self._image_array_corrected)
@@ -578,7 +586,7 @@ class DistortionCorrectorBase:
             temp_dcm.PixelData = np.uint16(corrected_image).tobytes()
             temp_dcm.save_as(save_loc / (str(i) + '.dcm'))
             i += 1
-        print('images exported to dicom')
+        print(f'images exported to dicom in {perf_counter() - _start_time: 1.1f}s')
 
 
 class KspaceDistortionCorrector(DistortionCorrectorBase):

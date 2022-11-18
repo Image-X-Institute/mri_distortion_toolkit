@@ -1217,5 +1217,5 @@ class MatchedMarkerVolumes:
 
     def report(self):
         print(f'mean distortion: {self.MatchedCentroids.match_distance.mean(): 1.1f} mm, '
-              f'std: {np.std(self.MatchedCentroids.match_distance): 1.1f} '
+              f'std: {np.std(self.MatchedCentroids.match_distance): 1.1f} mm, '
               f'Max: {self.MatchedCentroids.match_distance.max(): 1.1f} mm')

@@ -800,6 +800,7 @@ def plot_distortion_xyz_hist(MatchedMarkerVolume):
     plt.hist(abs(z_dis), bins=bins, alpha=0.5)
     plt.legend(['x', 'y', 'z'])
     plt.xlabel('distortion [mm]')
+    plt.tight_layout()
     plt.show()
 
 
