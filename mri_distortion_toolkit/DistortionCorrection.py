@@ -22,13 +22,14 @@ from .utilities import get_harmonics
 from .utilities import printProgressBar
 from time import perf_counter
 from abc import abstractmethod
+from abc import ABC
 from .utilities import combine_harmonics
 
 logging.basicConfig(format='[%(filename)s: line %(lineno)d] %(message)s', level=logging.WARNING)
 logger = logging.getLogger(__name__)
 
 
-class DistortionCorrectorBase:
+class DistortionCorrectorBase(ABC):
     """
     This is the base class which other distortion correction methods can inherit from, and includes the core required
     behavior.
@@ -179,7 +180,7 @@ class DistortionCorrectorBase:
             scale = 1 / self._dicom_data['gradient_strength'][2]
             self._Gz_Harmonics = combine_harmonics(self._Gz_Harmonics, self._B0_Harmonics*scale, operation=_operation)
 
-        # from .Harmonics import SphericalHarmonicFit
+        from .Harmonics import SphericalHarmonicFit
         # input_data = pd.DataFrame({'x': [0, 0, 0], 'y': [0, 0, 0], 'z': [0, 0, 0], 'Bz': [0, 1, 2]})
         # tempH = SphericalHarmonicFit(input_data)
         # tempH.harmonics = self._Gx_Harmonics
@@ -458,7 +459,6 @@ class DistortionCorrectorBase:
         print(f'mean time per slice: {execution_time / n_images_to_correct: 1.1}s')
         self._unpad_image_arrays()
 
-
     def save_all_images(self, save_loc=None, DSV_radius=None, grid=True):
         """
         save corrected data as png
@@ -558,7 +558,6 @@ class DistortionCorrectorBase:
 
         pr.disable()
         pr.dump_stats('save_images_stats')
-
 
     def save_all_images_as_dicom(self, save_loc=None):
         """

@@ -1,0 +1,12 @@
+{"@schema": "https://raw.githubusercontent.com/slicer/slicer/master/Modules/Loadable/Markups/Resources/Schema/markups-schema-v1.0.0.json#",
+"markups": [{"type": "Fiducial", "coordinateSystem": "LPS", "controlPoints": [
+{ "label": " ", "position": [-13.84,  0.78, -1.47], "locked": true},
+{ "label": " ", "position": [-14.16,  0.68,  22.82], "locked": true},
+{ "label": " ", "position": [-13.70, -24.63, -1.44], "locked": true},
+{ "label": " ", "position": [-14.24,  0.70, -26.00], "locked": true},
+{ "label": " ", "position": [-14.04,  26.45, -1.55], "locked": true},
+{ "label": " ", "position": [-15.09,  0.14,  47.41], "locked": true},
+{ "label": " ", "position": [-14.10, -50.02, -1.42], "locked": true},
+{ "label": " ", "position": [-13.98,  0.63, -50.58], "locked": true},
+{ "label": " ", "position": [-14.12,  51.77, -1.62], "locked": true}
+]}]}

@@ -251,6 +251,8 @@ class SphericalHarmonicFit:
         axs.set_ylabel('pk-pk [\u03BCT]')
         for item in axs.get_xticklabels():
             item.set_rotation(45)
+        for i in axs.containers:
+            axs.bar_label(i, )
         if not return_axs:
             plt.show()
         else:
