@@ -58,7 +58,7 @@ class DistortionCorrectorBase:
 
     def __init__(self, ImageDirectory, gradient_harmonics, B0_harmonics=None,
                  dicom_data=None,
-                 ImExtension='.dcm', correct_through_plane=True, correct_B0=True,
+                 ImExtension='.dcm', correct_through_plane=True, correct_B0=False,
                  B0_direction='forward', pad=0):
         """
         init method
@@ -76,7 +76,7 @@ class DistortionCorrectorBase:
             get_harmonics(gradient_harmonics[0], gradient_harmonics[1], gradient_harmonics[2], B0_harmonics)
         self._Gx_Harmonics = self._Gx_Harmonics * 1
         self._Gy_Harmonics = self._Gy_Harmonics * 1
-        self._Gz_Harmonics = self._Gz_Harmonics * -1
+        self._Gz_Harmonics = self._Gz_Harmonics * 1
         self._dicom_data = dicom_data
 
         if self.correct_B0:
@@ -417,11 +417,11 @@ class DistortionCorrectorBase:
 
         if self.correct_through_plane:
 
-            if (np.round(self._ImageOrientationPatient) == [1, 0, 0, 0, 1, 0]).all():
+            if np.allclose(np.round(self._ImageOrientationPatient), [1, 0, 0, 0, 1, 0]):
                 self._ImageOrientationPatient = [1, 1, 1, 1, 1, 1]
-            elif np.round(self._ImageOrientationPatient == [0, 1, 0, 0, 0, -1]).all():
+            elif np.allclose(np.round(self._ImageOrientationPatient), [0, 1, -0, -0, 0, -1]):
                 self._ImageOrientationPatient = [2, 2, 2, 2, 2, 2]
-            elif np.round(self._ImageOrientationPatient == [1, 0, 0, 0, 0, -1]).all():
+            elif np.allclose(np.round(self._ImageOrientationPatient), [1, 0, 0, 0, 0, -1]):
                 self._ImageOrientationPatient = [3, 3, 3, 3, 3, 3]
             else:
                 raise NotImplementedError
@@ -455,9 +455,9 @@ class DistortionCorrectorBase:
 
         execution_time = perf_counter() - start_time
         print(f'\ntotal time: {execution_time: 1.1f}s')
-        print(f'mean time per slice = {execution_time / n_images_to_correct: 1.1}s')
+        print(f'mean time per slice: {execution_time / n_images_to_correct: 1.1}s')
         self._unpad_image_arrays()
-        print(f'total correction time: {perf_counter() - start_time: 1.1f} s')
+
 
     def save_all_images(self, save_loc=None, DSV_radius=None, grid=True):
         """
@@ -467,6 +467,12 @@ class DistortionCorrectorBase:
         :type save_loc: string or path
         """
 
+        import cProfile, pstats, io
+        from pstats import SortKey
+        pr = cProfile.Profile()
+        pr.enable()
+
+        _start_time = perf_counter()
         print('saving all data as png...')
         plt.ioff()
         if save_loc is None:
@@ -544,13 +550,15 @@ class DistortionCorrectorBase:
             if DSV_radius:
                 circ = Circle((0, 0), FOV_radius, facecolor='none', edgecolor='white')
                 axs[1].add_patch(circ)
-
             plt.tight_layout()
-
             plt.savefig(save_loc / (str(i) + '.png'), format='png')
-            plt.close(fig)
+            plt.close('all')
             i += 1
-        print('images export to png successful')
+        print(f'images export to png successful in {perf_counter() - _start_time} s')
+
+        pr.disable()
+        pr.dump_stats('save_images_stats')
+
 
     def save_all_images_as_dicom(self, save_loc=None):
         """
@@ -559,7 +567,7 @@ class DistortionCorrectorBase:
         :param save_loc: path to save data at.
         :type save_loc: string or path
         """
-
+        _start_time = perf_counter()
         print('saving all data as dcm...')
         if self._image_array_corrected.min() < 0:
             self._image_array_corrected = self._zero_volume(self._image_array_corrected)
@@ -578,7 +586,7 @@ class DistortionCorrectorBase:
             temp_dcm.PixelData = np.uint16(corrected_image).tobytes()
             temp_dcm.save_as(save_loc / (str(i) + '.dcm'))
             i += 1
-        print('images exported to dicom')
+        print(f'images exported to dicom in {perf_counter() - _start_time: 1.1f}s')
 
 
 class KspaceDistortionCorrector(DistortionCorrectorBase):

@@ -40,8 +40,8 @@ class SphericalHarmonicFit:
 
     This task is performed using numpys pseudo_inverse functionality to invert L
 
-    :param input_Bz_data: A pandas dataframe with columns x, y, z, Bz. Data should be in mm and T
-    :type input_Bz_data: Pandas.DataFrame
+    :param _input_Bz_data: A pandas dataframe with columns x, y, z, Bz. Data should be in mm and T
+    :type _input_Bz_data: Pandas.DataFrame
     :param r_outer: radius of sphere of interest. If AssessHarmonicPk_Pk=True, data is reconstucted on r_outer. if
         TrimDataBy_r_outer=True, data lying outside r_outer will be deleted. Finally, r_outer is used to set the limits
         on plotting data.
@@ -76,22 +76,46 @@ class SphericalHarmonicFit:
         self._AssessHarmonicPk_Pk = AssessHarmonicPk_Pk
         self.n_order = n_order
         self.n_harmonics = (self.n_order + 1) ** 2
-        self.input_Bz_data = input_Bz_data.copy()
+        self._input_Bz_data = input_Bz_data
         self.__recon_warning_thrown = False
+        self._data_type = None
+        self._determine_Bz_data_type()
         # basic fitting routine:
-        self.input_Bz_data = convert_cartesian_to_spherical(self.input_Bz_data)
-        self._check_data_input()
-        if self.TrimDataBy_r_outer:
-            self._filter_data()
-        self._coeff_names = generate_harmonic_names(self.n_order)
-        self.legendre_basis = generate_legendre_basis(self.input_Bz_data, self.n_order)
-        self._svd_fit()
-
-        self.harmonics = self.harmonics * scale
-        if self.QuantifyFit:
+        if self._data_type == 'field_map':
+            self._input_Bz_data = convert_cartesian_to_spherical(self._input_Bz_data)
+            self._check_data_input()
+            if self.TrimDataBy_r_outer:
+                self._filter_data()
+            self._coeff_names = generate_harmonic_names(self.n_order)
+            self.legendre_basis = generate_legendre_basis(self._input_Bz_data, self.n_order)
+            self._svd_fit()
+            self.harmonics = self.harmonics * scale
+        elif self._data_type == 'harmonics':
+            r = self.r_outer
+            azimuth = np.linspace(0, 2 * np.pi, 100)
+            elevation = np.linspace(0, np.pi, 100)
+            [r, azimuth, elevation] = np.meshgrid(r, azimuth, elevation)
+            coords = pd.DataFrame({'r': r.flatten(), 'azimuth': azimuth.flatten(), 'elevation': elevation.flatten()})
+            self.legendre_basis = generate_legendre_basis(coords, self.n_order)
+            self.harmonics = self._input_Bz_data
+        else:
+            raise AttributeError('invalid input data')
+        if self.QuantifyFit and self._data_type == 'field_map':
             self._quantify_fit()
         if self._AssessHarmonicPk_Pk:
             self._assess_harmonic_pk_pk()
+
+    def _determine_Bz_data_type(self):
+        """
+        check whether we have field data, or harmonics
+        """
+        if isinstance(self._input_Bz_data, pd.Series):
+            if not len(self._input_Bz_data) == (self.n_order + 1) ** 2:
+                raise ValueError('length of series does not match input n_order')
+            else:
+                self._data_type = 'harmonics'
+        elif isinstance(self._input_Bz_data, pd.DataFrame):
+            self._data_type = 'field_map'  # not error checks in place downstream
 
     def _check_data_input(self):
         """
@@ -104,27 +128,32 @@ class SphericalHarmonicFit:
             logger.warning(f'n_order should be integer; round {self.n_order} to {int(self.n_order)}')
             self.n_order = int(self.n_order)
 
-        if self.input_Bz_data.r.mean() < 10:
-            logger.warning('it appears that your input data is in m, not mm - please use mm!')
+        if self._data_type == 'field_map':
+            if self._input_Bz_data.r.mean() < 10:
+                logger.warning('it appears that your input data is in m, not mm - please use mm!')
 
-        if (self.input_Bz_data.elevation.max() - self.input_Bz_data.elevation.min()) < 0.75 * np.pi or \
-                (self.input_Bz_data.azimuth.max() - self.input_Bz_data.azimuth.min()) < 1.8 * np.pi:
-            logger.warning('input sample points do not appear to cover a full sphere')
+            if (self._input_Bz_data.elevation.max() - self._input_Bz_data.elevation.min()) < 0.75 * np.pi or \
+                    (self._input_Bz_data.azimuth.max() - self._input_Bz_data.azimuth.min()) < 1.8 * np.pi:
+                logger.warning('input sample points do not appear to cover a full sphere')
+            field_map_headings = ['x', 'y', 'z', 'Bz']
+            for col in field_map_headings:
+                if not col in self._input_Bz_data.columns:
+                    raise AttributeError(f'Field map data must contain {field_map_headings}')
 
     def _filter_data(self):
         """
         filter the Bz data by radial coordinate, removing any entries that fall outside self.r_outer
         """
 
-        data_to_delete_ind = self.input_Bz_data.r > (self.r_outer + self._tol)
-        self.input_Bz_data = self.input_Bz_data.drop(self.input_Bz_data[data_to_delete_ind].index)
-        self.input_Bz_data.reset_index(inplace=True)
+        data_to_delete_ind = self._input_Bz_data.r > (self.r_outer + self._tol)
+        self._input_Bz_data = self._input_Bz_data.drop(self._input_Bz_data[data_to_delete_ind].index)
+        self._input_Bz_data.reset_index(inplace=True)
         n_deleted = np.count_nonzero(data_to_delete_ind)
         if n_deleted > 0:
             logger.warning(f'deleting {n_deleted} of the original {data_to_delete_ind.size} data points because'
                            f'they fall outside the r_outer value of {self.r_outer} and TrimDataBy_r_outer=True')
 
-        if self.input_Bz_data.shape[0] == 0:
+        if self._input_Bz_data.shape[0] == 0:
             logger.error(f'After filtering for data insdide {self.r_outer} mm, there is no data left!')
             sys.exit(1)
 
@@ -144,22 +173,22 @@ class SphericalHarmonicFit:
                          '\n-  The data does not cover a full sphere: hence the matrix is poorly conditioned and has no inverse'
                          '\n-  Continuing but you should be careful...')
 
-        harmonics = inverseLegendre @ self.input_Bz_data.Bz
+        harmonics = inverseLegendre @ self._input_Bz_data.Bz
         self.harmonics = pd.Series(harmonics, index=self._coeff_names)
 
     def _quantify_fit(self):
         """
         Compare the reconstructed field to the original field and calculate some basic goodness of fit metrics
         """
-        if len(self.input_Bz_data.index) > 1e4:
+        if len(self._input_Bz_data.index) > 1e4:
             logger.warning('you are reconstructing a lot of points and it might be a bit slow.'
                            'I should write a down sampling routine here...')
 
         Bz_recon = self.legendre_basis @ (self.harmonics / self.scale)
-        Residual = np.subtract(self.input_Bz_data.Bz, Bz_recon)
+        Residual = np.subtract(self._input_Bz_data.Bz, Bz_recon)
         self._residual_pk_pk = float(abs(Residual.max() - Residual.min()) * 1e6)
 
-        initial_pk_pk = float(abs(self.input_Bz_data.Bz.max() - self.input_Bz_data.Bz.min()) * 1e6)
+        initial_pk_pk = float(abs(self._input_Bz_data.Bz.max() - self._input_Bz_data.Bz.min()) * 1e6)
         recon_pk_pk = float(abs(Bz_recon.max() - Bz_recon.min()) * 1e6)
         residual_percentage = abs(self._residual_pk_pk) * 100 / initial_pk_pk
 

@@ -7,6 +7,7 @@ from mri_distortion_toolkit.MarkerAnalysis import MarkerVolume
 from mri_distortion_toolkit.MarkerAnalysis import MatchedMarkerVolumes
 from mri_distortion_toolkit.DistortionCorrection import KspaceDistortionCorrector
 from mri_distortion_toolkit.DistortionCorrection import ImageDomainDistortionCorrector
+from mri_distortion_toolkit.utilities import generate_harmonic_names
 import numpy as np
 
 test_data_dir = (this_dir / 'test_data').resolve()
