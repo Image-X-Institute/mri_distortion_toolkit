@@ -369,7 +369,7 @@ class MarkerVolume:
                 # threshold is too high and we can stop
                 break
 
-        if len(valid_thresholds) >= 0:
+        if valid_thresholds:
             print(f'Using thresold of {np.mean(valid_thresholds): 1.1f}')
             return np.mean(valid_thresholds)
         elif len(candidate_thresholds) > 0:
