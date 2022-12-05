@@ -16,7 +16,6 @@ from mri_distortion_toolkit.utilities import plot_compressed_MarkerVolumes
 from mri_distortion_toolkit.utilities import plot_MarkerVolume_overlay
 
 data_loc = Path(r'/home/brendan/Downloads/FrankenGoam^Mr/20221107 MR Linac^Test')
-
 scans = {'0': '01 localiser_gre',
          '1': '02 localiser_gre',
          '2': '03 localiser_gre',
@@ -43,7 +42,6 @@ scans = {'0': '01 localiser_gre',
 # process TSE images
 scans_to_segment = ['9', '11', '12', '13', '14']
 
-
 # Data import
 distorted_data_loc = data_loc / scans['17'] / 'Original' / 'slicer_centroids.mrk.json'
 distorted_data_loc_rev = data_loc / scans['18'] / 'Original' / 'slicer_centroids.mrk.json'
@@ -51,6 +49,7 @@ gt_data_loc = Path(r'/home/brendan/Downloads/FrankenGoam^Mr/CT/slicer_centroids.
 
 # extract markers:
 gt_volume = MarkerVolume(gt_data_loc, r_max=300)
+
 if False:
     gt_volume.rotate_markers(yaxis_angle=180)
     nmarkers = 618
@@ -77,13 +76,13 @@ normalisation_factor = [1 / gradient_strength[0], 1 / gradient_strength[1], 1 / 
                         1]  # this normalised gradient harmonics to 1mT/m
 # normalisation_factor = [1, 1, 1, 1]
 G_x_Harmonics, G_y_Harmonics, G_z_Harmonics, B0_Harmonics = calculate_harmonics(B_fields.MagneticFields,
-                                                                                n_order=8,
+                                                                                n_order=5,
                                                                                 scale=normalisation_factor)
-G_x_Harmonics.harmonics.to_csv('_data/G_x_Harmonics_wtf.csv')
-G_y_Harmonics.harmonics.to_csv('_data/G_y_Harmonics_wtf.csv')
-G_z_Harmonics.harmonics.to_csv('_data/G_z_Harmonics_wtf.csv')
+G_x_Harmonics.harmonics.to_csv('_data/G_x_Harmonics_rot.csv')
+G_y_Harmonics.harmonics.to_csv('_data/G_y_Harmonics_rot.csv')
+G_z_Harmonics.harmonics.to_csv('_data/G_z_Harmonics_rot.csv')
 if B0_Harmonics:  # None evaluates as False
-    B0_Harmonics.harmonics.to_csv('_data/B0_Harmonics_wtf.csv')
+    B0_Harmonics.harmonics.to_csv('_data/B0_Harmonics_rot.csv')
 # correct input images
 GDC = ImageDomainDistortionCorrector(ImageDirectory=distorted_data_loc.parent.resolve(),
                                 gradient_harmonics=[Path('_data/Gx.csv'),
@@ -96,7 +95,7 @@ GDC = ImageDomainDistortionCorrector(ImageDirectory=distorted_data_loc.parent.re
                                 correct_B0=True,
                                 B0_direction='back')
 GDC.correct_all_images()
-GDC.save_all_images()
+# GDC.save_all_images()
 GDC.save_all_images_as_dicom()
 # Now we have the corrected images, we can compare the original and the corrected to the GT:
 
@@ -104,7 +103,7 @@ corrected_volume = MarkerVolume(distorted_data_loc.parent.resolve() / 'corrected
                                 n_markers_expected=nmarkers,
                                 iterative_segmentation=True,
                                 threshold=None,
-                                gaussian_image_filter_sd=0.6)
+                                gaussian_image_filter_sd=0.8)
 corrected_volume.export_to_slicer()
 corrected_volume.save_dicom_data()
 matched_volume_corrected = MatchedMarkerVolumes(gt_volume, corrected_volume, n_refernce_markers=9)

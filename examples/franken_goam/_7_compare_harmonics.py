@@ -70,7 +70,7 @@ class CompareHarmonics:
 
 
 if __name__ == '__main__':
-    data_loc1 = Path('_data/G_x_Harmonics_wtf.csv')
-    data_loc2 = Path('_data/Gx_rescaled')
+    data_loc1 = Path('_data/B0_Harmonics_rot.csv')
+    data_loc2 = Path('_data/B0.csv')
     Gy_compare = CompareHarmonics(data_loc1, data_loc2)
-    Gy_compare.plot_harmonics(cut_off=.005, label_data=False)
+    Gy_compare.plot_harmonics(cut_off=.1, label_data=False)
