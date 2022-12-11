@@ -38,7 +38,7 @@ class CompareHarmonics:
         self.series1_fit.plot_cut_planes()
         self.series2_fit.plot_cut_planes()
 
-    def plot_harmonics(self, cut_off=.005, label_data=True):
+    def plot_harmonics(self, cut_off=.005, label_data=True, y_range=None):
 
         plt.figure(figsize=[10, 5])
         # ax = sns.barplot(self.HarmonicsPk_Pk, y='pk-pk [\u03BCT]', x=)
@@ -57,6 +57,8 @@ class CompareHarmonics:
         HarmonicsToPlot = HarmonicsToPlot.rename(columns={0: "pk_pk"})
 
         axs = sns.barplot(data=HarmonicsToPlot, x="index", y="pk_pk", hue="series")
+        if y_range:
+            axs.set_ylim(y_range)
         axs.set_title(f'Principle Harmonics pk-pk (>{cut_off * 100: 1.1f}% of max)')
 
         axs.set_ylabel('pk-pk [\u03BCT]')
@@ -67,10 +69,8 @@ class CompareHarmonics:
                 axs.bar_label(i, )
         plt.show()
 
-
-
 if __name__ == '__main__':
-    data_loc1 = Path('_data/B0_Harmonics_rot.csv')
-    data_loc2 = Path('_data/B0.csv')
+    data_loc1 = Path('_data/G_x_Harmonics_rot.csv')
+    data_loc2 = Path('_data/Gx.csv')
     Gy_compare = CompareHarmonics(data_loc1, data_loc2)
-    Gy_compare.plot_harmonics(cut_off=.1, label_data=False)
+    Gy_compare.plot_harmonics(cut_off=.005, label_data=False, y_range=[-10000, 10000])

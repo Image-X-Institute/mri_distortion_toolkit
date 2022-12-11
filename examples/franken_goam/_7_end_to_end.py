@@ -15,7 +15,8 @@ from mri_distortion_toolkit.utilities import plot_matched_volume_hist
 from mri_distortion_toolkit.utilities import plot_compressed_MarkerVolumes
 from mri_distortion_toolkit.utilities import plot_MarkerVolume_overlay
 
-data_loc = Path(r'C:\Users\bwhe3635\Downloads\FrankenGoam^Mr\FrankenGoam^Mr\20221107 MR Linac^Test')
+data_loc = Path(r'/home/brendan/Downloads/FrankenGoam^Mr/20221107 MR Linac^Test')
+gt_data_loc = Path(r'/home/brendan/Downloads/FrankenGoam^Mr/CT/slicer_centroids.mrk.json')
 scans = {'0': '01 localiser_gre',
          '1': '02 localiser_gre',
          '2': '03 localiser_gre',
@@ -45,7 +46,7 @@ scans_to_segment = ['9', '11', '12', '13', '14']
 # Data import
 distorted_data_loc = data_loc / scans['17'] / 'Original' / 'slicer_centroids.mrk.json'
 distorted_data_loc_rev = data_loc / scans['18'] / 'Original' / 'slicer_centroids.mrk.json'
-gt_data_loc = Path(r'C:\Users\bwhe3635\Downloads\FrankenGoam^Mr\FrankenGoam^Mr\CT\slicer_centroids.mrk.json')
+
 
 # extract markers:
 gt_volume = MarkerVolume(gt_data_loc, r_max=300)
@@ -88,7 +89,7 @@ GDC = ImageDomainDistortionCorrector(ImageDirectory=distorted_data_loc.parent.re
                                 gradient_harmonics=[Path('_data/Gx.csv'),
                                                     Path('_data/Gy.csv'),
                                                     Path('_data/Gz.csv')],
-                                B0_harmonics=Path('_data/B0.csv'),
+                                B0_harmonics=Path('_data/B0_Harmonics_rot.csv'),
                                 ImExtension='dcm',
                                 dicom_data=dis_volume.dicom_data,
                                 correct_through_plane=True,
