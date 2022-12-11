@@ -3,7 +3,7 @@ from mri_distortion_toolkit.MarkerAnalysis import MarkerVolume, MatchedMarkerVol
 from mri_distortion_toolkit.utilities import enumerate_subfolders
 
 
-dataloc = Path(r'/home/brendan/Downloads/FrankenGoam^Mr/20221107 MR Linac^Test')
+dataloc = Path(r'C:\Users\bwhe3635\Downloads\FrankenGoam^Mr\FrankenGoam^Mr\20221107 MR Linac^Test')
 
 scans = {'0': '01 localiser_gre',
          '1': '02 localiser_gre',
@@ -29,13 +29,13 @@ scans = {'0': '01 localiser_gre',
          '21': '22 trufi_sag_128_torsocoil'}
 
 # process TSE images
-scans_to_segment = ['9', '11', '12', '13', '14']
-gaussian_sd = [1, 1, 1, 0.8, 1, 1]
+scans_to_segment = ['9', '11', '12', '13', '14', '15', '17', '18']
+gaussian_sd = [1, 1, 1, 0.8, 1, 1, 0.8, 0.8]
 
-scans_to_segment = ['17', '18']
-gaussian_sd = [0.8, 0.8]
+scans_to_segment = ['15']
+gaussian_sd = [1]
 for scan, sd in zip(scans_to_segment, gaussian_sd):
-    volume = MarkerVolume(dataloc / scans[scan] / 'Original', n_markers_expected=609, iterative_segmentation=True,
+    volume = MarkerVolume(dataloc / scans[scan] / 'Original', n_markers_expected=618, iterative_segmentation=True,
                           gaussian_image_filter_sd=sd)
     print(f'for {scans[scan]}, {volume.MarkerCentroids.shape[0]} markers found')
     volume.export_to_slicer()
