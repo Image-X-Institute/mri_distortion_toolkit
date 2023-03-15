@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Code Documentation &mdash; mri_distortion_toolkit  documentation</title>
@@ -12,13 +12,10 @@
   <![endif]-->
   
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/sphinx_highlight.js"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-        <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+        <script src="https://unpkg.com/mermaid@9.4.0/dist/mermaid.min.js"></script>
         <script>mermaid.initialize({startOnLoad:true});</script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -31,11 +28,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> mri_distortion_toolkit
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            mri_distortion_toolkit
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -168,7 +169,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
       <li class="breadcrumb-item active">Code Documentation</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/code_docs.rst.txt" rel="nofollow"> View page source</a>
@@ -190,7 +191,7 @@
 All dimensions in mm
 All inputs are optional; calling without defining will just use default value.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>slice_shape</strong> (<em>string</em>) – Shape of base slice. Currently can only be ‘rectangle’ or ‘ellipse’ but others could be added</p></li>
 <li><p><strong>slice_thickness</strong> (<em>float</em>) – Thickness of slice in Z</p></li>
@@ -265,7 +266,7 @@ Prior to calling this method, the code should work without any calls to FreeCAD
 In the former case, it will attempt to automatically extract the marker positions. In the latter, it will just
 use the input marker positions. Once the instance is created, it contains a number of handy plots and functions.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>input_data_path</strong> (<em>path</em><em>, </em><em>string</em><em>, </em><em>np.ndarray</em>) – Either a path to a folder of dicoms, or a numpy array with three columns corresponding to the
 [x,y,z] marker positions</p></li>
@@ -307,7 +308,7 @@ saved to save_path.</p>
 <span class="sig-name descname"><span class="pre">perturb_marker_positions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">random_perturbation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">systemic_perturbation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.MarkerAnalysis.MarkerVolume.perturb_marker_positions" title="Permalink to this definition"></a></dt>
 <dd><p>add random noise to the marker positions. Useful to perform sensitivity analysis. operates in place.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>random_perturbation</strong> (<em>float</em>) – upper and lower limits of random_perturbation to each marker coordinates. uniform
 distribution is used</p></li>
@@ -328,7 +329,7 @@ distribution is used</p></li>
 <span class="sig-name descname"><span class="pre">rotate_markers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xaxis_angle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yaxis_angle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zaxis_angle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.MarkerAnalysis.MarkerVolume.rotate_markers" title="Permalink to this definition"></a></dt>
 <dd><p>rotate markers using euler angles</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>xaxis_angle</strong> – rotation around x angle in degrees</p></li>
 <li><p><strong>yaxis_angle</strong> – rotation around y angle in degrees</p></li>
@@ -351,14 +352,14 @@ to save_path.</p>
 <span class="sig-name descname"><span class="pre">translate_markers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_shift</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_shift</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_shift</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.MarkerAnalysis.MarkerVolume.translate_markers" title="Permalink to this definition"></a></dt>
 <dd><p>translate markers</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x_shift</strong> – x translation in mm</p></li>
 <li><p><strong>y_shift</strong> – y translation in mm</p></li>
 <li><p><strong>z_shift</strong> – z translation in mm</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p></p>
 </dd>
 </dl>
@@ -370,7 +371,7 @@ to save_path.</p>
 <dt class="sig sig-object py" id="mri_distortion_toolkit.MarkerAnalysis.MatchedMarkerVolumes">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.MarkerAnalysis.</span></span><span class="sig-name descname"><span class="pre">MatchedMarkerVolumes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">GroundTruthData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">DistortedData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reverse_gradient_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">WarpSearchData</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">AutomatchMarkers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">AllowDoubleMatching</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sorting_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'radial'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_refernce_markers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_unmatchable_markers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.MarkerAnalysis.MatchedMarkerVolumes" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>GroundTruthData</strong> (<em>MarkerVolume object</em><em>, or </em><em>path to dicom folder</em><em>, or </em><em>numpy array</em>) – </p></li>
 <li><p><strong>DistortedData</strong> (<em>MarkerVolume object</em><em>, or </em><em>path to dicom folder</em><em>, or </em><em>numpy array</em>) – </p></li>
@@ -401,7 +402,7 @@ distortion threshold are removed</p></li>
 <span class="sig-name descname"><span class="pre">plot_3D_markers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">add_arrows</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'3D</span> <span class="pre">marker</span> <span class="pre">positions'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.MarkerAnalysis.MatchedMarkerVolumes.plot_3D_markers" title="Permalink to this definition"></a></dt>
 <dd><p>Works very similarly to the MarkerVolume version, but plots both sets of markers and adds arrows</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>add_arrows</strong> (<em>bool</em><em>, </em><em>optional</em>) – if True, arrows drawn between matches</p></li>
 <li><p><strong>title</strong> (<em>str</em><em>, </em><em>optional</em>) – plot title</p></li>
@@ -415,7 +416,7 @@ distortion threshold are removed</p></li>
 <span class="sig-name descname"><span class="pre">plot_compressed_markers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_min</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_arrows</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.MarkerAnalysis.MatchedMarkerVolumes.plot_compressed_markers" title="Permalink to this definition"></a></dt>
 <dd><p>compresses the 3D markers in the z plane, allowing a 2D visualisation.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>z_max</strong> (<em>float</em><em>, </em><em>optional</em>) – maximum z coordiante of markers to includes</p></li>
 <li><p><strong>z_min</strong> (<em>float</em><em>, </em><em>optional</em>) – minimum z coordiante of markers to includes</p></li>
@@ -438,7 +439,7 @@ distortion threshold are removed</p></li>
 Gradient fields are in T/m
 B0 fields are in T</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>MatchedCentroids</strong> – a pandas data frame containing columns [‘x_gt’, ‘y_gt’, ‘z_gt’, ‘x_gnl’, ‘y_gnl’, ‘z_gnl’].
 If you want to calculate B0, is should also have [‘x_B0’, ‘y_B0’, ‘z_B0’]. Such a dataframe is normally created
@@ -480,7 +481,7 @@ L will have size [n_coords, n_harmonics], Harmonics has size [n_harmonics, 1] an
 H = L^{-1}.B\]</div>
 <p>This task is performed using numpys pseudo_inverse functionality to invert L</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>_input_Bz_data</strong> (<em>Pandas.DataFrame</em>) – A pandas dataframe with columns x, y, z, Bz. Data should be in mm and T</p></li>
 <li><p><strong>r_outer</strong> (<em>float</em><em>, </em><em>optional</em>) – radius of sphere of interest. If AssessHarmonicPk_Pk=True, data is reconstucted on r_outer. if
@@ -506,7 +507,7 @@ field harmonics to gradient strength. harmonics will be multiplied by the value 
 <dd><p>Reconstruct the Bz field at the cardinal planes.
 Note this is basically the same code copied three times in  a row, one for each plane.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>resolution</strong> (<em>float</em><em>, </em><em>optional</em>) – the resolution of reconstructed data. Default is 2.5 mm</p></li>
 <li><p><strong>AddColorBar</strong> (<em>Boolean</em><em>, </em><em>optional</em>) – Add a color bar to each plot</p></li>
@@ -523,7 +524,7 @@ Note this is basically the same code copied three times in  a row, one for each 
 <span class="sig-name descname"><span class="pre">plot_harmonics_pk_pk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cut_off</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_axs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.Harmonics.SphericalHarmonicFit.plot_harmonics_pk_pk" title="Permalink to this definition"></a></dt>
 <dd><p>produces a barplot of harmonics.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>cut_off</strong> (<em>float</em><em>, </em><em>optional</em>) – cutoff point relative to highest harmonic. e.g. cut_off=.1 means that harmonics which produce
 less than 10% the pk-pk perturbation of the dominant harmonic are ignored.</p>
 </dd>
@@ -535,7 +536,7 @@ less than 10% the pk-pk perturbation of the dominant harmonic are ignored.</p>
 <span class="sig-name descname"><span class="pre">print_key_harmonics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cut_off</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.01</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.Harmonics.SphericalHarmonicFit.print_key_harmonics" title="Permalink to this definition"></a></dt>
 <dd><p>print the harmonics with value &gt; cut_off to the terminal in pk-pk.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>cut_off</strong> (<em>float</em><em>, </em><em>optional</em>) – cutoff point relative to highest harmonic. e.g. cut_off=.1 means that harmonics which produce
 less than 10% the pk-pk perturbation of the dominant harmonic are ignored.</p>
 </dd>
@@ -595,7 +596,7 @@ less than 10% the pk-pk perturbation of the dominant harmonic are ignored.</p>
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.Reports.</span></span><span class="sig-name descname"><span class="pre">MRI_QA_Reporter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">MatchedMarkerVolume=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gradient_harmonics=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B0_harmonics=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recon_coords_cartesian=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tests_to_run=&lt;class</span> <span class="pre">'mri_distortion_toolkit.Reports.DefaultTestSuite'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dicom_data=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_outer=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_plots=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">style='dark'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.Reports.MRI_QA_Reporter" title="Permalink to this definition"></a></dt>
 <dd><p>generate a report based on either some matched data, or harmonics. In the latter case, report data is reconstructed.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>MatchedMarkerVolume</strong> (<em>pandas.DataFrame</em><em>, </em><em>optional</em>) – pandas dataframe containing  [‘x_gt’, ‘y_gt’, ‘z_gt’, ‘x_gnl’, ‘y_gnl’, ‘z_gnl’]
 You must enter one of MatchedMarkerVolume or gradient_harmonics</p></li>
@@ -626,7 +627,7 @@ also used to control the limits in which data is plotted</p></li>
 <dd><p>Generates a html report encompassing available acquisition information, test results, and intercative
 plotly figures</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>output_folder</strong> (<em>Path</em><em> or </em><em>string</em><em>, </em><em>optional</em>) – folder to write report. Defaults to ~/Documents/MR_QA_Reports</p>
 </dd>
 </dl>
@@ -662,7 +663,7 @@ plotly figures</p>
 <dd><p>This is the base class which other distortion correction methods can inherit from, and includes the core required
 behavior.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ImageDirectory</strong> (<em>pathlib.Path</em><em> or </em><em>str</em>) – Directory containing images to correct. Note that all images matching ImExtension will be
 read in; therefore only one series should be inside ImageDirectory (we dont check this!)</p></li>
@@ -694,7 +695,7 @@ in the second loop.
 <span class="sig-name descname"><span class="pre">save_all_images</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">save_loc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">DSV_radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.DistortionCorrection.DistortionCorrectorBase.save_all_images" title="Permalink to this definition"></a></dt>
 <dd><p>save corrected data as png</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>save_loc</strong> (<em>string</em><em> or </em><em>path</em>) – path to save data at.</p>
 </dd>
 </dl>
@@ -705,7 +706,7 @@ in the second loop.
 <span class="sig-name descname"><span class="pre">save_all_images_as_dicom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">save_loc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.DistortionCorrection.DistortionCorrectorBase.save_all_images_as_dicom" title="Permalink to this definition"></a></dt>
 <dd><p>save corrected data as dicom</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>save_loc</strong> (<em>string</em><em> or </em><em>path</em>) – path to save data at.</p>
 </dd>
 </dl>
@@ -744,10 +745,10 @@ and is based on <a class="reference external" href="https://onlinelibrary.wiley.
 The reference I used to create the affine is <a class="reference external" href="https://nipy.org/nibabel/dicom/dicom_orientation.html">NIbabel</a>
 (we are using the r/c defined under ‘DICOM affines again’)</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>Dicomfiles</strong> (<em>list</em>) – list of pydicom.dataset.FileDataset instances (created using pydicom.read_file)</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>CoordinateMatrix, a 4x4 matrix which transforms the image based coordinates (i,j,k) to world coordinates (x,y,z)</p>
 </dd>
 </dl>
@@ -761,7 +762,7 @@ If the series are of the same order, this is the default order of the returned s
 If they are different, by default the returned series will match the higher order.
 In either case, you can specify the return order to be lower than the default.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>harmonics_1</strong> (<em>array-like</em>) – first series to combine</p></li>
 <li><p><strong>harmonics_2</strong> (<em>array-like</em>) – second series to combine</p></li>
@@ -769,7 +770,7 @@ In either case, you can specify the return order to be lower than the default.</
 <li><p><strong>n_order_return</strong> (<em>int</em><em>, </em><em>optional</em>) – order of returned series</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>combined_harmonics</p>
 </dd>
 </dl>
@@ -782,7 +783,7 @@ In either case, you can specify the return order to be lower than the default.</
 objects. The original purpose was to compare a recon_report generated from direct data, and one
 generated via harmonics, although in principle it can take any two reports.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ground_truth_report</strong> – Reports.MRI_QA_recon_reporter instance</p></li>
 <li><p><strong>recon_report</strong> – Reports.MRI_QA_recon_reporter instance</p></li>
@@ -807,10 +808,10 @@ pi/2 to the elevation such that</p>
 <p>There was once a very good reason for doing this; I can’t remember what it was anymore but I like to stick
 to tradition.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>InputCoords</strong> – a data frame containing (at least) columns x, y, z.</p>
 </dd>
-<dt class="field-even">Returns InputCoords</dt>
+<dt class="field-even">Returns InputCoords<span class="colon">:</span></dt>
 <dd class="field-even"><p>same data frame with additional columns [r, azimuth, elevation]</p>
 </dd>
 </dl>
@@ -827,7 +828,7 @@ example:</p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>harmonics</strong> – a pandas series or numpy array of size (n_order+1)^2, where the harmonics are ordered as
 A00, A10, A11, B11, A20, A21, B21, A22, B22…etc.</p></li>
@@ -835,7 +836,7 @@ A00, A10, A11, B11, A20, A21, B21, A22, B22…etc.</p></li>
 <li><p><strong>output_format</strong> – format of output harmonic normalisation; ‘none’ or ‘full’</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>converted harmonics as a pandas series</p>
 </dd>
 </dl>
@@ -847,10 +848,10 @@ A00, A10, A11, B11, A20, A21, B21, A22, B22…etc.</p></li>
 <dd><p>Converts spherical coordinates [r, azimuth, elevation] to cartesian coordinates [x,y,z].
 if the cartesian columns ‘x’, ‘y’, ‘z’ already exist, they will be overwritten</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>InputCoords</strong> – a data frame containing columns r, azimuth, elevation</p>
 </dd>
-<dt class="field-even">Returns InputCoords</dt>
+<dt class="field-even">Returns InputCoords<span class="colon">:</span></dt>
 <dd class="field-even"><p>same data frame with additional columns [x,y,z]</p>
 </dd>
 </dl>
@@ -865,7 +866,7 @@ if the cartesian columns ‘x’, ‘y’, ‘z’ already exist, they will be o
 <li><p>Builds the matrix that transforms the [r,c,s] indices into [x,y,z] coordinates</p></li>
 </ol>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>path_to_dicoms</strong> (<em>pathlib.Path</em><em> or </em><em>string</em>) – folder where all dicoms images are stored</p></li>
 <li><p><strong>FilesToReadIn</strong> (<em>list</em><em>, </em><em>optional</em>) – By default, this function will read in all files of file type file_extension. If you only want
@@ -878,13 +879,13 @@ main use case was for distortion correction. Note that all returned objects will
 by this parameter</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>ImageArray: a numpy array of voxels</p>
 </dd>
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>dicom_affine: a matrix that transforms the [r,c,s] indices into [x,y,z] coordinates</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>(X, Y, Z): Coordinate arrays the same size as ImageArray. Optional</p>
 </dd>
 </dl>
@@ -906,10 +907,10 @@ by this parameter</p></li>
 <span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.utilities.</span></span><span class="sig-name descname"><span class="pre">generate_harmonic_names</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_order</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.utilities.generate_harmonic_names" title="Permalink to this definition"></a></dt>
 <dd><p>generate the names of each harmonic. Used to label the columns in the harmonics dataframe</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>n_order</strong> (<em>int</em>) – order of harmonics</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>coeef_names: a list of names</p>
 </dd>
 </dl>
@@ -923,14 +924,14 @@ This utilises the ‘fully normalised’ convention described here &lt;<a class=
 Note that we scale all r values by 1000, which is to help ensure numerical stability. This is based on the assumption
 that this input data is in mm. The code will throw a warning if this does not appear to the case.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>InputCoords</strong> (<em>Dataframe</em>) – a data frame which can contain whatever you want, but MUST contain columns called
 elevation, azimuth, and r</p></li>
 <li><p><strong>n_order</strong> (<em>int</em>) – order of harmonic fit</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns legendre_basis</dt>
+<dt class="field-even">Returns legendre_basis<span class="colon">:</span></dt>
 <dd class="field-even"><p>a pandas data frame of size [Ncoords, (n_order +1)**2)]</p>
 </dd>
 </dl>
@@ -941,13 +942,13 @@ elevation, azimuth, and r</p></li>
 <span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.utilities.</span></span><span class="sig-name descname"><span class="pre">get_all_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">PathToData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_extension</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.utilities.get_all_files" title="Permalink to this definition"></a></dt>
 <dd><p>quick script to just collect all the files in the Analysis path</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>PathToData</strong> (<em>pathlib.Path</em><em> or </em><em>string</em>) – folder where the files are</p></li>
 <li><p><strong>file_extension</strong> (<em>str</em>) – extension of files to return, e.g. ‘dcm’</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns Files</dt>
+<dt class="field-even">Returns Files<span class="colon">:</span></dt>
 <dd class="field-even"><p>list of all found files</p>
 </dd>
 </dl>
@@ -966,11 +967,11 @@ if the latter, reads into  a dict and returns</p>
 <dd><p>return the gradient spherical harmonics as pandas series. this function is simply a clean way to handle
 the different ways users can specify harmonics to other componets of this code</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>Gx_Harmonics</strong> – either a pandas series or a path to a csv. If it is already a series we do nothing, but handle
 this option for cleaner code elsewhere. Gy_Harmonics and Gz_Harmonics are the same.</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Gx_Harmonics, Gy_Harmonics, Gz_Harmonics as Pandase series</p>
 </dd>
 </dl>
@@ -981,13 +982,13 @@ this option for cleaner code elsewhere. Gy_Harmonics and Gz_Harmonics are the sa
 <span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.utilities.</span></span><span class="sig-name descname"><span class="pre">plot_MarkerVolume_overlay</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">MarkerVolumeList</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.utilities.plot_MarkerVolume_overlay" title="Permalink to this definition"></a></dt>
 <dd><p>Plot overlaid 3D scatter plots of the marker positions in each MarkerVolume</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>MarkerVolumeList</strong> – list of MarkerVolume instances</p></li>
 <li><p><strong>legend</strong> – legend to display on plot</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>None</p>
 </dd>
 </dl>
@@ -998,7 +999,7 @@ this option for cleaner code elsewhere. Gy_Harmonics and Gz_Harmonics are the sa
 <span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.utilities.</span></span><span class="sig-name descname"><span class="pre">plot_compressed_MarkerVolumes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">MarkerVolumeList</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_min</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">projection_direction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'z'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.utilities.plot_compressed_MarkerVolumes" title="Permalink to this definition"></a></dt>
 <dd><p>plot overlay of compressed marker volumes (z coord is ignored)</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>MarkerVolumeList</strong> (<em>list</em>) – list of MarkerVolume instances</p></li>
 <li><p><strong>p_max</strong> (<em>float</em><em>, </em><em>optional</em>) – max data to include in projection_direction</p></li>
@@ -1007,7 +1008,7 @@ this option for cleaner code elsewhere. Gy_Harmonics and Gz_Harmonics are the sa
 <li><p><strong>legend</strong> (<em>list</em><em>, </em><em>optional</em>) – legend of plot</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>None</p>
 </dd>
 </dl>
@@ -1019,7 +1020,7 @@ this option for cleaner code elsewhere. Gy_Harmonics and Gz_Harmonics are the sa
 <dd><p>plot overlaid x, y, z distortion for an input instance of
 [MatchedMarkerVolume](<a class="reference external" href="https://acrf-image-x-institute.github.io/MRI_DistortionQA/code_docs.html#MRI_DistortionQA.MarkerAnalysis.MatchedMarkerVolumes">https://acrf-image-x-institute.github.io/MRI_DistortionQA/code_docs.html#MRI_DistortionQA.MarkerAnalysis.MatchedMarkerVolumes</a>)</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>MatchedMarkerVolume</strong> – an instance of MatchedMarkerVolumes</p>
 </dd>
 </dl>
@@ -1031,13 +1032,13 @@ this option for cleaner code elsewhere. Gy_Harmonics and Gz_Harmonics are the sa
 <dd><p>plot the reconstructed harmonics over the surface of a sphere
 I’ve used plotly instead of matplotlib for this as I wasnt happy with the matplotlib result.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>harmonics</strong> – either an instance of SphericalHarmonicFit or the equivalent data frame loaded from csv</p></li>
 <li><p><strong>radius</strong> (<em>float</em>) – radius of sphere</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>None</p>
 </dd>
 </dl>
@@ -1048,13 +1049,13 @@ I’ve used plotly instead of matplotlib for this as I wasnt happy with the matp
 <span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.utilities.</span></span><span class="sig-name descname"><span class="pre">plot_matched_volume_hist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">VolumeList</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.utilities.plot_matched_volume_hist" title="Permalink to this definition"></a></dt>
 <dd><p>create a histogram of total distortion for all input volumes</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>VolumeList</strong> (<em>list</em>) – a list of [matched marker volumes](<a class="reference external" href="https://acrf-image-x-institute.github.io/MRI_DistortionQA/code_docs.html#MRI_DistortionQA.MarkerAnalysis.MatchedMarkerVolumes">https://acrf-image-x-institute.github.io/MRI_DistortionQA/code_docs.html#MRI_DistortionQA.MarkerAnalysis.MatchedMarkerVolumes</a>)</p></li>
 <li><p><strong>legend</strong> (<em>list</em><em>, </em><em>optional</em>) – legend to print</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>None</p>
 </dd>
 </dl>
@@ -1065,7 +1066,7 @@ I’ve used plotly instead of matplotlib for this as I wasnt happy with the matp
 <span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.utilities.</span></span><span class="sig-name descname"><span class="pre">printProgressBar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iteration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">total</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'█'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.utilities.printProgressBar" title="Permalink to this definition"></a></dt>
 <dd><p>Call in a loop to create terminal progress bar. <a class="reference external" href="https://gist.github.com/greenstick/b23e475d2bfdc3a82e34eaa1f6781ee4">credit here</a></p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>iteration</strong> – current iteration (Int)</p></li>
 <li><p><strong>total</strong> – total iterations (Int)</p></li>
@@ -1076,7 +1077,7 @@ I’ve used plotly instead of matplotlib for this as I wasnt happy with the matp
 <li><p><strong>fill</strong> – bar fill character (Str)</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>progress_string: the string to print</p>
 </dd>
 </dl>
@@ -1097,10 +1098,10 @@ read into spherical harmonic fit.
 Expected column order is  X [MM], Y [MM], Z [MM], BZ [T], with 6 header lines.
 No error handling is included for incorrect input</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>data_loc</strong> (<em>str</em><em> or </em><em>pathlib.Path</em>) – location of table file</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Bz_data, a pandas dataframe</p>
 </dd>
 </dl>
@@ -1112,7 +1113,7 @@ No error handling is included for incorrect input</p>
 <dd><p>Reconstruct Bz at an arbitrary set of coordinates.
 n_order of reconstruction is derived from the shape of harmonics</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>harmonics</strong> – a pandas series of size (n_order+1)^2, such as that defined within
 FieldAnalysis.SphericalHarmonicFit</p></li>
@@ -1126,7 +1127,7 @@ elevation, azimuth, and r</p></li>
 <li><p><strong>r_outer</strong> (<em>float</em><em> or </em><em>None</em>) – optional parameter; if you try to reconstruct points with r &gt; r_outer a warning is thrown</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns Bz_recon</dt>
+<dt class="field-even">Returns Bz_recon<span class="colon">:</span></dt>
 <dd class="field-even"><p>Pandas series with the value of Bz at each element in coords</p>
 </dd>
 </dl>
@@ -1137,13 +1138,13 @@ elevation, azimuth, and r</p></li>
 <span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.utilities.</span></span><span class="sig-name descname"><span class="pre">sort_dicom_slices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dicom_datasets</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_non_image_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.utilities.sort_dicom_slices" title="Permalink to this definition"></a></dt>
 <dd><p>sort slices by instance number</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>dicom_datasets</strong> – list of pydicom files</p></li>
 <li><p><strong>filter_non_image_data</strong> (<em>boolean</em><em>, </em><em>optional</em>) – if True, any dicom file not containing a pixel_data attribute is removed</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>sorted list of pydicom files</p>
 </dd>
 </dl>
@@ -1158,7 +1159,7 @@ elevation, azimuth, and r</p></li>
 <dd><p>This function is essentially a wrapper of convenience. Given a set of B fields and dicom_data,
 it will calculate and return the Gx, Gy, and Gz harmonics.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>MagneticFields</strong> (<em>pandas dataframe</em>) – a pandas dataframe with columns [‘x’, ‘y’, ‘z’, ‘B_Gx’, ‘B_Gy’, ‘B_Gz’, ‘B0’]. B0 is optional.
 x, y, z are in mm and the fields are in any unit - the harmonics will reflect the units</p></li>
@@ -1168,7 +1169,7 @@ e.g. scale = [2,2,2,2] will multiply all harmonics by 2. This is useful to norma
 value</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>G_x_Harmonics, G_y_Harmonics, G_z_Harmonics, B0_Harmonics</p>
 </dd>
 </dl>

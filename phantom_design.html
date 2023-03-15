@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Phantom Design &mdash; mri_distortion_toolkit  documentation</title>
@@ -12,12 +12,9 @@
   <![endif]-->
   
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/sphinx_highlight.js"></script>
-        <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+        <script src="https://unpkg.com/mermaid@9.4.0/dist/mermaid.min.js"></script>
         <script>mermaid.initialize({startOnLoad:true});</script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -31,11 +28,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> mri_distortion_toolkit
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            mri_distortion_toolkit
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -80,7 +81,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="examples.html">Worked Examples</a></li>
       <li class="breadcrumb-item active">Phantom Design</li>
       <li class="wy-breadcrumbs-aside">
@@ -156,7 +157,7 @@
 <section id="phantom-customization">
 <h2>Phantom Customization<a class="headerlink" href="#phantom-customization" title="Permalink to this heading"></a></h2>
 <p>The baseline model of a distortion phantom is highly customizable. You can change any of the parameters in the FoamProtoypeExample.py file. One of main reasons you may wish to do this is that different scanner have different field of views, so you may wish to make your phantom larger or smaller.
-All options for the AddPhantomSlice class are described within the <span class="xref myst">code docs</span>, but we provide some additional notes on some of the more common things you may wish to change below:</p>
+All options for the AddPhantomSlice class are described within the <a class="reference internal" href="#"><span class="xref myst">code docs</span></a>, but we provide some additional notes on some of the more common things you may wish to change below:</p>
 <section id="specifying-marker-locations">
 <h3>Specifying marker locations<a class="headerlink" href="#specifying-marker-locations" title="Permalink to this heading"></a></h3>
 <p>The marker locations are specified on each slice object. We provide two methods to automatically generate marker locations: <code class="docutils literal notranslate"><span class="pre">HoleCentroids=cartesian</span></code> will generate a cartesian grid of markers, while <code class="docutils literal notranslate"><span class="pre">ROI_polar</span></code>  will generate concentric rings of markers. Both wil the <code class="docutils literal notranslate"><span class="pre">hole_spacing</span></code> parameter to space out markers. If you specify a <code class="docutils literal notranslate"><span class="pre">DSV</span></code>,  the <code class="docutils literal notranslate"><span class="pre">ROI_polar</span></code> option will ensure good marker coverage over the surface of this sphere, and will provide an etch of the intersection of the DSV on each slice surface so you can tell where the DSV is on each slice.</p>
@@ -184,7 +185,7 @@ All options for the AddPhantomSlice class are described within the <span class="
 </section>
 <section id="complete-phantom-design">
 <h2>Complete phantom design<a class="headerlink" href="#complete-phantom-design" title="Permalink to this heading"></a></h2>
-<p>Below is the complete script for the phantom we <span class="xref myst">built</span> which incorporates all these elements</p>
+<p>Below is the complete script for the phantom we <a class="reference internal" href="#"><span class="xref myst">built</span></a> which incorporates all these elements</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">import</span> <span class="nn">importlib</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
