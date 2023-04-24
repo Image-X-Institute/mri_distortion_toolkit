@@ -251,6 +251,8 @@ class SphericalHarmonicFit:
         axs.set_ylabel('pk-pk [\u03BCT]')
         for item in axs.get_xticklabels():
             item.set_rotation(45)
+        for i in axs.containers:
+            axs.bar_label(i, )
         if not return_axs:
             plt.show()
         else:
@@ -288,6 +290,7 @@ class SphericalHarmonicFit:
         recon_coords = convert_cartesian_to_spherical(recon_coords)
         Bz_recon = reconstruct_Bz(harmonics=self.harmonics / self.scale, coords=recon_coords, quantity=quantity)
         Bz_recon = Bz_recon.to_numpy().reshape(np.squeeze(x_recon).shape)
+        Bz_recon = Bz_recon *3 / 1e3
         XYimage = axs1.imshow(Bz_recon.T, extent=extent, vmin=vmin, vmax=vmax)
         axs1.set_xlabel('x [mm]')
         axs1.set_ylabel('y [mm]')
@@ -305,6 +308,7 @@ class SphericalHarmonicFit:
         recon_coords = convert_cartesian_to_spherical(recon_coords)
         Bz_recon = reconstruct_Bz(harmonics=self.harmonics / self.scale, coords=recon_coords, quantity=quantity)
         Bz_recon = Bz_recon.to_numpy().reshape(np.squeeze(y_recon).shape)
+        Bz_recon = Bz_recon *3 / 1e3
         ZXimage = axs2.imshow(Bz_recon.T, extent=extent, vmin=vmin, vmax=vmax)
         axs2.set_xlabel('x [mm]')
         axs2.set_ylabel('z [mm]')
@@ -322,6 +326,7 @@ class SphericalHarmonicFit:
         recon_coords = convert_cartesian_to_spherical(recon_coords)
         Bz_recon = reconstruct_Bz(harmonics=self.harmonics / self.scale, coords=recon_coords, quantity=quantity)
         Bz_recon = Bz_recon.to_numpy().reshape(np.squeeze(z_recon).shape)
+        Bz_recon = Bz_recon *3 / 1e3
         ZYimage = axs3.imshow(Bz_recon.T, extent=extent, vmin=vmin, vmax=vmax)
         axs3.set_xlabel('y [mm]')
         axs3.set_ylabel('z [mm]')
@@ -335,6 +340,7 @@ class SphericalHarmonicFit:
                 cb_title = '\u03BCT'
             elif quantity == 'T':
                 cb_title = 'T'
+            cb_title = 'mT'
             cbar = fig.colorbar(XYimage, ax=axs1, fraction=0.046, pad=0.04)
             cbar.set_label(cb_title)
             cbar = fig.colorbar(ZXimage, ax=axs2, fraction=0.046, pad=0.04)

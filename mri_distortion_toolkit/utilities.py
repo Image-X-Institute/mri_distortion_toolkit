@@ -771,7 +771,7 @@ def plot_matched_volume_hist(VolumeList, legend=None):
     :type legend: list, optional
     :return: None
     """
-    bins = np.linspace(0, 10, 30)
+    bins = np.linspace(0, 12, 30)
     plt.figure()
     for marker_volume in VolumeList:
         plt.hist(marker_volume.MatchedCentroids.match_distance, bins=bins, alpha=0.5)
@@ -782,7 +782,7 @@ def plot_matched_volume_hist(VolumeList, legend=None):
     plt.show()
 
 
-def plot_distortion_xyz_hist(MatchedMarkerVolume):
+def plot_distortion_xyz_hist(MatchedMarkerVolume, verbose=True):
     """
     plot overlaid x, y, z distortion for an input instance of
     [MatchedMarkerVolume](https://acrf-image-x-institute.github.io/MRI_DistortionQA/code_docs.html#MRI_DistortionQA.MarkerAnalysis.MatchedMarkerVolumes)
@@ -799,6 +799,10 @@ def plot_distortion_xyz_hist(MatchedMarkerVolume):
     plt.hist(abs(x_dis), bins=bins, alpha=0.5)
     plt.hist(abs(y_dis), bins=bins, alpha=0.5)
     plt.hist(abs(z_dis), bins=bins, alpha=0.5)
+    if verbose:
+        print(f'x_mean: {np.mean(abs(x_dis)): 1.1f} mm +- {np.std(abs(x_dis)): 1.1f} mm. max {np.max(abs(x_dis)): 1.1f} mm')
+        print(f'y_mean: {np.mean(abs(y_dis)): 1.1f} mm +- {np.std(abs(y_dis)): 1.1f} mm. max {np.max(abs(y_dis)): 1.1f} mm')
+        print(f'z_mean: {np.mean(abs(z_dis)): 1.1f} mm +- {np.std(abs(z_dis)): 1.1f} mm. max {np.max(abs(z_dis)): 1.1f} mm')
     plt.legend(['x', 'y', 'z'])
     plt.xlabel('distortion [mm]')
     plt.tight_layout()
