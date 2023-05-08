@@ -186,12 +186,7 @@ class DistortionCorrectorBase(ABC):
             self._Gz_Harmonics = combine_harmonics(self._Gz_Harmonics, self._B0_Harmonics*scale, operation=_operation,
                                                    n_order_return=gradient_order)
 
-        from .Harmonics import SphericalHarmonicFit
-        # input_data = pd.DataFrame({'x': [0, 0, 0], 'y': [0, 0, 0], 'z': [0, 0, 0], 'Bz': [0, 1, 2]})
-        # tempH = SphericalHarmonicFit(input_data)
-        # tempH.harmonics = self._Gx_Harmonics
-        # tempH._assess_harmonic_pk_pk()
-        # tempH.plot_harmonics_pk_pk(cut_off=.005)
+
 
     def _unpad_image_arrays(self):
         """
@@ -500,9 +495,9 @@ class DistortionCorrectorBase(ABC):
 
         if ((np.round(self._ImageOrientationPatient) == [0, 1, 0, 0, 0, -1]).all() or
                 np.round(self._ImageOrientationPatient == [2, 2, 2, 2, 2, 2]).all()):
-            extent = (self._X.min(), self._X.max(), self._Z.min(), self._Z.max())
+            extent = (self._Y.min(), self._Y.max(), self._Z.min(), self._Z.max())
             slice_coords = np.unique(self._X)
-            row_label = 'X [mm]'
+            row_label = 'Y [mm]'
             col_label = 'Z [mm]'
 
         elif ((np.round(self._ImageOrientationPatient) == [1, 0, 0, 0, 0, -1]).all() or
@@ -532,7 +527,7 @@ class DistortionCorrectorBase(ABC):
 
             # axs[0].imshow(self.pixel_array, extent=self._extent)
             im1 = axs[0].imshow(original_image, extent=extent)
-            axs[0].set_title('Original Image')
+            axs[0].set_title(f'Original Image: {slice_coord: 1.1f}')
             axs[0].set_aspect('equal')
             axs[0].set_xlabel(row_label)
             axs[0].set_ylabel(col_label)
@@ -547,7 +542,7 @@ class DistortionCorrectorBase(ABC):
                 axs[0].add_patch(circ)
 
             im2 = axs[1].imshow(corrected_image, extent=extent)
-            axs[1].set_title('Corrected Image')
+            axs[1].set_title(f'Corrected Image: {slice_coord: 1.1f}')
             axs[1].set_aspect('equal')
             axs[1].set_xlabel(row_label)
             axs[1].set_ylabel(col_label)
@@ -559,6 +554,7 @@ class DistortionCorrectorBase(ABC):
             plt.tight_layout()
             plt.savefig(save_loc / (str(i) + '.png'), format='png')
             plt.close('all')
+            # plt.show()
             i += 1
         print(f'images export to png successful in {perf_counter() - _start_time} s')
 
