@@ -168,16 +168,22 @@ class DistortionCorrectorBase:
                            'dicom_data = {"freq_encode_direction": e.g. "x",'
                            '              "gradient_strength": e.g. [1,2,3]}'
                            'continuing with just the supplied gradient harmonics')
-
+            
         if freq_encode_direction == 'x':
+            gradient_order = int(np.sqrt(self._Gx_Harmonics.shape[0] - 1))
             scale = 1/self._dicom_data['gradient_strength'][0]
-            self._Gx_Harmonics = combine_harmonics(self._Gx_Harmonics, self._B0_Harmonics*scale, operation=_operation)
+            self._Gx_Harmonics = combine_harmonics(self._Gx_Harmonics, self._B0_Harmonics*scale, operation=_operation,
+                                                   n_order_return=gradient_order)
         elif freq_encode_direction == 'y':
+            gradient_order = int(np.sqrt(self._Gy_Harmonics.shape[0] - 1))
             scale = 1 / self._dicom_data['gradient_strength'][1]
-            self._Gy_Harmonics = combine_harmonics(self._Gy_Harmonics, self._B0_Harmonics*scale, operation=_operation)
+            self._Gy_Harmonics = combine_harmonics(self._Gy_Harmonics, self._B0_Harmonics*scale, operation=_operation,
+                                                   n_order_return=gradient_order)
         elif freq_encode_direction == 'z':
+            gradient_order = int(np.sqrt(self._Gz_Harmonics.shape[0] - 1))
             scale = 1 / self._dicom_data['gradient_strength'][2]
-            self._Gz_Harmonics = combine_harmonics(self._Gz_Harmonics, self._B0_Harmonics*scale, operation=_operation)
+            self._Gz_Harmonics = combine_harmonics(self._Gz_Harmonics, self._B0_Harmonics*scale, operation=_operation,
+                                                   n_order_return=gradient_order)
 
         # from .Harmonics import SphericalHarmonicFit
         # input_data = pd.DataFrame({'x': [0, 0, 0], 'y': [0, 0, 0], 'z': [0, 0, 0], 'Bz': [0, 1, 2]})
