@@ -558,7 +558,7 @@ class MRI_QA_Reporter:
 
     # public methods
 
-    def write_html_report(self, output_folder=None):
+    def write_html_report(self, output_folder=None, report_name=None):
         """
         Generates a html report encompassing available acquisition information, test results, and intercative
         plotly figures
@@ -571,6 +571,11 @@ class MRI_QA_Reporter:
         else:
             self.output_folder = Path(output_folder)
         self._set_up_directory_structure()
+
+        if report_name is None:
+            report_name = 'MR_QA_report.html'
+        else:
+            report_name = str(Path(report_name).with_suffix('html'))
 
         # save plots and update jinja_dict
 
@@ -596,7 +601,7 @@ class MRI_QA_Reporter:
         # set up template
         self._jinja_dict['html_theme_loc'] = self._html_theme
         j2_template = self._get_template()
-        report_name = self._unique_name_generator(self.output_folder, 'MR_QA_report.html', rel_path=False)
+        report_name = self._unique_name_generator(self.output_folder, report_name, rel_path=False)
         report_code = os.path.split(report_name)[1]  # for printing
         report_code = os.path.splitext(report_code)[0]
         report_code = report_code.replace('MR_QA_report_','')
