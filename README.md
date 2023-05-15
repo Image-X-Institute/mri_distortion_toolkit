@@ -6,24 +6,25 @@ This code enables characterization, reporting, and correction of geometric disto
 The workflow steps are below. All steps have well defined input/output so you can use any part of this code independently from the other parts. For an example of our automated reporting template see [here](https://acrf-image-x-institute.github.io/mri_distortion_toolkit/_static/MR_QA_report_20_05_2022.html)
 
 ```mermaid
-
 flowchart LR
-subgraph AA[Phantom Design]
-end
-    A[Marker <br>Extraction]--->B[Marker <br>Matching]
-    B[Marker <br>Matching]--->C[Field <br> Calculation] & E[Automated <br>reporting]
-    C[Field <br> Calculation]-->D[Spherical Harmonic <br>Analysis]
-    D[Spherical Harmonic <br>Analysis]-->E[Automated <br>reporting];
-    D[Spherical Harmonic <br>Analysis]-->F[Distortion Correction]
-	
 
-    click AA "https://acrf-image-x-institute.github.io/mri_distortion_toolkit/phantom_notes.html"
-    click A "https://acrf-image-x-institute.github.io/mri_distortion_toolkit/marker_extraction.html"
-    click B "https://acrf-image-x-institute.github.io/mri_distortion_toolkit/marker_matching.html"
-    click C "https://acrf-image-x-institute.github.io/mri_distortion_toolkit/field_calculation.html"
-    click D "https://acrf-image-x-institute.github.io/mri_distortion_toolkit/fit_spherical_harmonics.html"
-    click E "https://acrf-image-x-institute.github.io/mri_distortion_toolkit/reporting.html"
+AA[Phantom Design]
+
+A[Marker <br>Extraction]--->B[Marker <br>Matching]
+B[Marker <br>Matching]--->C[Field <br> Calculation] & E[Automated <br>reporting]
+C[Field <br> Calculation]-->D[Spherical Harmonic <br>Analysis]
+D[Spherical Harmonic <br>Analysis]-->E[Automated <br>reporting];
+D[Spherical Harmonic <br>Analysis]-->F[Distortion Correction]
+
+click AA "https://acrf-image-x-institute.github.io/mri_distortion_toolkit/phantom_notes.html"
+click A "https://acrf-image-x-institute.github.io/mri_distortion_toolkit/marker_extraction.html"
+click B "https://acrf-image-x-institute.github.io/mri_distortion_toolkit/marker_matching.html"
+click C "https://acrf-image-x-institute.github.io/mri_distortion_toolkit/field_calculation.html"
+click D "https://acrf-image-x-institute.github.io/mri_distortion_toolkit/fit_spherical_harmonics.html"
+click E "https://acrf-image-x-institute.github.io/mri_distortion_toolkit/reporting.html"
 ```
+
+
 
 ## Setup/Build/Install
 
