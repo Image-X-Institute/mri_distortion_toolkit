@@ -575,7 +575,7 @@ class MRI_QA_Reporter:
         if report_name is None:
             report_name = 'MR_QA_report.html'
         else:
-            report_name = str(Path(report_name).with_suffix('html'))
+            report_name = str(Path(report_name).with_suffix('.html'))
 
         # save plots and update jinja_dict
 
