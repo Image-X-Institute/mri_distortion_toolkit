@@ -1216,6 +1216,13 @@ class MatchedMarkerVolumes:
 
 
     def report(self):
+        x_dis = np.abs(self.MatchedCentroids.x_gt - self.MatchedCentroids.x_gnl)
+        y_dis = np.abs(self.MatchedCentroids.y_gt - self.MatchedCentroids.y_gnl)
+        z_dis = np.abs(self.MatchedCentroids.z_gt - self.MatchedCentroids.z_gnl)
+
         print(f'mean distortion: {self.MatchedCentroids.match_distance.mean(): 1.1f} mm, '
               f'std: {np.std(self.MatchedCentroids.match_distance): 1.1f} mm, '
-              f'Max: {self.MatchedCentroids.match_distance.max(): 1.1f} mm')
+              f'Max: {self.MatchedCentroids.match_distance.max(): 1.1f} mm'
+              f'\nx: {np.mean(x_dis): 1.1f} +- {np.std(x_dis): 1.1f}. max: {np.max(x_dis): 1.1f}'
+              f'\nx: {np.mean(y_dis): 1.1f} +- {np.std(y_dis): 1.1f}. max: {np.max(y_dis): 1.1f}'
+              f'\nx: {np.mean(z_dis): 1.1f} +- {np.std(z_dis): 1.1f}. max: {np.max(z_dis): 1.1f}')
