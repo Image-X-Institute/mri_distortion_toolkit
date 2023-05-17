@@ -34,7 +34,7 @@ pip install mri_distortion_toolkit
 
 ## Usage
 
-Detailed documentation is [here](https://acrf-image-x-institute.github.io/mri_distortion_toolkit/).
+Detailed documentation is [here](https://acrf-image-x-institute.github.io/mri_distortion_toolkit/). 
 
 ## Directory Structure
 
