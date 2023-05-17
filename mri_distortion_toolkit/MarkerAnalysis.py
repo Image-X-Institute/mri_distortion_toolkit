@@ -1192,7 +1192,7 @@ class MatchedMarkerVolumes:
         plot_markers_inner(plot_data)
         plt.show()
 
-    def plot_reference_markers(self, title='Reference alignment markers'):
+    def plot_reference_markers(self, title='Reference alignment markers'): # pragma: no cover
 
         try:
             fig = plt.figure()
@@ -1212,6 +1212,39 @@ class MatchedMarkerVolumes:
                             np.ptp(self.MatchedCentroids.z_gt)))
         plt.legend(['ground truth', 'distorted'])
         plt.show()
+
+    def plot_3D_markers_with_color_scale(self, cmap=None, title=None, elevation=None, azimuth=None,
+                                         vmin=None, vmax=None, return_axs=False): # pragma: no cover
+
+        if cmap is None:
+            cmap = plt.cm.viridis
+
+        fig = plt.figure()
+        axs = fig.add_subplot(111, projection='3d')
+
+        x_dis = np.abs(self.MatchedCentroids.x_gt - self.MatchedCentroids.x_gnl)
+        y_dis = np.abs(self.MatchedCentroids.y_gt - self.MatchedCentroids.y_gnl)
+        z_dis = np.abs(self.MatchedCentroids.z_gt - self.MatchedCentroids.z_gnl)
+        abs_dis = np.sqrt(x_dis ** 2 + y_dis ** 2 + z_dis ** 2)
+        p = axs.scatter(self.MatchedCentroids.x_gt, self.MatchedCentroids.y_gt, self.MatchedCentroids.z_gt,
+                        c=abs_dis, cmap=cmap, vmin=vmin, vmax=vmax)
+        fig.colorbar(p, ax=axs)
+        if elevation:
+            axs.elev = elevation
+        if azimuth:
+            axs.azim = azimuth
+        axs.set_xlabel('X [mm]')
+        axs.set_ylabel('Y [mm]')
+        axs.set_zlabel('Z [mm]')
+        if title:
+            axs.set_title(title)
+        axs.set_box_aspect((np.ptp(self.MatchedCentroids.x_gt), np.ptp(self.MatchedCentroids.y_gt),
+                            np.ptp(self.MatchedCentroids.z_gt)))
+
+        if return_axs:
+            return axs
+        else:
+            plt.show()
 
 
     def report(self):
