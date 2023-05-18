@@ -133,7 +133,6 @@
 <li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.utilities.enumerate_subfolders"><code class="docutils literal notranslate"><span class="pre">enumerate_subfolders()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.utilities.generate_harmonic_names"><code class="docutils literal notranslate"><span class="pre">generate_harmonic_names()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.utilities.generate_legendre_basis"><code class="docutils literal notranslate"><span class="pre">generate_legendre_basis()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.utilities.get_all_files"><code class="docutils literal notranslate"><span class="pre">get_all_files()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.utilities.get_dicom_data"><code class="docutils literal notranslate"><span class="pre">get_dicom_data()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.utilities.get_harmonics"><code class="docutils literal notranslate"><span class="pre">get_harmonics()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#mri_distortion_toolkit.utilities.plot_MarkerVolume_overlay"><code class="docutils literal notranslate"><span class="pre">plot_MarkerVolume_overlay()</span></code></a></li>
@@ -933,23 +932,6 @@ elevation, azimuth, and r</p></li>
 </dd>
 <dt class="field-even">Returns legendre_basis<span class="colon">:</span></dt>
 <dd class="field-even"><p>a pandas data frame of size [Ncoords, (n_order +1)**2)]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="mri_distortion_toolkit.utilities.get_all_files">
-<span class="sig-prename descclassname"><span class="pre">mri_distortion_toolkit.utilities.</span></span><span class="sig-name descname"><span class="pre">get_all_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">PathToData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_extension</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.utilities.get_all_files" title="Permalink to this definition"></a></dt>
-<dd><p>quick script to just collect all the files in the Analysis path</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>PathToData</strong> (<em>pathlib.Path</em><em> or </em><em>string</em>) – folder where the files are</p></li>
-<li><p><strong>file_extension</strong> (<em>str</em>) – extension of files to return, e.g. ‘dcm’</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns Files<span class="colon">:</span></dt>
-<dd class="field-even"><p>list of all found files</p>
 </dd>
 </dl>
 </dd></dl>
