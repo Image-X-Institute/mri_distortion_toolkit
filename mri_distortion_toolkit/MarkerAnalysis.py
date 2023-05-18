@@ -1,8 +1,4 @@
-import pathlib
 import time
-
-from .utilities import get_all_files, dicom_to_numpy
-import pydicom
 from pathlib import Path
 import numpy as np
 from skimage.filters import gaussian, threshold_otsu
@@ -15,8 +11,9 @@ import json
 import pandas as pd
 from scipy.spatial.distance import cdist
 from scipy.spatial import transform
-from datetime import datetime
 from warnings import warn
+from .utilities import _get_MR_acquisition_data
+from .utilities import dicom_to_numpy
 
 ch = logging.StreamHandler()
 formatter = logging.Formatter('[%(filename)s: line %(lineno)d %(levelname)8s] %(message)s')
@@ -91,14 +88,14 @@ class MarkerVolume:
         self._marker_size_lower_tol = marker_size_lower_tol
         self._marker_size_upper_tol = marker_size_upper_tol
 
-        if isinstance(input_data, (pathlib.Path, str)):
+        if isinstance(input_data, (Path, str)):
             self.input_data_path = Path(input_data)
             if self.input_data_path.is_dir():
                 # dicom input
                 self.InputVolume, self.dicom_affine, (self.X, self.Y, self.Z) = \
                     dicom_to_numpy(self.input_data_path, file_extension=self._file_extension, return_XYZ=True)
-                self._get_MR_acquisition_data()
-
+                self.dicom_data = _get_MR_acquisition_data(self.input_data_path, self.X, self.Y, self.Z,
+                                                           file_extension=self._file_extension)
                 # Segmenting markers
                 self._filter_volume_by_r()
                 start_time = time.perf_counter()
@@ -184,105 +181,6 @@ class MarkerVolume:
         if self._r_min:
             keep_ind = abs(self.MarkerCentroids.r) > self._r_min
             self.MarkerCentroids = self.MarkerCentroids[keep_ind].reset_index(drop=True)
-
-    def _get_MR_acquisition_data(self):
-        """
-        If we have MR images, extract the information from thall_dicom_files = get_all_files(self.input_data_path)e
-        dicom header that is needed to convert marker positions to magnetic fields downstream.
-        - This method is dependant on having the full coordinate list which are calculated upstream; this is why it
-            must reside inside this class.
-        - We include many fields that aren't in the dicom header by default
-        - we package this as a simple dict that can be easily saved as json
-        """
-        all_dicom_files = get_all_files(self.input_data_path, file_extension=self._file_extension)
-        # use first one that has pixel data:
-        j = 0
-        while True:
-            example_dicom_file = pydicom.read_file(self.input_data_path / all_dicom_files[j])
-            try:
-                test = example_dicom_file.pixel_array
-                break
-            except AttributeError:
-                j += 1
-
-        if example_dicom_file.Modality == 'MR':
-            if not example_dicom_file.Manufacturer == 'SIEMENS':
-                logger.warning(
-                    'this code has not been tested with non-siemens scanners. If dicom standards work properly'
-                    'this code will too...')
-            x = np.unique(self.X)
-            y = np.unique(self.Y)
-            z = np.unique(self.Z)
-            x_pixel_spacing = np.mean(np.diff(x))
-            y_pixel_spacing = np.mean(np.diff(y))
-            z_pixel_spacing = np.mean(np.diff(z))
-            x_fov = x.max() - x.min() + x_pixel_spacing
-            y_fov = y.max() - y.min() + y_pixel_spacing
-            z_fov = z.max() - z.min() + z_pixel_spacing
-            self._dicom_header = example_dicom_file
-
-            self.dicom_data = {}  # fill up below
-            self.dicom_data['FOV'] = [x_fov, y_fov, z_fov]
-            self.dicom_data['bandwidth'] = float(example_dicom_file.PixelBandwidth)
-
-            self.dicom_data['gama'] = float(example_dicom_file.MagneticFieldStrength * 42.57747851)
-            self.dicom_data['pixel_spacing'] = [x_pixel_spacing, y_pixel_spacing, z_pixel_spacing]
-            self.dicom_data['image_size'] = [x.size, y.size, z.size]
-            self.dicom_data['magnetic_field_strength'] = example_dicom_file.MagneticFieldStrength
-            self.dicom_data['imaging_frequency'] = example_dicom_file.ImagingFrequency
-            try:
-                acquisition_date = datetime.strptime(example_dicom_file.AcquisitionDate, '%Y%m%d')
-                self.dicom_data['acquisition_date'] = acquisition_date.strftime("%d_%B_%Y")
-            except ValueError as e:
-                logger.error(e)
-                logger.error('failed to extract datetime, probably didnt understand date format, continuing...')
-            self.dicom_data['manufacturer'] = example_dicom_file.Manufacturer
-            try:
-                self.dicom_data['sequence_name'] = example_dicom_file.SequenceName
-            except AttributeError:
-                pass
-            try:
-                self.dicom_data['sequence_name'] = example_dicom_file.ScanningSequence
-            except AttributeError:
-                pass
-            # the above works on siemens scanner, not sure if it will prove consistent on others
-            fat_water_delta_f = example_dicom_file.MagneticFieldStrength * 42.57747851 * 3.5
-            self.dicom_data['chem_shift_magnitude'] = (example_dicom_file.PixelBandwidth / fat_water_delta_f) / 2
-            self.dicom_data['InPlanePhaseEncodingDirection'] = example_dicom_file.InPlanePhaseEncodingDirection
-            # extract the frequency, phase, and slice directions (B0 effects occur in freq and slice)
-            directions = ['x', 'y', 'z']
-            phase_encode_direction = None
-            freq_encode_direction = None
-            if self.dicom_data['InPlanePhaseEncodingDirection'] == 'ROW':
-                phase_cosines = example_dicom_file.ImageOrientationPatient[:3]
-                row_cosines = example_dicom_file.ImageOrientationPatient[3:]
-            elif self.dicom_data['InPlanePhaseEncodingDirection'] == 'COL':
-                phase_cosines = example_dicom_file.ImageOrientationPatient[3:]
-                row_cosines = example_dicom_file.ImageOrientationPatient[:3]
-            for i, (phase_cosine, freq_cosine) in enumerate(zip(phase_cosines, row_cosines)):
-                if abs(float(phase_cosine)) == 1:
-                    phase_encode_direction = directions[i]
-                if abs(float(freq_cosine)) == 1:
-                    freq_encode_direction = directions[i]
-            if phase_encode_direction is None:
-                logger.warning('failed to extract phase encoding direction from dicom data, continuing')
-            if freq_encode_direction is None:
-                logger.warning('failed to extract frequency encoding direction from dicom data, continuing')
-            self.dicom_data['phase_encode_direction'] = phase_encode_direction
-            self.dicom_data['freq_encode_direction'] = freq_encode_direction
-            # get slice direction
-            slice_dir_ind = np.equal(example_dicom_file.ImageOrientationPatient[:3],
-                                     example_dicom_file.ImageOrientationPatient[3:])
-            self.dicom_data['slice_direction'] = np.array(directions)[slice_dir_ind][0]
-            bandwidth = np.array(self.dicom_data['bandwidth'])
-            image_size = np.array(self.dicom_data['image_size'])
-            gama = np.array(self.dicom_data['gama'])
-            FOV = np.array(self.dicom_data['FOV'])
-            gradient_strength = bandwidth * image_size / (gama * 1e6 * FOV * 1e-3)  # unit(T / m)
-            self.dicom_data['gradient_strength'] = list(gradient_strength)
-
-        else:
-            self.dicom_data = None
 
     def _calculate_chemical_shift_vector(self, fat_shift_direction=1):
         """
