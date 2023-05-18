@@ -4,7 +4,7 @@ Please see here for detailed documentation
 https://acrf-image-x-institute.github.io/MRI_DistortionQA/index.html
 """
 
-__version__ = '0.14.4'
+__version__ = '0.14.5'
 try:
     import FreeCAD
 except ImportError:
