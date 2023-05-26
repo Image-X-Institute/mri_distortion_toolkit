@@ -11,6 +11,8 @@
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+        <script src="_static/jquery.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/sphinx_highlight.js"></script>
@@ -520,12 +522,20 @@ Note this is basically the same code copied three times in  a row, one for each 
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mri_distortion_toolkit.Harmonics.SphericalHarmonicFit.plot_harmonics_pk_pk">
-<span class="sig-name descname"><span class="pre">plot_harmonics_pk_pk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cut_off</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_axs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.Harmonics.SphericalHarmonicFit.plot_harmonics_pk_pk" title="Permalink to this definition"></a></dt>
-<dd><p>produces a barplot of harmonics.</p>
+<span class="sig-name descname"><span class="pre">plot_harmonics_pk_pk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cut_off</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_axs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_percentage_of_dominant</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drop_dominant_harmonic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mri_distortion_toolkit.Harmonics.SphericalHarmonicFit.plot_harmonics_pk_pk" title="Permalink to this definition"></a></dt>
+<dd><blockquote>
+<div><p>produces a barplot of harmonics.</p>
+</div></blockquote>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>cut_off</strong> (<em>float</em><em>, </em><em>optional</em>) – cutoff point relative to highest harmonic. e.g. cut_off=.1 means that harmonics which produce
-less than 10% the pk-pk perturbation of the dominant harmonic are ignored.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cut_off</strong> (<em>float</em><em>, </em><em>optional</em>) – cutoff point relative to highest harmonic. e.g. cut_off=.1 means that harmonics which produce
+less than 10% the pk-pk perturbation of the dominant harmonic are ignored.</p></li>
+<li><p><strong>title</strong> – title of plot</p></li>
+<li><p><strong>return_axs</strong> – if True, will return the plotting axs for further manipulation</p></li>
+<li><p><strong>plot_percentage_of_dominant</strong> – if True, switches from absolute pk-pk to percentage</p></li>
+<li><p><strong>drop_dominant_harmonic</strong> – if True, drops dominant harmonic before plotting</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
