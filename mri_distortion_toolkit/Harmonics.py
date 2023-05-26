@@ -225,32 +225,47 @@ class SphericalHarmonicFit:
 
     # Public Methods
 
-    def plot_harmonics_pk_pk(self, cut_off=.1, title=None, return_axs=False):  # pragma: no cover
+    def plot_harmonics_pk_pk(self, cut_off=.1, title=None, return_axs=False, plot_percentage_of_dominant=False,
+                             drop_dominant_harmonic=False):  # pragma: no cover
         """
-        produces a barplot of harmonics.
+                produces a barplot of harmonics.
 
         :param cut_off: cutoff point relative to highest harmonic. e.g. cut_off=.1 means that harmonics which produce
             less than 10% the pk-pk perturbation of the dominant harmonic are ignored.
         :type cut_off: float, optional
+        :param title: title of plot
+        :param return_axs: if True, will return the plotting axs for further manipulation
+        :param plot_percentage_of_dominant: if True, switches from absolute pk-pk to percentage
+        :param drop_dominant_harmonic: if True, drops dominant harmonic before plotting
         """
 
         if not hasattr(self, 'HarmonicsPk_Pk'):
             self._assess_harmonic_pk_pk()
-        plt.figure(figsize=[10, 5])
+        plt.figure(figsize=[8, 8])
         # ax = sns.barplot(self.HarmonicsPk_Pk, y='pk-pk [\u03BCT]', x=)
         CutOffInd = abs(self.HarmonicsPk_Pk) < cut_off * abs(self.HarmonicsPk_Pk).max()
         KeyHarmonics = self.HarmonicsPk_Pk.drop(self.HarmonicsPk_Pk[CutOffInd].index)
         HarmonicsToPlot = KeyHarmonics
 
+        _ylabel = 'pk-pk [\u03BCT]'
+        if plot_percentage_of_dominant:
+            _ylabel = 'pk-pk [%]'
+            HarmonicsToPlot = HarmonicsToPlot * 100 / HarmonicsToPlot.abs().max()
+        dominant_ind = np.argwhere(np.max(HarmonicsToPlot))
+        if drop_dominant_harmonic:
+            HarmonicsToPlot = HarmonicsToPlot.drop(HarmonicsToPlot.index[HarmonicsToPlot.abs().argmax()])
+        sns.set_theme(font_scale=2)
         axs = sns.barplot(x=HarmonicsToPlot.index, y=HarmonicsToPlot.values, palette="Blues_d")
+        
         if title is None:
             axs.set_title(f'Principle Harmonics pk-pk (>{cut_off * 100: 1.0f}% of max)')
         else:
             axs.set_title(title)
 
-        axs.set_ylabel('pk-pk [\u03BCT]')
+        axs.set_ylabel(_ylabel)
         for item in axs.get_xticklabels():
             item.set_rotation(45)
+        plt.tight_layout()
         if not return_axs:
             plt.show()
         else:
