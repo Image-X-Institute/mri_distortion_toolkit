@@ -63,7 +63,6 @@ class DistortionCorrectorBase:
         """
         init method
         """
-
         if 'DistortionCorrectorBase' in str(self.__class__):
             raise TypeError('DistortionCorrectorBase should not be called directly; it only exists for other correctors'
                             'to inherit. Quitting')

@@ -88,68 +88,17 @@ class MarkerVolume:
         self._marker_size_lower_tol = marker_size_lower_tol
         self._marker_size_upper_tol = marker_size_upper_tol
 
-        if isinstance(input_data, (Path, str)):
-            self.input_data_path = Path(input_data)
-            if self.input_data_path.is_dir():
-                # dicom input
-                self.InputVolume, self.dicom_affine, (self.X, self.Y, self.Z) = \
-                    dicom_to_numpy(self.input_data_path, file_extension=self._file_extension, return_XYZ=True)
-                self.dicom_data = _get_MR_acquisition_data(self.input_data_path, self.X, self.Y, self.Z,
-                                                           file_extension=self._file_extension)
-                # Segmenting markers
-                self._filter_volume_by_r()
-                start_time = time.perf_counter()
-                self.ThresholdVolume, self.BlurredVolume = self._threshold_volume(self.InputVolume)
-                centroids = self._find_contour_centroids()
-                self.MarkerCentroids = pd.DataFrame(centroids, columns=['x', 'y', 'z'])
-                end_time = time.perf_counter()
-                print(f'total segmentation time: {end_time - start_time: 1.1f} s')
 
-                # Correct for oil water shift
-                if self._correct_fat_water_shift:
-                    self._calculate_chemical_shift_vector(fat_shift_direction=fat_shift_direction)
-                    self.MarkerCentroids = self.MarkerCentroids + self._chemical_shift_vector
-            elif (os.path.isfile(self.input_data_path) and os.path.splitext(self.input_data_path)[1] == '.json'):
-                # slicer input
-                with open(self.input_data_path) as f:
-                    data = json.load(f)
-                arrays = [el for el in data['markups'][0]['controlPoints']]
-                points = [el['position'] for el in arrays]
-                self.MarkerCentroids = pd.DataFrame(points, columns=['x', 'y', 'z'])
+        self.input_data_path = Path(input_data)
+        # dicom input ASSUMED
+        self.InputVolume, self.dicom_affine, (self.X, self.Y, self.Z) = \
+            dicom_to_numpy(self.input_data_path, file_extension=self._file_extension, return_XYZ=True)
+        self.dicom_data = _get_MR_acquisition_data(self.input_data_path, self.X, self.Y, self.Z,
+                                                   file_extension=self._file_extension)
+        # Segmenting markers
+        self._filter_volume_by_r()  # Sets everything outside r_max/ r_min to zero
+        self.ThresholdVolume, self.BlurredVolume = self._threshold_volume(self.InputVolume)
 
-                # look for dicom_data json file
-                try:
-                    with open(os.path.join(self.input_data_path.parent, 'dicom_data.json')) as f:
-                        self.dicom_data = json.load(f)
-                except:
-                    logger.warning(
-                        f'MR data file dicom_data.json not found at {self.input_data_path.parent}. Continuing')
-            else:
-                raise FileNotFoundError(f'could not find any data at {self.input_data_path}')
-        elif isinstance(input_data, np.ndarray):
-            # don't need to do anything then.
-            self.MarkerCentroids = pd.DataFrame(input_data, columns=['x', 'y', 'z'])
-            logger.warning("numpy input is deprecated, please use pandas input with ['x', 'y', 'z'] cols instead")
-        elif isinstance(input_data, pd.core.frame.DataFrame):
-            _expected_columns = ['x', 'y', 'z']
-            if not all([col in input_data for col in _expected_columns]):
-                raise AttributeError("input pandas data must have columns called ['x', 'y', 'z']")
-            self.MarkerCentroids = input_data.copy()
-        else:
-            raise TypeError(f'Uknown data input: {type(input_data)}')
-
-        # insert the radial value of each marker:
-        self.MarkerCentroids['r'] = self.MarkerCentroids.apply(
-            lambda row: np.sqrt(row[0] ** 2 + row[1] ** 2 + row[2] ** 2), axis=1)
-        if self.MarkerCentroids.r.mean() < 10:
-            logger.warning('it appears that your input data is in m, not mm - please use mm!')
-
-        self._filter_markers_by_r()
-        if self._n_markers_expected is not None:
-            if not (self.MarkerCentroids.shape[0] == n_markers_expected):
-                logger.warning(f'For data {self.input_data_path}\n'
-                               f'You entered that you expected to find'
-                               f' {n_markers_expected}, but actually found {self.MarkerCentroids.shape[0]}.')
 
     def _filter_volume_by_r(self):
         """
