@@ -1,10 +1,13 @@
-# from mri_distortion_toolkit.MarkerAnalysis import MarkerVolume
-# from pathlib import Path
+from pathlib import Path
+from mri_distortion_toolkit.utilities import dicom_to_numpy
 import numpy as np
 import skimage.filters
 from matplotlib import pyplot as plt
-import scipy.ndimage
+import scipy.ndimage  # BW: prefer the below style of input
+from scipy.ndimage import gaussian_filter
 import pydicom
+import sys
+from skimage.measure import label
 
 def generate_2D_grid_image_for_testing(size=100, grid_spacing=20):
     """
@@ -31,17 +34,32 @@ def generate_2D_grid_image_for_testing(size=100, grid_spacing=20):
 
     return image
 
+def get_marker_max_min_volume(labels, marker_size_lower_tol=1, marker_size_upper_tol=20):
+    """
+    figures out the range of voxels that a marker should have
+    """
+    n_voxels = []  # going to keep track of this so we can remove any very small regions if needed
+    unique_labels = np.unique(labels)[1:]  # first label is background so skip
+    for label_level in unique_labels:  # first label is background so skip
+        # extract x,y,z of each connected region
+        RegionInd = labels == label_level
+        n_voxels.append(np.count_nonzero(RegionInd))
+    # Set up min and max marker volumes
+    n_voxels_median = np.median(np.array(n_voxels))
+    voxel_min = (1 - marker_size_lower_tol) * n_voxels_median
+    voxel_max = (1 + marker_size_upper_tol) * n_voxels_median
 
-'''
-I've made the below far simpler: removed any inputs you're not going to need, and removed any image processing
-not specific to grid. Basically now, this stops at the point we had our debug statement. This would be a good point 
-for you to start trying to write some code.
-For now, you can just work directly in this example. we can integrate into the main code later.
-mr_volume.InputVolume
-'''
+    return voxel_min, voxel_max
 
-# data_loc = Path(r'C:\Users\finmu\OneDrive\Documents\2023\Thesis - BMET4111 BMET4112\CODE\Grid-Based Sample Data')
-# mr_volume = MarkerVolume(data_loc)
+def plot_2D_array(image_to_plot, title=None):
+    plt.figure()
+    plt.grid(False)
+    plt.imshow(image_to_plot)
+    if title:
+        plt.title(title)
+    plt.show()
+
+
 
 '''
 BUT maybe what's going to be easier for you, is to start with something simpler. So, I've
@@ -52,82 +70,78 @@ put a function in here which will generate a very simple 2D image:
 
 # OR call on a single dicom image from the grid-based MRI folder
 dicom_path = r"C:\Users\finmu\OneDrive\Documents\2023\Thesis - BMET4111 BMET4112\CODE\Grid-Based Sample Data\MR\1.3.46.670589.11.79127.5.0.6984.2022112517535313493.dcm"
-# dicom_path = r"C:\Users\finmu\OneDrive\Documents\2023\Thesis - BMET4111 BMET4112\CODE\Grid-Based Sample Data\MR\1.3.46.670589.11.79127.5.0.6984.2022112517535367593.dcm"
-dicom_data = pydicom.dcmread(dicom_path)
+# BW: I created a folder and copied just one image into it:
+# 1.3.46.670589.11.79127.5.0.6984.2022112517535358579.dcm
+dicom_path = Path(r'/home/brendan/Downloads/simple_data')
 
-# don't know how to get coordinates
+InputVolume, dicom_affine, (X, Y, Z) = dicom_to_numpy(dicom_path,
+                                                     file_extension='dcm',
+                                                     return_XYZ=True)
 
-# convert the Dicom image to a 2D numpy array containing the pixel data
-if 'PixelData' in dicom_data:
-    pixel_array = dicom_data.pixel_array
-else:
-    raise ValueError("DICOM file does not contain pixel data.")
+# BW fin; you can delete the following line, for demo only:
+print(f'the shape of the input volume is {InputVolume.shape}')
+# BW note that the last dimension is 1; this is because the code above reads a volume, but we only gave it one image.
+# BW we can remove this singleton dimension like this:
+InputSlice = InputVolume.squeeze()  # dont delete this line!
+print(f'the shape of the input slice is {InputSlice.shape}')
+# BW in case you want to plot I added a function:
+plot_2D_array(InputSlice)
 
-# plt.figure()
-# plt.grid(False)
-# plt.imshow(pixel_array)
-# plt.show()
 
-# highlight the gradient change of the vertical lines on the slice
-v_edge_map = skimage.filters.prewitt_v(pixel_array)
-
-# plt.figure()
-# plt.grid(False)
-# plt.imshow(v_edge_map)
-# plt.show()
+# use prewit operators to find intersections:
+v_edge_map = skimage.filters.prewitt_v(InputSlice)
 
 # highlight the gradient change down the vertical lines i.e., where the horizontal lines intersect
 intersect_map = skimage.filters.prewitt_h(v_edge_map)
-
-# plt.figure()
-# plt.grid(False)
-# plt.imshow(intersect_map)
-# plt.show()
-
-# make all values positive to highlight the intersection points
+# take absolute values
 intersect_map = abs(intersect_map)
 
 # blurring the image points using a Guassian filter
-blurred_map = scipy.ndimage.gaussian_filter(intersect_map, sigma=1)
+blurred_map = gaussian_filter(intersect_map, sigma=1)
 
-# plt.figure()
-# plt.grid(False)
-# plt.imshow(blurred_map)
-# plt.show()
+
+
+plt.show()
 
 # clear image by setting values < cut-off (0.03 for generated array and 0.0014 for Dicom image) to zero and all others to 1
 cut_off = 0.0014
-for i in range(len(blurred_map)): # iterating rows
-    for j in range(len(blurred_map[0])): # iterating cols
-        if blurred_map[i][j] > cut_off: # if the value is greater than the cut-off value, set it to 1
-            blurred_map[i][j] = int(1)
-            continue
-        blurred_map[i][j] = int(0) # otherwise, set the value to 0
+# bw: I suggest for determinging the cut off, you use otsu's method:
+# http://devdoc.net/python/scikit-image-doc-0.13.1/auto_examples/xx_applications/plot_thresholding.html
+# BW: then to threshold the image you just need to do this:
+binary_image = blurred_map > cut_off
 
-# plt.figure()
-# plt.grid(False)
-# plt.imshow(blurred_map)
-# plt.show()
-# plt.grid(False)
+# BW: create a plot of our images so far:
+fig, axs = plt.subplots(nrows=2, ncols=2, figsize=[10,10])
+axs[0, 0].imshow(InputSlice); axs[0, 0].grid(False); axs[0, 0].set_title('original')
+axs[0, 1].imshow(intersect_map); axs[0, 1].grid(False); axs[0, 1].set_title('prewit operators')
+axs[1, 0].imshow(blurred_map); axs[1, 0].grid(False); axs[1, 0].set_title('blurred')
+axs[1, 1].imshow(binary_image); axs[1, 1].grid(False); axs[1, 1].set_title('otsu threshold')
+
+
 
 # blob search or label function
+# BW: label seems to work fine.
 
 from math import sqrt
 from skimage.feature import blob_dog, blob_log, blob_doh
 from skimage.color import rgb2gray
 
 
-image_gray = rgb2gray(blurred_map)
+# image_gray = rgb2gray(blurred_map)
+# BW the reason you get an error is your image is already greyscale.
+# rgb implies three seperate channels, i.e. the image would have size [x_pixel, y_pixels, 3]
+# if you are concerned that imshow shows iamges in color instead of grey, you need to look up
+# colormaps instead!
 
-blobs_log = blob_log(image_gray, max_sigma=30, num_sigma=10, threshold=.1)
+blobs_log = blob_log(binary_image, max_sigma=30, num_sigma=10, threshold=.1)
 
 # Compute radii in the 3rd column.
 blobs_log[:, 2] = blobs_log[:, 2] * sqrt(2)
 
-blobs_dog = blob_dog(image_gray, max_sigma=30, threshold=.1)
+blobs_dog = blob_dog(binary_image, max_sigma=30, threshold=.1)
 blobs_dog[:, 2] = blobs_dog[:, 2] * sqrt(2)
 
-blobs_doh = blob_doh(image_gray, max_sigma=30, threshold=.01)
+blobs_doh = blob_doh(binary_image, max_sigma=30, threshold=.01)
 
 blobs_list = [blobs_log, blobs_dog, blobs_doh]
 colors = ['yellow', 'lime', 'red']
@@ -149,34 +163,3 @@ for idx, (blobs, color, title) in enumerate(sequence):
 
 plt.tight_layout()
 plt.show()
-
-
-'''
-previous authors have mentioned 'prewit operators' to process grid search.
-I would google those if I were you.
-skimage seems to have a nice implementation
-'''
-
-# generated gradient map for vert and horiz
-# abs value
-# blur the image, smooth points into blob. e.g., gaussian
-# set points with value << X to zero
-# blob search or label function -- look at skimage
-
-# once settled with generated image - use a single dicom image (slice) - test in dicom_to_numpy
-
-'''
-'''
-# PATH OF GRIP DICOM "C:\Users\finmu\OneDrive\Documents\2023\Thesis - BMET4111 BMET4112\CODE\Grid-Based Sample Data\MR\1.3.46.670589.11.79127.5.0.6984.2022112517535313493.dcm"
-
-# want to return [x_coordinates, y_coordinates] of each intersection point
-
-# distance between x coordinates: x_spacing = width of dicom image / len(artificial_2D_grid_image[0])
-# distance between y coordinates: y_spacing = length of dicom image / len(artificial_2D_grid_image)
-
-#for i in len(artificial_2D_grid_image[0]): # cycle through positions in row
-    # save c_coord if value = 1
-#    for j in len(artificial_2D_grid_image):  # cycle through positions in column
-        # save y coord if value = 1
-        # check if x coord is also = 1
-        # if yes, save coordinate as grid intersection point
