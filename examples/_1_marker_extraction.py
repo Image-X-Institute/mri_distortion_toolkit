@@ -6,8 +6,7 @@ download example data and unzip:
 https://cloudstor.aarnet.edu.au/plus/s/Wm9vndV47u941JU
 '''
 
-data_loc = Path(r'C:\Users\Brendan\Downloads\MRI_distortion_QA_sample_data\MRI_distortion_QA_sample_data')
-# ^^ update to where you put the sample data!!
+data_loc = Path(r'C:\Users\finmu\OneDrive\Documents\2023\Thesis - BMET4111 BMET4112\CODE\MRI_distortion_QA_sample_data')
 this_file_loc = Path(__file__).parent.resolve()
 
 gt_data_loc = data_loc / 'CT'

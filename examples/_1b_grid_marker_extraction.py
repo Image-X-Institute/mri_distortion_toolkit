@@ -3,7 +3,8 @@
 import numpy as np
 import skimage.filters
 from matplotlib import pyplot as plt
-from scipy import ndimage, datasets
+import scipy.ndimage
+import pydicom
 
 def generate_2D_grid_image_for_testing(size=100, grid_spacing=20):
     """
@@ -46,17 +47,110 @@ mr_volume.InputVolume
 BUT maybe what's going to be easier for you, is to start with something simpler. So, I've
 put a function in here which will generate a very simple 2D image:
 '''
-artificial_2D_grid_image = generate_2D_grid_image_for_testing()
-# print(artificial_2D_grid_image)
-plt.figure()
-plt.grid(False)
-v_edge_map = skimage.filters.prewitt_v(artificial_2D_grid_image)
-intersect_map = skimage.filters.prewitt_h(v_edge_map)
-plt.imshow(intersect_map)
+# generate a 2D numpy array of pixel values representing a slice of a grid-based phantom dicom folder
+# pixel_array = generate_2D_grid_image_for_testing()
+
+# OR call on a single dicom image from the grid-based MRI folder
+dicom_path = r"C:\Users\finmu\OneDrive\Documents\2023\Thesis - BMET4111 BMET4112\CODE\Grid-Based Sample Data\MR\1.3.46.670589.11.79127.5.0.6984.2022112517535313493.dcm"
+# dicom_path = r"C:\Users\finmu\OneDrive\Documents\2023\Thesis - BMET4111 BMET4112\CODE\Grid-Based Sample Data\MR\1.3.46.670589.11.79127.5.0.6984.2022112517535367593.dcm"
+dicom_data = pydicom.dcmread(dicom_path)
+
+# don't know how to get coordinates
+
+# convert the Dicom image to a 2D numpy array containing the pixel data
+if 'PixelData' in dicom_data:
+    pixel_array = dicom_data.pixel_array
+else:
+    raise ValueError("DICOM file does not contain pixel data.")
+
+# plt.figure()
+# plt.grid(False)
+# plt.imshow(pixel_array)
+# plt.show()
+
+# highlight the gradient change of the vertical lines on the slice
+v_edge_map = skimage.filters.prewitt_v(pixel_array)
+
+# plt.figure()
+# plt.grid(False)
 # plt.imshow(v_edge_map)
-# plt.imshow(artificial_2D_grid_image)
+# plt.show()
+
+# highlight the gradient change down the vertical lines i.e., where the horizontal lines intersect
+intersect_map = skimage.filters.prewitt_h(v_edge_map)
+
+# plt.figure()
+# plt.grid(False)
+# plt.imshow(intersect_map)
+# plt.show()
+
+# make all values positive to highlight the intersection points
+intersect_map = abs(intersect_map)
+
+# blurring the image points using a Guassian filter
+blurred_map = scipy.ndimage.gaussian_filter(intersect_map, sigma=1)
+
+# plt.figure()
+# plt.grid(False)
+# plt.imshow(blurred_map)
+# plt.show()
+
+# clear image by setting values < cut-off (0.03 for generated array and 0.0014 for Dicom image) to zero and all others to 1
+cut_off = 0.0014
+for i in range(len(blurred_map)): # iterating rows
+    for j in range(len(blurred_map[0])): # iterating cols
+        if blurred_map[i][j] > cut_off: # if the value is greater than the cut-off value, set it to 1
+            blurred_map[i][j] = int(1)
+            continue
+        blurred_map[i][j] = int(0) # otherwise, set the value to 0
+
+# plt.figure()
+# plt.grid(False)
+# plt.imshow(blurred_map)
+# plt.show()
+# plt.grid(False)
+
+# blob search or label function
+
+from math import sqrt
+from skimage.feature import blob_dog, blob_log, blob_doh
+from skimage.color import rgb2gray
+
+
+image_gray = rgb2gray(blurred_map)
+
+blobs_log = blob_log(image_gray, max_sigma=30, num_sigma=10, threshold=.1)
+
+# Compute radii in the 3rd column.
+blobs_log[:, 2] = blobs_log[:, 2] * sqrt(2)
+
+blobs_dog = blob_dog(image_gray, max_sigma=30, threshold=.1)
+blobs_dog[:, 2] = blobs_dog[:, 2] * sqrt(2)
+
+blobs_doh = blob_doh(image_gray, max_sigma=30, threshold=.01)
+
+blobs_list = [blobs_log, blobs_dog, blobs_doh]
+colors = ['yellow', 'lime', 'red']
+titles = ['Laplacian of Gaussian', 'Difference of Gaussian',
+          'Determinant of Hessian']
+sequence = zip(blobs_list, colors, titles)
+
+fig, axes = plt.subplots(1, 3, figsize=(9, 3), sharex=True, sharey=True)
+ax = axes.ravel()
+
+for idx, (blobs, color, title) in enumerate(sequence):
+    ax[idx].set_title(title)
+    ax[idx].imshow(image)
+    for blob in blobs:
+        y, x, r = blob
+        c = plt.Circle((x, y), r, color=color, linewidth=2, fill=False)
+        ax[idx].add_patch(c)
+    ax[idx].set_axis_off()
+
+plt.tight_layout()
 plt.show()
-plt.grid(False)
+
+
 '''
 previous authors have mentioned 'prewit operators' to process grid search.
 I would google those if I were you.
@@ -73,7 +167,7 @@ skimage seems to have a nice implementation
 
 '''
 '''
-
+# PATH OF GRIP DICOM "C:\Users\finmu\OneDrive\Documents\2023\Thesis - BMET4111 BMET4112\CODE\Grid-Based Sample Data\MR\1.3.46.670589.11.79127.5.0.6984.2022112517535313493.dcm"
 
 # want to return [x_coordinates, y_coordinates] of each intersection point
 
