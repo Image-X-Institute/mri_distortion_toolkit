@@ -8,7 +8,7 @@ To quantify geometric distortion using markers, we need three things:
 2. Distorted marker location
 3. Knowledge of which distorted marker location corresponds to which ground truth marker location
 
-The [previous tutorial](https://acrf-image-x-institute.github.io/mri_distortion_toolkit/marker_extraction.html) demonstrated the various ways that MarkerVolumes can be created. In this section, we will demonstrate how these volumes can  be automatically matched.
+The [previous tutorial](https://image-x-institute.github.io/mri_distortion_toolkit/marker_extraction.html) demonstrated the various ways that MarkerVolumes can be created. In this section, we will demonstrate how these volumes can  be automatically matched.
 
 Create a new python file called 'marker_matching.py' and copy the below contents into it:
 
@@ -48,8 +48,8 @@ matched_volume.plot_3D_markers()
 
 The next steps depend on what you are trying to achieve:
 
-- If all you want to do is have a way to characterize distortion, the MatchedMarkerVolumes object essentially contains all the information you need, and you can move on to the [Reports](https://acrf-image-x-institute.github.io/mri_distortion_toolkit/reporting.html) modules
-- If you want to calculate the fields and then characterize these fields in terms of spherical harmonics, your next step is [field calculation](https://acrf-image-x-institute.github.io/mri_distortion_toolkit/field_calculation.html)
+- If all you want to do is have a way to characterize distortion, the MatchedMarkerVolumes object essentially contains all the information you need, and you can move on to the [Reports](https://image-x-institute.github.io/mri_distortion_toolkit/reporting.html) modules
+- If you want to calculate the fields and then characterize these fields in terms of spherical harmonics, your next step is [field calculation](https://image-x-institute.github.io/mri_distortion_toolkit/field_calculation.html)
 - You can also read on in this section for some more detailed examples of using MatchedMarkerVolumes, or you can come back to this later
 
 
@@ -73,9 +73,9 @@ matched_volume_no_ref.plot_3D_markers()
 
 ## What should I do when the matching process fails?
 
-Firstly, you can look over the [code docs](https://acrf-image-x-institute.github.io/mri_distortion_toolkit/code_docs.html#mri_distortion_toolkit.MarkerAnalysis.MatchedMarkerVolumes) to see what options are available.
+Firstly, you can look over the [code docs](https://image-x-institute.github.io/mri_distortion_toolkit/code_docs.html#mri_distortion_toolkit.MarkerAnalysis.MatchedMarkerVolumes) to see what options are available.
 
-But in general; this can be a hard problem to solve and in cases of extreme situation, I guess our algorithm will fail. So the short answer is [log an issue](https://github.com/ACRF-Image-X-Institute/mri_distortion_toolkit) and then start working on a pull request ;-)
+But in general; this can be a hard problem to solve and in cases of extreme situation, I guess our algorithm will fail. So the short answer is [log an issue](https://github.com/image-x-institute/mri_distortion_toolkit) and then start working on a pull request ;-)
 
 ## Incorporating reverse gradient data
 
@@ -84,7 +84,7 @@ There are two ‘system based’ sources of distortion in MRI: the  gradient coi
 - Gradient distortion appears in every direction, and is essentially independent of imaging sequence.
 - For standard sequences, B0 distortion appears only in the **readout** (frequency encode) direction, and is [highly sequence dependent](https://pubmed.ncbi.nlm.nih.gov/19810464/) .
 
-These two effects can be seperated out using what is called 'the reverse gradient technique'; for further explaition see [here](https://pubmed.ncbi.nlm.nih.gov/19810464/) and [here](https://aapm.onlinelibrary.wiley.com/doi/full/10.1002/mp.14695). Instructions for taking such images on a siemens scanner are provided [here](https://acrf-image-x-institute.github.io/mri_distortion_toolkit/phantom_imaging.html#separation-of-b0-gradient-distortion-effects); this document is about how to analyse such images with this software.
+These two effects can be seperated out using what is called 'the reverse gradient technique'; for further explaition see [here](https://pubmed.ncbi.nlm.nih.gov/19810464/) and [here](https://aapm.onlinelibrary.wiley.com/doi/full/10.1002/mp.14695). Instructions for taking such images on a siemens scanner are provided [here](https://image-x-institute.github.io/mri_distortion_toolkit/phantom_imaging.html#separation-of-b0-gradient-distortion-effects); this document is about how to analyse such images with this software.
 
 In addition to the volumes you created above, we need to create a 'reverse gradient' volume, then we can send them MatchedMarkerVolumes as follows:
 
@@ -124,14 +124,14 @@ For each reverse gradient pair of images, we should obtain an estimate of B0 dis
 
 ## Creating the MarkerVolumes from dicom versus json
 
-Note that in the above code, we read the markers in from a previously exported json files. This is only for speed; you can just as easily create them all directly from dicom, as demonstrated in the [marker extraction example](https://acrf-image-x-institute.github.io/mri_distortion_toolkit/marker_extraction.html) 
+Note that in the above code, we read the markers in from a previously exported json files. This is only for speed; you can just as easily create them all directly from dicom, as demonstrated in the [marker extraction example](https://image-x-institute.github.io/mri_distortion_toolkit/marker_extraction.html) 
 
 ```python
 # code to create MarkerVolume from CT; one extra parameter is required:
 ground_truth_volume = MarkerVolume(data_loc / 'CT', r_max=300)
 ```
 
-We are using the ```r_max=300``` parameter to discount some of the outlier markers that show up. These outliers don't particularly matter anyway since they are never matched to a distorted marker, but things are tidier if we just get rid of them. A full list of the options for this class is [here](https://acrf-image-x-institute.github.io/MRI_DistortionQA/code_docs.html#module-MRI_DistortionQA.MarkerAnalysis)
+We are using the ```r_max=300``` parameter to discount some of the outlier markers that show up. These outliers don't particularly matter anyway since they are never matched to a distorted marker, but things are tidier if we just get rid of them. A full list of the options for this class is [here](https://image-x-institute.github.io/MRI_DistortionQA/code_docs.html#module-MRI_DistortionQA.MarkerAnalysis)
 
 Whenever you have a MarkerVolume you can always used the export_to_slicer() method to save the marker positions as json.
 

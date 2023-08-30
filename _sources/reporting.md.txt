@@ -3,7 +3,7 @@
 OK, the final step of our journey!
 
 This section demonstrates how you can automatically generate interactive html reports from the data we have generated. There are two ways for you to do this, both of which will be demonstrated:
-An example of the types of reports you can generate is [here](https://acrf-image-x-institute.github.io/mri_distortion_toolkit/_static/MR_QA_report_20_05_2022.html).
+An example of the types of reports you can generate is [here](https://image-x-institute.github.io/mri_distortion_toolkit/_static/MR_QA_report_20_05_2022.html).
 
 1. Pass the reporting code a data frame containg ground truth and distorted marker positions
 2. Pass the reporting code spherical harmonics
@@ -55,7 +55,7 @@ report = MRI_QA_Reporter(gradient_harmonics=[G_x_harmonics, G_y_harmonics, G_z_h
 report.write_html_report()
 ```
 
-You will now have a new report sitting {your_home_directory} / 'Documents' / 'MRI_QA_reports'.  This one should [look a lot better](https://acrf-image-x-institute.github.io/mri_distortion_toolkit/_static/MR_QA_report_20_05_2022.html)!! 
+You will now have a new report sitting {your_home_directory} / 'Documents' / 'MRI_QA_reports'.  This one should [look a lot better](https://image-x-institute.github.io/mri_distortion_toolkit/_static/MR_QA_report_20_05_2022.html)!! 
 
 If you complete the B0 estimate parts of the previous tutorials, and have a 'B0_harmonics.csv' file sitting in your working directory, you can also add this to the call to include a plot of B0 homogeneity:
 

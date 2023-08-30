@@ -79,7 +79,7 @@
 <li><p>Large voxel sizes</p></li>
 <li><p>Other things I can’t think of</p></li>
 </ol>
-<p>The purpose of this analysis is therefore to assess the stability of spherical harmonics as larger and larger errors are introduced into the extracted marker positions. We will be using the <a class="reference external" href="https://acrf-image-x-institute.github.io/MRI_DistortionQA/code_docs.html#MRI_DistortionQA.MarkerAnalysis.MarkerVolume.perturb_marker_positions">perturb_marker_positions</a> method.</p>
+<p>The purpose of this analysis is therefore to assess the stability of spherical harmonics as larger and larger errors are introduced into the extracted marker positions. We will be using the <a class="reference external" href="https://image-x-institute.github.io/MRI_DistortionQA/code_docs.html#MRI_DistortionQA.MarkerAnalysis.MarkerVolume.perturb_marker_positions">perturb_marker_positions</a> method.</p>
 <p><strong>ToDo: get an estimate of marker volume</strong></p>
 <section id="comparison-of-harmonics-and-residuals">
 <h2>Comparison of harmonics and residuals<a class="headerlink" href="#comparison-of-harmonics-and-residuals" title="Link to this heading"></a></h2>
@@ -94,7 +94,7 @@
 </section>
 <section id="comparison-of-predicted-distortion-with-different-sets-of-harmonics">
 <h2>comparison of predicted distortion with different sets of harmonics<a class="headerlink" href="#comparison-of-predicted-distortion-with-different-sets-of-harmonics" title="Link to this heading"></a></h2>
-<p>We can <a class="reference external" href="https://acrf-image-x-institute.github.io/MRI_DistortionQA/reporting.html">use a set of gradient harmonics to create a report</a> and then we can use <a class="reference external" href="https://acrf-image-x-institute.github.io/MRI_DistortionQA/code_docs.html#MRI_DistortionQA.utilities.compare_recon_report_with_ground_truth_report">this function</a> to compare the reconstructed data. The below two plots show the reports with random 1mm perturbations and random 3 mm perturbations.</p>
+<p>We can <a class="reference external" href="https://image-x-institute.github.io/MRI_DistortionQA/reporting.html">use a set of gradient harmonics to create a report</a> and then we can use <a class="reference external" href="https://image-x-institute.github.io/MRI_DistortionQA/code_docs.html#MRI_DistortionQA.utilities.compare_recon_report_with_ground_truth_report">this function</a> to compare the reconstructed data. The below two plots show the reports with random 1mm perturbations and random 3 mm perturbations.</p>
 <p>From this data, we can see the following:</p>
 <ul class="simple">
 <li><p>In general, the reconstructions errors are around the same ammount as the random noise. e.g. for 1 mm perturbation, the majority of the reconstructed data is also within 1mm - and for 3 mm perturbation, the majority of the data is within 3 mm</p></li>

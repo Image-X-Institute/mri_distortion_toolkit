@@ -97,9 +97,9 @@
 <h1>Marker Extraction<a class="headerlink" href="#marker-extraction" title="Link to this heading"></a></h1>
 <section id="basic-examples">
 <h2>Basic examples<a class="headerlink" href="#basic-examples" title="Link to this heading"></a></h2>
-<p>Say that you have <a class="reference external" href="https://acrf-image-x-institute.github.io/mri_distortion_toolkit/phantom_construction.html">built</a> and <a class="reference external" href="https://acrf-image-x-institute.github.io/mri_distortion_toolkit/phantom_imaging.html">imaged</a> a marker-based distortion phantom. To use this data within this library, you first have to extract the position of the markers and create a ‘MarkerVolume’. This example shows you how do that.</p>
+<p>Say that you have <a class="reference external" href="https://image-x-institute.github.io/mri_distortion_toolkit/phantom_construction.html">built</a> and <a class="reference external" href="https://image-x-institute.github.io/mri_distortion_toolkit/phantom_imaging.html">imaged</a> a marker-based distortion phantom. To use this data within this library, you first have to extract the position of the markers and create a ‘MarkerVolume’. This example shows you how do that.</p>
 <blockquote>
-<div><p>|:warning:| For this part you will need some data. <strong>Example data is provided <a class="reference external" href="https://cloudstor.aarnet.edu.au/plus/s/Wm9vndV47u941JU">here</a></strong>. Download and unzip this data somewhere and take note of the path. The source code this example is based on is <a class="reference external" href="https://github.com/ACRF-Image-X-Institute/MRI_DistortionQA/tree/main/examples">here</a>.</p>
+<div><p>|:warning:| For this part you will need some data. <strong>Example data is provided <a class="reference external" href="https://cloudstor.aarnet.edu.au/plus/s/Wm9vndV47u941JU">here</a></strong>. Download and unzip this data somewhere and take note of the path. The source code this example is based on is <a class="reference external" href="https://github.com/image-x-institute/MRI_DistortionQA/tree/main/examples">here</a>.</p>
 </div></blockquote>
 <p>First, create a directory called ‘MRI_QA_tutorial’ or something like that. Within that directory, create a new python file called ‘MarkerExtractionExample’. Copy the below code into it, and update</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">mri_distortion_toolkit.MarkerAnalysis</span> <span class="kn">import</span> <span class="n">MarkerVolume</span>
@@ -119,7 +119,7 @@
 <span class="n">gt_volume</span><span class="o">.</span><span class="n">plot_3D_markers</span><span class="p">()</span>  <span class="c1"># produce a quick plot of marker positions</span>
 </pre></div>
 </div>
-<p>There are various code options that can help extract markers for more difficult data; you can read about them <a class="reference external" href="https://acrf-image-x-institute.github.io/MRI_DistortionQA/code_docs.html#module-MRI_DistortionQA.MarkerAnalysis">here</a>. If you want to get at the segmented data, it is stored in <code class="docutils literal notranslate"><span class="pre">marker_volume.MarkerCentroids</span></code> as a pandas dataframe.</p>
+<p>There are various code options that can help extract markers for more difficult data; you can read about them <a class="reference external" href="https://image-x-institute.github.io/MRI_DistortionQA/code_docs.html#module-MRI_DistortionQA.MarkerAnalysis">here</a>. If you want to get at the segmented data, it is stored in <code class="docutils literal notranslate"><span class="pre">marker_volume.MarkerCentroids</span></code> as a pandas dataframe.</p>
 <p>For large datasets, it can be quite time consuming to read in and process the data. Therefore, we provide a means to save the data so you can quickly read it back in later:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">marker_volume</span><span class="o">.</span><span class="n">export_to_slicer</span><span class="p">()</span>  
 </pre></div>
@@ -138,7 +138,7 @@
 <span class="n">mr_volume</span> <span class="o">=</span> <span class="n">MarkerVolume</span><span class="p">(</span><span class="n">mr_data_loc</span><span class="p">,</span> <span class="n">correct_fat_water_shift</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fat_shift_direction</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Note that we are correcting fat water shift here; you can read more about that <a class="reference external" href="https://acrf-image-x-institute.github.io/MRI_DistortionPhantom/phantom_imaging.html">here</a></p>
+<p>Note that we are correcting fat water shift here; you can read more about that <a class="reference external" href="https://image-x-institute.github.io/MRI_DistortionPhantom/phantom_imaging.html">here</a></p>
 <p>You can also create a MarkerVolume from a pandas data frame:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># pandas data frame read in</span>
 <span class="n">r_outer</span> <span class="o">=</span> <span class="mi">150</span>
@@ -148,11 +148,11 @@
 </pre></div>
 </div>
 <p>This allows you to use the rest of the code even if you are working with a different distortion phantom - all you need is a set of ground truth control points and distorted control points.</p>
-<p>At this point, you are free to move on to the next step: <a class="reference external" href="https://acrf-image-x-institute.github.io/MRI_DistortionQA/marker_matching.html">automatic matching of markers</a>, or you can read on about some more advanced features below…</p>
+<p>At this point, you are free to move on to the next step: <a class="reference external" href="https://image-x-institute.github.io/MRI_DistortionQA/marker_matching.html">automatic matching of markers</a>, or you can read on about some more advanced features below…</p>
 </section>
 <section id="comparing-markervolumes">
 <h2>Comparing MarkerVolumes<a class="headerlink" href="#comparing-markervolumes" title="Link to this heading"></a></h2>
-<p>It is a common situation to have two marker volumes and want to compare what they look like. We provide <a class="reference external" href="https://acrf-image-x-institute.github.io/MRI_DistortionQA/code_docs.html#MRI_DistortionQA.utilities.plot_MarkerVolume_overlay">a few plotting methods</a> to do this:</p>
+<p>It is a common situation to have two marker volumes and want to compare what they look like. We provide <a class="reference external" href="https://image-x-institute.github.io/MRI_DistortionQA/code_docs.html#MRI_DistortionQA.utilities.plot_MarkerVolume_overlay">a few plotting methods</a> to do this:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MRI_DistortionQA.utilities</span> <span class="kn">import</span> <span class="n">plot_MarkerVolume_overlay</span>
 <span class="kn">from</span> <span class="nn">MRI_DistortionQA.utilities</span> <span class="kn">import</span> <span class="n">plot_compressed_MarkerVolumes</span>
 
@@ -164,7 +164,7 @@
 <section id="do-we-guarantee-that-we-will-find-your-markers">
 <h2>Do we guarantee that we will find your markers?<a class="headerlink" href="#do-we-guarantee-that-we-will-find-your-markers" title="Link to this heading"></a></h2>
 <p>Short answer: No!</p>
-<p>Although the automatic extraction works quite well in most cases, because there are so many variables in MR, we have no knowledge of the signal-to-noise, contrast-to-noise, contrast type, voxel size, etc. that you may be using. This means that it is very difficult to automatically know what <a class="reference external" href="https://acrf-image-x-institute.github.io/mri_distortion_toolkit/code_docs.html#mri_distortion_toolkit.MarkerAnalysis.MarkerVolume">settings</a> to use for marker extraction. In some low SNR cases, no matter what settings you use automatic extraction is difficult, but in most cases you should be able to find a reliable combination of settings for a given scan and scanner.</p>
+<p>Although the automatic extraction works quite well in most cases, because there are so many variables in MR, we have no knowledge of the signal-to-noise, contrast-to-noise, contrast type, voxel size, etc. that you may be using. This means that it is very difficult to automatically know what <a class="reference external" href="https://image-x-institute.github.io/mri_distortion_toolkit/code_docs.html#mri_distortion_toolkit.MarkerAnalysis.MarkerVolume">settings</a> to use for marker extraction. In some low SNR cases, no matter what settings you use automatic extraction is difficult, but in most cases you should be able to find a reliable combination of settings for a given scan and scanner.</p>
 </section>
 <section id="is-that-a-major-issue">
 <h2>Is that a major issue?<a class="headerlink" href="#is-that-a-major-issue" title="Link to this heading"></a></h2>
@@ -215,9 +215,9 @@
 </section>
 <section id="handling-fat-water-shift">
 <h2>Handling Fat-water shift<a class="headerlink" href="#handling-fat-water-shift" title="Link to this heading"></a></h2>
-<p>If you are using a phantom with oil filled markers, your images may be subject to <a class="reference external" href="https://acrf-image-x-institute.github.io/mri_distortion_toolkit/phantom_imaging.html#fat-water-chemical-shift">fat-water shift</a>.</p>
+<p>If you are using a phantom with oil filled markers, your images may be subject to <a class="reference external" href="https://image-x-institute.github.io/mri_distortion_toolkit/phantom_imaging.html#fat-water-chemical-shift">fat-water shift</a>.</p>
 <p>The best way to check this is to take a forward/reverse gradient pair of images, and compare the markers in the middle of the DSV. Since B0 homogeneity is very good here, if the markers are offset from each other it is due to fat/water shift.</p>
-<p>You can read about the different options for handling this effect <a class="reference external" href="https://acrf-image-x-institute.github.io/mri_distortion_toolkit/phantom_imaging.html#fat-water-chemical-shift">here</a>; but one option is to correct for this in software. If you want to do that, the code would look this:</p>
+<p>You can read about the different options for handling this effect <a class="reference external" href="https://image-x-institute.github.io/mri_distortion_toolkit/phantom_imaging.html#fat-water-chemical-shift">here</a>; but one option is to correct for this in software. If you want to do that, the code would look this:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">mri_distortion_toolkit.MarkerAnalysis</span> <span class="kn">import</span> <span class="n">MarkerVolume</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">mri_distortion_toolkit.utilities</span> <span class="kn">import</span> <span class="n">plot_MarkerVolume_overlay</span>
