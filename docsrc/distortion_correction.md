@@ -2,7 +2,7 @@
 
 Once we have a knowledge of the distorting fields, we should be able to use this knowledge to correct distorted images. With the spherical harmonics, we have all the knowledge of the fields we need. 
 
-There are two main approaches to correcting gradient distortion: Image domain and k-space domain. Both methods are implemented in this code. The following code snippet demonstrates correction in the image domain. You should use the harmonics calculated and saved in the previous examples, or you can use the ones stored [here](https://github.com/ACRF-Image-X-Institute/mri_distortion_toolkit).
+There are two main approaches to correcting gradient distortion: Image domain and k-space domain. Both methods are implemented in this code. The following code snippet demonstrates correction in the image domain. You should use the harmonics calculated and saved in the previous examples, or you can use the ones stored [here](https://github.com/image-x-institute/mri_distortion_toolkit).
 
 ```python
 from mri_distortion_toolkit.DistortionCorrection import ImageDomainDistortionCorrector

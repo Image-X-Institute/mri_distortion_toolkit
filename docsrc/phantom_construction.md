@@ -29,7 +29,7 @@ From here, you can either print out each pdf if you intend to construct a phanto
 
 ## Markers
 
-The phantom has a number of holes to put markers in, but what should you actually use for markers? We have had a lot of success using fish oil capsules such as [these](https://www.blackmores.com.au/products/fish-oil-1000). Note that the use of oil has ramifications for MRI imaging; we discuss these and provide [suggestions on how to take images safely](https://acrf-image-x-institute.github.io/MRI_DistortionPhantom/phantom_imaging.html)
+The phantom has a number of holes to put markers in, but what should you actually use for markers? We have had a lot of success using fish oil capsules such as [these](https://www.blackmores.com.au/products/fish-oil-1000). Note that the use of oil has ramifications for MRI imaging; we discuss these and provide [suggestions on how to take images safely](https://image-x-institute.github.io/MRI_DistortionPhantom/phantom_imaging.html)
 
 ## Background material
 

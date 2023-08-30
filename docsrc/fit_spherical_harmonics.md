@@ -61,4 +61,4 @@ The second part is telling us the peak-to-peak perturbation over the surface of 
 
 ## Next steps
 
-You are ready to move onto [Reporting](https://acrf-image-x-institute.github.io/mri_distortion_toolkit/reporting.html)!
+You are ready to move onto [Reporting](https://image-x-institute.github.io/mri_distortion_toolkit/reporting.html)!
