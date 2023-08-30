@@ -11,11 +11,11 @@
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="_static/jquery.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -84,11 +84,11 @@
            <div itemprop="articleBody">
              
   <section id="phantom-imaging">
-<h1>Phantom Imaging<a class="headerlink" href="#phantom-imaging" title="Permalink to this heading"></a></h1>
+<h1>Phantom Imaging<a class="headerlink" href="#phantom-imaging" title="Link to this heading"></a></h1>
 <p>Below are some things to think about when imaging the phantom. \</p>
 <p>All our development work has been on a siemens scanner running VB 19A. Therefore, although the principles outlined below are scanner independent, the specific instructions are siemens specific. If you can update these instructions for other vendors, please do so!</p>
 <section id="fat-water-chemical-shift">
-<h2>Fat-Water chemical shift<a class="headerlink" href="#fat-water-chemical-shift" title="Permalink to this heading"></a></h2>
+<h2>Fat-Water chemical shift<a class="headerlink" href="#fat-water-chemical-shift" title="Link to this heading"></a></h2>
 <p>If you use oil capsules as the markers in your phantom, there is an important effect you must be aware of: <a class="reference external" href="https://mriquestions.com/f-w-chemical-shift.html">Fat-Water chemical shift</a>. This means if your scanner has a center frequency calibrated for water (which it almost certainly does), the oil based capsules will be offset in the readout direction. There are a number of things you can do to avoid this:</p>
 <ol class="arabic simple">
 <li><p><strong>Set the scanner center frequency to oil instead of wate</strong>r. Most scanners should have some method to reset the central frequency based on a given load. Specific instructions are scanner specific; an example from our siemens scanner is shown below.  The phantom itself may not provide sufficient load to carry out this procedure; in this case you could simply use a bottle of oil. If you successfully reset the central frequency, you will remove any offsets due to fat-water shift. The central frequency is encoded in the dicom header, so you can always retrospectively check what was used.</p></li>
@@ -103,7 +103,7 @@
 <strong>Figure: In the original image, no fat water correction has been made. As a result, the markers in the center of the image are offset from each other in the frequency direction. In the second image, this effect has been corrected for in software. In the third image, this effect has been corrected for by adjust the center frequency of the scanner.</strong></p>
 </section>
 <section id="separation-of-b0-gradient-distortion-effects">
-<h2>Separation of B0/ Gradient distortion effects<a class="headerlink" href="#separation-of-b0-gradient-distortion-effects" title="Permalink to this heading"></a></h2>
+<h2>Separation of B0/ Gradient distortion effects<a class="headerlink" href="#separation-of-b0-gradient-distortion-effects" title="Link to this heading"></a></h2>
 <p>There are two ‘system based’ sources of distortion in MRI: the gradient coils, and B0 inhomogeneity (there are also patient specific effects, which we ignore here.)</p>
 <ul class="simple">
 <li><p>Gradient distortion appears in every direction, and is essentially independent of imaging sequence.</p></li>

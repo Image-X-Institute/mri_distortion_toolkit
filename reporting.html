@@ -11,11 +11,11 @@
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="_static/jquery.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -89,7 +89,7 @@
            <div itemprop="articleBody">
              
   <section id="reporting">
-<h1>Reporting<a class="headerlink" href="#reporting" title="Permalink to this heading"></a></h1>
+<h1>Reporting<a class="headerlink" href="#reporting" title="Link to this heading"></a></h1>
 <p>OK, the final step of our journey!</p>
 <p>This section demonstrates how you can automatically generate interactive html reports from the data we have generated. There are two ways for you to do this, both of which will be demonstrated:
 An example of the types of reports you can generate is <a class="reference external" href="https://acrf-image-x-institute.github.io/mri_distortion_toolkit/_static/MR_QA_report_20_05_2022.html">here</a>.</p>
@@ -98,7 +98,7 @@ An example of the types of reports you can generate is <a class="reference exter
 <li><p>Pass the reporting code spherical harmonics</p></li>
 </ol>
 <section id="case-1-passing-data-directly">
-<h2>Case 1: passing data directly<a class="headerlink" href="#case-1-passing-data-directly" title="Permalink to this heading"></a></h2>
+<h2>Case 1: passing data directly<a class="headerlink" href="#case-1-passing-data-directly" title="Link to this heading"></a></h2>
 <p>Create a new file called ‘reporting.py’. Copy the below code into it.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">mri_distortion_toolkit.Reports</span> <span class="kn">import</span> <span class="n">MRI_QA_Reporter</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
@@ -119,7 +119,7 @@ An example of the types of reports you can generate is <a class="reference exter
 <p>This phantom was actually designed to get a good measurement of data on the surface of a sphere for the purpose of fitting spherical harmonics; therefore, let’s move on and use the data we have more appropriately!!</p>
 </section>
 <section id="case-2-harmonic-reconstruction">
-<h2>Case 2: harmonic reconstruction<a class="headerlink" href="#case-2-harmonic-reconstruction" title="Permalink to this heading"></a></h2>
+<h2>Case 2: harmonic reconstruction<a class="headerlink" href="#case-2-harmonic-reconstruction" title="Link to this heading"></a></h2>
 <p>the code for harmonic reconstruction is below:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">mri_distortion_toolkit.Reports</span> <span class="kn">import</span> <span class="n">MRI_QA_Reporter</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
@@ -147,7 +147,7 @@ An example of the types of reports you can generate is <a class="reference exter
 </div>
 </section>
 <section id="adding-custom-tests">
-<h2>Adding custom tests<a class="headerlink" href="#adding-custom-tests" title="Permalink to this heading"></a></h2>
+<h2>Adding custom tests<a class="headerlink" href="#adding-custom-tests" title="Link to this heading"></a></h2>
 <p>You will notice that some tests have been run (and failed) from ‘DefaultTestSuite’. What is that and how do you add your own tests?</p>
 <p>Code demonstration the creation of a custom test suite is below:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">mri_distortion_toolkit.Reports</span> <span class="kn">import</span> <span class="n">MRI_QA_Reporter</span>

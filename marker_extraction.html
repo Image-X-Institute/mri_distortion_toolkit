@@ -11,11 +11,11 @@
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="_static/jquery.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -94,9 +94,9 @@
            <div itemprop="articleBody">
              
   <section id="marker-extraction">
-<h1>Marker Extraction<a class="headerlink" href="#marker-extraction" title="Permalink to this heading"></a></h1>
+<h1>Marker Extraction<a class="headerlink" href="#marker-extraction" title="Link to this heading"></a></h1>
 <section id="basic-examples">
-<h2>Basic examples<a class="headerlink" href="#basic-examples" title="Permalink to this heading"></a></h2>
+<h2>Basic examples<a class="headerlink" href="#basic-examples" title="Link to this heading"></a></h2>
 <p>Say that you have <a class="reference external" href="https://acrf-image-x-institute.github.io/mri_distortion_toolkit/phantom_construction.html">built</a> and <a class="reference external" href="https://acrf-image-x-institute.github.io/mri_distortion_toolkit/phantom_imaging.html">imaged</a> a marker-based distortion phantom. To use this data within this library, you first have to extract the position of the markers and create a ‘MarkerVolume’. This example shows you how do that.</p>
 <blockquote>
 <div><p>|:warning:| For this part you will need some data. <strong>Example data is provided <a class="reference external" href="https://cloudstor.aarnet.edu.au/plus/s/Wm9vndV47u941JU">here</a></strong>. Download and unzip this data somewhere and take note of the path. The source code this example is based on is <a class="reference external" href="https://github.com/ACRF-Image-X-Institute/MRI_DistortionQA/tree/main/examples">here</a>.</p>
@@ -151,7 +151,7 @@
 <p>At this point, you are free to move on to the next step: <a class="reference external" href="https://acrf-image-x-institute.github.io/MRI_DistortionQA/marker_matching.html">automatic matching of markers</a>, or you can read on about some more advanced features below…</p>
 </section>
 <section id="comparing-markervolumes">
-<h2>Comparing MarkerVolumes<a class="headerlink" href="#comparing-markervolumes" title="Permalink to this heading"></a></h2>
+<h2>Comparing MarkerVolumes<a class="headerlink" href="#comparing-markervolumes" title="Link to this heading"></a></h2>
 <p>It is a common situation to have two marker volumes and want to compare what they look like. We provide <a class="reference external" href="https://acrf-image-x-institute.github.io/MRI_DistortionQA/code_docs.html#MRI_DistortionQA.utilities.plot_MarkerVolume_overlay">a few plotting methods</a> to do this:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MRI_DistortionQA.utilities</span> <span class="kn">import</span> <span class="n">plot_MarkerVolume_overlay</span>
 <span class="kn">from</span> <span class="nn">MRI_DistortionQA.utilities</span> <span class="kn">import</span> <span class="n">plot_compressed_MarkerVolumes</span>
@@ -162,17 +162,17 @@
 </div>
 </section>
 <section id="do-we-guarantee-that-we-will-find-your-markers">
-<h2>Do we guarantee that we will find your markers?<a class="headerlink" href="#do-we-guarantee-that-we-will-find-your-markers" title="Permalink to this heading"></a></h2>
+<h2>Do we guarantee that we will find your markers?<a class="headerlink" href="#do-we-guarantee-that-we-will-find-your-markers" title="Link to this heading"></a></h2>
 <p>Short answer: No!</p>
 <p>Although the automatic extraction works quite well in most cases, because there are so many variables in MR, we have no knowledge of the signal-to-noise, contrast-to-noise, contrast type, voxel size, etc. that you may be using. This means that it is very difficult to automatically know what <a class="reference external" href="https://acrf-image-x-institute.github.io/mri_distortion_toolkit/code_docs.html#mri_distortion_toolkit.MarkerAnalysis.MarkerVolume">settings</a> to use for marker extraction. In some low SNR cases, no matter what settings you use automatic extraction is difficult, but in most cases you should be able to find a reliable combination of settings for a given scan and scanner.</p>
 </section>
 <section id="is-that-a-major-issue">
-<h2>Is that a major issue?<a class="headerlink" href="#is-that-a-major-issue" title="Permalink to this heading"></a></h2>
+<h2>Is that a major issue?<a class="headerlink" href="#is-that-a-major-issue" title="Link to this heading"></a></h2>
 <p>Also no!</p>
 <p>We provide an easy interface to <a class="reference external" href="https://www.slicer.org/">slicer</a> via the <code class="docutils literal notranslate"><span class="pre">export_to_slicer</span></code> method; we also read these slicer .json files back in as demonstrated in the example above. This means that in situations where the automatic marker processing fails, you are free to move, delete and add markers through the excellent slicer GUI. Once you are satisfied, you can go file&gt;&gt;save data and save the *.mrk.json file for reading back into this workflow. A screenshot of the process of editing marker locations in slicer is below:</p>
 <p><img alt="" src="_images/Slicer_Markers_screengrab.PNG" /></p>
 <section id="editing-marker-positions-in-slicer">
-<h3>Editing marker positions in slicer<a class="headerlink" href="#editing-marker-positions-in-slicer" title="Permalink to this heading"></a></h3>
+<h3>Editing marker positions in slicer<a class="headerlink" href="#editing-marker-positions-in-slicer" title="Link to this heading"></a></h3>
 <p>See <a class="reference external" href="https://slicer.readthedocs.io/en/latest/user_guide/modules/markups.html">here</a> for the official slicer documentation on markups.</p>
 <ul class="simple">
 <li><p>To <strong>delete</strong> an unwanted marker hover over the marker and left click. While the marker is still highlighted (i.e. without moving the mouse) press delete</p></li>
@@ -214,7 +214,7 @@
 </section>
 </section>
 <section id="handling-fat-water-shift">
-<h2>Handling Fat-water shift<a class="headerlink" href="#handling-fat-water-shift" title="Permalink to this heading"></a></h2>
+<h2>Handling Fat-water shift<a class="headerlink" href="#handling-fat-water-shift" title="Link to this heading"></a></h2>
 <p>If you are using a phantom with oil filled markers, your images may be subject to <a class="reference external" href="https://acrf-image-x-institute.github.io/mri_distortion_toolkit/phantom_imaging.html#fat-water-chemical-shift">fat-water shift</a>.</p>
 <p>The best way to check this is to take a forward/reverse gradient pair of images, and compare the markers in the middle of the DSV. Since B0 homogeneity is very good here, if the markers are offset from each other it is due to fat/water shift.</p>
 <p>You can read about the different options for handling this effect <a class="reference external" href="https://acrf-image-x-institute.github.io/mri_distortion_toolkit/phantom_imaging.html#fat-water-chemical-shift">here</a>; but one option is to correct for this in software. If you want to do that, the code would look this:</p>

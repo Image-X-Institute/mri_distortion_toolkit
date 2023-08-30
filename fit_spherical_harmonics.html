@@ -11,11 +11,11 @@
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="_static/jquery.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -89,7 +89,7 @@
            <div itemprop="articleBody">
              
   <section id="spherical-harmonics">
-<h1>Spherical Harmonics<a class="headerlink" href="#spherical-harmonics" title="Permalink to this heading"></a></h1>
+<h1>Spherical Harmonics<a class="headerlink" href="#spherical-harmonics" title="Link to this heading"></a></h1>
 <p>Spherical harmonics can be used to characterise any magnetic field in a source free region. Practically, this means that if you can fit spherical harmonics to a limited number of data points, you can reconstruct the underlying magnetic field anywhere. This is particualrly useful for distortion correction algorithsm, but as we will see later can also be used to to generate data rich reports.
 A basic code to calculate spherical harmonics from the field data we have just calculated is below:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">mri_distortion_toolkit.MarkerAnalysis</span> <span class="kn">import</span> <span class="n">MarkerVolume</span>
@@ -113,7 +113,7 @@ A basic code to calculate spherical harmonics from the field data we have just c
 </pre></div>
 </div>
 <section id="some-plotting-examples">
-<h2>some plotting examples<a class="headerlink" href="#some-plotting-examples" title="Permalink to this heading"></a></h2>
+<h2>some plotting examples<a class="headerlink" href="#some-plotting-examples" title="Link to this heading"></a></h2>
 <p>Each instance of spherical harmonic fit has some handly plotting function you can use to quickly visualise the fields and harmonics: examples below.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">G_x_Harmonics</span><span class="o">.</span><span class="n">plot_cut_planes</span><span class="p">()</span>
 <span class="n">G_x_Harmonics</span><span class="o">.</span><span class="n">plot_harmonics_pk_pk</span><span class="p">(</span><span class="n">cut_off</span><span class="o">=</span><span class="mf">.01</span><span class="p">)</span>
@@ -126,7 +126,7 @@ A basic code to calculate spherical harmonics from the field data we have just c
 <p><strong>This figure shows the dominant harmonics for the X gradient. If you are a harmonics nerd, you will know that the A11 harmonic corresponds to a perfect X gradient field; therefore it is gratifying to see that this is by far the most strongly expressed harmonic for the X gradient!</strong></p>
 </section>
 <section id="explaining-the-code-output">
-<h2>Explaining the code output:<a class="headerlink" href="#explaining-the-code-output" title="Permalink to this heading"></a></h2>
+<h2>Explaining the code output:<a class="headerlink" href="#explaining-the-code-output" title="Link to this heading"></a></h2>
 <p>The code probably printed the following to the screen:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">FieldAnalysis</span><span class="o">.</span><span class="n">py</span><span class="p">:</span> <span class="n">line</span> <span class="mi">86</span>  <span class="n">WARNING</span><span class="p">]</span> <span class="nb">input</span> <span class="n">sample</span> <span class="n">points</span> <span class="n">do</span> <span class="ow">not</span> <span class="n">appear</span> <span class="n">to</span> <span class="n">cover</span> <span class="n">a</span> <span class="n">full</span> <span class="n">sphere</span>
 <span class="n">Initial</span> <span class="n">pk</span><span class="o">-</span><span class="n">pk</span><span class="p">:</span>        <span class="mf">693.401</span> <span class="n">μT</span>
@@ -141,7 +141,7 @@ A basic code to calculate spherical harmonics from the field data we have just c
 <p>The second part is telling us the peak-to-peak perturbation over the surface of r_outer (150 mm in this case). We would like to see that the reconstructed pk-pk closely matches the input, and that the residual pk-pk is low relative to the total. In this case, the reconstructed pk-pk is within 0.4 μT and the residual is &lt; 1%, so the fit is pretty good!</p>
 </section>
 <section id="next-steps">
-<h2>Next steps<a class="headerlink" href="#next-steps" title="Permalink to this heading"></a></h2>
+<h2>Next steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
 <p>You are ready to move onto <a class="reference external" href="https://acrf-image-x-institute.github.io/mri_distortion_toolkit/reporting.html">Reporting</a>!</p>
 </section>
 </section>

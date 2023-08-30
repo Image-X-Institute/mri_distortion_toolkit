@@ -11,11 +11,11 @@
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="_static/jquery.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -87,7 +87,7 @@
            <div itemprop="articleBody">
              
   <section id="distortion-correction">
-<h1>Distortion Correction<a class="headerlink" href="#distortion-correction" title="Permalink to this heading"></a></h1>
+<h1>Distortion Correction<a class="headerlink" href="#distortion-correction" title="Link to this heading"></a></h1>
 <p>Once we have a knowledge of the distorting fields, we should be able to use this knowledge to correct distorted images. With the spherical harmonics, we have all the knowledge of the fields we need.</p>
 <p>There are two main approaches to correcting gradient distortion: Image domain and k-space domain. Both methods are implemented in this code. The following code snippet demonstrates correction in the image domain. You should use the harmonics calculated and saved in the previous examples, or you can use the ones stored <a class="reference external" href="https://github.com/ACRF-Image-X-Institute/mri_distortion_toolkit">here</a>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">mri_distortion_toolkit.DistortionCorrection</span> <span class="kn">import</span> <span class="n">ImageDomainDistortionCorrector</span>
@@ -148,7 +148,7 @@
 <p>Compare this with the uncorrected version, and it is clear that this distortion correction has been quite effective:</p>
 <p><img alt="" src="_images/uncorrected_result.png" /></p>
 <section id="but-why-isn-t-the-distortion-correction-better">
-<h2>But why isn’t the distortion correction better?!<a class="headerlink" href="#but-why-isn-t-the-distortion-correction-better" title="Permalink to this heading"></a></h2>
+<h2>But why isn’t the distortion correction better?!<a class="headerlink" href="#but-why-isn-t-the-distortion-correction-better" title="Link to this heading"></a></h2>
 <p>Although the distortion correction markers are far superior to the uncorrected version, they still aren’t THAT good, with maximum distortions up to ~5 mm which is quite a lot.</p>
 <p>The main reason for this is that we are not correcting B0; you can see that the biggest residual distortions are in the x direction, which is the frequency encode direction, and the next biggest are in z, which is the slice encoding direction. How good might the results look if we could correct B0 as well?</p>
 <p>This is currently under development, but as a sneak preview, here are the results which incorporate B0 correction as well:</p>

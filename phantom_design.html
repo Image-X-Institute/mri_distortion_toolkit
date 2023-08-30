@@ -11,11 +11,11 @@
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="_static/jquery.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -94,7 +94,7 @@
            <div itemprop="articleBody">
              
   <section id="phantom-design">
-<h1>Phantom Design<a class="headerlink" href="#phantom-design" title="Permalink to this heading"></a></h1>
+<h1>Phantom Design<a class="headerlink" href="#phantom-design" title="Link to this heading"></a></h1>
 <p>You can use the phantom design module to create phantom designs, which will be automatically build in <a class="reference external" href="https://www.freecadweb.org/">FreeCAD</a>. Please see <a class="reference external" href="https://acrf-image-x-institute.github.io/mri_distortion_toolkit/FreeCADsetup.html#setting-up-freecad">here</a> for instructions on installing and setting up FreeCAD. Detailed notes on phantom <a class="reference external" href="https://acrf-image-x-institute.github.io/mri_distortion_toolkit/phantom_construction.html">construction</a> and <a class="reference external" href="https://acrf-image-x-institute.github.io/mri_distortion_toolkit/phantom_imaging.html">imaging</a> are also provided; the purpose of this section is to provide some examples of generating phantom designs.</p>
 <blockquote>
 <div><p>:warning: To build phantoms within FreeCAD, you need to explicitly append the python path to include this code. This is because FreeCAD does not by default know where to locate this code:</p>
@@ -155,22 +155,22 @@
 </pre></div>
 </div>
 <section id="phantom-customization">
-<h2>Phantom Customization<a class="headerlink" href="#phantom-customization" title="Permalink to this heading"></a></h2>
+<h2>Phantom Customization<a class="headerlink" href="#phantom-customization" title="Link to this heading"></a></h2>
 <p>The baseline model of a distortion phantom is highly customizable. You can change any of the parameters in the FoamProtoypeExample.py file. One of main reasons you may wish to do this is that different scanner have different field of views, so you may wish to make your phantom larger or smaller.
 All options for the AddPhantomSlice class are described within the <a class="reference internal" href="#"><span class="xref myst">code docs</span></a>, but we provide some additional notes on some of the more common things you may wish to change below:</p>
 <section id="specifying-marker-locations">
-<h3>Specifying marker locations<a class="headerlink" href="#specifying-marker-locations" title="Permalink to this heading"></a></h3>
+<h3>Specifying marker locations<a class="headerlink" href="#specifying-marker-locations" title="Link to this heading"></a></h3>
 <p>The marker locations are specified on each slice object. We provide two methods to automatically generate marker locations: <code class="docutils literal notranslate"><span class="pre">HoleCentroids=cartesian</span></code> will generate a cartesian grid of markers, while <code class="docutils literal notranslate"><span class="pre">ROI_polar</span></code>  will generate concentric rings of markers. Both wil the <code class="docutils literal notranslate"><span class="pre">hole_spacing</span></code> parameter to space out markers. If you specify a <code class="docutils literal notranslate"><span class="pre">DSV</span></code>,  the <code class="docutils literal notranslate"><span class="pre">ROI_polar</span></code> option will ensure good marker coverage over the surface of this sphere, and will provide an etch of the intersection of the DSV on each slice surface so you can tell where the DSV is on each slice.</p>
 <p>You can specify a crosshair of markers using the <code class="docutils literal notranslate"><span class="pre">ReferenceCrosshairRadius</span></code> option. This will add a crosshair of markers within <code class="docutils literal notranslate"><span class="pre">ReferenceCrosshairRadius</span></code>. This is a good idea to add to the central slice, as it makes alignment with CT/Ground truth much easier.</p>
 <p>Finally, you may not wish to use any of the existing methods for defining marker positions. In that case, you are free to simply specify them as a list: <code class="docutils literal notranslate"><span class="pre">HoleCentroids</span> <span class="pre">=</span> <span class="pre">[[x1,x2,x3],[y1,y2,y3]]</span></code></p>
 </section>
 <section id="specifying-a-load-region">
-<h3>Specifying a load region<a class="headerlink" href="#specifying-a-load-region" title="Permalink to this heading"></a></h3>
+<h3>Specifying a load region<a class="headerlink" href="#specifying-a-load-region" title="Link to this heading"></a></h3>
 <p>This phantom consists of a base material that does not give MRI signal, and is then packed with oil capsules, which also don’t generate much signal. This can result in the RF coil of the scanner not being properly loaded. To avoid this, it is a good idea to add some load to your phantom. You can specify a region to be cut from the center of each slice using e.g. <code class="docutils literal notranslate"><span class="pre">LoadRegion={'shape':</span> <span class="pre">'rectangle',</span> <span class="pre">'width':</span> <span class="pre">100,</span> <span class="pre">'height':</span> <span class="pre">200}</span></code> (see code docs for other options).</p>
 <p>In our experience, not much load is required: during development we simple put a container of oil capsules into a zip lock bag. The exact location of the load also shouldn’t be especially sensitive, just put it somewhere near the middle.</p>
 </section>
 <section id="specifying-a-dsv">
-<h3>Specifying a DSV<a class="headerlink" href="#specifying-a-dsv" title="Permalink to this heading"></a></h3>
+<h3>Specifying a DSV<a class="headerlink" href="#specifying-a-dsv" title="Link to this heading"></a></h3>
 <p>Specifying a Diameter of Spherical Volume (DSV) has two effects</p>
 <ol class="arabic simple">
 <li><p>the intersection of the DSV with each slice will be etched on the surface of the slice</p></li>
@@ -178,13 +178,13 @@ All options for the AddPhantomSlice class are described within the <a class="ref
 </ol>
 </section>
 <section id="specifying-guide-rods">
-<h3>Specifying Guide Rods<a class="headerlink" href="#specifying-guide-rods" title="Permalink to this heading"></a></h3>
+<h3>Specifying Guide Rods<a class="headerlink" href="#specifying-guide-rods" title="Link to this heading"></a></h3>
 <p>This phantom is based on the concept of individual slices which are stacked on top of each other. A number of methods can be envisaged to hold all of these slices together, but internally we have been using nylon guide rods with great success.</p>
 <p>To specify guide rods, simply use <code class="docutils literal notranslate"><span class="pre">GuideRods={'radius':</span> <span class="pre">5,</span> <span class="pre">'position':</span> <span class="pre">30,</span> <span class="pre">'height':</span> <span class="pre">370}</span></code>. This will add four holes to the corner of your slice. Each hole will have a radius of<code class="docutils literal notranslate"> <span class="pre">radius</span></code> and be  <code class="docutils literal notranslate"><span class="pre">position</span></code> mm from the edge of the slice.</p>
 </section>
 </section>
 <section id="complete-phantom-design">
-<h2>Complete phantom design<a class="headerlink" href="#complete-phantom-design" title="Permalink to this heading"></a></h2>
+<h2>Complete phantom design<a class="headerlink" href="#complete-phantom-design" title="Link to this heading"></a></h2>
 <p>Below is the complete script for the phantom we <a class="reference internal" href="#"><span class="xref myst">built</span></a> which incorporates all these elements</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">import</span> <span class="nn">importlib</span>

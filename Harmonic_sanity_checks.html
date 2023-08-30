@@ -11,11 +11,11 @@
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="_static/jquery.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" /> 
@@ -72,9 +72,9 @@
            <div itemprop="articleBody">
              
   <section id="harmonic-sanity-checks">
-<h1>Harmonic sanity checks<a class="headerlink" href="#harmonic-sanity-checks" title="Permalink to this heading"></a></h1>
+<h1>Harmonic sanity checks<a class="headerlink" href="#harmonic-sanity-checks" title="Link to this heading"></a></h1>
 <section id="intro">
-<h2>Intro<a class="headerlink" href="#intro" title="Permalink to this heading"></a></h2>
+<h2>Intro<a class="headerlink" href="#intro" title="Link to this heading"></a></h2>
 <p>This write up concerns <a class="reference external" href="https://cloudstor.aarnet.edu.au/plus/apps/files/?dir=/Shared/MRI-Linac%20Experimental%20Data/Goam2%5EMr/20220428%20MR%20Linac%5ETest&amp;amp;fileid=6603039901">6 pairs of images</a> taken on the Aus MRI-Linac magnet, summarized below:</p>
 <table border="1" class="docutils">
 <thead>
@@ -117,11 +117,11 @@
 </ol>
 </section>
 <section id="sanity-check-1-the-order-of-the-forward-reverse-images-shouldn-t-effect-the-harmonics">
-<h2>Sanity check 1: the order of the forward/reverse images shouldn’t effect the harmonics<a class="headerlink" href="#sanity-check-1-the-order-of-the-forward-reverse-images-shouldn-t-effect-the-harmonics" title="Permalink to this heading"></a></h2>
+<h2>Sanity check 1: the order of the forward/reverse images shouldn’t effect the harmonics<a class="headerlink" href="#sanity-check-1-the-order-of-the-forward-reverse-images-shouldn-t-effect-the-harmonics" title="Link to this heading"></a></h2>
 <p>for this data we have</p>
 <p>‘phase_encode_direction’: ‘y’, ‘freq_encode_direction’: ‘x’, ‘slice_direction’: ‘z’</p>
 <section id="gx-harmonics">
-<h3>Gx harmonics<a class="headerlink" href="#gx-harmonics" title="Permalink to this heading"></a></h3>
+<h3>Gx harmonics<a class="headerlink" href="#gx-harmonics" title="Link to this heading"></a></h3>
 <table border="1" class="docutils">
 <thead>
 <tr>
@@ -150,7 +150,7 @@
 </table>
 </section>
 <section id="gy-harmonics">
-<h3>Gy harmonics<a class="headerlink" href="#gy-harmonics" title="Permalink to this heading"></a></h3>
+<h3>Gy harmonics<a class="headerlink" href="#gy-harmonics" title="Link to this heading"></a></h3>
 <table border="1" class="docutils">
 <thead>
 <tr>
@@ -184,7 +184,7 @@
 </table>
 </section>
 <section id="gz-harmonics">
-<h3>Gz harmonics<a class="headerlink" href="#gz-harmonics" title="Permalink to this heading"></a></h3>
+<h3>Gz harmonics<a class="headerlink" href="#gz-harmonics" title="Link to this heading"></a></h3>
 <table border="1" class="docutils">
 <thead>
 <tr>
@@ -213,7 +213,7 @@
 </table>
 </section>
 <section id="b0-harmonics">
-<h3>B0 harmonics<a class="headerlink" href="#b0-harmonics" title="Permalink to this heading"></a></h3>
+<h3>B0 harmonics<a class="headerlink" href="#b0-harmonics" title="Link to this heading"></a></h3>
 <p>there are a lot of these so these are the ones with 30% of the dominant harmonic</p>
 <table border="1" class="docutils">
 <thead>
@@ -259,9 +259,9 @@
 </section>
 </section>
 <section id="sanity-check-2-different-imaging-plane-directions-should-give-the-same-harmonics">
-<h2>Sanity check 2: Different imaging plane directions should give the same harmonics<a class="headerlink" href="#sanity-check-2-different-imaging-plane-directions-should-give-the-same-harmonics" title="Permalink to this heading"></a></h2>
+<h2>Sanity check 2: Different imaging plane directions should give the same harmonics<a class="headerlink" href="#sanity-check-2-different-imaging-plane-directions-should-give-the-same-harmonics" title="Link to this heading"></a></h2>
 <section id="id1">
-<h3>B0 harmonics<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h3>
+<h3>B0 harmonics<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
 <p>The AP/PA and RL/LR look quite similar, except for the reversal in sign - which I think is more likely to be an error in the field calculation than in the harmonics.</p>
 <p>The HF/HF look completely different - the same harmonics aren’t even being excited. Further more, the fit data indicates completely non physical data:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Initial</span> <span class="n">pk</span><span class="o">-</span><span class="n">pk</span><span class="p">:</span>        <span class="mf">50.709</span> <span class="n">μT</span>
@@ -323,7 +323,7 @@
 <p>OK!! not perfect, but reasonably stable. All estimates suggest pk-pk perturbation of ~20 uT</p>
 </section>
 <section id="id2">
-<h3>Gx harmonics<a class="headerlink" href="#id2" title="Permalink to this heading"></a></h3>
+<h3>Gx harmonics<a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
 <table border="1" class="docutils">
 <thead>
 <tr>
@@ -356,7 +356,7 @@
 </table>
 </section>
 <section id="id3">
-<h3>Gy harmonics<a class="headerlink" href="#id3" title="Permalink to this heading"></a></h3>
+<h3>Gy harmonics<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
 <table border="1" class="docutils">
 <thead>
 <tr>
@@ -395,7 +395,7 @@
 </table>
 </section>
 <section id="id4">
-<h3>Gz harmonics<a class="headerlink" href="#id4" title="Permalink to this heading"></a></h3>
+<h3>Gz harmonics<a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
 <table border="1" class="docutils">
 <thead>
 <tr>
@@ -429,12 +429,12 @@
 </section>
 </section>
 <section id="conclusion">
-<h2>Conclusion<a class="headerlink" href="#conclusion" title="Permalink to this heading"></a></h2>
+<h2>Conclusion<a class="headerlink" href="#conclusion" title="Link to this heading"></a></h2>
 <p>overall, this worked much better than I was expecting - I would go so far as to say the harmonics are exhibiting remarkable stability!</p>
 <p>The main concern is the reversal in sign of the harmonics for B0, so we have to get to the bottom of that.</p>
 </section>
 <section id="python-script">
-<h2>python script<a class="headerlink" href="#python-script" title="Permalink to this heading"></a></h2>
+<h2>python script<a class="headerlink" href="#python-script" title="Link to this heading"></a></h2>
 <p>in case I ever want this again:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">mri_distortion_toolkit.MarkerAnalysis</span> <span class="kn">import</span> <span class="n">MarkerVolume</span><span class="p">,</span> <span class="n">MatchedMarkerVolumes</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>

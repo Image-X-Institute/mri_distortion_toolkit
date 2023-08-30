@@ -11,11 +11,11 @@
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="_static/jquery.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" /> 
@@ -72,7 +72,7 @@
            <div itemprop="articleBody">
              
   <section id="marker-position-stability">
-<h1>Marker position stability<a class="headerlink" href="#marker-position-stability" title="Permalink to this heading"></a></h1>
+<h1>Marker position stability<a class="headerlink" href="#marker-position-stability" title="Link to this heading"></a></h1>
 <p>Errors in marker position can be a serious issue. This data set can help us get a grip on this, because we have several images of the phantom taken with different slice direction is likely to have the largest errors in marker extraction because the slice thickness is larger than the voxel size in-slice. For this data, the slice thickness is 4.0 mm and the pixel size in slice is 2.6 mm.</p>
 <p>The markers will differ in the different acquisition directions because of the influence of B0, but the markers in the center should be very close to static. The below image show an overlay of the marker images in the three different slice directions:</p>
 <p>We can extract the inner 11 markers from a volume like this:</p>
@@ -155,7 +155,7 @@
 </table>
 <p>Over all these data sets, we have an average absolute marker extraction error of <strong>1.3  ±0.5</strong></p>
 <section id="if-this-is-our-average-error-why-aren-t-the-errors-in-the-harmonics-worse">
-<h2>If this is our average error, why aren’t the errors in the harmonics worse?<a class="headerlink" href="#if-this-is-our-average-error-why-aren-t-the-errors-in-the-harmonics-worse" title="Permalink to this heading"></a></h2>
+<h2>If this is our average error, why aren’t the errors in the harmonics worse?<a class="headerlink" href="#if-this-is-our-average-error-why-aren-t-the-errors-in-the-harmonics-worse" title="Link to this heading"></a></h2>
 <p>When introducing random errors into the marker positions, our analysis shows that errors up to 1 mm are actually quite serious.</p>
 <p>However, the stability of the harmonics for this data is good - so what gives?</p>
 <p>I think than <strong>random</strong> errors in marker positions are quite bad, but <strong>systemic</strong> errors are actually not going to matter as much. I also think that we are probably dealing more with systemic error than random error here, but let’s check.</p>
