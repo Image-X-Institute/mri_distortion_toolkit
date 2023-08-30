@@ -6,7 +6,7 @@ Our workflow relies on extracting the coordinates of markers from MRI images and
 2. Large voxel sizes
 3. Other things I can't think of
 
-The purpose of this analysis is therefore to assess the stability of spherical harmonics as larger and larger errors are introduced into the extracted marker positions. We will be using the [perturb_marker_positions](https://acrf-image-x-institute.github.io/MRI_DistortionQA/code_docs.html#MRI_DistortionQA.MarkerAnalysis.MarkerVolume.perturb_marker_positions) method.
+The purpose of this analysis is therefore to assess the stability of spherical harmonics as larger and larger errors are introduced into the extracted marker positions. We will be using the [perturb_marker_positions](https://image-x-institute.github.io/MRI_DistortionQA/code_docs.html#MRI_DistortionQA.MarkerAnalysis.MarkerVolume.perturb_marker_positions) method.
 
 **ToDo: get an estimate of marker volume**
 
@@ -24,7 +24,7 @@ What we see:
 
 ## comparison of predicted distortion with different sets of harmonics
 
-We can [use a set of gradient harmonics to create a report](https://acrf-image-x-institute.github.io/MRI_DistortionQA/reporting.html) and then we can use [this function](https://acrf-image-x-institute.github.io/MRI_DistortionQA/code_docs.html#MRI_DistortionQA.utilities.compare_recon_report_with_ground_truth_report) to compare the reconstructed data. The below two plots show the reports with random 1mm perturbations and random 3 mm perturbations.
+We can [use a set of gradient harmonics to create a report](https://image-x-institute.github.io/MRI_DistortionQA/reporting.html) and then we can use [this function](https://image-x-institute.github.io/MRI_DistortionQA/code_docs.html#MRI_DistortionQA.utilities.compare_recon_report_with_ground_truth_report) to compare the reconstructed data. The below two plots show the reports with random 1mm perturbations and random 3 mm perturbations.
 
 From this data, we can see the following:
 

@@ -3,7 +3,7 @@
 
 This code enables characterization, reporting, and correction of geometric distortion in Magnetic Resonance Imaging.
 
-The workflow steps are below. All steps have well defined input/output so you can use any part of this code independently from the other parts. For an example of our automated reporting template see [here](https://acrf-image-x-institute.github.io/mri_distortion_toolkit/_static/MR_QA_report_20_05_2022.html)
+The workflow steps are below. All steps have well defined input/output so you can use any part of this code independently from the other parts. For an example of our automated reporting template see [here](https://image-x-institute.github.io/mri_distortion_toolkit/_static/MR_QA_report_20_05_2022.html)
 
 ```mermaid
 flowchart LR
@@ -16,12 +16,12 @@ C[Field <br> Calculation]-->D[Spherical Harmonic <br>Analysis]
 D[Spherical Harmonic <br>Analysis]-->E[Automated <br>reporting];
 D[Spherical Harmonic <br>Analysis]-->F[Distortion Correction]
 
-click AA "https://acrf-image-x-institute.github.io/mri_distortion_toolkit/phantom_notes.html"
-click A "https://acrf-image-x-institute.github.io/mri_distortion_toolkit/marker_extraction.html"
-click B "https://acrf-image-x-institute.github.io/mri_distortion_toolkit/marker_matching.html"
-click C "https://acrf-image-x-institute.github.io/mri_distortion_toolkit/field_calculation.html"
-click D "https://acrf-image-x-institute.github.io/mri_distortion_toolkit/fit_spherical_harmonics.html"
-click E "https://acrf-image-x-institute.github.io/mri_distortion_toolkit/reporting.html"
+click AA "https://image-x-institute.github.io/mri_distortion_toolkit/phantom_notes.html"
+click A "https://image-x-institute.github.io/mri_distortion_toolkit/marker_extraction.html"
+click B "https://image-x-institute.github.io/mri_distortion_toolkit/marker_matching.html"
+click C "https://image-x-institute.github.io/mri_distortion_toolkit/field_calculation.html"
+click D "https://image-x-institute.github.io/mri_distortion_toolkit/fit_spherical_harmonics.html"
+click E "https://image-x-institute.github.io/mri_distortion_toolkit/reporting.html"
 ```
 
 
@@ -34,11 +34,11 @@ pip install mri_distortion_toolkit
 
 ## Usage
 
-Detailed documentation is [here](https://acrf-image-x-institute.github.io/mri_distortion_toolkit/). 
+Detailed documentation is [here](https://image-x-institute.github.io/mri_distortion_toolkit/). 
 
 ## Directory Structure
 
 - *docsrc* markdown/rst source documentation
 - *tests* test cases
 - *mri_distortion_toolkit* source code 
-- *examples* source code for the [worked examples](https://acrf-image-x-institute.github.io/mri_distortion_toolkit/examples.html)
+- *examples* source code for the [worked examples](https://image-x-institute.github.io/mri_distortion_toolkit/examples.html)

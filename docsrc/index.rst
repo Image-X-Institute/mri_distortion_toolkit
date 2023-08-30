@@ -5,7 +5,7 @@
 
 MRI Distortion QA
 =================
-`This code <https://github.com/ACRF-Image-X-Institute/mri_distortion_toolkit>`_ enables characterization and reporting of geometric distortion in Magnetic Resonance Imaging. The basic end-to-end workflow is below, but all steps have well defined input/output so you can use any part of this code independently from the other parts. For a tutorial on each step, click on the diagram below.
+`This code <https://github.com/image-x-institute/mri_distortion_toolkit>`_ enables characterization and reporting of geometric distortion in Magnetic Resonance Imaging. The basic end-to-end workflow is below, but all steps have well defined input/output so you can use any part of this code independently from the other parts. For a tutorial on each step, click on the diagram below.
 
 .. mermaid::
 
@@ -19,12 +19,12 @@ MRI Distortion QA
    D[Spherical Harmonic <br>Analysis]-->E[Automated <br>reporting];
    D[Spherical Harmonic <br>Analysis]-->F[Distortion Correction]
 
-   click AA "https://acrf-image-x-institute.github.io/mri_distortion_toolkit/phantom_notes.html"
-   click A "https://acrf-image-x-institute.github.io/mri_distortion_toolkit/marker_extraction.html"
-   click B "https://acrf-image-x-institute.github.io/mri_distortion_toolkit/marker_matching.html"
-   click C "https://acrf-image-x-institute.github.io/mri_distortion_toolkit/field_calculation.html"
-   click D "https://acrf-image-x-institute.github.io/mri_distortion_toolkit/fit_spherical_harmonics.html"
-   click E "https://acrf-image-x-institute.github.io/mri_distortion_toolkit/reporting.html"
+   click AA "https://image-x-institute.github.io/mri_distortion_toolkit/phantom_notes.html"
+   click A "https://image-x-institute.github.io/mri_distortion_toolkit/marker_extraction.html"
+   click B "https://image-x-institute.github.io/mri_distortion_toolkit/marker_matching.html"
+   click C "https://image-x-institute.github.io/mri_distortion_toolkit/field_calculation.html"
+   click D "https://image-x-institute.github.io/mri_distortion_toolkit/fit_spherical_harmonics.html"
+   click E "https://image-x-institute.github.io/mri_distortion_toolkit/reporting.html"
 
 
 

@@ -23,5 +23,5 @@ Bz_field = ConvertMatchedMarkersToBz(matched_volume, dicom_data_loc)
 Bz_field.MagneticFields.to_csv('Bfields.csv')  # save for later
 ```
 
-This is really only an intermidiate step; this data isn't particularly useful by itself, but it does allow us to fit spherical harmonics, which is the [next step](https://acrf-image-x-institute.github.io/MRI_DistortionQA/fit_spherical_harmonics.html)!!
+This is really only an intermidiate step; this data isn't particularly useful by itself, but it does allow us to fit spherical harmonics, which is the [next step](https://image-x-institute.github.io/MRI_DistortionQA/fit_spherical_harmonics.html)!!
 
