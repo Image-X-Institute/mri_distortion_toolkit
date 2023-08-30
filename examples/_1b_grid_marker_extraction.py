@@ -3,7 +3,7 @@ from mri_distortion_toolkit.utilities import dicom_to_numpy
 import numpy as np
 import skimage.filters
 from matplotlib import pyplot as plt
-import scipy.ndimage  # BW: prefer the below style of input
+# import scipy.ndimage  # BW: prefer the below style of input
 from scipy.ndimage import gaussian_filter
 import pydicom
 import sys
@@ -59,8 +59,6 @@ def plot_2D_array(image_to_plot, title=None):
         plt.title(title)
     plt.show()
 
-
-
 '''
 BUT maybe what's going to be easier for you, is to start with something simpler. So, I've
 put a function in here which will generate a very simple 2D image:
@@ -69,14 +67,12 @@ put a function in here which will generate a very simple 2D image:
 # pixel_array = generate_2D_grid_image_for_testing()
 
 # OR call on a single dicom image from the grid-based MRI folder
-dicom_path = r"C:\Users\finmu\OneDrive\Documents\2023\Thesis - BMET4111 BMET4112\CODE\Grid-Based Sample Data\MR\1.3.46.670589.11.79127.5.0.6984.2022112517535313493.dcm"
+# dicom_path = r"C:\Users\finmu\OneDrive\Documents\2023\Thesis - BMET4111 BMET4112\CODE\Grid-Based Sample Data\MR\1.3.46.670589.11.79127.5.0.6984.2022112517535313493.dcm"
 # BW: I created a folder and copied just one image into it:
 # 1.3.46.670589.11.79127.5.0.6984.2022112517535358579.dcm
-dicom_path = Path(r'/home/brendan/Downloads/simple_data')
+dicom_path = Path(r"C:\Users\finmu\OneDrive\Documents\2023\Thesis - BMET4111 BMET4112\CODE\Grid-Based Sample Data\Test Slice")
 
-InputVolume, dicom_affine, (X, Y, Z) = dicom_to_numpy(dicom_path,
-                                                     file_extension='dcm',
-                                                     return_XYZ=True)
+InputVolume, dicom_affine, (X, Y, Z) = dicom_to_numpy(dicom_path, file_extension='dcm',return_XYZ=True)
 
 # BW fin; you can delete the following line, for demo only:
 print(f'the shape of the input volume is {InputVolume.shape}')
@@ -85,8 +81,7 @@ print(f'the shape of the input volume is {InputVolume.shape}')
 InputSlice = InputVolume.squeeze()  # dont delete this line!
 print(f'the shape of the input slice is {InputSlice.shape}')
 # BW in case you want to plot I added a function:
-plot_2D_array(InputSlice)
-
+# plot_2D_array(InputSlice)
 
 # use prewit operators to find intersections:
 v_edge_map = skimage.filters.prewitt_v(InputSlice)
@@ -99,16 +94,14 @@ intersect_map = abs(intersect_map)
 # blurring the image points using a Guassian filter
 blurred_map = gaussian_filter(intersect_map, sigma=1)
 
-
-
-plt.show()
-
 # clear image by setting values < cut-off (0.03 for generated array and 0.0014 for Dicom image) to zero and all others to 1
-cut_off = 0.0014
-# bw: I suggest for determinging the cut off, you use otsu's method:
+# bw: I suggest for determining the cut off, you use otsu's method:
 # http://devdoc.net/python/scikit-image-doc-0.13.1/auto_examples/xx_applications/plot_thresholding.html
+# calculate optimal threshold using Otsu's method
+threshold = skimage.filters.threshold_otsu(blurred_map)
+
 # BW: then to threshold the image you just need to do this:
-binary_image = blurred_map > cut_off
+binary_image = blurred_map > threshold
 
 # BW: create a plot of our images so far:
 fig, axs = plt.subplots(nrows=2, ncols=2, figsize=[10,10])
@@ -116,50 +109,39 @@ axs[0, 0].imshow(InputSlice); axs[0, 0].grid(False); axs[0, 0].set_title('origin
 axs[0, 1].imshow(intersect_map); axs[0, 1].grid(False); axs[0, 1].set_title('prewit operators')
 axs[1, 0].imshow(blurred_map); axs[1, 0].grid(False); axs[1, 0].set_title('blurred')
 axs[1, 1].imshow(binary_image); axs[1, 1].grid(False); axs[1, 1].set_title('otsu threshold')
-
-
-
+plt.show()
 # blob search or label function
 # BW: label seems to work fine.
+label_image = label(binary_image)
 
-from math import sqrt
-from skimage.feature import blob_dog, blob_log, blob_doh
-from skimage.color import rgb2gray
+# plot_2D_array(label_image)
 
+voxel_min, voxel_max = get_marker_max_min_volume(label_image)
 
-# image_gray = rgb2gray(blurred_map)
-# BW the reason you get an error is your image is already greyscale.
-# rgb implies three seperate channels, i.e. the image would have size [x_pixel, y_pixels, 3]
-# if you are concerned that imshow shows iamges in color instead of grey, you need to look up
-# colormaps instead!
+# find contour centroids
+x_centroids = []
+y_centroids = []
+skipped = 0
 
-blobs_log = blob_log(binary_image, max_sigma=30, num_sigma=10, threshold=.1)
+unique_labels = np.unique(label_image)[1:]  # first label is background so skip
 
-# Compute radii in the 3rd column.
-blobs_log[:, 2] = blobs_log[:, 2] * sqrt(2)
+# extract x,y of each connected region
+for i, label_level in enumerate(unique_labels):
+    RegionInd = np.equal(label_image, label_level)
+    voxels = np.count_nonzero(RegionInd)
+    if voxels < voxel_min or voxels > voxel_max:
+        skipped += 1
+        continue # skip outliers
 
-blobs_dog = blob_dog(binary_image, max_sigma=30, threshold=.1)
-blobs_dog[:, 2] = blobs_dog[:, 2] * sqrt(2)
+    region_sum = np.sum(InputSlice[RegionInd])
+    weighted_x = np.sum(np.multiply(X[RegionInd], InputSlice[RegionInd]))
+    weighted_y = np.sum(np.multiply(Y[RegionInd], InputSlice[RegionInd]))
+    x_centroids.append(weighted_x / region_sum)
+    y_centroids.append(weighted_y / region_sum)
 
-blobs_doh = blob_doh(binary_image, max_sigma=30, threshold=.01)
+centroids = np.array([x_centroids, y_centroids]).T
+print(skipped)
+print(centroids)
 
-blobs_list = [blobs_log, blobs_dog, blobs_doh]
-colors = ['yellow', 'lime', 'red']
-titles = ['Laplacian of Gaussian', 'Difference of Gaussian',
-          'Determinant of Hessian']
-sequence = zip(blobs_list, colors, titles)
-
-fig, axes = plt.subplots(1, 3, figsize=(9, 3), sharex=True, sharey=True)
-ax = axes.ravel()
-
-for idx, (blobs, color, title) in enumerate(sequence):
-    ax[idx].set_title(title)
-    ax[idx].imshow(image)
-    for blob in blobs:
-        y, x, r = blob
-        c = plt.Circle((x, y), r, color=color, linewidth=2, fill=False)
-        ax[idx].add_patch(c)
-    ax[idx].set_axis_off()
-
-plt.tight_layout()
-plt.show()
+# scatter plot of the centroids
+# overlay by updating
