@@ -3,8 +3,8 @@ from mri_distortion_toolkit.utilities import dicom_to_numpy
 import numpy as np
 import skimage.filters
 from matplotlib import pyplot as plt
-# import scipy.ndimage  # BW: prefer the below style of input
 from scipy.ndimage import gaussian_filter
+from scipy.signal import find_peaks
 import pydicom
 import sys
 from skimage.measure import label
@@ -59,6 +59,7 @@ def plot_2D_array(image_to_plot, title=None, extent=None):
     plt.imshow(image_to_plot, extent=extent)
     if title:
         plt.title(title)
+    plt.colorbar()
     plt.show()
 
 def plot_2D_scatter(x_centroids, y_centroids):
@@ -72,9 +73,9 @@ def plot_2D_scatter(x_centroids, y_centroids):
 def detect_if_edge_case(x_center, y_center,X, Y, InputSlice):
     """
     BW2: fin, note what we are doing here when we split this into functions.
-    because all this function does is return True or False, it gices us a lot of
+    because all this function does is return True or False, it gives us a lot of
     freedom down the track to swap it out for something different.
-    This is formally referred to as 'modular' programming and is one of the easiest thigns
+    This is formally referred to as 'modular' programming and is one of the easiest things
     you can do to make your life easier down the track!
 
     there are actually two distinct tasks here:
@@ -86,25 +87,127 @@ def detect_if_edge_case(x_center, y_center,X, Y, InputSlice):
     r_roi = 7 # we should be more intelligent about how to choose this but for now we can hard code it
     # you might have to fine tune a bit too.
     # we want to detect pixels where:
-    # cenroid_x - r_roi <= centroid_x <= centroid_x <= centroid_x + r_roi
+    # centroid_x - r_roi <= centroid_x <= centroid_x <= centroid_x + r_roi
     # and similar for y
     x_ind = np.logical_and((X - r_roi <= x_center), (X+r_roi >= x_center))
     #BW2 super useful when doing logical operation like this:
-    print(f'Total elements in X: {x_ind.size} number of True values in x_ind: {np.count_nonzero(x_ind)}')
+    # print(f'Total elements in X: {x_ind.size} number of True values in x_ind: {np.count_nonzero(x_ind)}')
     y_ind = np.logical_and((Y - r_roi <= y_center), ( Y+ r_roi >= y_center))
-    combined_ind = np.logical_and(x_ind, y_ind)  # cases where both x and y meet our critera
+    combined_ind = np.logical_and(x_ind, y_ind)  # cases where both x and y meet our criteria
+    # print(f'Total elements: {combined_ind.size} number of True values: {np.count_nonzero(combined_ind)}')
     # can sanity check what pixels you've selected:
-    # plot_2D_array(combined_ind)
-    pixels = InputSlice[combined_ind]
+    # plot_2D_array(combined_ind, title = 'Potential Centroid Indexes of Interest')
 
+    pixels = InputSlice[combined_ind] # pixels is a 1D array of pixel values within the ROI
+
+    region_of_int = InputSlice*combined_ind # region_of_int is a 2D array of only the pixels within the ROI
+
+    # otsu method to find the optimal threshold value for region of interest
+    threshold = skimage.filters.threshold_otsu(region_of_int)
+
+    # apply the threshold
+    thresholded_region = region_of_int > threshold
 
     # fin to do: apply a test to pixels to see if we should count it or not. a few ideas:
     # average pixel value
-    # number of peak in a histogram
-    # derivitive accross the image
-    # some combo of the above?
+    proper_centroid1 = mean_detection(pixels, x_center, y_center)
 
-    return True  # BW2 for now will always be True, you nee to update based on the test you write
+    # percentage of non zero pixels in ROI after thresholding
+    #proper_centroid2 = percent_detection(thresholded_region, combined_ind, x_center, y_center)
+
+    # number of peak in a histogram
+    #proper_centroid3 = peak_detection(thresholded_region, x_center, y_center)
+    # the intersection points should have a peak in each corner whereas edge cases should be missing at least one peak
+
+    # derivitive across the image
+    # some combo of the above
+
+    return proper_centroid1 # and proper_centroid2 and proper_centroid3
+
+    # if abs(x_center) < 128 and abs(x_center) > 127 and abs(y_center) < 32 and abs(y_center) > 31:
+    #     fig, axs = plt.subplots(nrows=2, ncols=2, figsize=[10, 10])
+    #     axs[0, 0].imshow(region_of_int); axs[0, 0].grid(False); axs[0, 0].set_title('x -122 y 117')
+    #     axs[0, 1].imshow(thresholded_region); axs[0, 1].grid(False); axs[0, 1].set_title('Threshold')
+    #     axs[1, 0].imshow(label_region); axs[1, 0].grid(False); axs[1, 0].set_title('Label')
+    #     plt.show()
+    #
+    # if x_center < 125 and x_center > 124 and abs(y_center) < 29 and abs(y_center) > 28:
+    #     fig, axs = plt.subplots(nrows=2, ncols=2, figsize=[10, 10])
+    #     axs[0, 0].imshow(region_of_int); axs[0, 0].grid(False); axs[0, 0].set_title('x 117 y 116')
+    #     axs[0, 1].imshow(thresholded_region); axs[0, 1].grid(False); axs[0, 1].set_title('Threshold')
+    #     axs[1, 0].imshow(label_region); axs[1, 0].grid(False); axs[1, 0].set_title('Label')
+    #     plt.show()
+
+    # if abs(x_center) < 123 and abs(x_center) > 122 and y_center < 118 and y_center > 117:
+    #     fig, axs = plt.subplots(nrows=2, ncols=2, figsize=[10, 10])
+    #     axs[0, 0].imshow(region_of_int); axs[0, 0].grid(False); axs[0, 0].set_title('x -122 y 117')
+    #     axs[0, 1].imshow(thresholded_region); axs[0, 1].grid(False); axs[0, 1].set_title('Threshold')
+    #     axs[1, 0].imshow(label_region); axs[1, 0].grid(False); axs[1, 0].set_title('Label')
+    #     plt.show()
+    #
+    # if x_center < 118 and x_center > 117 and y_center < 117 and y_center > 116:
+    #     fig, axs = plt.subplots(nrows=2, ncols=2, figsize=[10, 10])
+    #     axs[0, 0].imshow(region_of_int); axs[0, 0].grid(False); axs[0, 0].set_title('x 117 y 116')
+    #     axs[0, 1].imshow(thresholded_region); axs[0, 1].grid(False); axs[0, 1].set_title('Threshold')
+    #     axs[1, 0].imshow(label_region); axs[1, 0].grid(False); axs[1, 0].set_title('Label')
+    #     plt.show()
+    #
+    # if x_center < 98 and x_center > 97 and y_center < 117 and y_center > 116:
+    #     fig, axs = plt.subplots(nrows=2, ncols=2, figsize=[10, 10])
+    #     axs[0, 0].imshow(region_of_int); axs[0, 0].grid(False); axs[0, 0].set_title('x 97 y 116')
+    #     axs[0, 1].imshow(thresholded_region); axs[0, 1].grid(False); axs[0, 1].set_title('Threshold')
+    #     axs[1, 0].imshow(label_region); axs[1, 0].grid(False); axs[1, 0].set_title('Label')
+    #     plt.show()
+    #
+    # if abs(x_center) < 103 and abs(x_center) > 102 and y_center < 117 and y_center > 116:
+    #     fig, axs = plt.subplots(nrows=2, ncols=2, figsize=[10, 10])
+    #     axs[0, 0].imshow(region_of_int); axs[0, 0].grid(False); axs[0, 0].set_title('x -102 y 116')
+    #     axs[0, 1].imshow(thresholded_region); axs[0, 1].grid(False); axs[0, 1].set_title('Threshold')
+    #     axs[1, 0].imshow(label_region); axs[1, 0].grid(False); axs[1, 0].set_title('Label')
+    #     plt.show()
+    #
+    # if abs(x_center) < 83 and abs(x_center) > 82 and y_center < 116 and y_center > 115:
+    #     fig, axs = plt.subplots(nrows=2, ncols=2, figsize=[10, 10])
+    #     axs[0, 0].imshow(region_of_int); axs[0, 0].grid(False); axs[0, 0].set_title('x -82 y 115')
+    #     axs[0, 1].imshow(thresholded_region); axs[0, 1].grid(False); axs[0, 1].set_title('Threshold')
+    #     axs[1, 0].imshow(label_region); axs[1, 0].grid(False); axs[1, 0].set_title('Label')
+    #     plt.show()
+
+def mean_detection(pixels, x_center, y_center):
+    # to not hard code this function we need to save mean value of each region and determine a cut-off mean value from the spread
+    # by currently returning boolean and not saving mean values, we cannot do this
+    pixels_mean = np.mean(pixels)
+
+    print(f"Mean: {pixels_mean:.2f}, X location: {x_center:.2f}, Y location {y_center:.2f}")
+
+    if pixels_mean < 360: # misses two true centroids
+        return False
+    else:
+        return True
+
+def percent_detection(thresholded_region, combined_ind, x_center, y_center):
+    thresh_pixels = thresholded_region[combined_ind] # thresh pixels is a 1D array of the pixels within the thresholded ROI
+    percent_nonzero = np.count_nonzero(thresh_pixels) / thresh_pixels.size # percent of pixels above the threshold
+
+    print(f'Total: {thresh_pixels.size}, non-zero: {np.count_nonzero(thresh_pixels)}, percent: {percent_nonzero:.4f}, X location: {x_center:.2f}, Y location {y_center:.2f}')
+
+    if percent_nonzero > 0.4:
+        return True
+    else:
+        return False
+
+def peak_detection(thresholded_region, x_center, y_center):
+    label_region = label(thresholded_region)
+    peaks = np.unique(label_region)[1:]  # disregard background
+
+    number_of_peaks = len(peaks)
+    print(f"Peaks: {number_of_peaks}, X location: {x_center:.2f}, Y location {y_center:.2f}")
+
+    if number_of_peaks == 4:
+        return True
+    else:
+        return False
+
 
 
 # call on a single dicom image from the grid-based MRI folder
@@ -112,9 +215,9 @@ def detect_if_edge_case(x_center, y_center,X, Y, InputSlice):
 # BW: I created a folder and copied just one image into it:
 # 1.3.46.670589.11.79127.5.0.6984.2022112517535358579.dcm
 dicom_path = Path(r"C:\Users\finmu\OneDrive\Documents\2023\Thesis - BMET4111 BMET4112\CODE\Grid-Based Sample Data\Test Slice")
-#BW2: comment out the below to revert to your own data locatoin
-dicom_path = Path(r'/home/brendan/Downloads/3Done phantom/'
-                     r'3DOne_zzphys_MR_2022-11-25_173121_post.upgrade_T1.3D.Tra.HN.L_n208__00000/')
+#BW2: comment out the below to revert to your own data location
+# dicom_path = Path(r'/home/brendan/Downloads/3Done phantom/'
+                    # r'3DOne_zzphys_MR_2022-11-25_173121_post.upgrade_T1.3D.Tra.HN.L_n208__00000/')
 InputVolume, dicom_affine, (X, Y, Z) = dicom_to_numpy(dicom_path,
                                                       FilesToReadIn='1.3.46.670589.11.79127.5.0.6984.2022112517535358579.dcm',
                                                       file_extension='dcm',return_XYZ=True)
@@ -128,34 +231,46 @@ InputSlice = InputVolume.squeeze()  # dont delete this line!
 X = X.squeeze()
 Y = Y.squeeze()
 
+# plot_2D_array(InputSlice, 'MRI Slice', extent)
+
 # use prewit operators to find intersections:
 v_edge_map = skimage.filters.prewitt_v(InputSlice)
+# plot_2D_array(v_edge_map, 'Vertical Prewitt Operator', extent)
 
 # highlight the gradient change down the vertical lines i.e., where the horizontal lines intersect
 intersect_map = skimage.filters.prewitt_h(v_edge_map)
+# plot_2D_array(intersect_map, 'Horizontal Prewitt Operator', extent)
+
 # take absolute values
 intersect_map = abs(intersect_map)
+# plot_2D_array(intersect_map, 'Magnitude of Gradient Change Along Each Axis', extent)
 
 # blurring the image points using a Guassian filter
 blurred_map = gaussian_filter(intersect_map, sigma=1)
+# plot_2D_array(blurred_map, 'Gaussian Filter', extent)
 
-
+# otsu method to find the optimal threshold value
 threshold = skimage.filters.threshold_otsu(blurred_map)
 
+
+# apply the threshold
 binary_image = blurred_map > threshold
+# plot_2D_array(binary_image, 'Otsu\'s Method Thresholding', extent)
 
 # BW: create a plot of our images so far:
 #BW2 I will update the extent in one
-fig, axs = plt.subplots(nrows=2, ncols=2, figsize=[10,10])
-axs[0, 0].imshow(InputSlice, extent=extent); axs[0, 0].grid(False); axs[0, 0].set_title('original')
-axs[0, 1].imshow(intersect_map); axs[0, 1].grid(False); axs[0, 1].set_title('prewit operators')
-axs[1, 0].imshow(blurred_map); axs[1, 0].grid(False); axs[1, 0].set_title('blurred')
-axs[1, 1].imshow(binary_image); axs[1, 1].grid(False); axs[1, 1].set_title('otsu threshold')
-plt.show()
+# fig, axs = plt.subplots(nrows=2, ncols=2, figsize=[10,10])
+# axs[0, 0].imshow(InputSlice, extent=extent); axs[0, 0].grid(False); axs[0, 0].set_title('Dicom Image')
+# axs[0, 1].imshow(intersect_map, extent=extent); axs[0, 1].grid(False); axs[0, 1].set_title('Prewit Operators')
+# axs[1, 0].imshow(blurred_map, extent=extent); axs[1, 0].grid(False); axs[1, 0].set_title('Blurred')
+# axs[1, 1].imshow(binary_image, extent=extent); axs[1, 1].grid(False); axs[1, 1].set_title('Otsu\'s threshold')
+# plt.show()
+
+# segment regions using label method
 label_image = label(binary_image)
+plot_2D_array(label_image, 'Labelled Image', extent)
 
-# plot_2D_array(label_image)
-
+# calculate the expected min/max volume of the centroids
 voxel_min, voxel_max = get_marker_max_min_volume(label_image)
 
 # find contour centroids
@@ -187,7 +302,7 @@ for i, label_level in enumerate(unique_labels):
     potential_y_centroid = np.mean(Y[RegionInd])
     # BW2: now, we want to detect and remove edge cases:
     # for debugging could do this:
-    show_debug_image = True  # note will make a lot of iamges!!
+    show_debug_image = False  # note will make a lot of images!!
     if show_debug_image:
         plt.figure()
         plt.imshow(InputSlice, extent=extent)
@@ -205,17 +320,16 @@ extent = (X.min(), X.max(), Y.max(), Y.min())
 plt.imshow(InputSlice, extent=extent)
 plt.grid(False)
 plt.scatter(x_centroids, y_centroids, marker='x')
+plt.xlabel('X [mm]')
+plt.ylabel('Y [mm]')
+plt.title('Extracted Grid Marker Positions')
 plt.show()
 
 
 
+# centroids = np.array([x_centroids, y_centroids]).T
 
-
-
-centroids = np.array([x_centroids, y_centroids]).T
-print(skipped)
-print(centroids)
 
 # scatter plot of the centroids
-plot_2D_scatter(x_centroids, y_centroids)
+# plot_2D_scatter(x_centroids, y_centroids)
 # overlay by updating
