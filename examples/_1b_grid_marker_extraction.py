@@ -8,6 +8,9 @@ from scipy.signal import find_peaks
 import pydicom
 import sys
 from skimage.measure import label
+import numpy as np
+import pandas as pd
+from mri_distortion_toolkit.MarkerAnalysis import MarkerVolume
 
 def generate_2D_grid_image_for_testing(size=100, grid_spacing=20):
     """
@@ -208,7 +211,44 @@ def peak_detection(thresholded_region, x_center, y_center):
     else:
         return False
 
+def generate_ground_truth_marker_volume(x_start=0, y_start=0, z_start=0, spacing=10,
+                                        n_markers_x=11, n_markers_y=11, n_markers_z=1):
+    """
+    generate a ground truth marker volume based on generating points arounda  single
+    'seed' point (x_start, y_start, z_start). This point should be close to the center of the volume.
+    Note that you can safely generate more ground truth markers than distorted markers, because the matching
+    code is smart enough to discard ground truth that doesn't match to any marker
 
+    :param x_start: x coodinate of seed point
+    :param y_start: y coodinate of seed point
+    :param z_start: z coodinate of seed point
+    :param spacing: spacing between markers, assumed to be equal in all directions
+    :param n_markers_x: number of markers in x direction.
+    :param n_markers_y: number of markers in y direction.
+    :param n_markers_z: number of markers in z direction.
+    :return: gt_volume
+    """
+    # generate start and stop point in each direction
+    start = []
+    stop = []
+    for n_markers in [n_markers_x, n_markers_y, n_markers_z]:
+        if n_markers % 2 == 0:
+            start.append(-1 * spacing * np.floor((n_markers / 2) - 1))
+            stop.append(spacing * int(n_markers / 2))
+        else:
+            start.append(-1 * spacing * np.floor((n_markers / 2)))
+            stop.append(spacing * np.floor((n_markers / 2)))
+
+    # first will generate the points centered on zero
+    x_points = np.linspace(start[0], stop[0], n_markers_x) + x_start
+    y_points = np.linspace(start[1], stop[1], n_markers_y) + y_start
+    z_points = np.linspace(start[2], stop[2], n_markers_z) + z_start
+    # now use meshgrid to create an array with all the combined points
+    [xx, yy, zz] = np.meshgrid(x_points, y_points, z_points)
+    points_dataframe = pd.DataFrame({'x': xx.flatten(), 'y': yy.flatten(), 'z': zz.flatten()})
+    gt_volume = MarkerVolume(points_dataframe)
+
+    return gt_volume
 
 # call on a single dicom image from the grid-based MRI folder
 # dicom_path = r"C:\Users\finmu\OneDrive\Documents\2023\Thesis - BMET4111 BMET4112\CODE\Grid-Based Sample Data\MR\1.3.46.670589.11.79127.5.0.6984.2022112517535313493.dcm"
