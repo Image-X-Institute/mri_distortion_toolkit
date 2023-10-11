@@ -10,7 +10,8 @@ import sys
 from skimage.measure import label
 import numpy as np
 import pandas as pd
-from mri_distortion_toolkit.MarkerAnalysis import MarkerVolume
+from mri_distortion_toolkit.MarkerAnalysis import MarkerVolume, MatchedMarkerVolumes
+from mri_distortion_toolkit import utilities as ut
 
 def generate_2D_grid_image_for_testing(size=100, grid_spacing=20):
     """
@@ -211,7 +212,7 @@ def peak_detection(thresholded_region, x_center, y_center):
     else:
         return False
 
-def generate_ground_truth_marker_volume(x_start=0, y_start=0, z_start=0, spacing=10,
+def generate_ground_truth_marker_volume(x_start=0.0, y_start=0.0, z_start=0.0, spacing=10,
                                         n_markers_x=11, n_markers_y=11, n_markers_z=1):
     """
     generate a ground truth marker volume based on generating points arounda  single
@@ -256,8 +257,8 @@ def generate_ground_truth_marker_volume(x_start=0, y_start=0, z_start=0, spacing
 # 1.3.46.670589.11.79127.5.0.6984.2022112517535358579.dcm
 dicom_path = Path(r"C:\Users\finmu\OneDrive\Documents\2023\Thesis - BMET4111 BMET4112\CODE\Grid-Based Sample Data\Test Slice")
 #BW2: comment out the below to revert to your own data location
-# dicom_path = Path(r'/home/brendan/Downloads/3Done phantom/'
-                    # r'3DOne_zzphys_MR_2022-11-25_173121_post.upgrade_T1.3D.Tra.HN.L_n208__00000/')
+dicom_path = Path(r'/home/brendan/HairyHome/Downloads/3Done phantom/'
+                    r'3DOne_zzphys_MR_2022-11-25_173121_post.upgrade_T1.3D.Tra.HN.L_n208__00000/')
 InputVolume, dicom_affine, (X, Y, Z) = dicom_to_numpy(dicom_path,
                                                       FilesToReadIn='1.3.46.670589.11.79127.5.0.6984.2022112517535358579.dcm',
                                                       file_extension='dcm',return_XYZ=True)
@@ -366,10 +367,16 @@ plt.title('Extracted Grid Marker Positions')
 plt.show()
 
 
+# generate'ground truth' marker volume
+gt_volume = generate_ground_truth_marker_volume(x_start=-2.8, y_start=28.7, z_start=np.mean(Z),
+                                                n_markers_x=13, n_markers_y=10, n_markers_z=1,
+                                                spacing=10)
+# generate 'distorted marker volume
+distorted_data_frame = pd.DataFrame({'x': x_centroids, 'y': y_centroids, 'z': np.mean(Z)})
+distorted_volume = MarkerVolume(distorted_data_frame)
 
-# centroids = np.array([x_centroids, y_centroids]).T
-
-
-# scatter plot of the centroids
-# plot_2D_scatter(x_centroids, y_centroids)
-# overlay by updating
+# match them together
+matched_volume = MatchedMarkerVolumes(gt_volume, distorted_volume)
+# a few plots
+matched_volume.plot_compressed_markers(z_min=-90, z_max= -70)
+ut.plot_distortion_xyz_hist(matched_volume)
