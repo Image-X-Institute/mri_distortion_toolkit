@@ -846,13 +846,18 @@ def plot_matched_volume_hist(VolumeList, legend=None):
     :type legend: list, optional
     :return: None
     """
-    bins = np.linspace(0, 10, 30)
+    bins = np.linspace(0, 2.5, 126)
     plt.figure()
     for marker_volume in VolumeList:
         plt.hist(marker_volume.MatchedCentroids.match_distance, bins=bins, alpha=0.5)
     if legend:
-        plt.legend(['original', 'corrected'])
-    plt.xlabel('distortion [mm]')
+        plt.legend(['original', 'corrected'], fontsize=18)
+    plt.xlim(0, 2.4)
+    plt.xlabel('Distortion [mm]', fontsize=18)
+    plt.ylabel('Number of Extracted Points', fontsize=18)
+    plt.title('(B) Total Distortion', fontsize=18)
+    plt.xticks(fontsize=16)
+    plt.yticks(fontsize=16)
     plt.tight_layout()
     plt.show()
 
@@ -870,12 +875,17 @@ def plot_distortion_xyz_hist(MatchedMarkerVolume):
     z_dis = MatchedMarkerVolume.MatchedCentroids.z_gt - MatchedMarkerVolume.MatchedCentroids.z_gnl
 
     plt.figure()
-    bins = np.linspace(0, 10, 30)
+    bins = np.linspace(0, 2.5, 126)
+    plt.xlim(0, 2.1)
     plt.hist(abs(x_dis), bins=bins, alpha=0.5)
     plt.hist(abs(y_dis), bins=bins, alpha=0.5)
-    plt.hist(abs(z_dis), bins=bins, alpha=0.5)
-    plt.legend(['x', 'y', 'z'])
-    plt.xlabel('distortion [mm]')
+    # plt.hist(abs(z_dis), bins=bins, alpha=0.5)
+    plt.legend(['X-axis', 'Y-axis'], fontsize=18) #, 'Z-axis'])
+    plt.xlabel('Distortion [mm]', fontsize=18)
+    plt.ylabel('Number of Extracted Points', fontsize=18)
+    plt.title('(A) X and Y Distortion', fontsize=18)
+    plt.xticks(fontsize=16)
+    plt.yticks(fontsize=16)
     plt.tight_layout()
     plt.show()
 

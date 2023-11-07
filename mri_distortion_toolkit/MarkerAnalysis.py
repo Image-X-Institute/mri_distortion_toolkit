@@ -1030,7 +1030,7 @@ class MatchedMarkerVolumes:
         axs.set_title(title)
         axs.set_box_aspect((np.ptp(self.MatchedCentroids.x_gt), np.ptp(self.MatchedCentroids.y_gt),
                             np.ptp(self.MatchedCentroids.z_gt)))
-        plt.legend(['ground truth', 'distorted'])
+        plt.legend(['Ground Truth', 'Distorted'])
         plt.show()
 
     def plot_compressed_markers(self, z_max=20, z_min=-20, add_arrows=True, title=None):  # pragma: no cover
@@ -1070,8 +1070,8 @@ class MatchedMarkerVolumes:
                            plot_data.x_gt - plot_data.x_gnl,
                            plot_data.y_gt - plot_data.y_gnl,
                            angles="xy", units='xy', scale=1, width=1)
-            axs.set_xlim([-150, 150])
-            axs.set_ylim([-150, 150])
+            axs.set_xlim([-180, 175])
+            axs.set_ylim([150, -90])
             axs.set_xlabel('x [mm]', fontsize=15)
             axs.set_ylabel('y [mm]', fontsize=15)
             axs.tick_params(axis='both', which='major', labelsize=12)
@@ -1079,7 +1079,7 @@ class MatchedMarkerVolumes:
             axs.axis("equal")
             axs.grid()
             plt.subplots_adjust(bottom=0.25)
-            plt.legend(['distorted', 'ground truth'])
+            plt.legend(['Distorted', 'Ground Truth'])
             if title:
                 plt.title(title)
 
