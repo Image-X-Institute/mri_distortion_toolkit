@@ -4,9 +4,6 @@ from mri_distortion_toolkit.utilities import dicom_to_numpy
 import skimage.filters
 from matplotlib import pyplot as plt
 from scipy.ndimage import gaussian_filter
-from scipy.signal import find_peaks
-import pydicom
-import sys
 from skimage.measure import label
 import pandas as pd
 from mri_distortion_toolkit.MarkerAnalysis import MarkerVolume, MatchedMarkerVolumes
@@ -62,14 +59,12 @@ def plot_2D_array(image_to_plot, title=None, extent=None):
     plt.ylim(150, -90)
     plt.xlabel('X [mm]')
     plt.ylabel('Y [mm]')
-    # if title:
-    #     plt.title(title)
+    if title:
+        plt.title(title)
     plt.colorbar()
     plt.show()
 
 def plot_2D_scatter(x_centroids, y_centroids):
-    # BW2 this is a scatter plot
-    # you will have to figure out how to overlay this onto an image!
     plt.figure()
     plt.scatter(x_centroids, y_centroids)
     plt.axis('equal')
@@ -90,12 +85,10 @@ def detect_if_edge_case(x_center, y_center,X, Y, InputSlice):
     """
     # get the cluster of pixels around the centroid
     r_roi = 7 # we should be more intelligent about how to choose this but for now we can hard code it
-    # you might have to fine tune a bit too.
     # we want to detect pixels where:
     # centroid_x - r_roi <= centroid_x <= centroid_x <= centroid_x + r_roi
     # and similar for y
     x_ind = np.logical_and((X - r_roi <= x_center), (X+r_roi >= x_center))
-    #BW2 super useful when doing logical operation like this:
     # print(f'Total elements in X: {x_ind.size} number of True values in x_ind: {np.count_nonzero(x_ind)}')
     y_ind = np.logical_and((Y - r_roi <= y_center), ( Y+ r_roi >= y_center))
     combined_ind = np.logical_and(x_ind, y_ind)  # cases where both x and y meet our criteria
@@ -113,7 +106,7 @@ def detect_if_edge_case(x_center, y_center,X, Y, InputSlice):
     # apply the threshold
     thresholded_region = region_of_int > threshold
 
-    # fin to do: apply a test to pixels to see if we should count it or not. a few ideas:
+    # apply a test to pixels to see if we should count it or not:
     # average pixel value
     proper_centroid1 = mean_detection(pixels, x_center, y_center)
 
@@ -123,9 +116,6 @@ def detect_if_edge_case(x_center, y_center,X, Y, InputSlice):
     # number of peak in a histogram
     proper_centroid3 = peak_detection(thresholded_region)
     # the intersection points should have a peak in each corner whereas edge cases should be missing at least one peak
-
-    # derivitive across the image
-    # some combo of the above
 
     return proper_centroid1 and proper_centroid2 and proper_centroid3
 
@@ -140,7 +130,7 @@ def mean_detection(pixels, x_center, y_center):
     if y_center > 110:
         return False
 
-    if pixels_mean < 420: # 360: # misses two true centroids
+    if pixels_mean < 420:
         return False
     else:
         return True
@@ -169,7 +159,7 @@ def peak_detection(thresholded_region):
         return False
 
 def generate_ground_truth_marker_volume(x_start=0.0, y_start=0.0, z_start=0.0, spacing=20,
-                                        n_markers_x=18, n_markers_y=18, n_markers_z=1):
+                                        n_markers_x=25, n_markers_y=25, n_markers_z=1):
     """
     generate a ground truth marker volume based on generating points around a single
     'seed' point (x_start, y_start, z_start). This point should be close to the center of the volume.
@@ -208,29 +198,13 @@ def generate_ground_truth_marker_volume(x_start=0.0, y_start=0.0, z_start=0.0, s
     return gt_volume
 
 # call on a single dicom image from the grid-based MRI folder
-# dicom_path = r"C:\Users\finmu\OneDrive\Documents\2023\Thesis - BMET4111 BMET4112\CODE\Grid-Based Sample Data\MR\1.3.46.670589.11.79127.5.0.6984.2022112517535313493.dcm"
-# BW: I created a folder and copied just one image into it:
-# 1.3.46.670589.11.79127.5.0.6984.2022112517535358579.dcm
-dicom_path = Path(r"C:\Users\finmu\OneDrive\Documents\2023\Thesis - BMET4111 BMET4112\CODE\Grid-Based Sample Data\MR")
-                 # r"C:\Users\finmu\OneDrive\Documents\2023\Thesis - BMET4111 BMET4112\CODE\Grid-Based Sample Data\Test Slice") # \1.3.46.670589.11.79127.5.0.6984.2022112517535358579.dcm")
-# image = pydicom.dcmread(dicom_path)
-# directory = image.dir()
-# FOV = image.PercentPhaseFieldOfView
-# manufacturer = image.Manufacturer
-# model = image.ManufacturerModelName
-# fieldstrength = image.MagneticFieldStrength
-# resolution = image.BitsAllocated
-#BW2: comment out the below to revert to your own data location
-#dicom_path = Path(r'/home/brendan/HairyHome/Downloads/3Done phantom/' r'3DOne_zzphys_MR_2022-11-25_173121_post.upgrade_T1.3D.Tra.HN.L_n208__00000/')
+dicom_path = Path(r"Your_Folder")
 InputVolume, dicom_affine, (X, Y, Z) = dicom_to_numpy(dicom_path,
-                                                      FilesToReadIn= '1.3.46.670589.11.79127.5.0.6984.2022112517535350563.dcm',
+                                                      FilesToReadIn= '1.3.46.670589.11.79127.5.0.6984.2022112517535397646.dcm',
                                                       file_extension='dcm',return_XYZ=True)
-#BW2: to calculate extent of image:
+# to calculate extent of image:
 extent = (X.min(), X.max(), Y.max(), Y.min())
-# you can pass this to imshow (or plot_2D_array) to get the correct coordinates
-
-# testarray = generate_2D_grid_image_for_testing()
-# BW we can remove this singleton dimension like this:
+# we can remove this singleton dimension like this:
 InputSlice = InputVolume.squeeze()  # dont delete this line!
 X = X.squeeze()
 Y = Y.squeeze()
@@ -240,66 +214,33 @@ Y = Y.squeeze()
 v_edge_map = skimage.filters.prewitt_v(InputSlice)
 #plot_2D_array(v_edge_map, 'Vertical Prewitt Operator', extent)
 
-# test_vpre = skimage.filters.prewitt_v(testarray)
-# plot_2D_array(testarray)
-# plot_2D_array(test_vpre)
-
 # highlight the gradient change down the vertical lines i.e., where the horizontal lines intersect
 intersect_map = skimage.filters.prewitt_h(v_edge_map)
 # plot_2D_array(intersect_map, 'Horizontal Prewitt Operator', extent)
 
-# testintsct = skimage.filters.prewitt_h(test_vpre)
-# plot_2D_array(testintsct)
-
-# fig, axs = plt.subplots(nrows=1, ncols=2)
-# axs[0].imshow(test_vpre); axs[0].grid(False); axs[0].set_xlabel('X [mm]'); axs[0].set_ylabel('Y [mm]')
-# axs[1].imshow(testintsct); axs[1].grid(False); axs[1].set_xlabel('X [mm]'); axs[1].set_ylabel('Y [mm]')
-# fig.colorbar(axs[1])
-# plt.show()
-
 # take absolute values
 intersect_map = abs(intersect_map)
 # plot_2D_array(intersect_map, 'Magnitude of Gradient Change Along Each Axis', extent)
-# testabs = abs(testintsct)
-# plot_2D_array(testabs)
 
 # blurring the image points using a Guassian filter
 blurred_map = gaussian_filter(intersect_map, sigma=1)
 # plot_2D_array(blurred_map, 'Gaussian Filter', extent)
-# blurtest = gaussian_filter(testabs, sigma=1)
-# plot_2D_array(blurtest)
 
 # otsu method to find the optimal threshold value
 threshold = skimage.filters.threshold_otsu(blurred_map)
-
-# threshold2 = skimage.filters.threshold_otsu(blurtest)
-# otsutest = blurtest > threshold2
-# plot_2D_array(otsutest)
 
 # apply the threshold
 binary_image = blurred_map > threshold
 # plot_2D_array(binary_image, 'Otsu\'s Method Thresholding', extent)
 
-# BW: create a plot of our images so far:
-#BW2 I will update the extent in one
-# fig, axs = plt.subplots(nrows=2, ncols=2, figsize=[10,10])
-# axs[0, 0].imshow(InputSlice, extent=extent); axs[0, 0].grid(False); axs[0, 0].set_title('Dicom Image')
-# axs[0, 1].imshow(intersect_map, extent=extent); axs[0, 1].grid(False); axs[0, 1].set_title('Prewit Operators')
-# axs[1, 0].imshow(blurred_map, extent=extent); axs[1, 0].grid(False); axs[1, 0].set_title('Blurred')
-# axs[1, 1].imshow(binary_image, extent=extent); axs[1, 1].grid(False); axs[1, 1].set_title('Otsu\'s threshold')
-# plt.show()
-
 # segment regions using label method
 label_image = label(binary_image)
 # plot_2D_array(label_image, 'Labelled Image', extent)
 
-# labeltest = label(otsutest)
-# plot_2D_array(labeltest)
-
 # calculate the expected min/max volume of the centroids
 voxel_min, voxel_max = get_marker_max_min_volume(label_image)
 
-# find contour centroids
+# find centroids
 x_centroids = []
 y_centroids = []
 skipped = 0
@@ -317,19 +258,10 @@ for i, label_level in enumerate(unique_labels):
         labels_to_remove.append(label_level) # exclude labelled regions outside expected sizes
         continue # skip outliers
 
-    # region_sum = np.sum(InputSlice[RegionInd])
-    # weighted_x = np.sum(np.multiply(X[RegionInd], InputSlice[RegionInd]))
-    # weighted_y = np.sum(np.multiply(Y[RegionInd], InputSlice[RegionInd]))
-    # x_centroids.append(weighted_x / region_sum)
-    # y_centroids.append(weighted_y / region_sum)
-
-    # BW2: the above lines of code are intended to weight the centroid of the detected point towards the brightest part of the
-    # image. it wasn't working for you for some reason, I've just deleted and replaced with the simpler logic below:
-    # x_centroid = mean of X coordinate of region. you can delete all commented lines here once you read this.
-
+    # centroid = mean of coordinate of region.
     potential_x_centroid = np.mean(X[RegionInd])
     potential_y_centroid = np.mean(Y[RegionInd])
-    # BW2: now, we want to detect and remove edge cases:
+    # detect and remove edge cases:
     # for debugging could do this:
     show_debug_image = False  # note will make a lot of images!!
     if show_debug_image:
@@ -355,36 +287,9 @@ for label in labels_to_remove:
 refined_binary_image = label_image > 0
 # plot_2D_array(refined_binary_image, 'Removed Edge-Cases', extent)
 
-# plt.figure()
-# extent = (X.min(), X.max(), Y.max(), Y.min())
-# plt.imshow(refined_binary_image, extent=extent)
-# plt.grid(False)
-# plt.scatter(x_centroids, y_centroids, marker='x')
-# plt.xlim(-180, 175)
-# plt.ylim(150, -90)
-# plt.xlabel('X [mm]')
-# plt.ylabel('Y [mm]')
-# plt.title('Extracted Grid Marker Positions')
-# plt.show()
-
-
-# plt.figure()
-# extent = (X.min(), X.max(), Y.max(), Y.min())
-# plt.imshow(InputSlice, extent=extent)
-# plt.grid(False)
-# plt.scatter(x_centroids, y_centroids, marker='x')
-# plt.xlim(-180, 175)
-# plt.ylim(150, -90)
-# plt.xlabel('X [mm]')
-# plt.ylabel('Y [mm]')
-# # plt.title('Extracted Grid Marker Positions')
-# plt.show()
-
-# print('Number of extracted centroids: ' + str(len(x_centroids)))
-
 # generate'ground truth' marker volume
 gt_volume = generate_ground_truth_marker_volume(x_start=-2.8, y_start=28.7, z_start=np.mean(Z),
-                                                n_markers_x=13, n_markers_y=10, n_markers_z=1,
+                                                n_markers_x=25, n_markers_y=25, n_markers_z=1,
                                                 spacing=20)
 # generate 'distorted marker volume
 distorted_data_frame = pd.DataFrame({'x': x_centroids, 'y': y_centroids, 'z': np.mean(Z)})
@@ -393,15 +298,13 @@ distorted_volume = MarkerVolume(distorted_data_frame)
 # match them together
 matched_volume = MatchedMarkerVolumes(gt_volume, distorted_volume)
 # a few plots
-# matched_volume.plot_compressed_markers(z_min=-90, z_max= -70)
+matched_volume.plot_compressed_markers(z_min=-90, z_max= -70)
 matched_volume.plot_3D_markers()
 ut.plot_distortion_xyz_hist(matched_volume) # histogram of distibution of distortion in each axis
 ut.plot_matched_volume_hist([matched_volume]) # histogram of distribution of distortion magnitude
 
-# Assuming your DataFrame is named 'df'
-# df = pd.DataFrame(...)  # Your DataFrame creation code here
 df = matched_volume.MatchedCentroids.match_distance
-# Calculate max, min, mean, and standard deviation of the 9th column
+# Calculate max, min, mean, and standard deviation of the total geometric distortion in the image
 df = df[df <= 10]
 
 max_value = df.max()
