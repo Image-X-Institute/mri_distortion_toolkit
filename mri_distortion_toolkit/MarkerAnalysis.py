@@ -433,7 +433,7 @@ class MarkerVolume:
         :param z_shift: z translation in mm
         :return:
         """
-        translate = np.array([x_shift, y_shift, z_shift], dtype=np.int16)
+        translate = np.array([x_shift, y_shift, z_shift])
         translated = self.MarkerCentroids[['x', 'y', 'z']] + translate
         self.MarkerCentroids = pd.DataFrame(translated, columns=['x', 'y', 'z'])
         self.MarkerCentroids['r'] = self.MarkerCentroids.apply(
