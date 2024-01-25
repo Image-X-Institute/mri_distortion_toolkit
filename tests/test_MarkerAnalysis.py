@@ -99,3 +99,19 @@ def test_marker_matching_rigid():
     matched_volume = MatchedMarkerVolumes(volume1, volume2, sorting_method='nearest')
     assert np.allclose(matched_volume.MatchedCentroids.match_distance, expected_distance)
 
+
+def test_marker_translation():
+
+    x_shift = 1.1
+    y_shift = 2.2
+    z_shift = 3
+    data_loc = this_dir / 'test_data' / 'CT.mrk.json'
+    volume = MarkerVolume(data_loc)
+    volume_to_move = MarkerVolume(data_loc)
+    volume_to_move.translate_markers(x_shift=x_shift, y_shift=y_shift, z_shift=z_shift)
+
+    diff = volume.MarkerCentroids - volume_to_move.MarkerCentroids
+    assert np.isclose(np.mean(diff.x), -x_shift)
+    assert np.isclose(np.mean(diff.y), -y_shift)
+    assert np.isclose(np.mean(diff.z), -z_shift)
+
