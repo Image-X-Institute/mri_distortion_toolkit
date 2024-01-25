@@ -22,6 +22,6 @@ Detailed documentation is [here](https://image-x-institute.github.io/mri_distort
 ## Directory Structure
 
 - *docsrc* markdown/rst source documentation
-- *tests* test cases
+- *tests* test cases 
 - *mri_distortion_toolkit* source code 
 - *examples* source code for the [worked examples](https://image-x-institute.github.io/mri_distortion_toolkit/examples.html)
