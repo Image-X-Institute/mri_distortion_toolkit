@@ -416,7 +416,7 @@ class MarkerVolume:
         :param zaxis_angle: rotation around z angle in degrees
         """
 
-        rotate = np.array([xaxis_angle, yaxis_angle, zaxis_angle], dtype=np.int16)
+        rotate = np.array([xaxis_angle, yaxis_angle, zaxis_angle])
         rotation_vector = transform.Rotation.from_euler('xyz', rotate, degrees=True)
         # Transform centroids
         rotated = rotation_vector.apply(self.MarkerCentroids[['x', 'y', 'z']])
