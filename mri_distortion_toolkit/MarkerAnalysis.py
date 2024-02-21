@@ -706,7 +706,7 @@ class MatchedMarkerVolumes:
             insert the radial value of each marker:
             """
             centroids['r'] = centroids.apply(
-                lambda row: np.sqrt(row[0] ** 2 + row[1] ** 2 + row[2] ** 2), axis=1)
+                lambda row: np.sqrt(row.iloc[0] ** 2 + row.iloc[1] ** 2 + row.iloc[2] ** 2), axis=1)
             if centroids.r.mean() < 10:
                 logger.warning('it appears that your input data is in m, not mm - please use mm!')
             return centroids
