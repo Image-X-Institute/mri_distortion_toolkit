@@ -737,7 +737,7 @@ class MatchedMarkerVolumes:
 
         # Calculate the distance between each marker and central position
         ground_truth['r_centre'] = ground_truth.apply(
-            lambda row: np.sqrt((row[0] - central_x) ** 2 + (row[1] - central_y) ** 2 + (row[2] - central_z) ** 2),
+            lambda row: np.sqrt((row.iloc[0] - central_x) ** 2 + (row.iloc[1] - central_y) ** 2 + (row.iloc[2] - central_z) ** 2),
             axis=1)
 
         # Find the crosshair reference markers
