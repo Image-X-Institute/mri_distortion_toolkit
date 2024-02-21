@@ -140,7 +140,7 @@ class MarkerVolume:
 
         # insert the radial value of each marker:
         self.MarkerCentroids['r'] = self.MarkerCentroids.apply(
-            lambda row: np.sqrt(row[0] ** 2 + row[1] ** 2 + row[2] ** 2), axis=1)
+            lambda row: np.sqrt(row.iloc[0] ** 2 + row.iloc[1] ** 2 + row.iloc[2] ** 2), axis=1)
         if self.MarkerCentroids.r.mean() < 10:
             logger.warning('it appears that your input data is in m, not mm - please use mm!')
 
