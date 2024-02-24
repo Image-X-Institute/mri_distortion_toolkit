@@ -5,7 +5,7 @@
 
 MRI Distortion QA
 =================
-`This code <https://github.com/image-x-institute/mri_distortion_toolkit>`_ enables characterization and reporting of geometric distortion in Magnetic Resonance Imaging. The basic end-to-end workflow is below, but all steps have well defined input/output so you can use any part of this code independently from the other parts. For a tutorial on each step, click on the diagram below.
+`This code <https://github.com/image-x-institute/mri_distortion_toolkit>`_ enables characterization and reporting of geometric distortion in Magnetic Resonance Imaging. The basic end-to-end workflow is below, but all steps have well defined input/output so you can use any part of this code independently from the other parts. For a tutorial on each step, see the "worked examples".
 
 .. image:: __resources/Brendan_Phantom.png
 
