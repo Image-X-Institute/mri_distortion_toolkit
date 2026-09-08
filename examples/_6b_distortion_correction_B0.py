@@ -8,7 +8,7 @@ import numpy as np
 
 '''
 download example data and unzip:
-https://cloudstor.aarnet.edu.au/plus/s/Wm9vndV47u941JU
+https://ses.library.usyd.edu.au/handle/2123/31139
 '''
 distorted_data_loc = Path(r'C:\Users\Brendan\Downloads\MRI_distortion_QA_sample_data(2)\MRI_distortion_QA_sample_data\MR\04 gre_trans_AP_330')
 dicom_data = get_dicom_data(Path('_example_data/MR/04 gre_trans_AP_330/dicom_data.json'))

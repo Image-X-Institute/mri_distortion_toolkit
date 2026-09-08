@@ -7,7 +7,7 @@ import numpy as np
 
 '''
 download example data and unzip:
-https://cloudstor.aarnet.edu.au/plus/s/Wm9vndV47u941JU
+https://ses.library.usyd.edu.au/handle/2123/31139
 '''
 distorted_data_loc = Path(r'/home/brendan/Downloads/MRI_distortion_QA_sample_data/MR/04 gre_trans_AP_330')
 
