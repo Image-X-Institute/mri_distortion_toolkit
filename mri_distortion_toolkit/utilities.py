@@ -5,6 +5,7 @@ General purpose reusable functions
 import os
 import pathlib
 import logging
+import math
 from pathlib import Path
 import numpy as np
 from scipy.special import lpmv
@@ -502,7 +503,7 @@ def generate_legendre_basis(InputCoords, n_order):
         k = k + 1
         for j in range(0, n):
             m = j+1  # this looks weird but it works to give values m=1:n
-            Norm = ((-1)**m) * np.sqrt( (n+0.5)*(np.math.factorial(n-m)) / np.math.factorial(n+m))
+            Norm = ((-1)**m) * np.sqrt( (n+0.5)*(math.factorial(n-m)) / math.factorial(n+m))
             P = Norm * lpmv(m, n, np.cos(InputCoords.elevation))
             legendre_basis[:,k] = np.multiply(np.multiply((InputCoords.r/1000) ** n, P), np.cos(m * InputCoords.azimuth))
             coeff_names.append(f'A_{n}_{m}')
@@ -554,10 +555,10 @@ def convert_spherical_harmonics(harmonics, input_format='full', output_format='n
         k = k + 1
         for j in range(0, n):
             m = j + 1  # this looks weird but it works to give values m=1:n
-            Norm.append(((-1) ** m) * np.sqrt((n + 0.5) * (np.math.factorial(n - m)) / np.math.factorial(n + m)))
+            Norm.append(((-1) ** m) * np.sqrt((n + 0.5) * (math.factorial(n - m)) / math.factorial(n + m)))
             coeff_names.append(f'A_{n}_{m}')
             coeff_names.append(f'B_{n}_{m}')
-            Norm.append(((-1) ** m) * np.sqrt((n + 0.5) * (np.math.factorial(n - m)) / np.math.factorial(n + m)))
+            Norm.append(((-1) ** m) * np.sqrt((n + 0.5) * (math.factorial(n - m)) / math.factorial(n + m)))
 
     if case_string == 'full_none':
         converted_harmonics = np.multiply(harmonics, Norm)
