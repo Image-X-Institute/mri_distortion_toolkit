@@ -3,7 +3,7 @@ from pathlib import Path
 
 '''
 download example data and unzip:
-https://cloudstor.aarnet.edu.au/plus/s/Wm9vndV47u941JU
+https://ses.library.usyd.edu.au/handle/2123/31139
 '''
 
 data_loc = Path(r'C:\Users\Brendan\Downloads\MRI_distortion_QA_sample_data\MRI_distortion_QA_sample_data')

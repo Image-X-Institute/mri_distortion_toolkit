@@ -5,7 +5,7 @@
 Say that you have [built](https://image-x-institute.github.io/mri_distortion_toolkit/phantom_construction.html) and [imaged](https://image-x-institute.github.io/mri_distortion_toolkit/phantom_imaging.html) a marker-based distortion phantom. To use this data within this library, you first have to extract the position of the markers and create a 'MarkerVolume'. This example shows you how do that.
 
 
-> |:warning:| For this part you will need some data. **Example data is provided [here](https://cloudstor.aarnet.edu.au/plus/s/Wm9vndV47u941JU)**. Download and unzip this data somewhere and take note of the path. The source code this example is based on is [here](https://github.com/image-x-institute/MRI_DistortionQA/tree/main/examples).
+> |:warning:| For this part you will need some data. **Example data is provided [here](https://ses.library.usyd.edu.au/handle/2123/31139)**. Download and unzip this data somewhere and take note of the path. The source code this example is based on is [here](https://github.com/image-x-institute/MRI_DistortionQA/tree/main/examples).
 
 First, create a directory called 'MRI_QA_tutorial' or something like that. Within that directory, create a new python file called 'MarkerExtractionExample'. Copy the below code into it, and update
 
@@ -17,7 +17,7 @@ import pandas as pd
 
 '''
 download example data and unzip:
-https://cloudstor.aarnet.edu.au/plus/s/Wm9vndV47u941JU
+https://ses.library.usyd.edu.au/handle/2123/31139
 '''
 
 data_loc = Path('/home/brendan/Downloads/MRI_distortion_QA_sample_data')
